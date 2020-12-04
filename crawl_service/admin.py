@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from crawl_service.models import CrawlCampaign, CrawlItem
+from crawl_service.models import CrawlCampaign, CrawlItem, CrawlCondition, CrawlSource
 
 
 class CrawlItemInlineAdmin(admin.TabularInline):
@@ -8,9 +8,19 @@ class CrawlItemInlineAdmin(admin.TabularInline):
     extra = 0
 
 
+class CrawlConditionInlineAdmin(admin.TabularInline):
+    model = CrawlCondition
+    extra = 0
+
+
 @admin.register(CrawlCampaign)
 class CrawlCampaignAdmin(admin.ModelAdmin):
-    list_display = ("code", "name", "source_url", "pagination", "page_format")
+    list_display = ("code", "name", "source", "active")
     inlines = [
         CrawlItemInlineAdmin,
     ]
+
+
+@admin.register(CrawlSource)
+class CrawlSourceAdmin(admin.ModelAdmin):
+    list_display = ("id", "code", "name", "homepage")

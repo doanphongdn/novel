@@ -1,5 +1,4 @@
 django~=3.1.4
-django-dynamic-model-validation~=0.1.13
 scrapy~=2.4.1
 dictsearch~=3.2.0
 redis~=3.5.3

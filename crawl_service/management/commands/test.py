@@ -1,25 +1,22 @@
-import hashlib
-
-import redis as redis
 import scrapy
 from django.core.management.base import BaseCommand
 from lxml import etree
+from parsel import SelectorList
 from scrapy.crawler import CrawlerProcess
 
 from crawl_service.models import CrawlCampaign
-from crawl_service.services.redis import RedisStore
+from crawl_service.services.campaign_type import CrawlCampaignType
 
 
 class MySpider1(scrapy.Spider):
 
     def __init__(self, campaign: CrawlCampaign, **kwargs):
         self.campaign = campaign
-        self.start_urls = [campaign.source_url]
-        self.conditions = campaign.conditions
+        self.start_urls = [campaign.target_url]
         self.temp_data = {}
         self.current_page = 1
 
-        super().__init__(self.campaign.code, **kwargs)
+        super().__init__("aaaaaa", **kwargs)
 
     def parse(self, response, **kwargs):
         parent_items = self.campaign.parent_items
@@ -29,41 +26,38 @@ class MySpider1(scrapy.Spider):
 
         # TODO: call api
 
-        # Write redis to check duplicate
-        for key, values in self.temp_data.items():
-            for val in values:
-                RedisStore.redis_instance.sadd(key, val)
+        campaign_type = CrawlCampaignType.type_mapping.get(self.campaign.campaign_type)
+        campaign_type(**res_data).handle()
 
-        # Pagination
-        if self.campaign.page_param_name and (
-                self.campaign.page_limit <= 0 or self.current_page < self.campaign.page_limit) and res_data:
-            self.current_page += 1
-            next_page = "%s?%s=%s" % (self.start_urls[0], self.campaign.page_param_name, self.current_page)
-            yield scrapy.Request(next_page, callback=self.parse)
+        # if self.campaign.page_param_name and (
+        #         self.campaign.page_limit <= 0 or self.current_page < self.campaign.page_limit) and res_data:
+        #     self.current_page += 1
+        #     next_page = "%s?%s=%s" % (self.start_urls[0], self.campaign.page_param_name, self.current_page)
+        #     yield scrapy.Request(next_page, callback=self.parse)
 
     def load_redis_data(self):
         pass
 
     def get_item_value(self, response, item):
-        store_key = "%s.%s" % (self.campaign.source.code, item.code)
+        html = False
         res_data = {item.code: []}
+        if item.xpath.lower().endswith('html()'):
+            html = True
+            item.xpath = item.xpath[:-6]
+
         p_objects = response.xpath(item.xpath)
         for p_obj in p_objects:
             childrens = item.childrens
-            if not childrens and item.xpath_property:
-                if item.xpath_property.lower() == 'html()':
+            if not childrens:
+                if html:
                     value = [etree.tounicode(p_obj.root)]
                 else:
-                    value = p_obj.xpath(item.xpath_property).extract_first() or None
+                    if isinstance(p_obj, SelectorList):
+                        value = p_obj.extract_first() or None
+                    else:
+                        value = p_obj.extract() or None
 
-                if value:
-                    if not self.temp_data.get(store_key):
-                        self.temp_data[store_key] = []
-
-                    if item.ignore_duplicate and value not in self.temp_data[store_key] \
-                            and not RedisStore.redis_instance.sismember(store_key, value):
-                        self.temp_data[store_key].append(value)
-                        res_data[item.code] = value
+                res_data[item.code] = value
 
                 continue
 

@@ -100,6 +100,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
 
                 for author in authors:
                     author, _ = Author.objects.get_or_create(name=author.title().strip())
+
                     novel.authors.add(author)
 
                 genres = crawled_data.get("genres") or []
@@ -123,6 +124,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                 if descriptions:
                     novel.descriptions = crawled_data.get("descriptions")
 
+                novel.chapter_updated = True
                 novel.save()
                 break
 
@@ -147,8 +149,8 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
             if crawled_value in chapters.keys():
                 chapter = chapters.get(crawled_value)
                 chapter_content = crawled_data.get("content")
-                compressed = zlib.compress(chapter_content.encode())
-
-                chapter.content = compressed
-                chapter.content_updated = True
-                chapter.save()
+                if chapter_content:
+                    compressed = zlib.compress(chapter_content.encode())
+                    chapter.binary_content = compressed
+                    chapter.content_updated = True
+                    chapter.save()

@@ -1,5 +1,3 @@
-import zlib
-
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
 from django.db import models
@@ -41,6 +39,9 @@ class Genre(models.Model):
                          max_length=250, blank=True, unique=True, null=True)
     active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.name
+
     def novel_count(self):
         return Novel.get_available_novel().filter(categories=self).count()
 
@@ -57,12 +58,12 @@ class Novel(models.Model):
                          max_length=250, blank=True, unique=True, null=True)
     url = models.TextField()
     thumbnail_image = models.CharField(max_length=250, blank=True, null=True)
-
-    status = models.ForeignKey(Status, on_delete=models.CASCADE, blank=True, null=True)
-    authors = models.ManyToManyField(Author, db_table="novel_novel_authors_rel", blank=True)
-    genres = models.ManyToManyField(Genre, db_table="novel_novel_genres_rel", blank=True)
     descriptions = models.TextField(blank=True, null=True)
 
+    genres = models.ManyToManyField(Genre, db_table="novel_novel_genres_rel", blank=True)
+    authors = models.ManyToManyField(Author, db_table="novel_novel_authors_rel", blank=True)
+
+    status = models.ForeignKey(Status, on_delete=models.CASCADE, blank=True, null=True)
     chapter_updated = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
 
@@ -99,11 +100,11 @@ class Novel(models.Model):
 class NovelChapter(models.Model):
     class Meta:
         db_table = "novel_chapters"
-        unique_together = [('url', 'novel'), ('slug', 'novel')]
+        unique_together = [('name', 'novel'), ('slug', 'novel')]
         ordering = ['-id']
 
-    name = models.CharField(max_length=250, db_index=True)
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250, db_index=True)
     url = models.TextField()
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, max_length=250, blank=True, null=True,
                          db_index=True)
@@ -118,4 +119,3 @@ class NovelChapter(models.Model):
 
     def __str__(self):
         return self.name
-

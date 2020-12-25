@@ -51,7 +51,7 @@ class MySpider1(scrapy.Spider):
         res_data = {item.code: []}
 
         p_objects = response.xpath(item.xpath)
-        if item.xpath.lower().endswith('text()'):
+        if item.xpath.lower().endswith('all_text()'):
             text_arr = p_objects.extract()
             res_data[item.code] = "<p>%s</p>" % "</p><p>".join(txt.strip("\n ") for txt in text_arr if txt.strip("\n "))
         else:

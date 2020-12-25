@@ -1,0 +1,6 @@
+{% extends "admin/base_site.html" %}
+{% block title %}{{ title }} AAAAAAAAAAAAAA{% endblock %}
+{% block extrahead %}
+<script>window.CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/';</script>
+{{ block.super }}
+{% endblock %}

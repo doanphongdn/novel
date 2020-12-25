@@ -13,9 +13,10 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv(os.path.join(BASE_DIR, '.env'), override=True, verbose=True)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -23,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '^6ezxsck574p4nub835ln78*x-gig1pjg-+$(o_82fo(h+#cu!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'false').lower() == 'true'
 
 ALLOWED_HOSTS = []
 
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'crawl_service',
     'truyenhayho',
     'rest_framework',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -117,9 +119,23 @@ USE_L10N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+STATIC_ROOT = os.environ.get('STATIC_ROOT') or os.path.join(BASE_DIR, "static_files")
 STATIC_URL = '/static/'
 
 LOG_ENABLED = False
 
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': [
+            ['Styles', 'Format', 'Font', 'FontSize'],
+            ['Bold', 'Italic', 'Underline', 'StrikeThrough', '-', 'Undo', 'Redo', '-', 'Cut', 'Copy', 'Paste', 'Find',
+             'Replace', '-', 'Outdent', 'Indent', '-', 'Print'],
+            ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+        ],
+        'height': 500,
+        'width': 1000,
+    },
+}

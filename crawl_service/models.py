@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 
-from crawl_service.services.campaign_type import CrawlCampaignType
+from crawl_service.campaigns.mapping import CampaignMapping
 
 
 def code_validate(value):
@@ -24,16 +24,32 @@ class CrawlCampaignSource(models.Model):
         return self.name
 
 
+CAMPAIGN_STATUS = [
+    ('running', 'RUNNING'),
+    ('stopped', 'STOPPED'),
+]
+
+
 class CrawlCampaign(models.Model):
     class Meta:
         db_table = "crawl_campaigns"
 
     campaign_source = models.ForeignKey(CrawlCampaignSource, on_delete=models.CASCADE)
-    campaign_type = models.CharField(max_length=50, choices=CrawlCampaignType.list_types)
+    campaign_type = models.CharField(max_length=50, choices=CampaignMapping.list_types)
     name = models.CharField(max_length=250)
     target_url = models.CharField(max_length=250)
-    page_param_name = models.CharField(max_length=50, null=True, blank=True, default='',
-                                       help_text="Blank if no pagination.")
+    target_direct = models.BooleanField(default=True,
+                                        help_text="If option is TRUE, this campaign will call directly by target_url "
+                                                  "otherwise call via API and get list of urls from response.")
+    paging_param = models.CharField(max_length=50, null=True, blank=True, default='',
+                                    help_text="Blank if no pagination.")
+    paging_delay = models.IntegerField(default=0,
+                                       help_text="If the target url has pagination, "
+                                                 "this option will allow to delay any second after each request")
+    repeat_time = models.IntegerField(default=5,
+                                      help_text="Minutes to repeat this campaign, set 0 if dont want to repeat")
+    last_run = models.DateTimeField(default=None, null=True, blank=True)
+    status = models.CharField(max_length=10, choices=CAMPAIGN_STATUS)
     active = models.BooleanField(default=True)
 
     def child_items(self):
@@ -50,7 +66,7 @@ class CrawlCampaign(models.Model):
 class CrawlItem(models.Model):
     class Meta:
         db_table = "crawl_campaign_items"
-        unique_together = ("campaign", "code")
+        unique_together = ("campaign", "code", "parent_code")
 
     campaign = models.ForeignKey(CrawlCampaign, on_delete=models.CASCADE)
     code = models.CharField(max_length=50, validators=[code_validate])

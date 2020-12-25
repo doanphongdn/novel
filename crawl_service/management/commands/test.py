@@ -1,11 +1,14 @@
+from time import sleep
+
 import scrapy
 from django.core.management.base import BaseCommand
 from lxml import etree
 from parsel import SelectorList
+from pip._vendor import requests
 from scrapy.crawler import CrawlerProcess
 
+from crawl_service.campaigns.mapping import CampaignMapping
 from crawl_service.models import CrawlCampaign
-from crawl_service.services.campaign_type import CrawlCampaignType
 
 
 class MySpider1(scrapy.Spider):
@@ -13,6 +16,11 @@ class MySpider1(scrapy.Spider):
     def __init__(self, campaign: CrawlCampaign, **kwargs):
         self.campaign = campaign
         self.start_urls = [campaign.target_url]
+        if not campaign.target_direct:
+            res = requests.get(campaign.target_url, timeout=30)
+            if res.status_code == 200:
+                self.start_urls = res.json()
+
         self.temp_data = {}
         self.current_page = 1
 
@@ -20,56 +28,45 @@ class MySpider1(scrapy.Spider):
 
     def parse(self, response, **kwargs):
         parent_items = self.campaign.parent_items
-        res_data = {}
+        res_data = {"url": response.url}
         for child_item in parent_items:
-            res_data = self.get_item_value(response, child_item)
+            _data = self.get_item_value(response, child_item)
+            res_data.update(_data)
 
-        # TODO: call api
+        campaign_type = CampaignMapping.type_mapping.get(self.campaign.campaign_type)
+        campaign_type(res_data).handle()
 
-        campaign_type = CrawlCampaignType.type_mapping.get(self.campaign.campaign_type)
-        campaign_type(**res_data).handle()
+        if self.campaign.paging_delay:
+            sleep(self.campaign.paging_delay)
 
-        # if self.campaign.page_param_name and (
-        #         self.campaign.page_limit <= 0 or self.current_page < self.campaign.page_limit) and res_data:
-        #     self.current_page += 1
-        #     next_page = "%s?%s=%s" % (self.start_urls[0], self.campaign.page_param_name, self.current_page)
-        #     yield scrapy.Request(next_page, callback=self.parse)
+        if self.campaign.paging_param and res_data:
+            self.current_page += 1
+            next_page = "%s%s%s" % (self.start_urls[0], self.campaign.paging_param, self.current_page)
+            yield scrapy.Request(next_page, callback=self.parse)
 
     def load_redis_data(self):
         pass
 
     def get_item_value(self, response, item):
-        html = False
         res_data = {item.code: []}
-        if item.xpath.lower().endswith('html()'):
-            html = True
-            item.xpath = item.xpath[:-6]
 
         p_objects = response.xpath(item.xpath)
-        for p_obj in p_objects:
-            childrens = item.childrens
-            if not childrens:
-                if html:
-                    value = [etree.tounicode(p_obj.root)]
-                else:
-                    if isinstance(p_obj, SelectorList):
-                        value = p_obj.extract_first() or None
-                    else:
-                        value = p_obj.extract() or None
+        if item.xpath.lower().endswith('text()'):
+            text_arr = p_objects.extract()
+            res_data[item.code] = "<p>%s</p>" % "</p><p>".join(txt.strip("\n ") for txt in text_arr if txt.strip("\n "))
+        else:
+            for p_obj in p_objects:
+                childrens = item.childrens
+                if not childrens:
+                    res_data[item.code] = p_obj.extract() or None
+                    continue
 
-                res_data[item.code] = value
+                res_item = {}
+                for child_item in childrens:
+                    item_val = self.get_item_value(p_obj, child_item)
+                    if item_val.get(child_item.code):
+                        res_item.update(item_val)
 
-                continue
-
-            res_item = {}
-            for child_item in childrens:
-                item_val = self.get_item_value(p_obj, child_item)
-                if item_val.get(child_item.code):
-                    res_item.update(item_val)
-
-            if len(res_item) == 1:
-                res_data[item.code] = res_item
-            elif res_item:
                 res_data[item.code].append(res_item)
 
         if res_data.get(item.code):

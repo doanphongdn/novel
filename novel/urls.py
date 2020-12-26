@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.urls import path
 
-from truyenhayho.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
+from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
 
 urlpatterns = [
     path('api/novel/update_list', APIViewNovelUpdateList.as_view()),

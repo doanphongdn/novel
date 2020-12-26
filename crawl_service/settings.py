@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crawl_service',
-    'truyenhayho',
+    'novel',
     'rest_framework',
     'ckeditor',
 ]

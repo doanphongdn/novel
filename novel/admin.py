@@ -4,7 +4,7 @@ from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 
-from truyenhayho.models import Novel, NovelChapter, Author
+from novel.models import Novel, NovelChapter
 
 
 class NovelForm(forms.ModelForm):

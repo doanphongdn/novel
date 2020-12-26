@@ -3,8 +3,7 @@ import zlib
 from rest_framework import serializers
 
 from crawl_service.campaigns.base import BaseCrawlCampaignType
-from truyenhayho.models import Author, Genre, Status, NovelChapter, Novel
-from truyenhayho.services.redis import RedisNovelContent
+from novel.models import Author, Genre, Status, NovelChapter, Novel
 
 
 class NovelSerializer(serializers.Serializer):

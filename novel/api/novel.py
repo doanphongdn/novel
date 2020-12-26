@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from truyenhayho.models import Novel, NovelChapter
+from novel.models import Novel, NovelChapter
 
 
 class APIViewNovelUpdateList(APIView):

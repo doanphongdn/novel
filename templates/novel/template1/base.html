@@ -1,0 +1,12 @@
+{% load static %}
+{% load meta %}
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>{{ meta.title }}</title>
+    {% block stylesheet %}{% endblock %}
+</head>
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>

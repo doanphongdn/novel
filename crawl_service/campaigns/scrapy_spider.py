@@ -20,7 +20,7 @@ class NovelSpider(scrapy.Spider):
         self.temp_data = {}
         self.current_page = 1
 
-        super().__init__(**kwargs)
+        super().__init__(name=campaign.name, **kwargs)
 
     def parse(self, response, **kwargs):
         parent_items = self.campaign.parent_items

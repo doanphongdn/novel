@@ -46,11 +46,13 @@ class NovelSpider(scrapy.Spider):
     def get_item_value(self, response, item):
         res_data = {item.code: []}
 
-        p_objects = response.xpath(item.xpath)
         if item.xpath.lower().endswith('all_text()'):
+            item.xpath = item.xpath.replace('all_text()', 'text()')
+            p_objects = response.xpath(item.xpath)
             text_arr = p_objects.extract()
             res_data[item.code] = "<p>%s</p>" % "</p><p>".join(txt.strip("\n ") for txt in text_arr if txt.strip("\n "))
         else:
+            p_objects = response.xpath(item.xpath)
             for p_obj in p_objects:
                 childrens = item.childrens
                 if not childrens:
@@ -69,4 +71,3 @@ class NovelSpider(scrapy.Spider):
             return res_data
 
         return {}
-

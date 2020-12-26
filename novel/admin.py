@@ -52,7 +52,7 @@ class NovelChapterAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)
-        if obj.binary_content:
+        if obj and obj.binary_content:
             content_field = form.base_fields.get('content')
             content_decompresed = zlib.decompress(obj.binary_content).decode()
             content_field.initial = content_decompresed

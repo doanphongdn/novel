@@ -3,7 +3,8 @@ class BaseCrawlCampaignType(object):
     model_class = None
     update_by_fields = []
 
-    def __init__(self, crawled_data):
+    def __init__(self, campaign, crawled_data):
+        self.campaign = campaign
         self.crawled_data = crawled_data
         self.update_values = {}
         if self.update_by_fields:
@@ -14,3 +15,12 @@ class BaseCrawlCampaignType(object):
                     val = getattr(obj, key, None)
                     if val:
                         value[val] = obj
+
+    def handle_url(self, url):
+        if not url.startswith("http"):
+            if url.startswith('//'):
+                return "http:%s" % url.rstrip('/')
+            elif url.startswith('/'):
+                return "%s%s" % (self.campaign.homepage.strip('/'), url.rstrip('/'))
+        else:
+            return url.rstrip('/')

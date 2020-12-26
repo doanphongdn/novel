@@ -30,7 +30,7 @@ class NovelSpider(scrapy.Spider):
             res_data.update(_data)
 
         campaign_type = CampaignMapping.type_mapping.get(self.campaign.campaign_type)
-        campaign_type(res_data).handle()
+        campaign_type(self.campaign, res_data).handle()
 
         if self.campaign.paging_delay:
             sleep(self.campaign.paging_delay)
@@ -39,9 +39,6 @@ class NovelSpider(scrapy.Spider):
             self.current_page += 1
             next_page = "%s%s%s" % (self.start_urls[0], self.campaign.paging_param, self.current_page)
             yield scrapy.Request(next_page, callback=self.parse)
-
-    def load_redis_data(self):
-        pass
 
     def get_item_value(self, response, item):
         res_data = {item.code: []}

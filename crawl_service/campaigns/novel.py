@@ -10,10 +10,11 @@ class NovelSerializer(serializers.Serializer):
     name = serializers.CharField()
     url = serializers.CharField()
     latest_chapter_url = serializers.CharField(required=False)
+    thumbnail_image = serializers.CharField(required=False)
 
 
 class NovelCampaignSchema(serializers.Serializer):
-    story_wrap = NovelSerializer(many=True)
+    novel_block = NovelSerializer(many=True)
 
 
 class NovelCampaignType(BaseCrawlCampaignType):
@@ -37,7 +38,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
                 if skey in novel_list.keys():
                     novel = novel_list.get(skey)
                     novel.name = item.get("name")
-                    novel.url = item.get("url")
+                    novel.url = self.handle_url(item.get("url") or "")
 
                     latest_chapter = item.get('latest_chapter_url')
                     if latest_chapter:
@@ -61,7 +62,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
                 new_data.append(Novel(**item))
 
         if new_data:
-            Novel.objects.bulk_create(new_data)
+            Novel.objects.bulk_create(new_data, ignore_conflicts=True)
 
 
 class NovelChapterSerializer(serializers.Serializer):
@@ -112,7 +113,8 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
 
                 for chapter in crawled_data.get("list_chapter") or []:
                     chapter, _ = NovelChapter.objects.get_or_create(name=chapter.get("name"),
-                                                                    url=chapter.get("chapter_url"), novel=novel)
+                                                                    url=self.handle_url(chapter.get("chapter_url")),
+                                                                    novel=novel)
 
                 status = crawled_data.get("status")
                 if status:

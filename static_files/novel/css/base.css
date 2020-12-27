@@ -9,62 +9,130 @@ body {
     background-color: #fff;
 }
 
-.novel-list-item {
-    padding: 10px 0;
+.novel-grid {
+    margin: 20px 0;
+}
+
+.novel-grid .novel-grid-title label,
+.novel-list .novel-list-title label {
+    border-bottom: 2px solid #5e72e4;
+    margin-bottom: -2px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.novel-list .novel-list-title,
+.novel-grid .novel-grid-title {
+    border-bottom: 2px solid #F0F0F0;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.novel-list .novel-list-item .novel-wrap {
+    display: block;
+    overflow: hidden;
     border-bottom: thin solid #F0F0F0;
+    padding: 10px 0;
+}
+
+.novel-list .novel-list-item,
+.novel-grid .novel-grid-item {
     display: block;
     overflow: hidden;
 }
 
-.novel-list-item .item-thumbnail-image {
-    margin-right: 10px; 
+.novel-grid > div {
+    padding-right: 15px !important;
+}
+
+.novel-grid .novel-grid-item {
+    padding-right: 0 !important;
+}
+
+.novel-grid .novel-grid-item .novel-thumbnail-image img {
+    width: 100%;
+    height: auto;
+}
+
+.novel-list .novel-list-item .novel-thumbnail-image {
+    margin-right: 10px;
     width: 50px;
     height: 100%;
     float: left;
 }
-.novel-list-item .item-thumbnail-image img{
+
+.novel-list .novel-list-item .novel-thumbnail-image img {
     width: 100%;
     height: 100%;
 }
-.novel-list-item .item-name {
+
+.novel-grid .novel-grid-item .novel-name {
+    height: 40px;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.novel-list .novel-list-item .novel-name {
     width: calc(50% - 60px);
     float: left;
 
 }
-.novel-list-item .item-name h6{
+
+.novel-list .novel-list-item .novel-chapter,
+.novel-grid .novel-grid-item .novel-chapter {
+    font-size: 0.8rem;
+    margin-top: 2px;
+}
+
+.novel-grid .novel-grid-item .novel-name h6 {
+    height: 40px;
+}
+
+.novel-grid .novel-grid-item .novel-name h6,
+.novel-list .novel-list-item .novel-name h6 {
     font-weight: 600;
     font-size: 0.9rem;
 }
 
-.novel-list-item .item-chapter,
-.novel-list-item .item-authors {
+.novel-list .novel-list-item .novel-chapter,
+.novel-list .novel-list-item .novel-authors {
     width: 25%;
     float: left;
 }
-.novel-list-item .item-chapter .chapter-updated-time{
+
+.novel-list .novel-list-item .novel-chapter .chapter-updated-time {
     /*font-size: 13px;*/
     color: #666;
 }
-.pagination{
+
+.pagination {
     float: right;
     margin-top: 20px;
 }
+
 @media (min-width: 1200px) {
-    .container{
+    .container {
         max-width: 1140px;
     }
 }
+
 /* Small Devices, Tablets */
 @media (max-width: 768px) {
-    .novel-list-item .item-thumbnail-image {
+    .novel-list .novel-list-item .novel-thumbnail-image {
         width: 70px;
     }
-    .novel-list-item .item-name,
-    .novel-list-item .item-chapter,
-    .novel-list-item .item-authors {
+
+    .novel-list .novel-list-item .novel-name,
+    .novel-list .novel-list-item .novel-chapter,
+    .novel-list .novel-list-item .novel-authors {
         width: calc(100% - 80px);
     }
-    .novel-list-item .item-chapter .chapter-updated-time{
+
+    .novel-list .novel-list-item .novel-chapter .chapter-updated-time {
         font-size: 16px;
     }
 }

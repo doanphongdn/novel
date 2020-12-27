@@ -12,19 +12,14 @@ class NovelIndexView(NovelBaseView):
 
         page = request.GET.get('page') or 1
         list_novel = Novel.get_available_novel().all()
-        has_next = False
-        paginated = Paginator(list_novel, 10)
+        paginated = Paginator(list_novel, 12)
         try:
             paginated_data = paginated.page(page)
         except:
             paginated_data = None
 
-        if paginated_data:
-            has_next = paginated_data.has_next()
-
         response.context_data.update({
             'novels': paginated_data,
-            'has_next': has_next,
         })
 
         return response

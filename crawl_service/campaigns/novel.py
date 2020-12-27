@@ -27,7 +27,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
         if not NovelCampaignSchema(data=self.crawled_data).is_valid():
             raise Exception("Loi schema")
 
-        values = self.crawled_data.get('story_wrap', [])
+        values = self.crawled_data.get('novel_block', [])
         new_data = []
         no_update_limit = 10
         no_update_count = 0

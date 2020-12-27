@@ -4,6 +4,7 @@
 {% endblock %}
 {% block content %}
     <div class="container">
-        {% include "novel/widgets/novel_list.html" with novels=novels %}
+        {% include "novel/widgets/novel_grid.html" with novels=novels title="LATEST UPDATE" %}
+        {% include "novel/widgets/novel_list.html" with novels=novels title="HOT NOVELS"%}
     </div>
 {% endblock %}

@@ -5,7 +5,7 @@ from novel.views.base import NovelBaseView
 
 
 class NovelIndexView(NovelBaseView):
-    template_name = "novel/template1/index.html"
+    template_name = "novel/style1/index.html"
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)

@@ -1,7 +1,27 @@
+from datetime import datetime
+
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
 from django.db import models
 from unidecode import unidecode
+
+
+def datetime2string(value):
+    """ Convert updated_at to friendly string
+    :return: string - ex: 1 hour ago, 1 month ago, phút
+    """
+    diff_timestamp = datetime.timestamp(datetime.now()) - datetime.timestamp(value)
+
+    if diff_timestamp / 60 < 60:
+        updated_at = "%s minute(s) ago" % (int(diff_timestamp / 60) + 1)
+    elif diff_timestamp / 3600 < 24:
+        updated_at = "%s hour(s) ago" % int(diff_timestamp / 3600)
+    elif diff_timestamp / 3600 / 24 < 30:
+        updated_at = "%s day(s) ago" % int(diff_timestamp / 3600 / 24)
+    else:
+        updated_at = value.strftime("%Y/%m/%d")
+
+    return updated_at
 
 
 def unicode_slugify(name):
@@ -119,3 +139,7 @@ class NovelChapter(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def created_at_str(self):
+        return datetime2string(self.created_at)

@@ -26,7 +26,7 @@ SECRET_KEY = '^6ezxsck574p4nub835ln78*x-gig1pjg-+$(o_82fo(h+#cu!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'false').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -123,7 +123,11 @@ USE_L10N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_ROOT = os.environ.get('STATIC_ROOT') or os.path.join(BASE_DIR, "static_files")
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static_files"),
+]
+
+STATIC_ROOT = os.environ.get('STATIC_ROOT')
 STATIC_URL = '/static/'
 
 LOG_ENABLED = False

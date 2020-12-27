@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>Novel</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{% static 'novel/css/bootstrap.min.css' %}" type="text/css" media="all">
+    <!-- Fonts and icons -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <!-- Nucleo Icons -->
+    <link href="{% static "argon/assets/css/nucleo-icons.css" %}" rel="stylesheet"/>
+    <link href="{% static "argon/assets/css/nucleo-svg.css" %}" rel="stylesheet"/>
+    <!-- Font Awesome Icons -->
+    <link href="{% static "argon/assets/css/font-awesome.css" %}" rel="stylesheet"/>
+    <link href="{% static "argon/assets/css/nucleo-svg.css" %}" rel="stylesheet"/>
+    <!-- CSS Files -->
+    <link href="{% static "argon/assets/css/argon-design-system.css" %}" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="{% static 'novel/css/base.css' %}" type="text/css" media="all">
+    <link rel="stylesheet" href="{% static 'novel/css/style1.css' %}" type="text/css" media="all">
+    {% block stylesheet %}{% endblock %}
+</head>
+<body>
+{% include "novel/widgets/navbar.html" %}
+{% block content %}
+
+{% endblock %}
+
+<script type="text/javascript" src="{% static 'novel/js/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'novel/js/bootstrap.min.js' %}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

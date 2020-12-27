@@ -1,0 +1,19 @@
+{% load static %}
+{% for novel in novels %}
+    <div class="col-12">
+        <div class="row novel-item">
+            <div class="novel-item-thumbnail-image">
+                <img src="{% static 'images/default.jpg' %}" alt="{{ novel.name }}">
+            </div>
+            <div class="novel-item-name">
+                <h6>{{ novel.name }}</h6>
+            </div>
+            <div class="novel-item-chapter">
+                {{ novel.chapters.0.name }}
+                <div class="chapter-updated-time">{{ novel.chapters.0.created_at_str }}</div>
+            </div>
+            <div class="novel-item-authors">{{ novel.authors_name }}</div>
+        </div>
+    </div>
+{% endfor %}
+{% include "novel/widgets/pagination.html" with paginated_data=novels %}

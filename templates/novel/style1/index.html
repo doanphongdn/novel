@@ -1,0 +1,9 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block stylesheet %}
+{% endblock %}
+{% block content %}
+    <div class="container">
+        {% include "novel/widgets/novel_list.html" with novels=novels %}
+    </div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block stylesheet %}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid novel-bg">
+        {% include "novel/widgets/novel_info.html" with novel=novel %}
+    </div>
+{% endblock %}

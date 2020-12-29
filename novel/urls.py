@@ -17,12 +17,13 @@ from django.urls import path
 
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
 from novel.views.index import NovelIndexView
+from novel.views.novel import NovelView
 
 urlpatterns = [
     path('api/novel/update_list', APIViewNovelUpdateList.as_view()),
     path('api/novel/chapter/update_list', APIViewNovelChapterUpdateList.as_view()),
 
-
     path('', NovelIndexView.as_view()),
+    path('novel/<str:slug>', NovelView.as_view()),
 
 ]

@@ -116,12 +116,24 @@ class Novel(models.Model):
     def chapters(self):
         return NovelChapter.objects.filter(novel=self)
 
+    def get_absolute_url(self):
+        return f"/novel/{self.slug}"
+
+    @property
+    def rating_classes(self):
+        vote = int(round(self.vote)) or 5
+        classes = []
+        classes.extend(['rating_current'] * vote)
+        classes.extend(['rating_none'] * (5 - vote))
+
+        return classes
+
 
 class NovelChapter(models.Model):
     class Meta:
         db_table = "novel_chapters"
         unique_together = [('name', 'novel'), ('slug', 'novel')]
-        ordering = ['-id']
+        ordering = ['id']
 
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, db_index=True)

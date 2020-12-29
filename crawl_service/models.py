@@ -77,3 +77,4 @@ class CrawlItem(models.Model):
     @property
     def childrens(self):
         return CrawlItem.objects.filter(parent_code=self.code, campaign=self.campaign).all()
+

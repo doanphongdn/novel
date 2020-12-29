@@ -2,6 +2,7 @@ from django.core.paginator import Paginator
 
 from novel.models import Novel
 from novel.views.base import NovelBaseView
+from novel.widgets.novel_grid import NovelGridWidget
 
 
 class NovelIndexView(NovelBaseView):
@@ -18,8 +19,11 @@ class NovelIndexView(NovelBaseView):
         except:
             paginated_data = None
 
+        novel_grid = NovelGridWidget(novels=paginated_data, title="LATEST UPDATE", fa_icon="far fa-calendar-check")
+        novel_list = NovelGridWidget(novels=paginated_data, title="HOT NOVEL", fa_icon="fab fa-hotjar")
         response.context_data.update({
-            'novels': paginated_data,
+            'novel_grid': novel_grid,
+            'novel_list': novel_list,
         })
 
         return response

@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 
-from crawl_service.campaigns.mapping import CampaignMapping
+from crawl_service.campaigns.mapping import CampaignMapping, ActionMapping
 
 
 def code_validate(value):
@@ -72,9 +72,21 @@ class CrawlItem(models.Model):
     code = models.CharField(max_length=50, validators=[code_validate])
     parent_code = models.CharField(max_length=50, validators=[code_validate], null=True, blank=True)
     xpath = models.CharField(max_length=250)
-    ignore_duplication = models.BooleanField(default=False)
 
     @property
     def childrens(self):
         return CrawlItem.objects.filter(parent_code=self.code, campaign=self.campaign).all()
 
+    @property
+    def actions(self):
+        return CrawlItemAction.objects.filter(campaign=self.campaign, crawl_item_code=self.code).all()
+
+
+class CrawlItemAction(models.Model):
+    class Meta:
+        db_table = "crawl_campaign_actions"
+
+    campaign = models.ForeignKey(CrawlCampaign, on_delete=models.CASCADE)
+    crawl_item_code = models.CharField(max_length=250)
+    action = models.CharField(max_length=250, choices=ActionMapping.list_types)
+    params = models.CharField(max_length=250, blank=True, null=True)

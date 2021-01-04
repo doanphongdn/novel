@@ -1,8 +1,10 @@
+import zlib
 from datetime import datetime
 
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
 from django.db import models
+from django.urls import reverse
 from unidecode import unidecode
 
 
@@ -72,6 +74,7 @@ class Genre(models.Model):
 class Novel(models.Model):
     class Meta:
         db_table = "novel_novels"
+        ordering = ['id']
 
     name = models.CharField(max_length=250, db_index=True, unique=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, db_index=True,
@@ -116,8 +119,26 @@ class Novel(models.Model):
     def chapters(self):
         return NovelChapter.objects.filter(novel=self)
 
+    @property
+    def first_chapter_url(self):
+        first_chap_url = None
+        chapter = self.chapters.last()
+        if chapter:
+            first_chap_url = chapter.get_absolute_url()
+
+        return first_chap_url
+
+    @property
+    def last_chapter(self):
+        last_chapter_url = None
+        chapter = self.chapters.first()
+        if chapter:
+            last_chapter_url = chapter.get_absolute_url()
+
+        return last_chapter_url
+
     def get_absolute_url(self):
-        return f"/novel/{self.slug}"
+        return reverse("novel", args=[self.slug])
 
     @property
     def rating_classes(self):
@@ -155,3 +176,30 @@ class NovelChapter(models.Model):
     @property
     def created_at_str(self):
         return datetime2string(self.created_at)
+
+    @property
+    def next_chapter_url(self):
+        next_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__gt=self.id).last()
+        if next_chap:
+            return next_chap.get_absolute_url()
+
+        return None
+
+    @property
+    def prev_chapter_url(self):
+        prev_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__lt=self.id).first()
+        if prev_chap:
+            return prev_chap.get_absolute_url()
+
+        return
+
+    @property
+    def decompress_content(self):
+        if len(self.binary_content) > 0:
+            decompresed = zlib.decompress(self.binary_content).decode()
+            return decompresed
+
+        return None
+
+    def get_absolute_url(self):
+        return reverse("chapter", args=[self.novel.slug, self.slug])

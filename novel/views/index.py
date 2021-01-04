@@ -6,7 +6,7 @@ from novel.widgets.novel_grid import NovelGridWidget
 
 
 class NovelIndexView(NovelBaseView):
-    template_name = "novel/style1/index.html"
+    template_name = "novel/index.html"
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)

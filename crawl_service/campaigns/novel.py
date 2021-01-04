@@ -18,7 +18,7 @@ class NovelCampaignSchema(serializers.Serializer):
 
 
 class NovelCampaignType(BaseCrawlCampaignType):
-    type_name = 'NOVEL'
+    name = 'NOVEL'
     model_class = Novel
     # List keys use to check value duplicate
     update_by_fields = ['name', 'url']
@@ -80,7 +80,7 @@ class NovelInfoCampaignSchema(serializers.Serializer):
 
 
 class NovelInfoCampaignType(BaseCrawlCampaignType):
-    type_name = 'NOVEL_INFO'
+    name = 'NOVEL_INFO'
     model_class = Novel
     update_by_fields = ['url']
 
@@ -136,7 +136,7 @@ class NovelChapterCampaignSchema(serializers.Serializer):
 
 
 class NovelChapterCampaignType(BaseCrawlCampaignType):
-    type_name = 'NOVEL_CHAPTER'
+    name = 'NOVEL_CHAPTER'
     model_class = NovelChapter
     update_by_fields = ['url']
 

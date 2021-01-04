@@ -1,0 +1,18 @@
+{% extends 'novel/base.html' %}
+{% load static %}
+{% block stylesheet %}
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="container">
+            {% if view_type == 'list' %}
+                {% include "novel/includes/novel_list.html" with widget=novels %}
+            {% else %}
+                {% include "novel/includes/novel_grid.html" with widget=novels %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="container">{% include "novel/widgets/pagination.html" with paginated_data=novels.novels %}</div>
+    </div>
+{% endblock %}

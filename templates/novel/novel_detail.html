@@ -1,0 +1,24 @@
+{% extends 'novel/base.html' %}
+{% load static %}
+{% block stylesheet %}
+{% endblock %}
+{% block content %}
+    <div class="row novel-bg">
+        <div class="container">
+            <div class="col-12 widget-breadcrumb">
+                <div class="row">
+                    {% include "novel/widgets/breadcrumb.html" with data=breadcrumb_data %}
+                </div>
+            </div>
+        </div>
+        {% include "novel/includes/novel_info.html" with novel=novel %}
+    </div>
+    <div class="row">
+        <div class="container">
+            {% include "novel/includes/chapter_list.html" with widget=chapter_widget %}
+        </div>
+        <div class="container">
+            {% include "novel/includes/novel_grid.html" with widget=same_category %}
+        </div>
+    </div>
+{% endblock %}

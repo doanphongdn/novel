@@ -1,5 +1,5 @@
 class BaseCrawlCampaignType(object):
-    type_name = "base"
+    name = "base"
     model_class = None
     update_by_fields = []
 
@@ -24,3 +24,11 @@ class BaseCrawlCampaignType(object):
                 return "%s%s" % (self.campaign.homepage.strip('/'), url.rstrip('/'))
         else:
             return url.rstrip('/')
+
+
+class BaseAction(object):
+    name = "base_action"
+
+    @classmethod
+    def handle(cls, obj):
+        pass

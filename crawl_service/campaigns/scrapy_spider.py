@@ -3,7 +3,7 @@ from time import sleep
 import requests
 import scrapy
 
-from crawl_service.campaigns.mapping import CampaignMapping
+from crawl_service.campaigns.mapping import CampaignMapping, ActionMapping
 from crawl_service.models import CrawlCampaign
 
 
@@ -41,19 +41,19 @@ class NovelSpider(scrapy.Spider):
             yield scrapy.Request(next_page, callback=self.parse)
 
     def get_item_value(self, response, item):
-        res_data = {item.code: []}
+        item_value = []
 
         if item.xpath.lower().endswith('all_text()'):
             item.xpath = item.xpath.replace('all_text()', 'text()')
             p_objects = response.xpath(item.xpath)
             text_arr = p_objects.extract()
-            res_data[item.code] = "<p>%s</p>" % "</p><p>".join(txt.strip("\n ") for txt in text_arr if txt.strip("\n "))
+            item_value = "<p>%s</p>" % "</p><p>".join(txt.strip("\n ") for txt in text_arr if txt.strip("\n "))
         else:
             p_objects = response.xpath(item.xpath)
             for p_obj in p_objects:
                 childrens = item.childrens
                 if not childrens:
-                    res_data[item.code] = p_obj.extract() or None
+                    item_value = p_obj.extract() or None
                     continue
 
                 res_item = {}
@@ -62,9 +62,13 @@ class NovelSpider(scrapy.Spider):
                     if item_val.get(child_item.code):
                         res_item.update(item_val)
 
-                res_data[item.code].append(res_item)
+                item_value.append(res_item)
 
-        if res_data.get(item.code):
-            return res_data
+        if item_value:
+            for act in item.actions:
+                action = ActionMapping.action_mapping.get(act.action)
+                item_value = action.handle(item_value)
+
+            return {item.code: item_value}
 
         return {}

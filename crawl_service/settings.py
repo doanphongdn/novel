@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'pipeline',
     'cms',
     'crawl_service',
     'novel',
@@ -52,6 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
+    'pipeline.middleware.MinifyHTMLMiddleware',
 ]
 
 ROOT_URLCONF = 'crawl_service.urls'
@@ -124,15 +127,32 @@ USE_L10N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static_files"),
-]
-
-STATIC_ROOT = os.environ.get('STATIC_ROOT')
 STATIC_URL = '/static/'
+STATIC_ROOT = os.environ.get('STATIC_ROOT')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_debug"), ]
+
+# Pipeline config
+from .pipeline_config import *
+
+PIPELINE_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'pipeline.finders.PipelineFinder',
+)
+PIPELINE = {
+    'PIPELINE_ENABLED': True,
+    'COMPILERS': ('pipeline.compilers.sass.SASSCompiler',),
+    'CSS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
+    'JS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
+    'SASS_BINARY': '/usr/local/bin/sass',
+    'YUGLIFY_BINARY': '/usr/local/bin/yuglify',
+
+    'STYLESHEETS': PIPELINE_STYLESHEETS.get(os.environ.get('APP_NAME'))
+}
 
 LOG_ENABLED = False
-
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
 

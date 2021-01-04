@@ -1,14 +1,21 @@
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-danger"
+                aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         {% if widget.logo %}
             <a class="navbar-brand" href="/">
                 <img src="{{ widget.logo }}" alt="{{ widget.title }}">
             </a>
         {% endif %}
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-danger"
-                aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle Search">
+            <span class="mobile-search-toggle">
+                <i class="fas fa-search"></i>
+            </span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbar-danger">
             <div class="navbar-collapse-header">
                 <div class="row">
@@ -28,6 +35,7 @@
                     </div>
                 </div>
             </div>
+
             <ul class="navbar-nav ml-auto">
                 {% for menu in widget.menus %}
                     <li class="nav-item">
@@ -39,5 +47,14 @@
                 {% endfor %}
             </ul>
         </div>
+        <div class="search-wrap d-lg-flex">
+            <div class="input-group input-group-alternative">
+                <input class="form-control search" placeholder="Search..." type="text">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div id="search-area"></div>
     </div>
 </nav>

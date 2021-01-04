@@ -1,0 +1,12 @@
+{% extends 'novel/base.html' %}
+{% load static %}
+{% block stylesheet %}
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="container">
+            {% include "novel/includes/novel_grid.html" with widget=novel_grid %}
+            {% include "novel/includes/novel_list.html" with widget=novel_list %}
+        </div>
+    </div>
+{% endblock %}

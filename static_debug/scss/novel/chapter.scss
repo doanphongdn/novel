@@ -1,0 +1,103 @@
+@import "colors";
+
+$content: 'f00c';
+.float-button {
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  z-index: 1000;
+
+  ul {
+    margin: 10px 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    padding: 8px 0;
+
+    i {
+      cursor: pointer;
+      color: #{$color1};
+      font-size: 2rem;
+    }
+  }
+}
+
+.page-config {
+  .colors {
+    text-align: center;
+    margin: 0 0 10px 0;
+    padding: 0;
+
+    > li {
+      list-style: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border-bottom: 3px solid rgba(0, 0, 0, .1);
+      display: inline-block;
+      margin: 0 8px;
+      cursor: pointer;
+      transition-duration: .2s;
+      box-shadow: 0 2px 1px rgba(0, 0, 0, .2);
+
+      &:hover {
+        -webkit-transform: scale(1.2);
+        transform: scale(1.2);
+        border-bottom: 3px solid rgba(0, 0, 0, .15);
+        box-shadow: 0 5px 5px rgba(0, 0, 0, .2);
+      }
+
+      &.active-color {
+        position: relative;
+
+        &:after {
+          content: '';
+          position: absolute;
+          display: block;
+          width: 6px;
+          height: 10px;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          top: 0;
+          margin: auto;
+          border: solid #959696;
+          border-width: 0 2px 2px 0;
+          -webkit-transform: rotate(45deg);
+          -moz-transform: rotate(45deg);
+          -ms-transform: rotate(45deg);
+          -o-transform: rotate(45deg);
+          transform: rotate(45deg);
+        }
+      }
+
+      &:nth-child(1) {
+        background-color: #222222;
+      }
+
+      &:nth-child(2) {
+        background-color: #f0f0f0;
+      }
+
+      &:nth-child(3) {
+        background-color: #e1e8e8;
+      }
+
+      &:nth-child(4) {
+        background-color: #e2eee2;
+      }
+
+      &:nth-child(5) {
+        background-color: #e5e3df;
+      }
+
+      &:nth-child(6) {
+        background-color: #eae4d3;
+      }
+
+
+    }
+  }
+}

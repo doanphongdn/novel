@@ -1,9 +1,9 @@
 {% if paginated_data.paginator.num_pages > 1 %}
-    <nav aria-label="Page navigation">
+    <nav class="pagination-wrap" aria-label="Page navigation">
         <ul class="pagination justify-content-center">
             {% if paginated_data.paginator.num_pages != 1 %}
                 <li class="page-item">
-                    <a class="page-link" href="?page=1">
+                    <a class="page-link" href="?{{ page_label }}=1{{ other_params }}">
                         <i class="fas fa-angle-double-left"></i>
                     </a>
                 </li>
@@ -16,7 +16,7 @@
             {% endif %}
             {% if paginated_data.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ paginated_data.previous_page_number }}">
+                    <a class="page-link" href="?{{ page_label }}={{ paginated_data.previous_page_number }}{{ other_params }}">
                         <i class="fas fa-angle-left"></i>
                     </a>
                 </li>
@@ -33,25 +33,13 @@
                         <a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>
                     </li>
                 {% elif paginated_data.number > i|add:"-3" and paginated_data.number < i|add:"+3" %}
-                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    <li class="page-item"><a class="page-link" href="?{{ page_label }}={{ i }}{{ other_params }}">{{ i }}</a></li>
                 {% endif %}
             {% endfor %}
-            {% if paginated_data.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ paginated_data.next_page_number }}">
-                        <i class="fas fa-angle-right"></i>
-                    </a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <a class="page-link" href="#">
-                        <i class="fas fa-angle-right"></i>
-                    </a>
-                </li>
-            {% endif %}
+
             {% if paginated_data.paginator.num_pages != paginated_data.number %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ paginated_data.paginator.num_pages }}">
+                    <a class="page-link" href="?{{ page_label }}={{ paginated_data.paginator.num_pages }}{{ other_params }}">
                         <i class="fas fa-angle-double-right"></i>
                     </a>
                 </li>

@@ -16,14 +16,18 @@ Including another URLconf
 from django.urls import path
 
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
+from novel.views.chapter import ChapterView
 from novel.views.index import NovelIndexView
 from novel.views.novel import NovelView
+from novel.views.novel_detail import NovelDetailView
 
 urlpatterns = [
     path('api/novel/update_list', APIViewNovelUpdateList.as_view()),
     path('api/novel/chapter/update_list', APIViewNovelChapterUpdateList.as_view()),
 
     path('', NovelIndexView.as_view()),
-    path('novel/<str:slug>', NovelView.as_view()),
-
+    path('novel/search', NovelDetailView.as_view()),
+    path('novel', NovelView.as_view(), name="novel_view"),
+    path('novel/<str:slug>', NovelDetailView.as_view(), name="novel"),
+    path('novel/<str:slug>/<str:chapter_slug>', ChapterView.as_view(), name="chapter"),
 ]

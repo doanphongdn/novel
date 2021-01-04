@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
 from pathlib import Path
-
+from .pipeline_config import *
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from dotenv import load_dotenv
 
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
+    'django.contrib.sites',
     'pipeline',
     'cms',
     'crawl_service',
@@ -127,12 +129,14 @@ USE_L10N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+SITE_ID = 1
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_debug"), ]
 
 # Pipeline config
-from .pipeline_config import *
+
 
 PIPELINE_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'

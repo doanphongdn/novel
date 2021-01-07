@@ -1,4 +1,12 @@
 # crawl_service
+sudo apt-get install libpq-dev python3-dev build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev
+sudo apt-get install npm
+sudo npm install -g sass
+sudo npm -g install yuglify
+
+#Install uwsgi
+sudo apt-get install uwsgi-plugin-python3
+
 # Install .venv
 virtualenv -p python3 .venv
 

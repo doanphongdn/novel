@@ -97,6 +97,40 @@ DATABASES = {
     }
 }
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s |  %(asctime)s | %(filename)s:%(lineno)d | %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': os.environ.get('LOGGING_LEVEL', 'INFO'),
+            'class': 'logging.FileHandler',
+            'filename': os.environ.get('LOGGING_FILE', '/var/log/crawl_service/daily.log'),
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': os.environ.get('LOGGING_LEVEL', 'INFO'),
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': os.environ.get('LOGGING_LEVEL', 'INFO'),
+            'propagate': True,
+        },
+    },
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 

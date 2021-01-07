@@ -46,36 +46,35 @@ class CrawlCampaign(models.Model):
     paging_delay = models.IntegerField(default=0,
                                        help_text="If the target url has pagination, "
                                                  "this option will allow to delay any second after each request")
+    paging_stopped_by_item = models.CharField(max_length=50, null=True, blank=True, default='',)
     repeat_time = models.IntegerField(default=5,
                                       help_text="Minutes to repeat this campaign, set 0 if dont want to repeat")
     last_run = models.DateTimeField(default=None, null=True, blank=True)
+    run_synchonize = models.BooleanField(default=True)
     status = models.CharField(max_length=10, choices=CAMPAIGN_STATUS)
     active = models.BooleanField(default=True)
 
-    def child_items(self):
-        return CrawlItem.objects.filter(parent_code__isnull=False, campaign=self).exclude(parent_code=None).all()
-
     @property
-    def parent_items(self):
-        return CrawlItem.objects.filter(Q(parent_code=None) | Q(parent_code__isnull=True), campaign=self).all()
+    def items(self):
+        return CrawlItem.objects.filter(campaign=self).all()
 
     def full_clean(self, exclude=None, validate_unique=True):
         pass
+
+    @property
+    def actions(self):
+        return CrawlItemAction.objects.filter(campaign=self).all()
 
 
 class CrawlItem(models.Model):
     class Meta:
         db_table = "crawl_campaign_items"
-        unique_together = ("campaign", "code", "parent_code")
+        unique_together = ("campaign", "code")
 
     campaign = models.ForeignKey(CrawlCampaign, on_delete=models.CASCADE)
     code = models.CharField(max_length=50, validators=[code_validate])
-    parent_code = models.CharField(max_length=50, validators=[code_validate], null=True, blank=True)
     xpath = models.CharField(max_length=250)
-
-    @property
-    def childrens(self):
-        return CrawlItem.objects.filter(parent_code=self.code, campaign=self.campaign).all()
+    multi = models.BooleanField(default=False)
 
     @property
     def actions(self):
@@ -87,6 +86,5 @@ class CrawlItemAction(models.Model):
         db_table = "crawl_campaign_actions"
 
     campaign = models.ForeignKey(CrawlCampaign, on_delete=models.CASCADE)
-    crawl_item_code = models.CharField(max_length=250)
     action = models.CharField(max_length=250, choices=ActionMapping.list_types)
     params = models.CharField(max_length=250, blank=True, null=True)

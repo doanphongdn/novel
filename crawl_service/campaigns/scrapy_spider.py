@@ -1,3 +1,4 @@
+import json
 from time import sleep
 
 import requests
@@ -12,63 +13,61 @@ class NovelSpider(scrapy.Spider):
     def __init__(self, campaign: CrawlCampaign, **kwargs):
         self.campaign = campaign
         self.start_urls = [campaign.target_url]
+        self.other_urls = []
         if not campaign.target_direct:
             res = requests.get(campaign.target_url, timeout=30)
             if res.status_code == 200:
-                self.start_urls = res.json()
+                data = res.json()
+                if data and self.campaign.run_synchonize:
+                    self.start_urls = data
+                elif data:
+                    self.start_urls = [data.pop(0)]
+                    self.other_urls = data or []
 
-        self.temp_data = {}
-        self.current_page = 1
+        campaign_mapping = CampaignMapping.type_mapping.get(self.campaign.campaign_type)
+        self.campaign_type = campaign_mapping(self.campaign)
+        self.paging = {}
 
         super().__init__(name=campaign.name, **kwargs)
 
     def parse(self, response, **kwargs):
-        parent_items = self.campaign.parent_items
-        res_data = {"url": response.url}
-        for child_item in parent_items:
-            _data = self.get_item_value(response, child_item)
+        paging = kwargs.get('paging') or False
+        origin_url = kwargs.get('origin_url') if paging else response.url.rstrip('/')
+        if not paging:
+            self.paging[origin_url] = 1
+
+        res_data = {"url": origin_url}
+        for item in self.campaign.items:
+            _data = self.get_item_value(response, item)
             res_data.update(_data)
 
-        campaign_type = CampaignMapping.type_mapping.get(self.campaign.campaign_type)
-        campaign_type(self.campaign, res_data).handle()
+        for act in self.campaign.actions:
+            action = ActionMapping.action_mapping.get(act.action)
+            try:
+                params = json.loads(act.params)
+                res_data = action.handle(res_data, **params)
+            except:
+                pass
+
+        continue_paging = self.campaign_type.handle(res_data)
 
         if self.campaign.paging_delay:
             sleep(self.campaign.paging_delay)
 
-        if self.campaign.paging_param and res_data:
-            self.current_page += 1
-            next_page = "%s%s%s" % (self.start_urls[0], self.campaign.paging_param, self.current_page)
-            yield scrapy.Request(next_page, callback=self.parse)
+        if self.campaign.paging_param and res_data and continue_paging:
+            self.paging[origin_url] += 1
+            next_page = "%s%s%s" % (origin_url, self.campaign.paging_param, self.paging[origin_url])
+            yield scrapy.Request(next_page, cb_kwargs={'origin_url': origin_url, 'paging': True}, callback=self.parse)
 
-    def get_item_value(self, response, item):
-        item_value = []
+        elif self.other_urls:
+            url = self.other_urls.pop(0)
+            yield scrapy.Request(url, cb_kwargs={'origin_url': url, 'paging': False}, callback=self.parse)
 
-        if item.xpath.lower().endswith('all_text()'):
-            item.xpath = item.xpath.replace('all_text()', 'text()')
-            p_objects = response.xpath(item.xpath)
-            text_arr = p_objects.extract()
-            item_value = "<p>%s</p>" % "</p><p>".join(txt.strip("\n ") for txt in text_arr if txt.strip("\n "))
-        else:
-            p_objects = response.xpath(item.xpath)
-            for p_obj in p_objects:
-                childrens = item.childrens
-                if not childrens:
-                    item_value = p_obj.extract() or None
-                    continue
-
-                res_item = {}
-                for child_item in childrens:
-                    item_val = self.get_item_value(p_obj, child_item)
-                    if item_val.get(child_item.code):
-                        res_item.update(item_val)
-
-                item_value.append(res_item)
-
+    @staticmethod
+    def get_item_value(response, item):
+        p_object = response.xpath(item.xpath)
+        item_value = p_object.getall() if item.multi else p_object.get()
         if item_value:
-            for act in item.actions:
-                action = ActionMapping.action_mapping.get(act.action)
-                item_value = action.handle(item_value)
-
             return {item.code: item_value}
 
         return {}

@@ -80,7 +80,7 @@ class Novel(models.Model):
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, db_index=True,
                          max_length=250, blank=True, unique=True, null=True)
     url = models.TextField()
-    thumbnail_image = models.CharField(max_length=250, blank=True, null=True)
+    thumbnail_image = models.TextField(blank=True, null=True)
     descriptions = models.TextField(blank=True, null=True)
 
     genres = models.ManyToManyField(Genre, db_table="novel_novel_genres_rel", blank=True)
@@ -99,6 +99,8 @@ class Novel(models.Model):
     view_daily = models.IntegerField(default=0)
     view_monthly = models.IntegerField(default=0)
     view_total = models.IntegerField(default=0)
+
+    latest_chapter_url = models.CharField(max_length=250, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -154,7 +156,7 @@ class NovelChapter(models.Model):
     class Meta:
         db_table = "novel_chapters"
         unique_together = [('name', 'novel'), ('slug', 'novel')]
-        ordering = ['id']
+        ordering = ['-id']
 
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, db_index=True)

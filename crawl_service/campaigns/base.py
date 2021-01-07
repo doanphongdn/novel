@@ -3,9 +3,8 @@ class BaseCrawlCampaignType(object):
     model_class = None
     update_by_fields = []
 
-    def __init__(self, campaign, crawled_data):
+    def __init__(self, campaign):
         self.campaign = campaign
-        self.crawled_data = crawled_data
         self.update_values = {}
         if self.update_by_fields:
             self.update_values = {f: {} for f in self.update_by_fields}
@@ -16,19 +15,22 @@ class BaseCrawlCampaignType(object):
                     if val:
                         value[val] = obj
 
-    def handle_url(self, url):
+    def full_schema_url(self, url):
         if not url.startswith("http"):
             if url.startswith('//'):
                 return "http:%s" % url.rstrip('/')
             elif url.startswith('/'):
-                return "%s%s" % (self.campaign.homepage.strip('/'), url.rstrip('/'))
+                return "%s%s" % (self.campaign.campaign_source.homepage.strip('/'), url.rstrip('/'))
         else:
             return url.rstrip('/')
+
+    def handle(self, crawled_data):
+        return True
 
 
 class BaseAction(object):
     name = "base_action"
 
     @classmethod
-    def handle(cls, obj):
+    def handle(cls, obj, *args, **kwargs):
         pass

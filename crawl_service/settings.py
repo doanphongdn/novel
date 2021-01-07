@@ -160,11 +160,18 @@ LOG_ENABLED = False
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
 
+NOVEL_STATIC_IMAGE_FOLDER = "images/novel"
+NOVEL_STATIC_IMAGE_PATH = os.path.join(STATIC_ROOT, NOVEL_STATIC_IMAGE_FOLDER)
+
+if not os.path.exists(NOVEL_STATIC_IMAGE_PATH):
+    os.makedirs(NOVEL_STATIC_IMAGE_PATH)
+
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': [
             ['Styles', 'Format', 'Font', 'FontSize'],
-            ['Bold', 'Italic', 'Underline', 'StrikeThrough', '-', 'Undo', 'Redo', '-', 'Cut', 'Copy', 'Paste', 'Find',
+            ['Bold', 'Italic', 'Underline', 'StrikeThrough', '-', 'Undo', 'Redo', '-', 'Cut', 'Copy', 'Paste',
+             'Find',
              'Replace', '-', 'Outdent', 'Indent', '-', 'Print'],
             ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
         ],

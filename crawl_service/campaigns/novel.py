@@ -1,8 +1,10 @@
+import os
 import zlib
 
 from rest_framework import serializers
 
 from crawl_service.campaigns.base import BaseCrawlCampaignType
+from crawl_service import utils, settings
 from novel.models import Author, Genre, Status, NovelChapter, Novel
 
 
@@ -23,14 +25,15 @@ class NovelCampaignType(BaseCrawlCampaignType):
     # List keys use to check value duplicate
     update_by_fields = ['name', 'url']
 
-    def handle(self):
-        if not NovelCampaignSchema(data=self.crawled_data).is_valid():
+    def handle(self, crawled_data):
+        if not NovelCampaignSchema(data=crawled_data).is_valid():
             raise Exception("Loi schema")
 
-        values = self.crawled_data.get('novel_block', [])
+        values = crawled_data.get('novel_block', [])
         new_data = []
         no_update_limit = 10
         no_update_count = 0
+
         for item in values:
             exist = False
             for update_field, novel_list in self.update_values.items():
@@ -38,9 +41,9 @@ class NovelCampaignType(BaseCrawlCampaignType):
                 if skey in novel_list.keys():
                     novel = novel_list.get(skey)
                     novel.name = item.get("name")
-                    novel.url = self.handle_url(item.get("url") or "")
+                    novel.url = self.full_schema_url(item.get("url") or "")
 
-                    latest_chapter = item.get('latest_chapter_url')
+                    latest_chapter = self.full_schema_url(item.get('latest_chapter_url') or "")
                     if latest_chapter:
                         novel_chapters = novel.chapters.values_list('url', flat=True)
                         if latest_chapter not in novel_chapters:
@@ -59,10 +62,16 @@ class NovelCampaignType(BaseCrawlCampaignType):
                 pass
 
             if not exist:
+                for url in ['url', 'latest_chapter_url']:
+                    if item.get(url):
+                        item[url] = self.full_schema_url(item[url] or "")
+
                 new_data.append(Novel(**item))
 
         if new_data:
             Novel.objects.bulk_create(new_data, ignore_conflicts=True)
+
+        return True
 
 
 class NovelChapterSerializer(serializers.Serializer):
@@ -72,9 +81,10 @@ class NovelChapterSerializer(serializers.Serializer):
 
 class NovelInfoCampaignSchema(serializers.Serializer):
     url = serializers.CharField()
+    thumbnail_image = serializers.CharField(required=False)
     status = serializers.CharField(required=False)
-    authors = serializers.CharField(required=False)
-    genres = serializers.CharField(required=False)
+    authors = serializers.ListField(required=False)
+    genres = serializers.ListField(required=False)
     descriptions = serializers.CharField(required=False)
     list_chapter = NovelChapterSerializer(many=True, required=False)
 
@@ -84,50 +94,69 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
     model_class = Novel
     update_by_fields = ['url']
 
-    def handle(self):
-        crawled_data = self.crawled_data
+    def handle(self, crawled_data):
         if not NovelInfoCampaignSchema(data=crawled_data).is_valid():
             raise Exception("Loi schema")
 
+        continue_paging = True
         for update_field, novels in self.update_values.items():
             skey = crawled_data.get(update_field)
             if skey in novels.keys():
                 novel = novels.get(skey)
+                update = False
 
-                authors = crawled_data.get("authors") or []
-                if isinstance(authors, str):
-                    authors = [authors]
+                thumbnail_image = crawled_data.get('thumbnail_image')
+                if not novel.thumbnail_image and thumbnail_image:
+                    thumbnail_image = self.full_schema_url(thumbnail_image)
+                    local_image = utils.download_image(thumbnail_image, novel.slug,
+                                                       referer=self.campaign.campaign_source.homepage)
 
-                for author in authors:
-                    author, _ = Author.objects.get_or_create(name=author.title().strip())
+                    novel.thumbnail_image = local_image or thumbnail_image
+                    update = True
 
-                    novel.authors.add(author)
+                if not novel.authors:
+                    authors = crawled_data.get("authors") or []
+                    for author in authors:
+                        author, _ = Author.objects.get_or_create(name=author.title().strip())
+                        novel.authors.add(author)
+                        update = True
 
-                genres = crawled_data.get("genres") or []
-                if isinstance(genres, str):
-                    genres = [genres]
+                if not novel.genres:
+                    genres = crawled_data.get("genres") or []
+                    for genre in genres:
+                        genre, _ = Genre.objects.get_or_create(name=genre.title().strip())
+                        novel.genres.add(genre)
+                        update = True
 
-                for genre in genres:
-                    genre, _ = Genre.objects.get_or_create(name=genre.title().strip())
-                    novel.genres.add(genre)
-
+                chapters = []
                 for chapter in crawled_data.get("list_chapter") or []:
-                    chapter, _ = NovelChapter.objects.get_or_create(name=chapter.get("name"),
-                                                                    url=self.handle_url(chapter.get("chapter_url")),
-                                                                    novel=novel)
+                    chapter_url = self.full_schema_url(chapter.get("chapter_url"))
+                    chapters.append(NovelChapter(novel=novel,
+                                                 name=chapter.get("name"),
+                                                 url=chapter_url))
+                    if chapter_url == novel.latest_chapter_url:
+                        continue_paging = False
+
+                if chapters:
+                    NovelChapter.objects.bulk_create(chapters, ignore_conflicts=True)
+                    update = True
 
                 status = crawled_data.get("status")
-                if status:
+                if status and status != novel.status:
                     status, _ = Status.objects.get_or_create(name=status.title().strip())
                     novel.status = status
+                    update = True
 
                 descriptions = crawled_data.get("descriptions")
-                if descriptions:
+                if not novel.descriptions and descriptions:
                     novel.descriptions = crawled_data.get("descriptions")
+                    update = True
 
-                novel.chapter_updated = True
-                novel.save()
-                break
+                if update:
+                    novel.chapter_updated = True
+                    novel.save()
+
+        return continue_paging
 
 
 class NovelChapterCampaignSchema(serializers.Serializer):
@@ -140,8 +169,7 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
     model_class = NovelChapter
     update_by_fields = ['url']
 
-    def handle(self):
-        crawled_data = self.crawled_data
+    def handle(self, crawled_data):
         if not NovelChapterCampaignSchema(data=crawled_data).is_valid():
             raise Exception("Loi schema")
 

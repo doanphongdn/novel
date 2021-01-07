@@ -15,7 +15,6 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         campaigns = CrawlCampaign.objects.filter(active=True, status='stopped').all()
         while True:
-
             process = CrawlerProcess(get_project_settings())
             campaigns_update = []
             for cam in campaigns:
@@ -27,11 +26,6 @@ class Command(BaseCommand):
                     campaigns_update.append(cam)
 
             process.start()  # the script will block here until all crawling jobs are finished
-
-            # for cam in campaigns_update:
-            #     cam.last_run = datetime.now()
-            #     cam.status = 'stopped'
-            #     cam.save()
 
             content_update = NovelChapter.objects.filter(content_updated=False).aggregate(Max('id'))
             if not content_update.get('id__max') or content_update.get('id__max') == 0:

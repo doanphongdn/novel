@@ -191,8 +191,8 @@ PIPELINE = {
 }
 
 LOG_ENABLED = os.environ.get('SCRAPY_LOG_ENABLED', 'false').lower() == 'true'
-LOG_LEVEL = 'WARNING'
-LOG_FILE = '/var/log/uwsgi/logfile.log'
+LOG_LEVEL = os.environ.get('SCRAPY_LOG_LEVEL', 'WARNING')
+LOG_FILE = os.environ.get('SCRAPY_LOG_FILE')
 
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'

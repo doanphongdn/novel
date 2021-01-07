@@ -2,9 +2,10 @@ from datetime import datetime
 
 from django.core.management.base import BaseCommand
 from scrapy.crawler import CrawlerProcess
+from scrapy.utils.project import get_project_settings
 
 from crawl_service.campaigns.scrapy_spider import NovelSpider
-from crawl_service.models import CrawlCampaign, CAMPAIGN_STATUS
+from crawl_service.models import CrawlCampaign
 
 
 class Command(BaseCommand):
@@ -12,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         campaigns = CrawlCampaign.objects.filter(active=True, status='stopped').all()
 
-        process = CrawlerProcess()
+        process = CrawlerProcess(get_project_settings())
         campaigns_update = []
         for cam in campaigns:
             run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time

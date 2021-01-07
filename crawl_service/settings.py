@@ -190,9 +190,9 @@ PIPELINE = {
     'STYLESHEETS': PIPELINE_STYLESHEETS.get(os.environ.get('APP_NAME'))
 }
 
-SCRAPY_LOG_ENABLED = os.environ.get('SCRAPY_LOG_ENABLED', 'false').lower() == 'true'
-SCRAPY_LOG_LEVEL = os.environ.get('SCRAPY_LOG_LEVEL', 'WARNING')
-SCRAPY_LOG_FILE = os.environ.get('SCRAPY_LOG_FILE')
+LOG_ENABLED = os.environ.get('LOG_ENABLED', 'false').lower() == 'true'
+LOG_LEVEL = os.environ.get('LOG_LEVEL', 'WARNING')
+LOG_FILE = os.environ.get('LOG_FILE')
 
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'

@@ -13,12 +13,13 @@ class NovelSpider(scrapy.Spider):
         self.campaign = campaign
         self.start_urls = [campaign.target_url]
         self.other_urls = []
-        self.prefetch_by = None
+        self.prefetch_by_data = None
+
         if not campaign.target_direct:
             res = requests.get(campaign.target_url, timeout=30)
             if res.status_code == 200:
                 data = res.json()
-                self.prefetch_by = {"url": [d for d in data]}
+                self.prefetch_by_data = {"url": [d for d in data]}
 
                 if data and self.campaign.run_synchonize:
                     self.start_urls = data
@@ -27,7 +28,7 @@ class NovelSpider(scrapy.Spider):
                     self.other_urls = data or []
 
         campaign_mapping = CampaignMapping.type_mapping.get(self.campaign.campaign_type)
-        self.campaign_type = campaign_mapping(self.campaign)
+        self.campaign_type = campaign_mapping(self.campaign, self.prefetch_by_data)
         self.paging = {}
 
         super().__init__(name=campaign.name, **kwargs)
@@ -51,7 +52,7 @@ class NovelSpider(scrapy.Spider):
             except:
                 pass
 
-        continue_paging = self.campaign_type.handle(res_data, self.prefetch_by)
+        continue_paging = self.campaign_type.handle(res_data)
 
         if self.campaign.paging_delay:
             sleep(self.campaign.paging_delay)

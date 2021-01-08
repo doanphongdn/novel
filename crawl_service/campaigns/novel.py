@@ -24,7 +24,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
     # List keys use to check value duplicate
     update_by_fields = ['name', 'url']
 
-    def handle(self, crawled_data, prefetch_by=None):
+    def handle(self, crawled_data):
         if not NovelCampaignSchema(data=crawled_data).is_valid():
             raise Exception("Loi schema")
 
@@ -87,18 +87,16 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
     model_class = Novel
     update_by_fields = ['url']
 
-    def handle(self, crawled_data, prefetch_by=None):
+    def handle(self, crawled_data):
         if not NovelInfoCampaignSchema(data=crawled_data).is_valid():
             raise Exception("Loi schema")
 
-        exists_data = {}
-        if prefetch_by:
-            exist = self.model_class.objects.filter(self.build_condition_or(prefetch_by))
-            exists_data = {chap.url: chap for chap in exist}
-
         continue_paging = True
-        novel = exists_data.get(crawled_data.get("url"))
-        if novel:
+        for field in self.update_by_fields:
+            novel = self.update_values.get(field, {}).get(crawled_data.get(field))
+            if not novel:
+                continue
+
             update = False
 
             thumbnail_image = crawled_data.get('thumbnail_image')
@@ -165,20 +163,20 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
     model_class = NovelChapter
     update_by_fields = ['url']
 
-    def handle(self, crawled_data, prefetch_by=None):
+    def handle(self, crawled_data):
         if not NovelChapterCampaignSchema(data=crawled_data).is_valid():
             raise Exception("Loi schema")
 
-        exists_data = {}
-        if prefetch_by:
-            exist = self.model_class.objects.filter(self.build_condition_or(prefetch_by))
-            exists_data = {chap.url: chap for chap in exist}
+        for field in self.update_by_fields:
+            chapter = self.update_values.get(field, {}).get(crawled_data.get(field))
+            if not chapter:
+                continue
 
-        chapter = exists_data.get(crawled_data.get("url"))
-        if chapter:
             chapter_content = crawled_data.get("content")
             if chapter_content:
                 compressed = zlib.compress(chapter_content.encode())
                 chapter.binary_content = compressed
                 chapter.content_updated = True
                 chapter.save()
+
+        return True

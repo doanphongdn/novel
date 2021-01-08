@@ -9,17 +9,20 @@ class BaseCrawlCampaignType(object):
     model_class = None
     update_by_fields = []
 
-    def __init__(self, campaign):
+    def __init__(self, campaign, prefetch_by_data=None):
         self.campaign = campaign
-        # self.update_values = {}
-        # if self.update_by_fields:
-        #     self.update_values = {f: {} for f in self.update_by_fields}
-        #     objects = self.model_class.objects.all()
-        #     for obj in objects:
-        #         for key, value in self.update_values.items():
-        #             val = getattr(obj, key, None)
-        #             if val:
-        #                 value[val] = obj
+        self.update_values = {}
+        if prefetch_by_data and self.update_by_fields:
+            exists_data = self.model_class.objects.filter(self.build_condition_or(prefetch_by_data))
+
+            self.update_values = {f: {} for f in self.update_by_fields}
+            for obj in exists_data:
+                for key, value in self.update_values.items():
+                    val = getattr(obj, key, None)
+                    if val:
+                        value[val] = obj
+
+        pass
 
     def build_condition_or(self, item):
         return reduce(or_, (Q(**{field + "__in": item.get(field)}) for field in self.update_by_fields))

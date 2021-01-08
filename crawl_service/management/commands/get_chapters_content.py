@@ -26,7 +26,7 @@ class Command(BaseCommand):
                 cam.save()
                 # campaigns_update.append(cam)
 
-            process.start(stop_after_crawl=False)  # the script will block here until all crawling jobs are finished
+            process.start()  # the script will block here until all crawling jobs are finished
 
             content_update = NovelChapter.objects.filter(content_updated=False).aggregate(Max('id'))
             if not content_update.get('id__max') or content_update.get('id__max') == 0:

@@ -1,4 +1,4 @@
-from datetime import datetime
+import time
 
 from django.core.management.base import BaseCommand
 from django.db.models import Max
@@ -16,8 +16,8 @@ class Command(BaseCommand):
         campaigns = CrawlCampaign.objects.filter(active=True, status='stopped').all()
 
         while True:
+            time.sleep(1)
             process = CrawlerProcess(get_project_settings())
-            campaigns_update = []
             for cam in campaigns:
                 # run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time
                 # if run_able:
@@ -26,7 +26,7 @@ class Command(BaseCommand):
                 cam.save()
                 # campaigns_update.append(cam)
 
-            process.start()  # the script will block here until all crawling jobs are finished
+            process.start(stop_after_crawl=False)  # the script will block here until all crawling jobs are finished
 
             content_update = NovelChapter.objects.filter(content_updated=False).aggregate(Max('id'))
             if not content_update.get('id__max') or content_update.get('id__max') == 0:

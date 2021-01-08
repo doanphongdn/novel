@@ -87,12 +87,17 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
     model_class = Novel
     update_by_fields = ['url']
 
-    def handle(self, crawled_data):
+    def handle(self, crawled_data, prefetch_by=None):
         if not NovelInfoCampaignSchema(data=crawled_data).is_valid():
             raise Exception("Loi schema")
 
+        exists_data = {}
+        if prefetch_by:
+            exist = self.model_class.objects.filter(self.build_condition_or(prefetch_by))
+            exists_data = {chap.url: chap for chap in exist}
+
         continue_paging = True
-        novel = self.model_class.objects.filter(self.build_condition_or(crawled_data)).first()
+        novel = exists_data.get(crawled_data.get("url"))
         if novel:
             update = False
 
@@ -158,13 +163,18 @@ class NovelChapterCampaignSchema(serializers.Serializer):
 class NovelChapterCampaignType(BaseCrawlCampaignType):
     name = 'NOVEL_CHAPTER'
     model_class = NovelChapter
-    update_by_fields = ['url', 'name']
+    update_by_fields = ['url']
 
-    def handle(self, crawled_data):
+    def handle(self, crawled_data, prefetch_by=None):
         if not NovelChapterCampaignSchema(data=crawled_data).is_valid():
             raise Exception("Loi schema")
 
-        chapter = self.model_class.objects.filter(self.build_condition_or(crawled_data)).first()
+        exists_data = {}
+        if prefetch_by:
+            exist = self.model_class.objects.filter(self.build_condition_or(prefetch_by))
+            exists_data = {chap.url: chap for chap in exist}
+
+        chapter = exists_data.get(crawled_data.get("url"))
         if chapter:
             chapter_content = crawled_data.get("content")
             if chapter_content:

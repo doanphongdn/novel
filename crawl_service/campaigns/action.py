@@ -1,3 +1,6 @@
+from html2text import HTML2Text
+from mistletoe import markdown
+
 from crawl_service.campaigns.base import BaseAction
 
 
@@ -23,11 +26,32 @@ class FormatChapterContent(BaseAction):
     def handle(cls, obj, *args, **kwargs):
         super().handle(obj, *args, **kwargs)
         fields = kwargs.get("fields") or []
+        replaces = kwargs.get("replaces") or []
+
         for f in fields:
             data = obj.get(f)
             if isinstance(data, list):
-                data = "<p>%s</p>" % "</p><p>".join(txt.strip("\n ") for txt in data if txt.strip("\n "))
-                obj[f] = data
+                # Get full html
+                full_html = "".join(data)
+
+                # Convert to markdown
+                htmlobj = HTML2Text()
+                htmlobj.ignore_links = True
+                htmlobj.ignore_images = True
+                htmlobj.skip_internal_links = True
+                htmlobj.ignore_emphasis = True
+                htmlobj.body_width = 500
+
+                md = htmlobj.handle(full_html)
+                for rep in replaces:
+                    if isinstance(rep, list) and len(rep) >= 2:
+                        md = md.replace(rep[0], rep[1])
+
+                # Remove duplicate breakline
+                md = "<p>%s</p>" % "</p><p>".join(txt.strip() for txt in md.split("\n") if txt.strip())
+
+                # Final html
+                obj[f] = markdown(md)
 
         return obj
 

@@ -9,15 +9,17 @@ from crawl_service.models import CrawlCampaign
 
 
 class NovelSpider(scrapy.Spider):
-
     def __init__(self, campaign: CrawlCampaign, **kwargs):
         self.campaign = campaign
         self.start_urls = [campaign.target_url]
         self.other_urls = []
+        self.prefetch_by = None
         if not campaign.target_direct:
             res = requests.get(campaign.target_url, timeout=30)
             if res.status_code == 200:
                 data = res.json()
+                self.prefetch_by = {"url": [d for d in data]}
+
                 if data and self.campaign.run_synchonize:
                     self.start_urls = data
                 elif data:
@@ -49,7 +51,7 @@ class NovelSpider(scrapy.Spider):
             except:
                 pass
 
-        continue_paging = self.campaign_type.handle(res_data)
+        continue_paging = self.campaign_type.handle(res_data, self.prefetch_by)
 
         if self.campaign.paging_delay:
             sleep(self.campaign.paging_delay)

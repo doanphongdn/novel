@@ -22,7 +22,7 @@ class BaseCrawlCampaignType(object):
         #                 value[val] = obj
 
     def build_condition_or(self, item):
-        return reduce(or_, (Q(**{field: item.get(field)}) for field in self.update_by_fields))
+        return reduce(or_, (Q(**{field + "__in": item.get(field)}) for field in self.update_by_fields))
 
     def full_schema_url(self, url):
         if not url.startswith("http"):

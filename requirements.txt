@@ -1,5 +1,5 @@
 python-dotenv~=0.15.0
-django~=3.1.4
+django~=3.1.5
 scrapy~=2.4.1
 dictsearch~=3.2.0
 redis~=3.5.3
@@ -14,3 +14,5 @@ psycopg2~=2.8.6
 requests~=2.25.1
 django-pipeline~=2.0.5
 libsass~=0.20.1
+mistletoe~=0.7.2
+html2text~=2020.1.16

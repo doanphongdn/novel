@@ -13,5 +13,5 @@ class APIViewNovelUpdateList(APIView):
 class APIViewNovelChapterUpdateList(APIView):
     def get(self, request, *args, **kwargs):
         update_list = NovelChapter.objects.filter(content_updated=False).values_list('url', flat=True). \
-            order_by("novel").order_by("-id")[0:10000]
+                          order_by("novel").order_by("-id")[0:5000]
         return Response(update_list, status=200)

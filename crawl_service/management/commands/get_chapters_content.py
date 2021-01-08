@@ -16,7 +16,6 @@ class Command(BaseCommand):
         campaigns = CrawlCampaign.objects.filter(active=True, status='stopped').all()
 
         while True:
-            time.sleep(1)
             process = CrawlerProcess(get_project_settings())
             for cam in campaigns:
                 # run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time

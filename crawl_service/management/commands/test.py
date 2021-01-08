@@ -18,10 +18,10 @@ class Command(BaseCommand):
         for cam in campaigns:
             run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time
             if run_able:
-                process.crawl(NovelSpider, campaign=cam)
                 cam.status = 'running'
                 cam.save()
                 campaigns_update.append(cam)
+                process.crawl(NovelSpider, campaign=cam)
 
         process.start()  # the script will block here until all crawling jobs are finished
 

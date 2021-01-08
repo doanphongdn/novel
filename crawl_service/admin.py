@@ -42,7 +42,7 @@ class CrawlItemActionInlineAdmin(admin.TabularInline):
 @admin.register(CrawlCampaign)
 class CrawlCampaignAdmin(admin.ModelAdmin):
     list_display = ("name", "campaign_source", "campaign_type", "target_url", "active")
-    readonly_fields = ("status",)
+    # readonly_fields = ("status",)
     inlines = [
         CrawlItemInlineAdmin,
         CrawlItemActionInlineAdmin,

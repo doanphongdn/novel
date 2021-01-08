@@ -24,7 +24,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
     # List keys use to check value duplicate
     update_by_fields = ['name', 'url']
 
-    def handle(self, crawled_data):
+    def handle(self, crawled_data, prefetch_by=None):
         if not NovelCampaignSchema(data=crawled_data).is_valid():
             raise Exception("Loi schema")
 

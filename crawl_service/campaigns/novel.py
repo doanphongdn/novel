@@ -34,7 +34,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
         no_update_count = 0
 
         for item in values:
-            novel = self.model_class.objects.filter(self.build_condition_or(item))
+            novel = self.model_class.objects.filter(self.build_condition_or(item)).first()
             if novel:
                 novel.name = item.get("name")
                 novel.url = self.full_schema_url(item.get("url") or "")
@@ -92,7 +92,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
             raise Exception("Loi schema")
 
         continue_paging = True
-        novel = self.model_class.objects.filter(self.build_condition_or(crawled_data))
+        novel = self.model_class.objects.filter(self.build_condition_or(crawled_data)).first()
         if novel:
             update = False
 
@@ -164,7 +164,7 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
         if not NovelChapterCampaignSchema(data=crawled_data).is_valid():
             raise Exception("Loi schema")
 
-        chapter = self.model_class.objects.filter(self.build_condition_or(crawled_data))
+        chapter = self.model_class.objects.filter(self.build_condition_or(crawled_data)).first()
         if chapter:
             chapter_content = crawled_data.get("content")
             if chapter_content:

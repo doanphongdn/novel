@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.urls import reverse
 
 from novel.models import Novel
 from novel.views.base import NovelBaseView
@@ -17,6 +18,7 @@ class NovelIndexView(NovelBaseView):
             "novels": list_novel,
             "title": "LATEST UPDATE",
             "icon": "far fa-calendar-check",
+            "view_all_url": reverse("novel_all", kwargs={"type": "latest-update"}),
         }
         novel_grid = NovelListTemplateInclude(**include_data)
 
@@ -24,6 +26,7 @@ class NovelIndexView(NovelBaseView):
             "title": "HOT NOVELS",
             "icon": "fab fa-hotjar",
             "item_type": "list",
+            "view_all_url": reverse("novel_all", kwargs={"type": "hot"}),
         })
         novel_list = NovelListTemplateInclude(**include_data)
 

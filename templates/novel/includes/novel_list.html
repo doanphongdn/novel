@@ -14,11 +14,11 @@
                 {{ title }}
             </label>
             <div class="widget-actions">
-                {% if novels.has_next and show_view_all %}
-                    <span class="widget-view-all">View all</span>
+                {% if novels.has_next and view_all_url %}
+                    <span class="widget-view-all"><a href="{{ view_all_url }}">View all >></a></span>
                 {% endif %}
                 {% if show_button_type %}
-                    <span class="widget-view-list"><i class="fas fa-list"></i></span>
+                    <span class="widget-view-list"><i class="fas fa-list-ul"></i></span>
                     <span class="widget-view-grid"><i class="fas fa-th"></i></span>
                 {% endif %}
             </div>

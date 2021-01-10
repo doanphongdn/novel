@@ -15,7 +15,7 @@ class NovelView(NovelBaseView):
 
         page = request.GET.get('page') or 1
         content_type = request.GET.get('type') or 'latest-update'
-        view_type = request.GET.get('view') or 'list'
+        view_type = request.GET.get('view') or 'grid'
 
         order_by = self.content_type_mapping.get(content_type)
         novels = Novel.get_available_novel()

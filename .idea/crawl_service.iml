@@ -19,7 +19,7 @@
       <excludeFolder url="file://$MODULE_DIR$/static_debug" />
       <excludeFolder url="file://$MODULE_DIR$/static_files_tmpl" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.8 (crawl_service)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="upCloud@Truyenhayho.net" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="all" level="application" />
   </component>

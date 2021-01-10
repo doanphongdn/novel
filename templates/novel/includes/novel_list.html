@@ -1,41 +1,61 @@
 {% load static %}
-{% if widget %}
+{% if item_type == 'list' %}
     <div class="novel-list">
-        <div class="row">
-            <div class="col-12">
-                <div class="novel-list-title">
-                    <label>
-                        {% if widget.fa_icon %}
-                            <i class="{{ widget.fa_icon }}"></i>
-                        {% endif %}
-                        {{ widget.title }}
-                    </label>
-                    {% if widget.novels.has_next %}
-                        <span><a href="/novel?view=list&type=latest_update">View all</a></span>
-                    {% endif %}
-                </div>
+{% else %}
+    <div class="novel-grid">
+{% endif %}
+<div class="row">
+    <div class="col-12">
+        <div class="widget-title">
+            <label>
+                {% if icon %}
+                    <i class="{{ icon }}"></i>
+                {% endif %}
+                {{ title }}
+            </label>
+            <div class="widget-actions">
+                {% if novels.has_next and show_view_all %}
+                    <span class="widget-view-all">View all</span>
+                {% endif %}
+                {% if show_button_type %}
+                    <span class="widget-view-list"><i class="fas fa-list"></i></span>
+                    <span class="widget-view-grid"><i class="fas fa-th"></i></span>
+                {% endif %}
             </div>
         </div>
-        {% for novel in widget.novels %}
-            <div class="row novel-item">
-                <div class="col-12">
-                    <div class="novel-wrap">
-                        <div class="novel-thumbnail-image">
-                            <a href="{{ novel.get_absolute_url }}">
-                                <img src="{{ novel.thumbnail_image }}" alt="{{ novel.name }}">
-                            </a>
-                        </div>
-                        <div class="novel-name">
-                            <a href="{{ novel.get_absolute_url }}"><h6>{{ novel.name }}</h6></a>
-                        </div>
-                        <div class="novel-chapter">
-                            <a href="{{ novel.chapters.0.get_absolute_url }}">{{ novel.chapters.0.name }}</a>
-                            <div class="chapter-updated-time">{{ novel.chapters.0.created_at_str }}</div>
-                        </div>
-                        <div class="novel-authors">{{ novel.authors_name }}</div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
     </div>
-{% endif %}
+</div>
+<div class="row">
+    {% for novel in novels %}
+        {% if item_type == 'list' %}
+            <div class="col-12 novel-item form-group">
+        {% else %}
+            <div class="col-4 col-md-3 col-lg-2 novel-item form-group">
+        {% endif %}
+    <div class="novel-wrap">
+        <div class="novel-thumbnail-image">
+            <a href="{{ novel.get_absolute_url }}">
+                <img src="{{ novel.thumbnail_image }}" alt="{{ novel.name }}">
+            </a>
+        </div>
+        <div class="novel-name">
+            <h5><a href="{{ novel.get_absolute_url }}">{{ novel.name }}</a></h5>
+        </div>
+        <div class="novel-chapter">
+            <h6><a href="{{ novel.chapters.0.get_absolute_url }}">{{ novel.chapters.0.name }}</a></h6>
+            {% if item_type == 'list' %}
+                <div class="updated-time">
+                    <i class="far fa-clock"></i> {{ novel.chapters.0.created_at_str }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    </div>
+    {% endfor %}
+    </div>
+</div>
+<div class="row">
+    {{ pagination_html }}
+</div>
+
+

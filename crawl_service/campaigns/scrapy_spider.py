@@ -35,10 +35,7 @@ class NovelSpider(scrapy.Spider):
 
     def parse(self, response, **kwargs):
         paging = kwargs.get('paging') or False
-        redirect_url = response.url.rstrip('/')
-        if response.meta and response.meta.get('redirect_urls'):
-            redirect_url = response.meta.get('redirect_urls')[0]
-        origin_url = kwargs.get('origin_url') if paging else redirect_url
+        origin_url = kwargs.get('origin_url') if paging else response.url.rstrip('/')
         if not paging:
             self.paging[origin_url] = 1
 

@@ -2,7 +2,7 @@ from django.core.paginator import Paginator
 
 from novel.models import Novel
 from novel.views.base import NovelBaseView
-from novel.widgets.novel_grid import NovelGridWidget
+from novel.views.includes.novel_list import NovelListTemplateInclude
 
 
 class NovelIndexView(NovelBaseView):
@@ -11,19 +11,25 @@ class NovelIndexView(NovelBaseView):
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 
-        page = request.GET.get('page') or 1
         list_novel = Novel.get_available_novel().all()
-        paginated = Paginator(list_novel, 12)
-        try:
-            paginated_data = paginated.page(page)
-        except:
-            paginated_data = None
 
-        novel_grid = NovelGridWidget(novels=paginated_data, title="LATEST UPDATE", fa_icon="far fa-calendar-check")
-        novel_list = NovelGridWidget(novels=paginated_data, title="HOT NOVEL", fa_icon="fab fa-hotjar")
+        include_data = {
+            "novels": list_novel,
+            "title": "LATEST UPDATE",
+            "icon": "far fa-calendar-check",
+        }
+        novel_grid = NovelListTemplateInclude(**include_data)
+
+        include_data.update({
+            "title": "HOT NOVELS",
+            "icon": "fab fa-hotjar",
+            "item_type": "list",
+        })
+        novel_list = NovelListTemplateInclude(**include_data)
+
         response.context_data.update({
-            'novel_grid': novel_grid,
-            'novel_list': novel_list,
+            'novel_grid_html': novel_grid.render_html(),
+            'novel_list_html': novel_list.render_html(),
         })
 
         return response

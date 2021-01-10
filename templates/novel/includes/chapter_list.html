@@ -1,31 +1,29 @@
 {% load static %}
-{% if widget %}
-    <div class="chapter-list">
-        <div class="row">
-            <div class="col-12">
-                <div class="chapter-list-title">
-                    <label>
-                        {% if widget.fa_icon %}
-                            <i class="{{ widget.fa_icon }}"></i>
-                        {% endif %}
-                        {{ widget.title }}
-                    </label>
-                </div>
+<div class="chapter-list">
+    <div class="row">
+        <div class="col-12">
+            <div class="widget-title">
+                <label>
+                    {% if icon %}
+                        <i class="{{ icon }}"></i>
+                    {% endif %}
+                    {{ title }}
+                </label>
             </div>
         </div>
-        <div class="row chapter-list-item">
-            {% for chapter in widget.chapters %}
-                <div class="col-12 col-md-6">
-                    <div class="chapter-wrap">
-                        <div class="chapter-name">
-                            <h6><a href="{{ chapter.get_absolute_url }}">{{ chapter.name }}</a></h6>
-                        </div>
+    </div>
+    <div class="row chapter-list-item">
+        {% for chapter in chapters %}
+            <div class="col-12 col-md-6">
+                <div class="chapter-wrap">
+                    <div class="chapter-name">
+                        <h6><a href="{{ chapter.get_absolute_url }}">{{ chapter.name }}</a></h6>
                     </div>
                 </div>
-            {% endfor %}
-        </div>
-        <div class="row">
-            {% include "novel/widgets/pagination.html" with paginated_data=widget.chapters page_label='chapter-page' %}
-        </div>
+            </div>
+        {% endfor %}
     </div>
-{% endif %}
+    <div class="row">
+        {{ pagination_html }}
+    </div>
+</div>

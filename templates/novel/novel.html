@@ -3,12 +3,22 @@
 {% block stylesheet %}
 {% endblock %}
 {% block content %}
-    <div class="row">
+    <div class="row novel-bg">
         <div class="container">
-            {% include "novel/includes/novel_grid.html" with widget=novels %}
+            <div class="col-12 widget-breadcrumb">
+                <div class="row">
+                    {{ breadcrumb_html }}
+                </div>
+            </div>
         </div>
+        {{ novel_info_html }}
     </div>
     <div class="row">
-        <div class="container">{% include "novel/widgets/pagination.html" with paginated_data=novels.novels page_label="page" %}</div>
+        <div class="container">
+            {{ chapter_list_html }}
+        </div>
+        <div class="container">
+            {{ related_html }}
+        </div>
     </div>
 {% endblock %}

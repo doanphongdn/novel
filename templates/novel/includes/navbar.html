@@ -4,9 +4,9 @@
                 aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        {% if widget.logo %}
+        {% if logo %}
             <a class="navbar-brand" href="/">
-                <img src="{{ widget.logo }}" alt="{{ widget.title }}">
+                <img src="{{ logo }}" alt="{{ title }}">
             </a>
         {% endif %}
         <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -20,9 +20,9 @@
             <div class="navbar-collapse-header">
                 <div class="row">
                     <div class="col-6 collapse-brand">
-                        {% if widget.logo %}
+                        {% if logo %}
                             <a href="/">
-                                <img src="{{ widget.logo }}" alt="{{ widget.title }}">
+                                <img src="{{ logo }}" alt="{{ title }}">
                             </a>
                         {% endif %}
                     </div>
@@ -37,7 +37,7 @@
             </div>
 
             <ul class="navbar-nav ml-auto">
-                {% for menu in widget.menus %}
+                {% for menu in menus %}
                     <li class="nav-item">
                         <a class="nav-link nav-link-icon" href="{{ menu.url }}">
                             <i class="{{ menu.fa_icon }}"></i>

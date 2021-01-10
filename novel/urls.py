@@ -21,8 +21,8 @@ from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateLis
 from novel.sitemap import NovelSitemap, StaticViewSitemap
 from novel.views.chapter import ChapterView
 from novel.views.index import NovelIndexView
-from novel.views.novel import NovelView
-from novel.views.novel_detail import NovelDetailView
+from novel.views.novel_all import NovelView
+from novel.views.novel import NovelDetailView
 
 sitemaps = {
     'novels': NovelSitemap,
@@ -40,6 +40,6 @@ urlpatterns = [
     path('', NovelIndexView.as_view(), name="home"),
     path('novel/search', NovelDetailView.as_view()),
     path('novel', NovelView.as_view(), name="novel_view"),
-    path('novel/<str:slug>', NovelDetailView.as_view(), name="novel"),
-    path('novel/<str:slug>/<str:chapter_slug>', ChapterView.as_view(), name="chapter"),
+    path('<str:slug>', NovelDetailView.as_view(), name="novel"),
+    path('<str:slug>/<str:chapter_slug>', ChapterView.as_view(), name="chapter"),
 ]

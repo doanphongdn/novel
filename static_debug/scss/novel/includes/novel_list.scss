@@ -1,0 +1,168 @@
+@import "../../commons/novel_include_title";
+
+.novel-grid {
+  > div + div {
+    padding-right: 15px !important;
+  }
+
+  .novel-item {
+    padding-right: 0 !important;
+
+    .novel-wrap {
+      padding: 2px;
+
+      .novel-thumbnail-image {
+        overflow: hidden;
+        padding: 5px;
+        box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02);
+
+        img {
+          width: 100%;
+          height: auto;
+        }
+      }
+
+      .novel-name, .novel-chapter {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        margin: 5px;
+      }
+
+      .novel-name {
+        -webkit-line-clamp: 2;
+
+        h5 {
+          max-height: 40px;
+          font-weight: 600;
+          font-size: .9rem;
+          line-height: 20px;
+        }
+      }
+
+      .novel-chapter {
+        -webkit-line-clamp: 1;
+
+        h6 {
+          max-height: 36px;
+          line-height: 18px;
+          font-size: .8rem;
+        }
+      }
+    }
+  }
+}
+
+.novel-list {
+  .novel-item {
+    .novel-wrap {
+      .novel-thumbnail-image {
+        margin-right: 10px;
+        width: 50px;
+        height: 100%;
+        float: left;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .novel-name, .novel-chapter {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        margin: 5px;
+      }
+
+      .novel-name {
+        width: calc(40% - 60px);
+        float: left;
+
+        h5 {
+          max-height: 40px;
+          font-weight: 600;
+          font-size: .9rem;
+          line-height: 20px;
+        }
+      }
+
+      .novel-chapter, .novel-authors {
+        width: 30%;
+        float: left;
+      }
+
+      .novel-chapter {
+        h6, .updated-time {
+          max-height: 40px;
+          line-height: 20px;
+          font-size: .9rem;
+        }
+
+        .updated-time {
+          font-size: .8rem;
+        }
+      }
+    }
+  }
+}
+
+/* Small Devices, Tablets */
+@media (max-width: 768px) {
+
+  .novel-list {
+    .novel-item {
+      .novel-wrap {
+        .novel-thumbnail-image {
+          width: 60px;
+        }
+
+        .novel-authors {
+          display: none;
+        }
+
+        .novel-name, .novel-chapter {
+          width: calc(50% - 45px);
+        }
+
+        .novel-chapter {
+          h6 {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Small Devices, Tablets */
+@media (max-width: 600px) {
+
+  .novel-list {
+    .novel-item {
+      .novel-wrap {
+        .novel-thumbnail-image {
+          width: 60px;
+        }
+
+        .novel-name, .novel-chapter, .novel-authors {
+          width: calc(100% - 80px);
+        }
+
+        .novel-chapter {
+          h6 {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+

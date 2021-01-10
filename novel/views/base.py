@@ -1,9 +1,8 @@
-import os
-
 from django.templatetags.static import static
 from django.views.generic import TemplateView
 
-from novel.widgets.navbar import NovelNavBarWidget
+from novel.views.includes.footer import FooterTemplateInclude
+from novel.views.includes.navbar import NavBarTemplateInclude
 
 
 class NovelBaseView(TemplateView):
@@ -16,9 +15,10 @@ class NovelBaseView(TemplateView):
                 "fa_icon": "fa fa-facebook-square",
             }
         ]
-        navbar = NovelNavBarWidget(menus=menu, title="Novel", logo=static('images/logo.png'))
-        kwargs["navbar"] = navbar
-        return super().get(request, *args, **kwargs)
+        navbar = NavBarTemplateInclude(menus=menu, title="Novel", logo=static('images/logo.png'))
+        footer = FooterTemplateInclude()
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        kwargs["navbar_html"] = navbar.render_html()
+        kwargs["footer_html"] = footer.render_html()
+
+        return super().get(request, *args, **kwargs)

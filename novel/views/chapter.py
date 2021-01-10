@@ -1,10 +1,8 @@
-from django.core.paginator import Paginator
-from django.http import JsonResponse
-
 from novel.models import Novel, NovelChapter
 from novel.views.base import NovelBaseView
-from novel.widgets.chapter_list import ChapterListWidget
-from novel.widgets.novel_grid import NovelGridWidget
+from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
+from novel.views.includes.chapter_content import ChapterContentTemplateInclude
+from novel.views.includes.novel_info import NovelInfoTemplateInclude
 
 
 class ChapterView(NovelBaseView):
@@ -32,9 +30,12 @@ class ChapterView(NovelBaseView):
                 }
             ]
 
+        breadcrumb = BreadCrumbTemplateInclude(data=breadcrumb_data)
+        chapter_content = ChapterContentTemplateInclude(chapter=chapter)
+
         response.context_data.update({
-            'chapter': chapter,
-            'breadcrumb_data': breadcrumb_data,
+            'chapter_content_html': chapter_content.render_html(),
+            'breadcrumb_html': breadcrumb.render_html(),
         })
 
         return response

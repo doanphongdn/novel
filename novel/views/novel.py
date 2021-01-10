@@ -3,47 +3,76 @@ from django.http import JsonResponse
 
 from novel.models import Novel
 from novel.views.base import NovelBaseView
-from novel.widgets.chapter_list import ChapterListWidget
-from novel.widgets.novel_grid import NovelGridWidget
-from novel.widgets.novel_list import NovelListWidget
+from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
+from novel.views.includes.chapter_list import ChapterListTemplateInclude
+from novel.views.includes.novel_info import NovelInfoTemplateInclude
+from novel.views.includes.novel_list import NovelListTemplateInclude
 
 
-class NovelView(NovelBaseView):
+class NovelDetailView(NovelBaseView):
     template_name = "novel/novel.html"
-    content_type_mapping = {
-        'latest_update': '-created_at',
-    }
+
+    def post(self, request, *args, **kwargs):
+        search = request.POST.get('q', "")
+        if len(search) >= 3:
+            novels = Novel.get_available_novel().filter(name__icontains=search)
+            res_data = []
+            for novel in novels:
+                res_data.append({
+                    "thumbnail_image": novel.thumbnail_image,
+                    "name": novel.name,
+                    "latest_chapter_name": novel.chapters and novel.chapters[0].name or "",
+                    "url": novel.get_absolute_url(),
+                })
+
+            return JsonResponse({"data": res_data})
+
+        return JsonResponse({"data": []})
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 
-        page = request.GET.get('page') or 1
-        content_type = request.GET.get('type') or 'latest_update'
-        view_type = request.GET.get('view') or 'list'
+        chapter_page = request.GET.get('chapter-page') or 1
+        slug = kwargs.get('slug')
 
-        order_by = self.content_type_mapping.get(content_type)
-        novels = Novel.get_available_novel()
+        novel = Novel.objects.filter(slug=slug).first()
 
-        if order_by:
-            novels = novels.order_by(order_by)
+        chapters = None
+        breadcrumb_data = []
+        if novel:
+            chapters = novel.chapters.all()
 
-        novels = novels.all()
+            breadcrumb_data = [{
+                "name": novel.name,
+                "url": novel.get_absolute_url(),
+            }]
 
-        if novels:
-            novels = Paginator(novels, 30)
-            try:
-                novels = novels.page(page)
-            except:
-                pass
+        list_novel = Novel.get_available_novel().all()
 
-        params = {
-            'novels': novels, 'title': "LATEST NOVEL", 'fa_icon': "far fa-calendar-check",
+        include_data = {
+            "novels": list_novel,
+            "title": "RELATED NOVEL",
+            "icon": "far fa-calendar-check",
+            "limit": 6,
         }
-        novel_widget = NovelListWidget(**params) if view_type == 'list' else NovelGridWidget(**params)
+        related = NovelListTemplateInclude(**include_data)
+
+        include_data = {
+            "chapters": chapters,
+            "title": "CHAPTER LIST",
+            "icon": "fas fa-book",
+            "limit": 30,
+            "page": chapter_page,
+        }
+        chapter_list = ChapterListTemplateInclude(**include_data)
+        breadcrumb = BreadCrumbTemplateInclude(data=breadcrumb_data)
+        novel_info = NovelInfoTemplateInclude(novel=novel)
 
         response.context_data.update({
-            'novels': novel_widget,
-            'view_type': view_type,
+            'novel_info_html': novel_info.render_html(),
+            'breadcrumb_html': breadcrumb.render_html(),
+            'chapter_list_html': chapter_list.render_html(),
+            'related_html': related.render_html(),
         })
 
         return response

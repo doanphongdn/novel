@@ -40,6 +40,6 @@ urlpatterns = [
     path('', NovelIndexView.as_view(), name="home"),
     path('novel/search', NovelDetailView.as_view()),
     path('novel', NovelView.as_view(), name="novel_view"),
-    path('novel/<str:slug>', NovelDetailView.as_view(), name="novel"),
-    path('novel/<str:slug>/<str:chapter_slug>', ChapterView.as_view(), name="chapter"),
+    path('<str:slug>', NovelDetailView.as_view(), name="novel"),
+    path('<str:slug>/<str:chapter_slug>', ChapterView.as_view(), name="chapter"),
 ]

@@ -43,10 +43,10 @@ class NovelCampaignType(BaseCrawlCampaignType):
                 if latest_chapter:
                     novel_chapters = novel.chapters.values_list('url', flat=True)
                     if latest_chapter not in novel_chapters:
-                        novel.chapter_updated = False
+                        novel.novel_updated = False
                         no_update_count = 0
                     else:
-                        novel.chapter_updated = True
+                        novel.novel_updated = True
                         no_update_count += 1
 
                 novel.save()
@@ -147,7 +147,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                 update = True
 
             if update:
-                novel.chapter_updated = True
+                novel.novel_updated = True
                 novel.save()
 
         return continue_paging
@@ -176,7 +176,7 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
             if chapter_content:
                 compressed = zlib.compress(chapter_content.encode())
                 chapter.binary_content = compressed
-                chapter.content_updated = True
+                chapter.chapter_updated = True
                 chapter.save()
 
         return True

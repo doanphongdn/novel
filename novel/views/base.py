@@ -10,6 +10,9 @@ class NovelBaseView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         novel_setting = NovelSetting.get_setting()
+        title = novel_setting and novel_setting.title or ""
+        logo = novel_setting and novel_setting.logo.url or ""
+
         menu = [
             {
                 "url": "#",
@@ -17,11 +20,11 @@ class NovelBaseView(TemplateView):
                 "fa_icon": "fa fa-facebook-square",
             }
         ]
-        navbar = NavBarTemplateInclude(menus=menu, title=novel_setting.title, logo=novel_setting.logo.url)
+        navbar = NavBarTemplateInclude(menus=menu, title=title, logo=logo)
         footer = FooterTemplateInclude()
 
         kwargs["setting"] = {
-            "title": novel_setting and novel_setting.title or "",
+            "title": title,
             "favicon": novel_setting and novel_setting.favicon.url or "",
             "meta_keywords": novel_setting and novel_setting.meta_keywords or "",
             "meta_description": novel_setting and novel_setting.meta_description or "",

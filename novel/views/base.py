@@ -10,8 +10,15 @@ class NovelBaseView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         novel_setting = NovelSetting.get_setting()
-        title = novel_setting and novel_setting.title or ""
-        logo = novel_setting and novel_setting.logo.url or ""
+        title = ""
+        logo = ""
+        favicon = ""
+        if novel_setting:
+            title = novel_setting.title
+            if novel_setting.logo:
+                logo = novel_setting.logo.url
+            if novel_setting.favicon:
+                favicon = novel_setting.favicon.url
 
         menu = [
             {
@@ -25,7 +32,7 @@ class NovelBaseView(TemplateView):
 
         kwargs["setting"] = {
             "title": title,
-            "favicon": novel_setting and novel_setting.favicon.url or "",
+            "favicon": favicon,
             "meta_keywords": novel_setting and novel_setting.meta_keywords or "",
             "meta_description": novel_setting and novel_setting.meta_description or "",
             "meta_copyright": novel_setting and novel_setting.meta_copyright or "",

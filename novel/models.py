@@ -87,7 +87,7 @@ class Novel(models.Model):
     authors = models.ManyToManyField(Author, db_table="novel_novel_authors_rel", blank=True)
 
     status = models.ForeignKey(Status, on_delete=models.CASCADE, blank=True, null=True)
-    chapter_updated = models.BooleanField(default=False)
+    novel_updated = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -166,7 +166,7 @@ class NovelChapter(models.Model):
 
     view_total = models.IntegerField(default=0, null=True)
 
-    content_updated = models.BooleanField(default=False)
+    chapter_updated = models.BooleanField(default=False)
     binary_content = models.BinaryField()
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True)

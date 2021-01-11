@@ -25,7 +25,7 @@ class NovelForm(forms.ModelForm):
 @admin.register(Novel)
 class NovelAdmin(admin.ModelAdmin):
     form = NovelForm
-    list_display = ("id", "name", "chapter_updated", "status",
+    list_display = ("id", "name", "novel_updated", "status",
                     "authors_name", "genres_name", "active", "created_at", "updated_at")
     search_fields = ("name", "slug")
     list_filter = ("status",)
@@ -47,7 +47,7 @@ class NovelChapterForm(forms.ModelForm):
 @admin.register(NovelChapter)
 class NovelChapterAdmin(admin.ModelAdmin):
     form = NovelChapterForm
-    list_display = ("id", "name", "novel", "content_updated", "created_at", "updated_at")
+    list_display = ("id", "name", "novel", "chapter_updated", "created_at", "updated_at")
     search_fields = ("name", "slug")
 
     def get_form(self, request, obj=None, change=False, **kwargs):

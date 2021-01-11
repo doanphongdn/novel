@@ -1,3 +1,4 @@
+import os
 import zlib
 from datetime import datetime
 
@@ -6,6 +7,8 @@ from autoslug.utils import slugify
 from django.db import models
 from django.urls import reverse
 from unidecode import unidecode
+
+from crawl_service import settings
 
 
 def datetime2string(value):
@@ -205,3 +208,21 @@ class NovelChapter(models.Model):
 
     def get_absolute_url(self):
         return reverse("chapter", args=[self.novel.slug, self.slug])
+
+
+class NovelSetting(models.Model):
+    class Meta:
+        db_table = "novel_settings"
+
+    title = models.CharField(max_length=250)
+    favicon = models.ImageField(upload_to="images", null=True, blank=True)
+    logo = models.ImageField(upload_to="images", null=True, blank=True)
+    meta_keywords = models.TextField(null=True, blank=True)
+    meta_description = models.TextField(null=True, blank=True)
+    meta_copyright = models.TextField(null=True, blank=True)
+    meta_author = models.TextField(null=True, blank=True)
+    google_analystics_id = models.TextField(null=True, blank=True)
+
+    @classmethod
+    def get_setting(cls):
+        return cls.objects.first()

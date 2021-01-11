@@ -3,13 +3,34 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
-    <title>Novel</title>
-    <meta charset="utf-8"/>
+    <title>{{ setting.title }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="{{ setting.meta_description }}">
+    <meta name="keywords" content="{{ setting.meta_keywords }}">
+    <meta name="author" content="{{ setting.meta_author }}">
+    <meta name="copyright" content="{{ setting.meta_copyright }}">
+
+    <link rel="shortcut icon" href="{{ setting.favicon }}">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
     {% stylesheet 'base' %}
     {% block stylesheet %}{% endblock %}
+
+    {% if setting.google_analystics_id %}
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ setting.google_analystics_id }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+            gtag('config', '{{ setting.google_analystics_id }}');
+        </script>
+    {% endif %}
 </head>
 <body>
 {% csrf_token %}
@@ -24,7 +45,6 @@
 <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'argon/assets/js/plugins/nouislider.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/novel/base.js' %}"></script>
-
 {% block scripts %}{% endblock %}
 </body>
 </html>

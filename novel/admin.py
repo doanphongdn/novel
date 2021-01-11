@@ -4,7 +4,7 @@ from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 
-from novel.models import Novel, NovelChapter
+from novel.models import Novel, NovelChapter, NovelSetting
 
 
 class NovelForm(forms.ModelForm):
@@ -66,3 +66,9 @@ class NovelChapterAdmin(admin.ModelAdmin):
             content = zlib.compress(content.encode())
         obj.binary_content = content or None
         super().save_model(request, obj, form, change)
+
+
+@admin.register(NovelSetting)
+class NovelSettingAdmin(admin.ModelAdmin):
+    list_display = ("id", "title", "favicon", "logo", "meta_keywords", "meta_description", "meta_copyright", "meta_author",
+                    "google_analystics_id")

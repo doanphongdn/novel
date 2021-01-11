@@ -40,6 +40,10 @@ class NovelDetailView(NovelBaseView):
         chapters = None
         breadcrumb_data = []
         if novel:
+            response.context_data["setting"]["title"] = novel.name
+            keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full']
+            response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)
+
             chapters = novel.chapters.all()
 
             breadcrumb_data = [{

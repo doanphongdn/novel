@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
 from pathlib import Path
+
+from django.templatetags.static import static
+
 from .pipeline_config import *
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from dotenv import load_dotenv
@@ -42,9 +45,9 @@ INSTALLED_APPS = [
     'pipeline',
     'cms',
     'crawl_service',
-    'novel',
     'rest_framework',
     'ckeditor',
+    os.environ.get('APP_NAME'),
 ]
 
 MIDDLEWARE = [
@@ -169,6 +172,9 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_debug"), ]
 
+MEDIA_ROOT = os.environ.get('MEDIA_ROOT')
+MEDIA_URL = '/media/'
+
 # Pipeline config
 
 
@@ -216,3 +222,5 @@ CKEDITOR_CONFIGS = {
         'width': 1000,
     },
 }
+
+NOVEL_NOVEL_URL = '<str:slug>'

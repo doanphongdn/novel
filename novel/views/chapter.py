@@ -19,6 +19,12 @@ class ChapterView(NovelBaseView):
         novel = Novel.objects.filter(slug=slug).first()
         if novel:
             chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).first()
+            if chapter:
+                response.context_data["setting"]["title"] = novel.name + " " + chapter.name
+                keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full',
+                            chapter.slug.replace('-', ' '), chapter.name]
+                response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)
+
             breadcrumb_data = [
                 {
                     "name": novel.name,

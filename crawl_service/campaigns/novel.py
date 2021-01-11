@@ -108,14 +108,14 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                 novel.thumbnail_image = local_image or thumbnail_image
                 update = True
 
-            if not novel.authors:
+            if not novel.authors.first():
                 authors = crawled_data.get("authors") or []
                 for author in authors:
                     author, _ = Author.objects.get_or_create(name=author.title().strip())
                     novel.authors.add(author)
                     update = True
 
-            if not novel.genres:
+            if not novel.genres.first():
                 genres = crawled_data.get("genres") or []
                 for genre in genres:
                     genre, _ = Genre.objects.get_or_create(name=genre.title().strip())

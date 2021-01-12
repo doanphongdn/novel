@@ -17,14 +17,14 @@ class NovelIndexView(NovelBaseView):
         include_data = {
             "novels": list_novel,
             "title": "LATEST UPDATE",
-            "icon": "far fa-calendar-check",
+            "icon": "fa fa-calendar",
             "view_all_url": reverse("novel_all", kwargs={"type": "latest-update"}),
         }
         novel_grid = NovelListTemplateInclude(**include_data)
 
         include_data.update({
             "title": "HOT NOVELS",
-            "icon": "fab fa-hotjar",
+            "icon": "fa fa-fire",
             "view_type": "list",
             "view_all_url": reverse("novel_all", kwargs={"type": "hot"}),
         })

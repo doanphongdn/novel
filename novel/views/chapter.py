@@ -40,6 +40,7 @@ class ChapterView(NovelBaseView):
         chapter_content = ChapterContentTemplateInclude(chapter=chapter)
 
         response.context_data.update({
+            'novel_url': novel.get_absolute_url(),
             'chapter_content_html': chapter_content.render_html(),
             'breadcrumb_html': breadcrumb.render_html(),
         })

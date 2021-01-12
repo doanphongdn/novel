@@ -7,10 +7,10 @@
                 {% if chapter.prev_chapter_url %}
                     <a href="{{ chapter.prev_chapter_url }}">
                         <button type="button" class="btn btn-sm btn-default d-lg-none">
-                            <i class="fas fa-chevron-left"></i> Prev
+                            <i class="fa fa-chevron-left"></i> Prev
                         </button>
                         <button type="button" class="btn btn-default d-none d-lg-block">
-                            <i class="fas fa-chevron-left"></i> Prev
+                            <i class="fa fa-chevron-left"></i> Prev
                         </button>
                     </a>
                 {% endif %}
@@ -20,11 +20,11 @@
             <div class="row justify-content-center">
                 <button type="button" class="btn btn-sm btn-default d-lg-none" data-toggle="modal"
                         data-target="#modal-chapter">
-                    <i class="fas fa-book"></i>
+                    <i class="fa fa-list"></i>
                 </button>
                 <button type="button" class="btn btn-default d-none d-lg-block" data-toggle="modal"
                         data-target="#modal-chapter">
-                    <i class="fas fa-book"></i> Chapter List
+                    <i class="fa fa-list"></i> Chapter List
                 </button>
             </div>
         </div>
@@ -33,10 +33,10 @@
                 {% if chapter.next_chapter_url %}
                     <a href="{{ chapter.next_chapter_url }}">
                         <button type="button" class="btn btn-sm btn-default d-lg-none">
-                            Next <i class="fas fa-chevron-right"></i>
+                            Next <i class="fa fa-chevron-right"></i>
                         </button>
                         <button type="button" class="btn btn-default d-none d-lg-block">
-                            Next <i class="fas fa-chevron-right"></i>
+                            Next <i class="fa fa-chevron-right"></i>
                         </button>
                     </a>
                 {% endif %}

@@ -1,10 +1,21 @@
 .widget-breadcrumb ul {
-  margin: 0;
+  margin: 10px 0;
   padding: 0;
   list-style: none;
 }
 .widget-breadcrumb li {
   display: inline-block;
+  position: relative;
+}
+.widget-breadcrumb li:not(:last-child):after {
+  font-family: "FontAwesome";
+  content: "\f054";
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: 9px;
+  right: -5px;
+  font-size: 0.6rem;
 }
 .widget-breadcrumb a {
   display: block;

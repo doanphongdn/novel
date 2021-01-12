@@ -64,7 +64,7 @@ class NovelDetailView(NovelBaseView):
         include_data = {
             "chapters": chapters,
             "title": "CHAPTER LIST",
-            "icon": "fas fa-book",
+            "icon": "fa fa-list",
             "limit": 30,
             "page": chapter_page,
         }

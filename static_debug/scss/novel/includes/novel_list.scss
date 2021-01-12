@@ -2,8 +2,9 @@
 
 .novel-grid, .novel-list {
   .widget-actions {
+    padding-top: 5px;
     .widget-view-all a {
-      font-style: italic;
+      font-size: .8rem;
     }
 
     .widget-view-list i, .widget-view-grid i {
@@ -60,6 +61,10 @@
         }
       }
 
+      .novel-genres {
+        display: none;
+      }
+
       .novel-chapter {
         -webkit-line-clamp: 1;
 
@@ -79,6 +84,8 @@
     .novel-wrap {
       display: block;
       overflow: hidden;
+      border-bottom: thin solid #F0F0F0;
+      padding: 10px 0;
 
       .novel-thumbnail-image {
         margin-right: 10px;

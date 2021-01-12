@@ -15,7 +15,7 @@
             </label>
             <div class="widget-actions">
                 {% if novels.has_next and view_all_url %}
-                    <span class="widget-view-all"><a href="{{ view_all_url }}">View all >></a></span>
+                    <span class="widget-view-all"><a href="{{ view_all_url }}">View all</a></span>
                 {% endif %}
                 {% if button_type_urls %}
                     <a href="{{ button_type_urls.list }}">
@@ -32,7 +32,7 @@
 <div class="row">
     {% for novel in novels %}
         {% if item_type == 'list' %}
-            <div class="col-12 novel-item form-group">
+            <div class="col-12 novel-item">
         {% else %}
             <div class="col-4 col-md-3 col-lg-2 novel-item form-group">
         {% endif %}

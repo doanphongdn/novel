@@ -77,6 +77,9 @@
 .novel-list {
   .novel-item {
     .novel-wrap {
+      display: block;
+      overflow: hidden;
+
       .novel-thumbnail-image {
         margin-right: 10px;
         width: 60px;
@@ -96,13 +99,11 @@
         overflow: hidden;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
-        margin: 5px;
       }
 
       .novel-name {
         width: calc(40% - 70px);
         float: left;
-        margin-bottom: 5px;
 
         h5 {
           font-weight: 600;
@@ -167,6 +168,10 @@
             white-space: nowrap;
             overflow: hidden;
           }
+        }
+
+        .novel-genres {
+          display: none;
         }
 
         .novel-rating {

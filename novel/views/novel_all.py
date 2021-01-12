@@ -13,8 +13,10 @@ class NovelView(NovelBaseView):
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 
+        content_type = kwargs.get('type') or 'latest-update'
+
+        # params
         page = request.GET.get('page') or 1
-        content_type = request.GET.get('type') or 'latest-update'
         view_type = request.GET.get('view') or 'grid'
 
         order_by = self.content_type_mapping.get(content_type)
@@ -25,7 +27,7 @@ class NovelView(NovelBaseView):
 
         novels = novels.all()
         novel_list = NovelListTemplateInclude(novels=novels, title="LATEST NOVEL", icon="far fa-calendar-check",
-                                              item_type=view_type, limit=30, page=page, show_button_type=True,
+                                              view_type=view_type, limit=30, page=page, show_button_type=True,
                                               paginate_enable=True)
 
         response.context_data.update({

@@ -1,6 +1,26 @@
 .novel-info {
   .novel-detail {
+    padding: 15px;
+
     .novel-detail-wrap {
+      label {
+        font-size: 1rem;
+        min-width: 120px;
+      }
+
+      .rating {
+        i, span {
+          margin-right: 5px;
+          font-size: 1.5rem;
+          margin-bottom: 15px;
+        }
+
+        span {
+          margin-left: 10px;
+          font-weight: 500;
+        }
+      }
+
       .novel-button {
         button {
           margin: 10px 5px 0 0;
@@ -8,4 +28,13 @@
       }
     }
   }
+}
+
+.novel-info .novel-info-wrap .rating_current {
+  color: orange;
+}
+
+/* Small Devices, Tablets */
+@media (max-width: 768px) {
+
 }

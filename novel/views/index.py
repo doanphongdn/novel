@@ -25,7 +25,7 @@ class NovelIndexView(NovelBaseView):
         include_data.update({
             "title": "HOT NOVELS",
             "icon": "fab fa-hotjar",
-            "item_type": "list",
+            "view_type": "list",
             "view_all_url": reverse("novel_all", kwargs={"type": "hot"}),
         })
         novel_list = NovelListTemplateInclude(**include_data)

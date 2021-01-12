@@ -17,9 +17,13 @@
                 {% if novels.has_next and view_all_url %}
                     <span class="widget-view-all"><a href="{{ view_all_url }}">View all >></a></span>
                 {% endif %}
-                {% if show_button_type %}
-                    <span class="widget-view-list"><i class="fas fa-list-ul"></i></span>
-                    <span class="widget-view-grid"><i class="fas fa-th"></i></span>
+                {% if button_type_urls %}
+                    <a href="{{ button_type_urls.list }}">
+                        <span class="widget-view-list"><i class="fas fa-list-ul"></i></span>
+                    </a>
+                    <a href="{{ button_type_urls.grid }}">
+                        <span class="widget-view-grid"><i class="fas fa-th"></i></span>
+                    </a>
                 {% endif %}
             </div>
         </div>

@@ -86,7 +86,8 @@ a {
 }
 
 .novel-info .novel-details-wrap .novel-button button {
-  margin-top: 15px; margin-right: 5px;
+  margin-top: 15px;
+  margin-right: 5px;
 }
 
 .novel-info .novel-info-wrap .novel-action o {
@@ -104,15 +105,6 @@ a {
   height: auto;
 }
 
-.novel-info .novel-info-wrap .rating i, .novel-info .novel-info-wrap .rating span {
-  font-size: 1.5rem;
-  padding-right: 3px;
-  margin-bottom: 15px;
-}
-
-.novel-info .novel-info-wrap .rating .rating_current {
-  color: orange;
-}
 
 .novel-info .novel-info-wrap .rating .rating_none {
   color: gray;
@@ -186,9 +178,6 @@ a {
     margin: 0;
   }
 
-  .novel-info .novel-info-wrap .rating i, .novel-info .novel-info-wrap .rating span {
-    font-size: 1.2rem;
-  }
 
   .novel-info .novel-info-wrap .novel-details .novel-details-wrap {
     padding: 20px 10px;

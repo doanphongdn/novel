@@ -6,6 +6,7 @@ from autoslug import AutoSlugField
 from autoslug.utils import slugify
 from django.db import models
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from unidecode import unidecode
 
 from crawl_service import settings
@@ -222,6 +223,15 @@ class NovelSetting(models.Model):
     meta_copyright = models.TextField(null=True, blank=True)
     meta_author = models.TextField(null=True, blank=True)
     google_analystics_id = models.TextField(null=True, blank=True)
+
+    def logo_tag(self):
+        return mark_safe('<img src="%s" width="300"/>' % self.logo.url)
+
+    def favicon_tag(self):
+        return mark_safe('<img src="%s" width="100" height="100"/>' % self.favicon.url)
+
+    logo_tag.short_description = 'logo'
+    favicon_tag.short_description = 'favicon'
 
     @classmethod
     def get_setting(cls):

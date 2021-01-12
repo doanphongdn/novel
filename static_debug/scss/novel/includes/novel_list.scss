@@ -2,6 +2,10 @@
 
 .novel-grid, .novel-list {
   .widget-actions {
+    .widget-view-all a {
+      font-style: italic;
+    }
+
     .widget-view-list i, .widget-view-grid i {
       font-size: 20px;
       color: #333;
@@ -45,10 +49,10 @@
         -webkit-line-clamp: 2;
 
         h5 {
-          max-height: 40px;
+
           font-weight: 600;
           font-size: .9rem;
-          line-height: 20px;
+          margin-bottom: 0;
         }
       }
 
@@ -59,6 +63,7 @@
           max-height: 36px;
           line-height: 18px;
           font-size: .8rem;
+          margin-bottom: 0;
         }
       }
     }
@@ -70,9 +75,11 @@
     .novel-wrap {
       .novel-thumbnail-image {
         margin-right: 10px;
-        width: 50px;
+        width: 60px;
+        padding: 2px;
         height: 100%;
         float: left;
+        box-shadow: 0 1px 3px rgb(50 50 93 / 15%), 0 1px 0 rgb(0 0 0 / 2%);
 
         img {
           width: 100%;
@@ -89,26 +96,25 @@
       }
 
       .novel-name {
-        width: calc(40% - 60px);
+        width: calc(40% - 70px);
         float: left;
 
         h5 {
-          max-height: 40px;
+
           font-weight: 600;
           font-size: .9rem;
-          line-height: 20px;
+          margin-bottom: 0;
         }
       }
 
       .novel-chapter, .novel-authors {
         width: 30%;
         float: left;
+        margin-bottom: 0;
       }
 
       .novel-chapter {
-        h6, .updated-time {
-          max-height: 40px;
-          line-height: 20px;
+        h6 {
           font-size: .9rem;
         }
 

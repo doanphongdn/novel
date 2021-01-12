@@ -45,6 +45,11 @@
         </div>
         <div class="novel-name">
             <h5><a href="{{ novel.get_absolute_url }}">{{ novel.name }}</a></h5>
+            <div class="novel-rating">
+                {% for rating in novel.rating_classes %}
+                    <i class="{{ rating }} fa fa-star"></i>
+                {% endfor %}
+            </div>
         </div>
         <div class="novel-chapter">
             <h6><a href="{{ novel.chapters.0.get_absolute_url }}">{{ novel.chapters.0.name }}</a></h6>

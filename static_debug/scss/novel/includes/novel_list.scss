@@ -54,8 +54,11 @@
           font-size: .9rem;
           margin-bottom: 0;
         }
-      }
 
+        .novel-rating {
+          display: none;
+        }
+      }
 
       .novel-chapter {
         -webkit-line-clamp: 1;
@@ -88,7 +91,7 @@
         }
       }
 
-      .novel-name, .novel-chapter {
+      .novel-name, .novel-chapter, .novel-genres {
         display: -webkit-box;
         overflow: hidden;
         -webkit-line-clamp: 2;
@@ -99,12 +102,20 @@
       .novel-name {
         width: calc(40% - 70px);
         float: left;
+        margin-bottom: 5px;
 
         h5 {
-
           font-weight: 600;
           font-size: .9rem;
-          margin-bottom: 0;
+        }
+
+        .novel-rating {
+          font-size: 0.8rem;
+          color: orange;
+
+          i {
+            margin-right: 3px;
+          }
         }
       }
 
@@ -115,9 +126,8 @@
       }
 
       .novel-genres a {
-        font-weight: 600;
         font-size: .9rem;
-        margin: 0 15px 5px 0;
+        margin: 0 10px 5px 0;
       }
 
       .novel-chapter {
@@ -157,6 +167,10 @@
             white-space: nowrap;
             overflow: hidden;
           }
+        }
+
+        .novel-rating {
+          display: none;
         }
       }
     }

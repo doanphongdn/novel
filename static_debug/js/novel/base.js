@@ -103,4 +103,17 @@ $(document).ready(function (e) {
         $(".float-button li i").css("color", newTextColor);
         $(".widget-breadcrumb a").css("color", newTextColor);
     });
+
+    var lazy_param = {
+            scrollDirection: 'vertical',
+            effect: 'fadeIn',
+            effectTime: 200,
+            chainable: false,
+            threshold: 0,
+            visibleOnly: true,
+            onError: function (element) {
+                element.attr("src", "/static/images/default.png")
+            }
+        };
+            $('.lazyload').Lazy(lazy_param);
 });

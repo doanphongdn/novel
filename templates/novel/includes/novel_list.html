@@ -39,7 +39,8 @@
     <div class="novel-wrap">
         <div class="novel-thumbnail-image">
             <a href="{{ novel.get_absolute_url }}">
-                <img src="{{ novel.thumbnail_image }}" alt="{{ novel.name }}">
+                <img class="lazyload" data-src="{{ novel.thumbnail_image }}" src="{% static "images/lazyload.gif" %}"
+                     alt="{{ novel.name }}">
             </a>
         </div>
         <div class="novel-name">
@@ -61,5 +62,6 @@
 <div class="row">
     {{ pagination_html }}
 </div>
+
 
 

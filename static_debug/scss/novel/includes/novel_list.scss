@@ -56,6 +56,21 @@
         }
       }
 
+      .novel-genres {
+        h6 {
+          max-height: 36px;
+          line-height: 18px;
+          font-size: .8rem;
+          margin-bottom: 0;
+        }
+      }
+
+      .novel-genres a {
+        font-weight: 600;
+        font-size: .9rem;
+        margin: 0 10px 5px 0;
+      }
+
       .novel-chapter {
         -webkit-line-clamp: 1;
 

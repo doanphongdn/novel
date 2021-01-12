@@ -1,4 +1,31 @@
 $(document).ready(function (e) {
+
+    function setBackgroundColor(newBgColor) {
+        // Change background of everything with class .bg-color
+        $("body").css("background-color", newBgColor);
+    }
+
+    function setElementsColor(newTextColor) {
+        $(".chapter-title h3").css("color", newTextColor);
+        $(".chapter-title h5").css("color", newTextColor);
+        $(".chapter-detail p").css("color", newTextColor);
+        $(".float-button li i").css("color", newTextColor);
+        $(".widget-breadcrumb a").css("color", newTextColor);
+    }
+
+    function setChapterFontSize(fontSize) {
+        $(".chapter-detail p").css("font-size", fontSize + "px");
+    }
+
+    function setChapterFontWeight(fontWeight) {
+        $(".chapter-detail p").css("font-weight", fontWeight);
+    }
+
+    function setChapterLineHeight(lineHeight) {
+        $(".chapter-detail p").css("line-height", lineHeight + "%");
+    }
+
+    /* -------- START SEARCH ----------- */
     $('input.search').autocomplete({
         source: function (req, res) {
             $.ajax({
@@ -26,6 +53,8 @@ $(document).ready(function (e) {
         html += '</li>';
         return $(html).appendTo(ul);
     };
+    /* -------- END SEARCH ----------- */
+
     $('.mobile-search-toggle').on('click', function (e) {
         $('.search-wrap').slideToggle('fast');
     });
@@ -42,11 +71,14 @@ $(document).ready(function (e) {
                 'min': 15,
                 'max': 40
             }
-        }).on('update', function (values, handle) {
-            $(".chapter-detail p").css("font-size", values[handle] + "px");
+        }).on('change.one', function (values, handle) {
+            let fontSize = values[handle];
+            $(".chapter-detail p").css("font-size", fontSize + "px");
+            Cookies.set('fontSizeSlider', fontSize);
         });
     }
     ;
+
     if ($('#fontWeightSlider').length != 0) {
         noUiSlider.create(fontWeightSlider, {
             start: 200,
@@ -56,11 +88,14 @@ $(document).ready(function (e) {
                 'min': 200,
                 'max': 800
             }
-        }).on('update', function (values, handle) {
-            $(".chapter-detail p").css("font-weight", values[handle]);
+        }).on('change.one', function (values, handle) {
+            let fontWeight = values[handle];
+            $(".chapter-detail p").css("font-weight", fontWeight);
+            Cookies.set('fontWeightSlider', fontWeight);
         });
     }
     ;
+
     if ($('#lineHeightSlider').length != 0) {
         noUiSlider.create(lineHeightSlider, {
             start: 200,
@@ -70,11 +105,14 @@ $(document).ready(function (e) {
                 'min': 150,
                 'max': 400
             }
-        }).on('update', function (values, handle) {
-            $(".chapter-detail p").css("line-height", values[handle] + "%");
+        }).on('change.one', function (values, handle) {
+            let lineHeight = values[handle];
+            $(".chapter-detail p").css("line-height", lineHeight + "%");
+            Cookies.set('lineHeightSlider', lineHeight);
         });
     }
     ;
+
     var colorButton = $(".colors li");
 
     colorButton.on("click", function () {
@@ -85,35 +123,77 @@ $(document).ready(function (e) {
         $(this).addClass("active-color");
 
         // Get background color of clicked
-        var newColor = $(this).data("color");
+        var newBgColor = $(this).data("color");
         var newTextColor = $(this).data("text-color");
 
-        // Change background of everything with class .bg-color
-        $("body").css("background-color", newColor);
+        // Verify the textColor
         if (newTextColor == undefined) {
             newTextColor = "#243239";
             $(".chapter-actions button").removeClass('btn-secondary').addClass('btn-default');
         } else {
             $(".chapter-actions button").removeClass('btn-default').addClass('btn-secondary');
         }
+        // Change background color
+        setBackgroundColor(newBgColor);
         // Change color of everything with class .text-color
-        $(".chapter-title h3").css("color", newTextColor);
-        $(".chapter-title h5").css("color", newTextColor);
-        $(".chapter-detail p").css("color", newTextColor);
-        $(".float-button li i").css("color", newTextColor);
-        $(".widget-breadcrumb a").css("color", newTextColor);
+        setElementsColor(newTextColor);
+
+        // Store the color to cookie and get them to load init pages
+        Cookies.set('textColor', newTextColor);
+        Cookies.set('backgroundColor', newBgColor);
     });
 
+
     var lazy_param = {
-            scrollDirection: 'vertical',
-            effect: 'fadeIn',
-            effectTime: 200,
-            chainable: false,
-            threshold: 0,
-            visibleOnly: true,
-            onError: function (element) {
-                element.attr("src", "/static/images/default.png")
-            }
-        };
-            $('.lazyload').Lazy(lazy_param);
+        scrollDirection: 'vertical',
+        effect: 'fadeIn',
+        effectTime: 200,
+        chainable: false,
+        threshold: 0,
+        visibleOnly: true,
+        onError: function (element) {
+            element.attr("src", "/static/images/default.png")
+        }
+    };
+    $('.lazyload').Lazy(lazy_param);
+
+    function setInitAttrs() {
+        // Color
+        let textClor = Cookies.get('textColor');
+        let bgColor = Cookies.get('backgroundColor');
+        if (textClor) {
+            setElementsColor(textClor);
+        }
+        if (bgColor) {
+            // Remove class from currently active button
+            $(".colors > li").removeClass("active-color");
+
+            // Add class active to clicked button
+            let currBgColorItem = $(".colors > li[data-color='" + bgColor +"']");
+            $(currBgColorItem).addClass("active-color");
+
+            setBackgroundColor(bgColor);
+        }
+        // Font size
+        let fontSize = Cookies.get('fontSizeSlider');
+        if (fontSize) {
+            fontSizeSlider.noUiSlider.set(fontSize);
+            setChapterFontSize(fontSize);
+        }
+        // Font Weight
+        let fontWeight = Cookies.get('fontWeightSlider');
+        if (fontWeight) {
+            fontWeightSlider.noUiSlider.set(fontWeight);
+            setChapterFontWeight(fontWeight);
+        }
+        // Line Height
+        let lineHeight = Cookies.get('lineHeightSlider');
+        if (lineHeight) {
+            lineHeightSlider.noUiSlider.set(lineHeight);
+            setChapterLineHeight(lineHeight);
+        }
+    }
+
+    setInitAttrs();
+
 });

@@ -22,6 +22,7 @@
       height: 30px;
       white-space: nowrap;
       overflow: hidden;
+
       &:not(:last-child) {
         border-bottom: thin solid #eee;
       }
@@ -101,5 +102,12 @@
 
   h3 {
     text-transform: uppercase;
+  }
+}
+
+/* Small Devices, Tablets */
+@media (max-width: 1140px) {
+  .chapter.container {
+    width: 100%;
   }
 }

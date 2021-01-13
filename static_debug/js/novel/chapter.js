@@ -2,6 +2,7 @@ $(document).ready(function (e) {
     function setBackgroundColor(newBgColor) {
         // Change background of everything with class .bg-color
         $("body").css("background-color", newBgColor);
+        $(".chapter-actions").css("background-color", newBgColor);
     }
 
     function setElementsColor(newTextColor) {
@@ -147,5 +148,15 @@ $(document).ready(function (e) {
 
 
     setInitAttrs();
+
+    $(document).scroll(function () {
+        scrollTop = $(document).scrollTop();
+        diff = scrollTop - $('.chapter-content').offset().top - 10;
+        if (diff < 0)
+            diff = 0
+
+        $('.chapter-actions').css('top', diff + "px");
+
+    });
 
 });

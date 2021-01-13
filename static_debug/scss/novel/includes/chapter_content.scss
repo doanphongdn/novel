@@ -90,10 +90,20 @@
 
   .chapter-actions {
     margin: 10px 0;
+    position: absolute;
+    width: 100%;
+    z-index: 1000;
+    background-color: #fff;
+    top: 0;
+    padding-bottom: 5px;
 
     .btn {
       margin-right: 0;
     }
+  }
+
+  .chapter-title {
+    margin-top: 80px;
   }
 
   h3, h5 {

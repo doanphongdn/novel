@@ -9,8 +9,6 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from unidecode import unidecode
 
-from crawl_service import settings
-
 
 def datetime2string(value):
     """ Convert updated_at to friendly string
@@ -172,7 +170,7 @@ class NovelChapter(models.Model):
 
     chapter_updated = models.BooleanField(default=False)
     binary_content = models.BinaryField()
-    images_content = models.TextField()
+    images_content = models.TextField(blank=True, null=True)
 
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True)
@@ -180,6 +178,18 @@ class NovelChapter(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def images(self):
+        return self.images_content.split('\n')
+
+    @property
+    def stream_images(self):
+        images = self.images
+        stream_images = []
+        for i in range(len(images)):
+            stream_images.append("/images/%s_%s.jpg" % (self.id, i))
+        return stream_images
 
     @property
     def created_at_str(self):
@@ -225,6 +235,7 @@ class NovelSetting(models.Model):
     meta_copyright = models.TextField(null=True, blank=True)
     meta_author = models.TextField(null=True, blank=True)
     google_analystics_id = models.TextField(null=True, blank=True)
+    novel_type = models.CharField(max_length=250, choices=[('COMIC', 'Comic'), ('TEXT', 'Text')])
 
     def logo_tag(self):
         return mark_safe('<img src="%s" width="300"/>' % self.logo.url)

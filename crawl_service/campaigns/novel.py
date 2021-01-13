@@ -183,6 +183,7 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
             content_images = crawled_data.get("content_images")
             if content_images:
                 chapter.images_content = '\n'.join(content_images)
+                chapter.chapter_updated = True
                 chapter.save()
 
         return True

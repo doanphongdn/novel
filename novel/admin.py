@@ -71,9 +71,11 @@ class NovelChapterAdmin(admin.ModelAdmin):
 @admin.register(NovelSetting)
 class NovelSettingAdmin(admin.ModelAdmin):
     list_display = (
-        "id", "title", "favicon", "logo", "meta_keywords", "meta_description", "meta_copyright", "meta_author",
+        "id", "title", "favicon", "logo", "novel_type", "meta_keywords", "meta_description", "meta_copyright",
+        "meta_author",
         "google_analystics_id")
 
-    fields = ["title", 'favicon_tag', "favicon", 'logo_tag', "logo", "meta_keywords", "meta_description", "meta_copyright", "meta_author",
+    fields = ["title", 'favicon_tag', "favicon", "novel_type", 'logo_tag', "logo", "meta_keywords", "meta_description",
+              "meta_copyright", "meta_author",
               "google_analystics_id", ]
     readonly_fields = ['logo_tag', 'favicon_tag']

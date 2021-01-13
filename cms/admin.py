@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from cms.models import FooterInfo, HashTag, HtmlPage
+from cms.models import FooterInfo, Link, HtmlPage
 
 
 @admin.register(HtmlPage)
@@ -18,8 +18,8 @@ class FooterAdmin(admin.ModelAdmin):
     list_filter = ("active",)
 
 
-@admin.register(HashTag)
-class HashTagAdmin(admin.ModelAdmin):
+@admin.register(Link)
+class LinkAdmin(admin.ModelAdmin):
     list_display = ("id", "active", "name", "url", "type")
     search_fields = ("name", "url", "type")
     list_filter = ("active",)

@@ -34,11 +34,11 @@ class FooterInfo(models.Model):
     active = models.BooleanField(default=True)
 
 
-class HashTag(models.Model):
+class Link(models.Model):
     class Meta:
-        db_table = "cms_hashtag"
+        db_table = "cms_link"
 
     name = models.CharField(max_length=250, unique=True)
     url = models.CharField(max_length=255, null=True)
-    type = models.CharField(max_length=30, blank=True)
+    type = models.CharField(max_length=30, blank=True, default='hashtag')
     active = models.BooleanField(default=True)

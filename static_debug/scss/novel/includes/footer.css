@@ -38,4 +38,12 @@
   display: inline-block;
 }
 
+.footer .link-footer ul li a {
+  border: solid 1px #ddd;
+  padding: 5px;
+  white-space: nowrap;
+  border-radius: 4px;
+  color: #fff;
+}
+
 /*# sourceMappingURL=footer.css.map */

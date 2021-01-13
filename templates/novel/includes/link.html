@@ -1,0 +1,10 @@
+<div class="link-footer">
+  {#  <h4>{{ link_label }}</h4>#}
+  <ul>
+    {% for link in link_data %}
+      <li>
+        <a target="_self" href="{{ link.url }}">{{ link.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>

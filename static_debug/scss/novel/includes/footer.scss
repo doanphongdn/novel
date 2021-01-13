@@ -19,10 +19,10 @@
 }
 
 .footer .link-footer h4 {
-    margin: 5px 0;
-    color: #fff;
-    font-weight: 400;
-    font-size: 18px;
+  margin: 5px 0;
+  color: #fff;
+  font-weight: 400;
+  font-size: 18px;
 }
 
 .footer .link-footer ul {
@@ -36,5 +36,13 @@
   line-height: 38px;
   list-style: none;
   display: inline-block;
+}
+
+.footer .link-footer ul li a {
+  border: solid 1px #ddd;
+  padding: 5px 8px;
+  white-space: nowrap;
+  border-radius: 4px;
+  color: #fff;
 }
 

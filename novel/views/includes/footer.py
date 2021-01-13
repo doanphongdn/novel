@@ -1,6 +1,6 @@
-from cms.models import FooterInfo, HashTag
+from cms.models import FooterInfo, Link
 from novel.views.includes.base import BaseTemplateInclude
-from novel.views.includes.hashtag import HashTagTemplateInclude
+from novel.views.includes.link import LinkTemplateInclude
 
 
 class FooterTemplateInclude(BaseTemplateInclude):
@@ -15,14 +15,14 @@ class FooterTemplateInclude(BaseTemplateInclude):
         else:
             default_footer_info = True
 
-        tags = HashTag.objects.filter(type='hashtag', active=1).all()
+        tags = Link.objects.filter(type='hashtag', active=1).all()
         if tags:
-            hashtag = HashTagTemplateInclude(**{"hashtag_data": tags, 'hashtag_label': 'Hashtag'})
+            hashtag = LinkTemplateInclude(**{"link_data": tags, 'link_label': 'Hashtag'})
         else:
             hashtag = None
 
         self.include_data = {
             "footer_info": footer_info,
             "default_footer_info": default_footer_info,
-            "hashtag_html": hashtag.render_html() if hashtag else '',
+            "link_html": hashtag.render_html() if hashtag else '',
         }

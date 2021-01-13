@@ -1,5 +1,6 @@
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.shortcuts import redirect, render
 
 from novel.models import Novel
 from novel.views.base import NovelBaseView
@@ -7,6 +8,7 @@ from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
 from novel.views.includes.chapter_list import ChapterListTemplateInclude
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
+from novel.views.index import NovelIndexView
 
 
 class NovelDetailView(NovelBaseView):
@@ -37,8 +39,8 @@ class NovelDetailView(NovelBaseView):
 
         novel = Novel.objects.filter(slug=slug).first()
 
-        chapters = None
-        breadcrumb_data = []
+        # chapters = None
+        # breadcrumb_data = []
         if novel:
             response.context_data["setting"]["title"] = novel.name
             keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full']
@@ -50,6 +52,11 @@ class NovelDetailView(NovelBaseView):
                 "name": novel.name,
                 "url": novel.get_absolute_url(),
             }]
+        else:
+            # not found the page
+            # return render(request, 'novel/index.html', None)
+            # return NovelIndexView.as_view()
+            return redirect('/')  # or redirect('name-of-index-url')
 
         list_novel = Novel.get_available_novel().all()
 

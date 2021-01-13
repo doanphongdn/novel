@@ -35,10 +35,11 @@
   position: relative;
   text-align: justify;
 
+  .chapter-images {
+    text-align: center;
+  }
 
   .chapter-detail {
-    text-align: center;
-
     p {
       font-size: 20px;
       font-weight: 100;

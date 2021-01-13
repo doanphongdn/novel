@@ -172,6 +172,8 @@ class NovelChapter(models.Model):
 
     chapter_updated = models.BooleanField(default=False)
     binary_content = models.BinaryField()
+    images_content = models.TextField()
+
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

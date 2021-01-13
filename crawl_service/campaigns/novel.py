@@ -155,7 +155,8 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
 
 class NovelChapterCampaignSchema(serializers.Serializer):
     url = serializers.CharField()
-    content = serializers.CharField(required=False)
+    content_text = serializers.CharField(required=False)
+    content_images = serializers.ListField(required=False)
 
 
 class NovelChapterCampaignType(BaseCrawlCampaignType):
@@ -172,11 +173,16 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
             if not chapter:
                 continue
 
-            chapter_content = crawled_data.get("content")
-            if chapter_content:
-                compressed = zlib.compress(chapter_content.encode())
+            content_text = crawled_data.get("content_text")
+            if content_text:
+                compressed = zlib.compress(content_text.encode())
                 chapter.binary_content = compressed
                 chapter.chapter_updated = True
+                chapter.save()
+
+            content_images = crawled_data.get("content_images")
+            if content_images:
+                chapter.images_content = '\n'.join(content_images)
                 chapter.save()
 
         return True

@@ -53,9 +53,9 @@ class NovelDetailView(NovelBaseView):
                 "url": novel.get_absolute_url(),
             }]
         else:
+            # TODO: define 404 page
             # not found the page
-            # return render(request, 'novel/index.html', None)
-            # return NovelIndexView.as_view()
+            # redirect to home page
             return redirect('/')  # or redirect('name-of-index-url')
 
         list_novel = Novel.get_available_novel().all()

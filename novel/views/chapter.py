@@ -1,3 +1,5 @@
+from django.shortcuts import redirect
+
 from novel.models import Novel, NovelChapter
 from novel.views.base import NovelBaseView
 from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
@@ -35,6 +37,10 @@ class ChapterView(NovelBaseView):
                     "url": chapter.get_absolute_url(),
                 }
             ]
+        else:
+            # TODO: define 404 page
+            # direct to hompage
+            return redirect('/')  # or redirect('name-of-index-url')
 
         breadcrumb = BreadCrumbTemplateInclude(data=breadcrumb_data)
         chapter_content = ChapterContentTemplateInclude(chapter=chapter)

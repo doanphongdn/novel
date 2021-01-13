@@ -150,13 +150,18 @@ $(document).ready(function (e) {
     setInitAttrs();
 
     $(document).scroll(function () {
-        scrollTop = $(document).scrollTop();
-        diff = scrollTop - $('.chapter-content').offset().top - 10;
-        if (diff < 0)
-            diff = 0
-
-        $('.chapter-actions').css('top', diff + "px");
-
+        var scrollTop = $(document).scrollTop();
+        var contentTop = $('.chapter-content').offset().top;
+        var menu = $('.chapter-actions');
+        var menuWidth = menu[0].offsetWidth;
+        diff = scrollTop - contentTop;
+        if (diff > 0) {
+            menu.css('width', menuWidth + "px");
+            menu.css('position', "fixed");
+        } else {
+            menu.css('position', "absolute");
+            menu.css('width', "100%");
+        }
     });
 
 });

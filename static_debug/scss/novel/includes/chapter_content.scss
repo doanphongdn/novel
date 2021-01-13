@@ -89,13 +89,13 @@
   }
 
   .chapter-actions {
-    margin: 10px 0;
+    margin-left: 0;
     position: absolute;
     width: 100%;
     z-index: 1000;
     background-color: #fff;
     top: 0;
-    padding-bottom: 5px;
+    padding: 10px 15px;
 
     .btn {
       margin-right: 0;

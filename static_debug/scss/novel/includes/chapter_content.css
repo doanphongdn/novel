@@ -70,15 +70,31 @@
 }
 .chapter-content .chapter-actions {
   margin: 10px 0;
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+  background-color: #fff;
+  top: 0;
+  padding-bottom: 5px;
 }
 .chapter-content .chapter-actions .btn {
   margin-right: 0;
+}
+.chapter-content .chapter-title {
+  margin-top: 80px;
 }
 .chapter-content h3, .chapter-content h5 {
   text-align: center;
 }
 .chapter-content h3 {
   text-transform: uppercase;
+}
+
+/* Small Devices, Tablets */
+@media (max-width: 1140px) {
+  .chapter.container {
+    width: 100%;
+  }
 }
 
 /*# sourceMappingURL=chapter_content.css.map */

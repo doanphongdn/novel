@@ -23,3 +23,22 @@ class HtmlPage(models.Model):
 
     def get_absolute_url(self):
         return f"/{self.slug}"
+
+
+class FooterInfo(models.Model):
+    class Meta:
+        db_table = "cms_footer"
+
+    content = models.TextField(blank=True, null=True)
+    copyright = models.TextField(blank=True, null=True)
+    active = models.BooleanField(default=True)
+
+
+class HashTag(models.Model):
+    class Meta:
+        db_table = "cms_hashtag"
+
+    name = models.CharField(max_length=250, unique=True)
+    url = models.CharField(max_length=255, null=True)
+    type = models.CharField(max_length=30, blank=True)
+    active = models.BooleanField(default=True)

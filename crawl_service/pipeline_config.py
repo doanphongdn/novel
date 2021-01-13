@@ -11,6 +11,7 @@ PIPELINE_STYLESHEETS = {
                 'scss/novel/includes/novel_list.scss',
                 'scss/novel/includes/novel_info.scss',
                 'scss/novel/chapter.scss',
+                'scss/novel/includes/footer.scss',
             ),
             'output_filename': 'css/novel/base.css',
             'extra_context': {

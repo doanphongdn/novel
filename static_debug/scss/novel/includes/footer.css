@@ -1,0 +1,41 @@
+.footer {
+  color: #aaa;
+  background-color: #222;
+  font-size: 13px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.footer .copyright {
+  overflow: hidden;
+}
+
+.footer a {
+  color: #ddd;
+}
+
+.mrt10 {
+  margin-top: 10px;
+}
+
+.footer .link-footer h4 {
+  margin: 5px 0;
+  color: #fff;
+  font-weight: 400;
+  font-size: 18px;
+}
+
+.footer .link-footer ul {
+  margin: 0;
+  padding: 0;
+}
+
+.footer .link-footer ul li {
+  margin: 0;
+  margin-right: 5px;
+  line-height: 38px;
+  list-style: none;
+  display: inline-block;
+}
+
+/*# sourceMappingURL=footer.css.map */

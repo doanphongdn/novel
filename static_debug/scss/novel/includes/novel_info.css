@@ -1,5 +1,27 @@
+.novel-info .novel-detail {
+  padding: 15px;
+}
+.novel-info .novel-detail .novel-detail-wrap label {
+  font-size: 1rem;
+  min-width: 120px;
+}
+.novel-info .novel-detail .novel-detail-wrap .rating i, .novel-info .novel-detail .novel-detail-wrap .rating span {
+  margin-right: 5px;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+.novel-info .novel-detail .novel-detail-wrap .rating span {
+  margin-left: 10px;
+  font-weight: 500;
+}
 .novel-info .novel-detail .novel-detail-wrap .novel-button button {
   margin: 10px 5px 0 0;
 }
+
+.novel-info .novel-info-wrap .rating_current {
+  color: orange;
+}
+
+/* Small Devices, Tablets */
 
 /*# sourceMappingURL=novel_info.css.map */

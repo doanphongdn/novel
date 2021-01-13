@@ -9,8 +9,6 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from unidecode import unidecode
 
-from crawl_service import settings
-
 
 def datetime2string(value):
     """ Convert updated_at to friendly string

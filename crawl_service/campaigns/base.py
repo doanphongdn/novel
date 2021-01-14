@@ -25,7 +25,9 @@ class BaseCrawlCampaignType(object):
         pass
 
     def build_condition_or(self, item):
-        return reduce(or_, (Q(**{field + "__in": item.get(field)}) for field in self.update_by_fields))
+        conditions = (Q(**{field + "__in": item.get(field) if isinstance(item.get(field), list) else [item.get(field)]})
+                      for field in self.update_by_fields)
+        return reduce(or_, conditions)
 
     def full_schema_url(self, url):
         if not url.startswith("http"):

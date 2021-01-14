@@ -41,8 +41,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
 
                 latest_chapter = self.full_schema_url(item.get('latest_chapter_url') or "")
                 if latest_chapter:
-                    novel_chapters = novel.chapters.values_list('url', flat=True)
-                    if latest_chapter not in novel_chapters:
+                    if latest_chapter != novel.latest_chapter_url:
                         novel.novel_updated = False
                         no_update_count = 0
                     else:
@@ -128,8 +127,8 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                 chapters.append(NovelChapter(novel=novel,
                                              name=chapter.get("name"),
                                              url=chapter_url))
-                if chapter_url == novel.latest_chapter_url:
-                    continue_paging = False
+                # if chapter_url == novel.latest_chapter_url:
+                #     continue_paging = False
 
             if chapters:
                 NovelChapter.objects.bulk_create(chapters, ignore_conflicts=True)

@@ -1,3 +1,4 @@
+import os
 import zlib
 from time import sleep
 
@@ -60,9 +61,9 @@ class NovelCampaignType(BaseCrawlCampaignType):
 
                 new_data.append(Novel(**item))
 
-            if no_update_count >= no_update_limit:
-                # TODO: raise error if want to handle latest update
-                pass
+            if no_update_count >= no_update_limit and \
+                    os.environ.get('STOP_NOVEL_NO_UPDATED', 'false').lower() == 'true':
+                return False
 
         if new_data:
             Novel.objects.bulk_create(new_data, ignore_conflicts=True)

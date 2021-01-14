@@ -41,12 +41,11 @@ class CrawlCampaign(models.Model):
     target_direct = models.BooleanField(default=True,
                                         help_text="If option is TRUE, this campaign will call directly by target_url "
                                                   "otherwise call via API and get list of urls from response.")
-    paging_param = models.CharField(max_length=50, null=True, blank=True, default='',
-                                    help_text="Blank if no pagination.")
+    next_page_xpath = models.CharField(max_length=250, null=True, blank=True, default='',
+                                       help_text="Blank if no pagination.")
     paging_delay = models.IntegerField(default=0,
                                        help_text="If the target url has pagination, "
                                                  "this option will allow to delay any second after each request")
-    paging_stopped_by_item = models.CharField(max_length=50, null=True, blank=True, default='',)
     repeat_time = models.IntegerField(default=5,
                                       help_text="Minutes to repeat this campaign, set 0 if dont want to repeat")
     last_run = models.DateTimeField(default=None, null=True, blank=True)

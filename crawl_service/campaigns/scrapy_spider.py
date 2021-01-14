@@ -29,15 +29,12 @@ class NovelSpider(scrapy.Spider):
 
         campaign_mapping = CampaignMapping.type_mapping.get(self.campaign.campaign_type)
         self.campaign_type = campaign_mapping(self.campaign, self.prefetch_by_data)
-        self.paging = {}
 
         super().__init__(name=campaign.name, **kwargs)
 
     def parse(self, response, **kwargs):
         paging = kwargs.get('paging') or False
         origin_url = kwargs.get('origin_url') if paging else response.url.rstrip('/')
-        if not paging:
-            self.paging[origin_url] = 1
 
         res_data = {"url": origin_url}
         for item in self.campaign.items:
@@ -57,11 +54,11 @@ class NovelSpider(scrapy.Spider):
         if self.campaign.paging_delay:
             sleep(self.campaign.paging_delay)
 
-        if self.campaign.paging_param and res_data and continue_paging:
-            self.paging[origin_url] += 1
-            next_page = "%s%s%s" % (origin_url, self.campaign.paging_param, self.paging[origin_url])
-            yield scrapy.Request(next_page, cb_kwargs={'origin_url': origin_url, 'paging': True}, callback=self.parse)
-
+        if self.campaign.next_page_xpath and res_data and continue_paging:
+            next_page = response.xpath(self.campaign.next_page_xpath).get()
+            if origin_url in next_page:
+                yield scrapy.Request(next_page, cb_kwargs={'origin_url': origin_url, 'paging': True},
+                                     callback=self.parse)
         elif self.other_urls:
             url = self.other_urls.pop(0)
             yield scrapy.Request(url, cb_kwargs={'origin_url': url, 'paging': False}, callback=self.parse)

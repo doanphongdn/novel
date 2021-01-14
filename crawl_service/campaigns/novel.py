@@ -1,4 +1,5 @@
 import zlib
+from time import sleep
 
 from rest_framework import serializers
 
@@ -34,6 +35,8 @@ class NovelCampaignType(BaseCrawlCampaignType):
         no_update_count = 0
 
         for item in values:
+            sleep(0.01)
+
             novel = self.model_class.objects.filter(self.build_condition_or(item)).first()
             if novel:
                 novel.name = item.get("name")
@@ -93,6 +96,8 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
 
         continue_paging = True
         for field in self.update_by_fields:
+            sleep(0.01)
+
             novel = self.update_values.get(field, {}).get(crawled_data.get(field))
             if not novel:
                 continue
@@ -169,6 +174,8 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
             raise Exception("Loi schema")
 
         for field in self.update_by_fields:
+            sleep(0.01)
+
             chapter = self.update_values.get(field, {}).get(crawled_data.get(field))
             if not chapter:
                 continue

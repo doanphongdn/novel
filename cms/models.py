@@ -50,7 +50,13 @@ class Link(models.Model):
     active = models.BooleanField(default=True)
 
 
-PAGE_FILES = [f for f in listdir(os.path.join(settings.BASE_DIR, os.environ.get('APP_NAME'))) if isfile(f)]
+PAGE_FILES = [(f, f) for f in listdir(os.path.join(settings.BASE_DIR, "templates", os.environ.get('APP_NAME')))
+              if isfile(os.path.join(settings.BASE_DIR, "templates", os.environ.get('APP_NAME'), f))
+              and f.endswith(".html") and f != 'base.html']
+INCLUDE_FILES = [(f, f) for f in
+                 listdir(os.path.join(settings.BASE_DIR, os.environ.get('APP_NAME'), "views/includes" ))
+                 if isfile(os.path.join(settings.BASE_DIR, "templates", os.environ.get('APP_NAME'), f))
+                 and f.endswith(".html") and f != 'base.html']
 
 
 class TemplateManager(models.Model):
@@ -58,3 +64,4 @@ class TemplateManager(models.Model):
         db_table = "cms_template_manager"
 
     page_name = models.CharField(max_length=250, choices=PAGE_FILES)
+    include_file = models.CharField(max_length=250, choices=INCLUDE_FILES)

@@ -169,7 +169,7 @@ class NovelChapter(models.Model):
     view_total = models.IntegerField(default=0, null=True)
 
     chapter_updated = models.BooleanField(default=False)
-    binary_content = models.BinaryField()
+    binary_content = models.BinaryField(blank=True, null=True)
     images_content = models.TextField(blank=True, null=True)
 
     # Datetime
@@ -216,7 +216,7 @@ class NovelChapter(models.Model):
 
     @property
     def decompress_content(self):
-        if len(self.binary_content) > 0:
+        if self.binary_content and len(self.binary_content) > 0:
             decompresed = zlib.decompress(self.binary_content).decode()
             return decompresed
 

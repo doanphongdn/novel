@@ -83,7 +83,7 @@ class ChapterView(NovelBaseView):
         if chapter:
             referer = urlparse(chapter.url)
             referer_url = referer.scheme + "://" + referer.netloc
-            origin_url = chapter.images[int(image_files[1])] or ""
+            origin_url = (chapter.images[int(image_files[1])] or "").strip()
 
             if origin_url.strip().startswith('//'):
                 origin_url = referer.scheme + ":" + origin_url
@@ -91,6 +91,6 @@ class ChapterView(NovelBaseView):
             elif origin_url.strip().startswith('/'):
                 origin_url = referer_url.strip('/') + "/" + origin_url
 
-            return StreamingHttpResponse(url2yield(origin_url, referer=referer),
+            return StreamingHttpResponse(url2yield(origin_url, referer=referer_url),
                                          content_type="image/jpeg")
         return HttpResponse({})

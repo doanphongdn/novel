@@ -61,11 +61,11 @@ class NovelCampaignType(BaseCrawlCampaignType):
 
                 new_data.append(Novel(**item))
 
-            if 0 < no_update_limit <= no_update_count:
-                return False
-
         if new_data:
             Novel.objects.bulk_create(new_data, ignore_conflicts=True)
+
+        if 0 < no_update_limit <= no_update_count:
+            return False
 
         return True
 

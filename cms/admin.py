@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from cms.models import FooterInfo, Link, HtmlPage
+from cms.models import FooterInfo, Link, HtmlPage, TemplateManager
 
 
 @admin.register(HtmlPage)
@@ -23,3 +23,8 @@ class LinkAdmin(admin.ModelAdmin):
     list_display = ("id", "active", "name", "url", "type")
     search_fields = ("name", "url", "type")
     list_filter = ("active",)
+
+
+@admin.register(TemplateManager)
+class TemplateManagerAdmin(admin.ModelAdmin):
+    list_display = ("id", "page_name")

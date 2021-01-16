@@ -1,7 +1,13 @@
+import os
+from os import listdir
+from os.path import isfile
+
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
 from django.db import models
 from unidecode import unidecode
+
+from crawl_service import settings
 
 
 def unicode_slugify(name):
@@ -42,3 +48,13 @@ class Link(models.Model):
     url = models.CharField(max_length=255, null=True)
     type = models.CharField(max_length=30, blank=True, default='hashtag')
     active = models.BooleanField(default=True)
+
+
+PAGE_FILES = [f for f in listdir(os.path.join(settings.BASE_DIR, os.environ.get('APP_NAME'))) if isfile(f)]
+
+
+class TemplateManager(models.Model):
+    class Meta:
+        db_table = "cms_template_manager"
+
+    page_name = models.CharField(max_length=250, choices=PAGE_FILES)

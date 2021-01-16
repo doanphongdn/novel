@@ -56,12 +56,12 @@ class NovelSpider(scrapy.Spider):
 
         if self.campaign.next_page_xpath and res_data and continue_paging:
             next_page = response.xpath(self.campaign.next_page_xpath).get() or ""
-            if origin_url in next_page:
-                if next_page.strip().startswith('//'):
-                    next_page = "http:" + next_page
-                elif next_page.strip().startswith('/'):
-                    next_page = self.campaign.campaign_source.homepage.strip('/') + next_page
+            if next_page.strip().startswith('//'):
+                next_page = "http:" + next_page
+            elif next_page.strip().startswith('/'):
+                next_page = self.campaign.campaign_source.homepage.strip('/') + next_page
 
+            if origin_url in next_page:
                 yield scrapy.Request(next_page, cb_kwargs={'origin_url': origin_url, 'paging': True},
                                      callback=self.parse)
         elif self.other_urls:

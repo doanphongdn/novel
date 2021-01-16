@@ -181,7 +181,10 @@ class NovelChapter(models.Model):
 
     @property
     def images(self):
-        return self.images_content.split('\n')
+        images = []
+        if self.images_content:
+            images = self.images_content.split('\n')
+        return images
 
     @property
     def stream_images(self):

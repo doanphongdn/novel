@@ -4,12 +4,10 @@ import requests
 from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import redirect
 
-from novel.models import Novel, NovelChapter, NovelSetting
+from novel.models import Novel, NovelChapter
 from novel.views.base import NovelBaseView
 from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
 from novel.views.includes.chapter_content import ChapterContentTemplateInclude
-from novel.views.includes.chapter_image import ChapterImageTemplateInclude
-from novel.views.includes.novel_info import NovelInfoTemplateInclude
 
 
 def url2yield(url, chunksize=1024, referer=None):

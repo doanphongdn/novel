@@ -133,13 +133,17 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
             if chapters:
                 exist_chapters = NovelChapter.objects.filter(url__in=list(chapters.keys()))
                 for ex_chap in exist_chapters:
-                    ex_chap.name = chapters.pop(ex_chap.url)
-                    ex_chap.save()
+                    name = chapters.pop(ex_chap.url)
+                    if ex_chap.name != name:
+                        ex_chap.name = name
+                        ex_chap.chapter_updated = False
+                        ex_chap.save()
 
                 new_chapters = [NovelChapter(novel=novel, name=name, url=url) for url, name in chapters.items()]
                 if new_chapters:
                     NovelChapter.objects.bulk_create(new_chapters, ignore_conflicts=True)
-                    update = True
+
+                update = True
 
             status = crawled_data.get("status")
             if status and status != novel.status:

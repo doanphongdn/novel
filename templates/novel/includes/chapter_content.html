@@ -55,6 +55,9 @@
             {% autoescape off %}
                 {{ chapter.decompress_content }}
             {% endautoescape %}
+            {% for image_url in chapter.stream_images %}
+                <img src="{{ image_url }}" alt="">
+            {% endfor %}
         </div>
     </div>
     <hr class="hr-text" data-content="END CHAPTER">

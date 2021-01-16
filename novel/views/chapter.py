@@ -68,13 +68,7 @@ class ChapterView(NovelBaseView):
 
         breadcrumb = BreadCrumbTemplateInclude(data=breadcrumb_data)
 
-        setting = NovelSetting.get_setting()
-        if setting.novel_type == 'COMIC':
-            chapter_content = ChapterImageTemplateInclude(chapter=chapter)
-        elif setting.novel_type == 'TEXT':
-            chapter_content = ChapterContentTemplateInclude(chapter=chapter)
-        else:
-            chapter_content = None
+        chapter_content = ChapterContentTemplateInclude(chapter=chapter)
 
         response.context_data.update({
             'novel_url': novel.get_absolute_url(),
@@ -90,12 +84,14 @@ class ChapterView(NovelBaseView):
         chapter = NovelChapter.objects.filter(id=image_files[0]).first()
         if chapter:
             referer = urlparse(chapter.url)
-            referer = referer.scheme + "://" + referer.netloc
-            origin_url = chapter.images[int(image_files[1])]
-            if origin_url[0:2] == '//':
-                origin_url = "http:%s" % origin_url
-            elif origin_url[0:1] == '/':
-                origin_url = "%s/%s" % (referer.strip('/'), origin_url)
+            referer_url = referer.scheme + "://" + referer.netloc
+            origin_url = chapter.images[int(image_files[1])] or ""
+
+            if origin_url.strip().startswith('//'):
+                origin_url = referer.scheme + ":" + origin_url
+
+            elif origin_url.strip().startswith('/'):
+                origin_url = referer_url.strip('/') + "/" + origin_url
 
             return StreamingHttpResponse(url2yield(origin_url, referer=referer),
                                          content_type="image/jpeg")

@@ -41,12 +41,26 @@ class CrawlItemActionInlineAdmin(admin.TabularInline):
 
 @admin.register(CrawlCampaign)
 class CrawlCampaignAdmin(admin.ModelAdmin):
-    list_display = ("name", "campaign_source", "campaign_type", "status", "","target_url", "active")
+    list_display = ("name", "campaign_source", "campaign_type", "status", "last_run", "target_url", "active")
     # readonly_fields = ("status",)
     inlines = [
         CrawlItemInlineAdmin,
         CrawlItemActionInlineAdmin,
     ]
+    actions = ["campaign_active", "campaign_deactive"]
+
+    def campaign_active(self, request, queryset):
+        for obj in queryset:
+            obj.active = True
+            obj.save()
+
+    def campaign_deactive(self, request, queryset):
+        for obj in queryset:
+            obj.active = False
+            obj.save()
+
+    campaign_active.short_description = "Active >>"
+    campaign_deactive.short_description = "Deactive >>"
 
 
 @admin.register(CrawlCampaignSource)

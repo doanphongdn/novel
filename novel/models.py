@@ -81,7 +81,7 @@ class Novel(models.Model):
     name = models.CharField(max_length=250, db_index=True, unique=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, db_index=True,
                          max_length=250, blank=True, unique=True, null=True)
-    url = models.TextField()
+    url = models.TextField(unique=True)
     thumbnail_image = models.TextField(blank=True, null=True)
     descriptions = models.TextField(blank=True, null=True)
 
@@ -157,7 +157,7 @@ class Novel(models.Model):
 class NovelChapter(models.Model):
     class Meta:
         db_table = "novel_chapters"
-        unique_together = [('name', 'novel'), ('slug', 'novel')]
+        unique_together = [('name', 'novel'), ('slug', 'novel'), ('url', 'novel')]
         ordering = ['-id']
 
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE)

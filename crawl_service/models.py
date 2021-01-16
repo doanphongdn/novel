@@ -46,6 +46,7 @@ class CrawlCampaign(models.Model):
     paging_delay = models.IntegerField(default=0,
                                        help_text="If the target url has pagination, "
                                                  "this option will allow to delay any second after each request")
+    no_update_limit = models.IntegerField(default=0, help_text="Default = 0 is no limit")
     repeat_time = models.IntegerField(default=5,
                                       help_text="Minutes to repeat this campaign, set 0 if dont want to repeat")
     last_run = models.DateTimeField(default=None, null=True, blank=True)

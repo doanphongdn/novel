@@ -30,15 +30,16 @@ class BaseCrawlCampaignType(object):
         return reduce(or_, conditions)
 
     def full_schema_url(self, url):
-        if not url.startswith("http"):
-            if url.startswith('//'):
-                return "http:%s" % url.rstrip('/')
-            elif url.startswith('/'):
-                return "%s%s" % (self.campaign.campaign_source.homepage.strip('/'), url.rstrip('/'))
+        if url.strip().startswith('//'):
+            url = "http:" + url
+        elif url.strip().startswith('/'):
+            url = self.campaign.campaign_source.homepage.strip('/') + url
         else:
-            return url.rstrip('/')
+            url = url.rstrip('/')
 
-    def handle(self, crawled_data):
+        return url
+
+    def handle(self, crawled_data, *args, **kwargs):
         return True
 
 

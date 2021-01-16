@@ -26,14 +26,14 @@ class NovelCampaignType(BaseCrawlCampaignType):
     # List keys use to check value duplicate
     update_by_fields = ['name', 'url']
 
-    def handle(self, crawled_data):
+    def handle(self, crawled_data, *args, **kwargs):
         if not NovelCampaignSchema(data=crawled_data).is_valid():
             raise Exception("Loi schema")
 
         values = crawled_data.get('novel_block', [])
         new_data = []
-        no_update_limit = 10
         no_update_count = 0
+        no_update_limit = kwargs.get('no_update_limit') or 0
 
         for item in values:
             sleep(0.01)
@@ -61,8 +61,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
 
                 new_data.append(Novel(**item))
 
-            if no_update_count >= no_update_limit and \
-                    os.environ.get('STOP_NOVEL_NO_UPDATED', 'false').lower() == 'true':
+            if 0 < no_update_limit <= no_update_count:
                 return False
 
         if new_data:
@@ -91,7 +90,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
     model_class = Novel
     update_by_fields = ['url']
 
-    def handle(self, crawled_data):
+    def handle(self, crawled_data, *args, **kwargs):
         if not NovelInfoCampaignSchema(data=crawled_data).is_valid():
             raise Exception("Loi schema")
 
@@ -128,18 +127,19 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                     novel.genres.add(genre)
                     update = True
 
-            chapters = []
-            for chapter in crawled_data.get("list_chapter") or []:
-                chapter_url = self.full_schema_url(chapter.get("chapter_url"))
-                chapters.append(NovelChapter(novel=novel,
-                                             name=chapter.get("name"),
-                                             url=chapter_url))
-                # if chapter_url == novel.latest_chapter_url:
-                #     continue_paging = False
+            chapters = {self.full_schema_url(chapter.get("chapter_url")): chapter.get("name")
+                        for chapter in crawled_data.get("list_chapter") or []}
 
             if chapters:
-                NovelChapter.objects.bulk_create(chapters, ignore_conflicts=True)
-                update = True
+                exist_chapters = NovelChapter.objects.filter(url__in=list(chapters.keys()))
+                for ex_chap in exist_chapters:
+                    ex_chap.name = chapters.pop(ex_chap.url)
+                    ex_chap.save()
+
+                new_chapters = [NovelChapter(novel=novel, name=name, url=url) for url, name in chapters.items()]
+                if new_chapters:
+                    NovelChapter.objects.bulk_create(new_chapters, ignore_conflicts=True)
+                    update = True
 
             status = crawled_data.get("status")
             if status and status != novel.status:
@@ -170,7 +170,7 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
     model_class = NovelChapter
     update_by_fields = ['url']
 
-    def handle(self, crawled_data):
+    def handle(self, crawled_data, *args, **kwargs):
         if not NovelChapterCampaignSchema(data=crawled_data).is_valid():
             raise Exception("Loi schema")
 

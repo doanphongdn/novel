@@ -1,5 +1,7 @@
 import json
+import os
 from time import sleep
+from urllib.parse import urlparse
 
 import requests
 import scrapy
@@ -49,21 +51,17 @@ class NovelSpider(scrapy.Spider):
             except:
                 pass
 
-        continue_paging = self.campaign_type.handle(res_data)
+        continue_paging = self.campaign_type.handle(res_data, no_update_limit=self.campaign.no_update_limit)
 
         if self.campaign.paging_delay:
             sleep(self.campaign.paging_delay)
 
         if self.campaign.next_page_xpath and res_data and continue_paging:
             next_page = response.xpath(self.campaign.next_page_xpath).get() or ""
-            if next_page.strip().startswith('//'):
-                next_page = "http:" + next_page
-            elif next_page.strip().startswith('/'):
-                next_page = self.campaign.campaign_source.homepage.strip('/') + next_page
+            next_page = self.campaign_type.full_schema_url(next_page)
 
-            if origin_url in next_page:
-                yield scrapy.Request(next_page, cb_kwargs={'origin_url': origin_url, 'paging': True},
-                                     callback=self.parse)
+            yield scrapy.Request(next_page, cb_kwargs={'origin_url': origin_url, 'paging': True},
+                                 callback=self.parse)
         elif self.other_urls:
             url = self.other_urls.pop(0)
             yield scrapy.Request(url, cb_kwargs={'origin_url': url, 'paging': False}, callback=self.parse)

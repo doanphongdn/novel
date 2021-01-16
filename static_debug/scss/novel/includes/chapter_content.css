@@ -1,9 +1,11 @@
 #modal-chapter .modal-header {
   padding: 5px;
 }
+
 #modal-chapter .modal-body {
   padding: 15px;
 }
+
 #modal-chapter .modal-body ul {
   margin: 0;
   padding: 5px;
@@ -11,6 +13,7 @@
   max-height: 400px;
   overflow-y: auto;
 }
+
 #modal-chapter .modal-body li {
   display: inline-block;
   width: 100%;
@@ -20,6 +23,7 @@
   white-space: nowrap;
   overflow: hidden;
 }
+
 #modal-chapter .modal-body li:not(:last-child) {
   border-bottom: thin solid #eee;
 }
@@ -28,14 +32,21 @@
   position: relative;
   text-align: justify;
 }
+
 .chapter-content .chapter-detail {
   text-align: center;
 }
+
+.chapter-content .chapter-detail img {
+  width: 100%;
+}
+
 .chapter-content .chapter-detail p {
   font-size: 20px;
   font-weight: 100;
   line-height: 150%;
 }
+
 .chapter-content .hr-text {
   margin: 10px 0 30px 0;
   line-height: 1em;
@@ -47,6 +58,7 @@
   height: 1.5em;
   opacity: 0.5;
 }
+
 .chapter-content .hr-text:before {
   content: "";
   background: linear-gradient(to right, transparent, #818078, transparent);
@@ -56,6 +68,7 @@
   width: 100%;
   height: 1px;
 }
+
 .chapter-content .hr-text:after {
   content: attr(data-content);
   position: relative;
@@ -65,12 +78,14 @@
   color: #818078;
   background-color: #fcfcfa;
 }
+
 .chapter-content .hr-light {
   height: 38px;
   border: none;
   margin: 10px 0 30px 0;
   background: url("/static/images/hr-dark.png") no-repeat 50%;
 }
+
 .chapter-content .chapter-actions {
   margin-left: 0;
   position: absolute;
@@ -80,15 +95,19 @@
   top: 0;
   padding: 10px 15px;
 }
+
 .chapter-content .chapter-actions .btn {
   margin-right: 0;
 }
+
 .chapter-content .chapter-title {
   margin-top: 80px;
 }
+
 .chapter-content h3, .chapter-content h5 {
   text-align: center;
 }
+
 .chapter-content h3 {
   text-transform: uppercase;
 }

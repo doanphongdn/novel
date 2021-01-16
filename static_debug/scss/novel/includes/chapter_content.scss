@@ -46,6 +46,12 @@
       //400, 600, 700
       line-height: 150%;
     }
+
+    img {
+      max-width: 100%;
+      margin: 0 auto;
+      display: block;
+    }
   }
 
   .hr-text {

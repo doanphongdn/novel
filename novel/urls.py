@@ -24,7 +24,6 @@ from django.views.generic.base import TemplateView
 from crawl_service import settings
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
 from novel.sitemap import NovelSitemap, StaticViewSitemap
-from novel.views.base import view_404
 from novel.views.chapter import ChapterView
 from novel.views.index import NovelIndexView
 from novel.views.novel import NovelDetailView

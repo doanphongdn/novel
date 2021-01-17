@@ -25,3 +25,6 @@ cp .env.example .env
 # install static files
 .venv/bin/python3 manage.py collectstatic
 
+# install memcached
+sudo apt-get install memcached
+

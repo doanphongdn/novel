@@ -49,9 +49,9 @@ urlpatterns = [
     path('api/novel/chapter/update_list', APIViewNovelChapterUpdateList.as_view()),
 
     path('', NovelIndexView.as_view(), name="home"),
-    path('novel/search', NovelDetailView.as_view()),
-    path('novel', NovelView.as_view(), name="novel_view"),
-    path('all/<str:novel_type>', NovelView.as_view(), name="novel_all"),
+    path('search', NovelDetailView.as_view()),
+    path(settings.NOVEL_ALL_URL, NovelView.as_view(), name="novel_view"),
+    path(settings.NOVEL_ALL_URL + '/<str:type>', NovelView.as_view(), name="novel_all"),
 
     path('images/<str:img>', ChapterView.stream_image, name="stream_image"),
 

@@ -52,20 +52,11 @@ class Link(models.Model):
     active = models.BooleanField(default=True)
 
 
-template_folder = os.path.join(settings.BASE_DIR, "templates", os.environ.get('APP_NAME'))
-PAGE_FILES = [(f, f) for f in listdir(template_folder) if isfile(os.path.join(template_folder, f))
-              and f.endswith(".html") and f != 'base.html']
-
-includes_folder = os.path.join(template_folder, 'includes')
-INCLUDE_FILES = [(f, f) for f in listdir(includes_folder) if isfile(os.path.join(includes_folder, f))
-                 and f.endswith(".html") and not f.startswith('__')]
-
-
 class TemplateManager(models.Model):
     class Meta:
         db_table = "cms_template_manager"
 
-    page_file = models.CharField(max_length=250, choices=TEMPLATE_PAGE_CHOISES.get(os.environ.get('APP_NAME')),
+    page_file = models.CharField(max_length=250, choices=TEMPLATE_PAGE_CHOISES.get(settings.APP_NAME),
                                  unique=True)
     includes_default = models.TextField()
 
@@ -80,7 +71,7 @@ class InludeTemplate(models.Model):
 
     template = models.ForeignKey(TemplateManager, on_delete=models.CASCADE)
     code = models.CharField(max_length=50, validators=[code_validate])
-    include_file = models.CharField(max_length=250, choices=TEMPLATE_INCLUDE_CHOISES.get(os.environ.get('APP_NAME')))
+    include_file = models.CharField(max_length=250, choices=TEMPLATE_INCLUDE_CHOISES.get(settings.APP_NAME))
     params = models.TextField()
     class_name = models.CharField(max_length=250)
     full_width = models.BooleanField(default=False)

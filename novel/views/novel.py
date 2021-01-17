@@ -75,6 +75,9 @@ class NovelDetailView(NovelBaseView):
         # breadcrumb = BreadCrumbTemplateInclude(data=breadcrumb_data)
 
         extra_data = {
+            "breadcrumb": {
+                "breadcrumb_data": breadcrumb_data,
+            },
             "novel_info": {
                 "novel": novel,
             },

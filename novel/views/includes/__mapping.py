@@ -5,6 +5,7 @@ from django.utils.html import format_html_join
 from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
 from novel.views.includes.chapter_content import ChapterContentTemplateInclude
 from novel.views.includes.chapter_list import ChapterListTemplateInclude
+from novel.views.includes.footer_info import FooterInfoplateInclude
 from novel.views.includes.link import LinkTemplateInclude
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
@@ -18,6 +19,7 @@ TEMPLATE_INCLUDE_MAPPING = {
     "novel_list": NovelListTemplateInclude,
     "breadcrumb": BreadCrumbTemplateInclude,
     "pagination": PaginationTemplateInclude,
+    "footer_info": FooterInfoplateInclude,
 }
 
 

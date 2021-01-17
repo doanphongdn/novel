@@ -4,7 +4,7 @@ $(document).ready(function (e) {
         source: function (req, res) {
             $.ajax({
                 type: "POST",
-                url: "/novel/search",
+                url: "/search",
                 dataType: 'json',
                 data: {
                     q: req.term,

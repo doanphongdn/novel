@@ -22,31 +22,31 @@
                             </div>
 
                             <div class="col-12 novel-authors">
-                                <label>Authors </label>
+                                <label>{{ author_label }} </label>
                                 <span>{{ novel.authors_name }}</span>
                             </div>
                             <div class="col-12 novel-categories">
-                                <label>Categories </label>
+                                <label>{{ category_label }} </label>
                                 {% for gen in novel.genres.all %}
                                     <span class="cate-item">{{ gen.name }}</span>
                                 {% endfor %}
                             </div>
                             <div class="col-12">
-                                <label>Latest update </label>
+                                <label>{{ latest_update_label }} </label>
                                 <span>{{ novel.chapters.0.created_at_str }}</span>
                             </div>
                             <div class="col-12 novel-summary">
                                 <div class="row">
                                     <div class="col-4 col-md-2 novel-summury-item chapters">
-                                        <label>Chapters</label>
+                                        <label>{{ chapter_total_label }}</label>
                                         <p><i class="fa fa-list"></i> {{ novel.chapters | length }}</p>
                                     </div>
                                     <div class="col-4 col-md-2 novel-summury-item view-total">
-                                        <label>Views</label>
+                                        <label>{{ view_total_label }}</label>
                                         <p><i class="fa fa-eye"></i> {{ novel.view_total }}</p>
                                     </div>
                                     <div class="col-4 col-md-2 novel-summury-item status">
-                                        <label>Status</label>
+                                        <label>{{ status_label }}</label>
                                         <p><i class="fa fa-flag"></i> {{ novel.status.name }}</p>
                                     </div>
                                     <div class="col-md-3 novel-summury-item action-item d-none d-md-block">
@@ -65,31 +65,32 @@
                             <div class="col-12 novel-button">
                                 <a href="{{ novel.first_chapter_url }}">
                                     <button class="btn btn-sm btn-primary">
-
-                                        <i class="fa fa-sort-numeric-asc"></i> First chap
+                                        <i class="fa fa-sort-numeric-asc"></i> {{ first_chapter_label }}
                                     </button>
                                 </a>
                                 <a href="{{ novel.last_chapter_url }}">
                                     <button class="btn btn-sm btn-primary">
-                                        <i class="fa fa-sort-numeric-desc"></i> Latest chap
+                                        <i class="fa fa-sort-numeric-desc"></i> {{ latest_chapter_label }}
                                     </button>
                                 </a>
                                 <button class="btn btn-sm btn-danger">
-                                    <i class="fa fa-bug"></i> Issue
+                                    <i class="fa fa-bug"></i> {{ issue_label }}
                                 </button>
                             </div>
                             <div class="col-12 novel-mobile-action d-md-none">
                                 <div class="row">
-                                    <div class="col-6 action-item">
-                                        <div><i class="fa fa-comments"></i></div>
-                                        <div></div>
-                                        <p>Comments</p>
-                                        <div></div>
-                                    </div>
-                                    <div class="col-6 action-item">
-                                        <i class="fa fa-bookmark"></i>
-                                        <p> Bookmark</p>
-                                    </div>
+                                    {% if comment_enable %}
+                                        <div class="col-6 action-item">
+                                            <div><i class="fa fa-comments"></i></div>
+                                            <p>{{ comment_label }}</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if comment_enable %}
+                                        <div class="col-6 action-item">
+                                            <i class="fa fa-bookmark"></i>
+                                            <p> {{ bookmark_label }}</p>
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

@@ -2,100 +2,101 @@
 {% block stylesheet %}
 {% endblock %}
 {% if novel %}
-    <div class="container novel-info">
-        <div class="col-12 novel-info-wrap">
-            <div class="row">
-                <div class="col-md-3 col-7 novel-thumbnail">
-                    <img class="" src="{{ novel.thumbnail_image }}" alt="{{ novel.name }}">
-                </div>
-                <div class="col-md-9 col-12 novel-detail">
-                    <div class="row novel-detail-wrap">
-                        <div class="col-12 novel-name">
-                            <h3>{{ novel.name }}</h3>
-                        </div>
-                        <div class="col-12 rating">
-                            {% for rating in novel.rating_classes %}
-                                <i class="{{ rating }} fa fa-star"></i>
-                            {% endfor %}
-                            <span>{{ novel.vote }}</span>
-                        </div>
-
-                        <div class="col-12 novel-authors">
-                            <label>Authors </label>
-                            <span>{{ novel.authors_name }}</span>
-                        </div>
-                        <div class="col-12 novel-categories">
-                            <label>Categories </label>
-                            {% for gen in novel.genres.all %}
-                                <span class="cate-item">{{ gen.name }}</span>
-                            {% endfor %}
-                        </div>
-                        <div class="col-12">
-                            <label>Latest update </label>
-                            <span>{{ novel.chapters.0.created_at_str }}</span>
-                        </div>
-                        <div class="col-12 novel-summary">
-                            <div class="row">
-                                <div class="col-4 col-md-2 novel-summury-item chapters">
-                                    <label>Chapters</label>
-                                    <p><i class="fa fa-list"></i> {{ novel.chapters | length }}</p>
-                                </div>
-                                <div class="col-4 col-md-2 novel-summury-item view-total">
-                                    <label>Views</label>
-                                    <p><i class="fa fa-eye"></i> {{ novel.view_total }}</p>
-                                </div>
-                                <div class="col-4 col-md-2 novel-summury-item status">
-                                    <label>Status</label>
-                                    <p><i class="fa fa-flag"></i> {{ novel.status.name }}</p>
-                                </div>
-                                <div class="col-md-3 novel-summury-item action-item d-none d-md-block">
-                                    <div><i class="fa fa-comments"></i></div>
-                                    <div></div>
-                                    <p>Comments</p>
-                                    <div></div>
-                                </div>
-                                <div class="col-md-3 novel-summury-item action-item d-none d-md-block">
-                                    <i class="fa fa-bookmark"></i>
-                                    <p> Bookmark</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 novel-button">
-                            <a href="{{ novel.first_chapter_url }}">
-                                <button class="btn btn-sm btn-primary">
-
-                                    <i class="fa fa-sort-numeric-asc"></i> First chap
-                                </button>
-                            </a>
-                            <a href="{{ novel.last_chapter_url }}">
-                                <button class="btn btn-sm btn-primary">
-                                    <i class="fa fa-sort-numeric-desc"></i> Latest chap
-                                </button>
-                            </a>
-                            <button class="btn btn-sm btn-danger">
-                                <i class="fa fa-bug"></i> Issue
-                            </button>
-                        </div>
-                        <div class="col-12 novel-mobile-action d-md-none">
-                            <div class="row">
-                                <div class="col-6 action-item">
-                                    <div><i class="fa fa-comments"></i></div>
-                                    <div></div>
-                                    <p>Comments</p>
-                                    <div></div>
-                                </div>
-                                <div class="col-6 action-item">
-                                    <i class="fa fa-bookmark"></i>
-                                    <p> Bookmark</p>
-                                </div>
-                            </div>
-                        </div>
+    <div class="row">
+        <div class="novel-info">
+            <div class="col-12 novel-info-wrap">
+                <div class="row">
+                    <div class="col-md-3 col-7 novel-thumbnail">
+                        <img class="" src="{{ novel.thumbnail_image }}" alt="{{ novel.name }}">
                     </div>
+                    <div class="col-md-9 col-12 novel-detail">
+                        <div class="row novel-detail-wrap">
+                            <div class="col-12 novel-name">
+                                <h3>{{ novel.name }}</h3>
+                            </div>
+                            <div class="col-12 rating">
+                                {% for rating in novel.rating_classes %}
+                                    <i class="{{ rating }} fa fa-star"></i>
+                                {% endfor %}
+                                <span>{{ novel.vote }}</span>
+                            </div>
 
+                            <div class="col-12 novel-authors">
+                                <label>Authors </label>
+                                <span>{{ novel.authors_name }}</span>
+                            </div>
+                            <div class="col-12 novel-categories">
+                                <label>Categories </label>
+                                {% for gen in novel.genres.all %}
+                                    <span class="cate-item">{{ gen.name }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="col-12">
+                                <label>Latest update </label>
+                                <span>{{ novel.chapters.0.created_at_str }}</span>
+                            </div>
+                            <div class="col-12 novel-summary">
+                                <div class="row">
+                                    <div class="col-4 col-md-2 novel-summury-item chapters">
+                                        <label>Chapters</label>
+                                        <p><i class="fa fa-list"></i> {{ novel.chapters | length }}</p>
+                                    </div>
+                                    <div class="col-4 col-md-2 novel-summury-item view-total">
+                                        <label>Views</label>
+                                        <p><i class="fa fa-eye"></i> {{ novel.view_total }}</p>
+                                    </div>
+                                    <div class="col-4 col-md-2 novel-summury-item status">
+                                        <label>Status</label>
+                                        <p><i class="fa fa-flag"></i> {{ novel.status.name }}</p>
+                                    </div>
+                                    <div class="col-md-3 novel-summury-item action-item d-none d-md-block">
+                                        <div><i class="fa fa-comments"></i></div>
+                                        <div></div>
+                                        <p>Comments</p>
+                                        <div></div>
+                                    </div>
+                                    <div class="col-md-3 novel-summury-item action-item d-none d-md-block">
+                                        <i class="fa fa-bookmark"></i>
+                                        <p> Bookmark</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 novel-button">
+                                <a href="{{ novel.first_chapter_url }}">
+                                    <button class="btn btn-sm btn-primary">
+
+                                        <i class="fa fa-sort-numeric-asc"></i> First chap
+                                    </button>
+                                </a>
+                                <a href="{{ novel.last_chapter_url }}">
+                                    <button class="btn btn-sm btn-primary">
+                                        <i class="fa fa-sort-numeric-desc"></i> Latest chap
+                                    </button>
+                                </a>
+                                <button class="btn btn-sm btn-danger">
+                                    <i class="fa fa-bug"></i> Issue
+                                </button>
+                            </div>
+                            <div class="col-12 novel-mobile-action d-md-none">
+                                <div class="row">
+                                    <div class="col-6 action-item">
+                                        <div><i class="fa fa-comments"></i></div>
+                                        <div></div>
+                                        <p>Comments</p>
+                                        <div></div>
+                                    </div>
+                                    <div class="col-6 action-item">
+                                        <i class="fa fa-bookmark"></i>
+                                        <p> Bookmark</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
 {% endif %}

@@ -177,7 +177,7 @@ SITE_ID = 1
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_debug"), ]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_debug"), os.path.join(BASE_DIR, "static_files")]
 
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT')
 MEDIA_URL = '/media/'

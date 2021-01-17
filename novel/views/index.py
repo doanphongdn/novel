@@ -1,9 +1,6 @@
-from django.core.paginator import Paginator
-from django.urls import reverse
-
-from novel.models import Novel
+from cms.models import TemplateManager
 from novel.views.base import NovelBaseView
-from novel.views.includes.novel_list import NovelListTemplateInclude
+from novel.views.includes.__mapping import IncludeMapping
 
 
 class NovelIndexView(NovelBaseView):
@@ -12,27 +9,11 @@ class NovelIndexView(NovelBaseView):
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 
-        list_novel = Novel.get_available_novel().all()
-
-        include_data = {
-            "novels": list_novel,
-            "title": "LATEST UPDATE",
-            "icon": "fa fa-calendar",
-            "view_all_url": reverse("novel_all", kwargs={"type": "latest-update"}),
-        }
-        novel_grid = NovelListTemplateInclude(**include_data)
-
-        include_data.update({
-            "title": "HOT NOVELS",
-            "icon": "fa fa-fire",
-            "view_type": "list",
-            "view_all_url": reverse("novel_all", kwargs={"type": "hot"}),
-        })
-        novel_list = NovelListTemplateInclude(**include_data)
+        tmpl = TemplateManager.objects.filter(page_file='index').first()
+        index_include_html = IncludeMapping.render_include_html(tmpl)
 
         response.context_data.update({
-            'novel_grid_html': novel_grid.render_html(caching_for="index_grid"),
-            'novel_list_html': novel_list.render_html(caching_for="index_list"),
+            'index_include_html': index_include_html,
         })
 
         return response

@@ -4,10 +4,10 @@ import requests
 from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import redirect
 
+from cms.models import TemplateManager
 from novel.models import Novel, NovelChapter
 from novel.views.base import NovelBaseView
-from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
-from novel.views.includes.chapter_content import ChapterContentTemplateInclude
+from novel.views.includes.__mapping import IncludeMapping
 
 
 def url2yield(url, chunksize=1024, referer=None):
@@ -38,8 +38,6 @@ class ChapterView(NovelBaseView):
         slug = kwargs.get('slug')
         chapter_slug = kwargs.get('chapter_slug')
 
-        chapter = None
-        breadcrumb_data = []
         novel = Novel.objects.filter(slug=slug).first()
         if novel:
             chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).first()
@@ -64,14 +62,21 @@ class ChapterView(NovelBaseView):
             # direct to homepage
             return redirect('/')  # or redirect('name-of-index-url')
 
-        breadcrumb = BreadCrumbTemplateInclude(data=breadcrumb_data)
+        extra_data = {
+            "breadcrumb": {
+                "breadcrumb_data": breadcrumb_data,
+            },
+            "chapter_content": {
+                "chapter": chapter
+            }
+        }
 
-        chapter_content = ChapterContentTemplateInclude(chapter=chapter)
+        tmpl = TemplateManager.objects.filter(page_file='chapter').first()
+        include_html = IncludeMapping.render_include_html(tmpl, extra_data=extra_data)
 
         response.context_data.update({
             'novel_url': novel.get_absolute_url(),
-            'chapter_content_html': chapter_content.render_html() if chapter_content else "",
-            'breadcrumb_html': breadcrumb.render_html(),
+            'include_html': include_html,
         })
 
         return response

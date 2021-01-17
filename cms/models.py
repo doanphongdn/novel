@@ -7,7 +7,9 @@ from autoslug.utils import slugify
 from django.db import models
 from unidecode import unidecode
 
+from cms.template_config import TEMPLATE_PAGE_CHOISES, TEMPLATE_INCLUDE_CHOISES
 from crawl_service import settings
+from crawl_service.models import code_validate
 
 
 def unicode_slugify(name):
@@ -50,18 +52,36 @@ class Link(models.Model):
     active = models.BooleanField(default=True)
 
 
-PAGE_FILES = [(f, f) for f in listdir(os.path.join(settings.BASE_DIR, "templates", os.environ.get('APP_NAME')))
-              if isfile(os.path.join(settings.BASE_DIR, "templates", os.environ.get('APP_NAME'), f))
+template_folder = os.path.join(settings.BASE_DIR, "templates", os.environ.get('APP_NAME'))
+PAGE_FILES = [(f, f) for f in listdir(template_folder) if isfile(os.path.join(template_folder, f))
               and f.endswith(".html") and f != 'base.html']
-INCLUDE_FILES = [(f, f) for f in
-                 listdir(os.path.join(settings.BASE_DIR, os.environ.get('APP_NAME'), "views/includes" ))
-                 if isfile(os.path.join(settings.BASE_DIR, "templates", os.environ.get('APP_NAME'), f))
-                 and f.endswith(".html") and f != 'base.html']
+
+includes_folder = os.path.join(template_folder, 'includes')
+INCLUDE_FILES = [(f, f) for f in listdir(includes_folder) if isfile(os.path.join(includes_folder, f))
+                 and f.endswith(".html") and not f.startswith('__')]
 
 
 class TemplateManager(models.Model):
     class Meta:
         db_table = "cms_template_manager"
 
-    page_name = models.CharField(max_length=250, choices=PAGE_FILES)
-    include_file = models.CharField(max_length=250, choices=INCLUDE_FILES)
+    page_file = models.CharField(max_length=250, choices=TEMPLATE_PAGE_CHOISES.get(os.environ.get('APP_NAME')),
+                                 unique=True)
+    includes_default = models.TextField()
+
+    def include_template(self):
+        return InludeTemplate.objects.filter(template=self, active=True).all()
+
+
+class InludeTemplate(models.Model):
+    class Meta:
+        db_table = "cms_template_include"
+        unique_together = [('template', 'code')]
+
+    template = models.ForeignKey(TemplateManager, on_delete=models.CASCADE)
+    code = models.CharField(max_length=50, validators=[code_validate])
+    include_file = models.CharField(max_length=250, choices=TEMPLATE_INCLUDE_CHOISES.get(os.environ.get('APP_NAME')))
+    params = models.TextField()
+    class_name = models.CharField(max_length=250)
+    full_width = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)

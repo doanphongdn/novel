@@ -1,8 +1,7 @@
-{% if data %}
+{% if breadcrumb_data %}
     <ul class="widget-breadcrumb">
         <li><a href="/">Home</a></li>
-{#        <li><a href="/">Novel</a></li>#}
-        {% for breadcrumb in data %}
+        {% for breadcrumb in breadcrumb_data %}
             <li><a href="{{ breadcrumb.url }}">{{ breadcrumb.name }}</a></li>
         {% endfor %}
     </ul>

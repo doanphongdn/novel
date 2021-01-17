@@ -1,7 +1,9 @@
 from django.contrib import admin
 
+from cms.models import FooterInfo, Link, HtmlPage, TemplateManager, InludeTemplate
+
+
 # Register your models here.
-from cms.models import FooterInfo, Link, HtmlPage, TemplateManager
 
 
 @admin.register(HtmlPage)
@@ -25,6 +27,14 @@ class LinkAdmin(admin.ModelAdmin):
     list_filter = ("active",)
 
 
+class InludeTemplateInlineAdmin(admin.TabularInline):
+    model = InludeTemplate
+    extra = 0
+
+
 @admin.register(TemplateManager)
 class TemplateManagerAdmin(admin.ModelAdmin):
-    list_display = ("id", "page_name")
+    list_display = ("id", "page_file")
+    inlines = [
+        InludeTemplateInlineAdmin,
+    ]

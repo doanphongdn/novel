@@ -40,6 +40,8 @@ class IncludeMapping(object):
         includes = template.include_template()
 
         mapping = TEMPLATE_INCLUDE_MAPPING
+        html = ""
+        wrap_class = "container"
         inc_htmls = []
         for inc in includes:
             params = {}
@@ -51,9 +53,12 @@ class IncludeMapping(object):
 
             inc_obj = mapping.get(inc.include_file)(inc_params, extra_data)
             wrap_class = inc.full_width and "container-fluid" or "container"
-            inc_htmls.append((wrap_class, inc.class_name, inc_obj.render_html()))
+            inc_htmls.append((inc.class_name, inc_obj.render_html()))
 
-        htmls = format_html_join("\n", "<div class='{}'><div class='row'><div class='{}'>{}</div></div></div>",
-                                 inc_htmls)
+        if inc_htmls:
+            html = format_html_join("\n", "<div class='{}'>{}</div>", inc_htmls)
 
-        return htmls
+        if html:
+            html = format_html_join("", "<div class='{}'><div class='row'>{}</div></div>", [(wrap_class, html)])
+
+        return html

@@ -55,13 +55,13 @@ class ChapterView(NovelBaseView):
                     "url": novel.get_absolute_url(),
                 },
                 {
-                    "name": chapter.name,
-                    "url": chapter.get_absolute_url(),
+                    "name": chapter.name if chapter else '',
+                    "url": chapter.get_absolute_url() if chapter else '',
                 }
             ]
         else:
             # TODO: define 404 page
-            # direct to hompage
+            # direct to homepage
             return redirect('/')  # or redirect('name-of-index-url')
 
         breadcrumb = BreadCrumbTemplateInclude(data=breadcrumb_data)

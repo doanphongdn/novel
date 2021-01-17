@@ -1,4 +1,3 @@
-from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
 from novel.models import NovelSetting
@@ -43,9 +42,3 @@ class NovelBaseView(TemplateView):
         kwargs["footer_html"] = footer.render_html()
 
         return super().get(request, *args, **kwargs)
-
-
-def view_404(request, exception=None):
-    # make a redirect to homepage
-    # you can use the name of url or just the plain link
-    return redirect('/') # or redirect('name-of-index-url')

@@ -17,7 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 
 
+# NOTE: not working
+# from django.conf.urls import handler404, handler500
+# from crawl_service.views.base import view_404
+
 urlpatterns = [
     path('myadmin/login', admin.site.urls),
     path('', include('novel.urls')),
 ]
+
+handler404 = 'crawl_service.views.base.view_404'

@@ -13,6 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
+
 from django.conf.urls import url
 from django.urls import path
 from django.views.decorators.cache import cache_page
@@ -33,6 +35,9 @@ sitemaps = {
 }
 
 urlpatterns = [
+    url(os.environ.get('GOOGLE_SITE_VERIFICATION', 'google-site-verification'), TemplateView.as_view(
+        template_name="novel/" + os.environ.get('GOOGLE_SITE_VERIFICATION', 'google-site-verification'),
+        content_type='text/html')),
     url(r'^robots\.txt$', TemplateView.as_view(template_name="novel/robots.txt", content_type='text/plain')),
     path('web/sitemap.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemaps}),
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},

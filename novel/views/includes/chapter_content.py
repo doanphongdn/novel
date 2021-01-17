@@ -1,11 +1,12 @@
-from novel.views.includes.base import BaseTemplateInclude
+from novel.views.includes.__base import BaseTemplateInclude
 
 
 class ChapterContentTemplateInclude(BaseTemplateInclude):
+    name = "chapter_content"
     template = "novel/includes/chapter_content.html"
 
-    def __init__(self, chapter):
-        super().__init__()
+    def __init__(self, include_data, extra_data=None):
+        super().__init__(include_data, extra_data)
         self.include_data = {
-            "chapter": chapter,
+            "chapter": self.include_data.get("chapter"),
         }

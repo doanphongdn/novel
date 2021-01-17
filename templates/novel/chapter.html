@@ -4,18 +4,7 @@
 {% endblock %}
 {% block content %}
     <div class="row">
-        <div class="chapter container">
-            <div class="col-12 widget-breadcrumb d-none d-lg-block">
-                <div class="row">
-                    {{ breadcrumb_html }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 chapter-wrap">
-                    {{ chapter_content_html }}
-                </div>
-            </div>
-        </div>
+        {{ include_html }}
         <div class="float-button">
             <ul>
                 <li><a href="{{ novel_url }}"><i class="fa fa-book"></i></a></li>

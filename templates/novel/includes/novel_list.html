@@ -1,5 +1,5 @@
 {% load static %}
-{% if item_type == 'list' %}
+{% if view_type == 'list' %}
     <div class="novel-list">
 {% else %}
     <div class="novel-grid">
@@ -31,7 +31,7 @@
 </div>
 <div class="row">
     {% for novel in novels %}
-        {% if item_type == 'list' %}
+        {% if view_type == 'list' %}
             <div class="col-12 novel-item">
         {% else %}
             <div class="col-4 col-md-3 col-lg-2 novel-item form-group">
@@ -53,7 +53,7 @@
         </div>
         <div class="novel-chapter">
             <h6><a href="{{ novel.chapters.0.get_absolute_url }}">{{ novel.chapters.0.name }}</a></h6>
-            {% if item_type == 'list' %}
+            {% if view_type == 'list' %}
                 <div class="updated-time">
                     <i class="far fa-clock"></i> {{ novel.chapters.0.created_at_str }}
                 </div>

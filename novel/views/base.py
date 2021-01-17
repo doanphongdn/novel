@@ -1,8 +1,8 @@
 from django.views.generic import TemplateView
 
+from cms.models import TemplateManager
 from novel.models import NovelSetting
-from novel.views.includes.footer import FooterTemplateInclude
-from novel.views.includes.navbar import NavBarTemplateInclude
+from novel.views.includes.__mapping import IncludeMapping
 
 
 class NovelBaseView(TemplateView):
@@ -32,8 +32,8 @@ class NovelBaseView(TemplateView):
                 "fa_icon": "fa fa-facebook-square",
             }
         ]
-        navbar = NavBarTemplateInclude(menus=menu, title=title, logo=logo)
-        footer = FooterTemplateInclude()
+        # navbar = NavBarTemplateInclude(menus=menu, title=title, logo=logo)
+        # footer = FooterTemplateInclude()
 
         kwargs["setting"] = {
             "title": title,
@@ -46,7 +46,14 @@ class NovelBaseView(TemplateView):
             "meta_img": img_view,
             "google_analystics_id": novel_setting and novel_setting.google_analystics_id or "",
         }
-        kwargs["navbar_html"] = navbar.render_html()
-        kwargs["footer_html"] = footer.render_html()
+        # kwargs["navbar_html"] = navbar.render_html()
+        tmpl = TemplateManager.objects.filter(page_file='footer').first()
+        kwargs["footer_html"] = IncludeMapping.render_include_html(tmpl)
 
         return super().get(request, *args, **kwargs)
+
+
+def view_404(request, exception=None):
+    # make a redirect to homepage
+    # you can use the name of url or just the plain link
+    return redirect('/')  # or redirect('name-of-index-url')

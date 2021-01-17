@@ -16,17 +16,18 @@ Including another URLconf
 import os
 
 from django.conf.urls import url
+from django.contrib.sitemaps import views as sitemaps_views
 from django.urls import path
 from django.views.decorators.cache import cache_page
-from django.contrib.sitemaps import views as sitemaps_views
+from django.views.generic.base import TemplateView
 
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
 from novel.sitemap import NovelSitemap, StaticViewSitemap
+from novel.views.base import view_404
 from novel.views.chapter import ChapterView
 from novel.views.index import NovelIndexView
-from novel.views.novel_all import NovelView
 from novel.views.novel import NovelDetailView
-from django.views.generic.base import TemplateView
+from novel.views.novel_all import NovelView
 
 
 sitemaps = {
@@ -49,7 +50,7 @@ urlpatterns = [
     path('', NovelIndexView.as_view(), name="home"),
     path('novel/search', NovelDetailView.as_view()),
     path('novel', NovelView.as_view(), name="novel_view"),
-    path('novel/<str:type>', NovelView.as_view(), name="novel_all"),
+    path('all/<str:novel_type>', NovelView.as_view(), name="novel_all"),
 
     path('images/<str:img>', ChapterView.stream_image, name="stream_image"),
 

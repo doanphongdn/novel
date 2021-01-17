@@ -17,3 +17,4 @@ libsass~=0.20.1
 mistletoe~=0.7.2
 html2text~=2020.1.16
 pillow~=8.1.0
+python-memcached~=1.59

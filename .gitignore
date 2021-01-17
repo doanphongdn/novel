@@ -131,4 +131,5 @@ dmypy.json
 
 # Robots
 templates/novel/robots.txt
-/pre_debug.sh
+pre_debug.sh
+static_files

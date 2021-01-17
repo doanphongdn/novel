@@ -31,8 +31,8 @@ class NovelIndexView(NovelBaseView):
         novel_list = NovelListTemplateInclude(**include_data)
 
         response.context_data.update({
-            'novel_grid_html': novel_grid.render_html(),
-            'novel_list_html': novel_list.render_html(),
+            'novel_grid_html': novel_grid.render_html(caching_for="index_grid"),
+            'novel_list_html': novel_list.render_html(caching_for="index_list"),
         })
 
         return response

@@ -46,7 +46,7 @@ class NovelBaseView(TemplateView):
             "meta_img": img_view,
             "google_analystics_id": novel_setting and novel_setting.google_analystics_id or "",
         }
-        kwargs["navbar_html"] = navbar.render_html()
-        kwargs["footer_html"] = footer.render_html()
+        kwargs["navbar_html"] = navbar.render_html(caching_for="navbar_base")
+        kwargs["footer_html"] = footer.render_html(caching_for="footer_base")
 
         return super().get(request, *args, **kwargs)

@@ -20,6 +20,7 @@ from django.urls import path
 from django.views.decorators.cache import cache_page
 from django.contrib.sitemaps import views as sitemaps_views
 
+from crawl_service import settings
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
 from novel.sitemap import NovelSitemap, StaticViewSitemap
 from novel.views.chapter import ChapterView
@@ -47,9 +48,9 @@ urlpatterns = [
     path('api/novel/chapter/update_list', APIViewNovelChapterUpdateList.as_view()),
 
     path('', NovelIndexView.as_view(), name="home"),
-    path('novel/search', NovelDetailView.as_view()),
-    path('novel', NovelView.as_view(), name="novel_view"),
-    path('novel/<str:type>', NovelView.as_view(), name="novel_all"),
+    path(settings.APP_NAME + '/search', NovelDetailView.as_view()),
+    path(settings.APP_NAME, NovelView.as_view(), name="novel_view"),
+    path(settings.NOVEL_ALL_URL + '/<str:type>', NovelView.as_view(), name="novel_all"),
 
     path('images/<str:img>', ChapterView.stream_image, name="stream_image"),
 

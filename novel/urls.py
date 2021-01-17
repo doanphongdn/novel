@@ -50,7 +50,7 @@ urlpatterns = [
     path('', NovelIndexView.as_view(), name="home"),
     path('search', NovelDetailView.as_view()),
     path(settings.NOVEL_ALL_URL, NovelView.as_view(), name="novel_view"),
-    path(settings.NOVEL_ALL_URL + '/<str:type>', NovelView.as_view(), name="novel_all"),
+    path(settings.NOVEL_ALL_URL + '/<str:novel_type>', NovelView.as_view(), name="novel_all"),
 
     path('images/<str:img>', ChapterView.stream_image, name="stream_image"),
 

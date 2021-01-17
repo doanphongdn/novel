@@ -21,6 +21,7 @@ from django.urls import path
 from django.views.decorators.cache import cache_page
 from django.views.generic.base import TemplateView
 
+from crawl_service import settings
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
 from novel.sitemap import NovelSitemap, StaticViewSitemap
 from novel.views.base import view_404

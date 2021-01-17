@@ -31,6 +31,9 @@ DEBUG = os.environ.get('DEBUG', 'false').lower() == 'true'
 
 ALLOWED_HOSTS = ['*']
 
+APP_NAME = os.environ.get('APP_NAME', 'novel')
+NOVEL_ALL_URL = os.environ.get('NOVEL_ALL_URL', 'all')
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -47,7 +50,7 @@ INSTALLED_APPS = [
     'crawl_service',
     'rest_framework',
     'ckeditor',
-    os.environ.get('APP_NAME'),
+    APP_NAME,
 ]
 
 MIDDLEWARE = [
@@ -200,7 +203,7 @@ PIPELINE = {
     'SASS_BINARY': '/usr/local/bin/sass',
     'YUGLIFY_BINARY': '/usr/local/bin/yuglify',
 
-    'STYLESHEETS': PIPELINE_STYLESHEETS.get(os.environ.get('APP_NAME'))
+    'STYLESHEETS': PIPELINE_STYLESHEETS.get(APP_NAME)
 }
 
 LOG_ENABLED = os.environ.get('LOG_ENABLED', 'false').lower() == 'true'

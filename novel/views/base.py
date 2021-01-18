@@ -1,3 +1,4 @@
+from django.contrib.sites.shortcuts import get_current_site
 from django.views.generic import TemplateView
 
 from cms.include_mapping import IncludeMapping
@@ -36,17 +37,16 @@ class NovelBaseView(TemplateView):
         logo = ""
         favicon = ""
         img_view = ""
-        domain = ""
         if novel_setting:
             title = novel_setting.title
-            domain = novel_setting.domain
+            current_site = get_current_site(request)
             if novel_setting.logo:
                 logo = novel_setting.logo.url
             if novel_setting.favicon:
                 favicon = novel_setting.favicon.url
-                img_view = domain + novel_setting.favicon.url
+                img_view = current_site.domain + novel_setting.favicon.url
             if novel_setting.meta_img:
-                img_view = domain + novel_setting.meta_img.url
+                img_view = current_site.domain + novel_setting.meta_img.url
 
         menu = [
             {
@@ -58,7 +58,7 @@ class NovelBaseView(TemplateView):
 
         kwargs["setting"] = {
             "title": title,
-            "domain": domain,
+            "domain": current_site.domain,
             "logo": logo,
             "favicon": favicon,
             "meta_keywords": novel_setting and novel_setting.meta_keywords or "",

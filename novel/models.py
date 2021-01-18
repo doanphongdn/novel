@@ -239,7 +239,6 @@ class NovelSetting(models.Model):
     meta_copyright = models.TextField(null=True, blank=True)
     meta_author = models.TextField(null=True, blank=True)
     meta_img = models.ImageField(upload_to="images", null=True, blank=True)
-    domain = models.CharField(max_length=250, default='')
     google_analystics_id = models.TextField(null=True, blank=True)
     novel_type = models.CharField(max_length=250, choices=[('COMIC', 'Comic'), ('TEXT', 'Text')])
 
@@ -254,7 +253,7 @@ class NovelSetting(models.Model):
 
     logo_tag.short_description = 'logo'
     favicon_tag.short_description = 'favicon'
-    meta_img_tag.short_description = 'nettruyen'
+    meta_img_tag.short_description = 'novel'
 
     @classmethod
     def get_setting(cls):

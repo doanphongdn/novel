@@ -12,38 +12,7 @@
   a {
     color: #ddd;
   }
-
-  .link-footer {
-    h4 {
-      margin: 5px 0;
-      color: #fff;
-      font-weight: 400;
-      font-size: 18px;
-    }
-
-    ul {
-      margin: 0;
-      padding: 0;
-
-      li {
-        margin: 0 5px 0 0;
-        line-height: 38px;
-        list-style: none;
-        display: inline-block;
-      }
-
-      a {
-        border: solid 1px #000000;
-        padding: 2px 5px;
-        white-space: nowrap;
-        color: #cecece;
-        background: radial-gradient(black, #00000042);
-        box-shadow: 0 0 2px #3a3a3a;
-      }
-    }
-  }
 }
-
 
 .mrt10 {
   margin-top: 10px;

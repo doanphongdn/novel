@@ -30,6 +30,23 @@
   }
 }
 
+.novel-hashtags {
+  margin-top: 10px;
+
+  .box-links {
+    ul {
+      li {
+        a {
+          background: #6dc68e;
+          border: thin solid #50b274;
+          color: #fff;
+          box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
+        }
+      }
+    }
+  }
+}
+
 .novel-info .novel-info-wrap .rating_current {
   color: orange;
 }

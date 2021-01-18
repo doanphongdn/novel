@@ -11,7 +11,7 @@ class LinkTemplateInclude(BaseTemplateInclude):
 
         link_type = self.include_data.get('link_type') or ''
         link_label = self.include_data.get('link_label') or ''
-        link_data = Link.objects.filter(type=link_type, active=True).all()
+        link_data = self.include_data.get('link_data') or Link.objects.filter(type=link_type, active=True).all()
 
         self.include_data = {
             "link_data": link_data,

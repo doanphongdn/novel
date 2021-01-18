@@ -12,7 +12,7 @@ class NovelDetailView(NovelBaseView):
     def post(self, request, *args, **kwargs):
         search = request.POST.get('q', "")
         if len(search) >= 3:
-            novels = Novel.get_available_novel().filter(name__icontains=search)
+            novels = Novel.get_available_novel().filter(name__unaccent__icontains=search)
             res_data = []
             for novel in novels:
                 res_data.append({

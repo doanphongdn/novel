@@ -1,4 +1,5 @@
 from novel.views.includes.base import BaseTemplateInclude
+from novel.views.includes.link import LinkTemplateInclude
 
 
 class NovelInfoTemplateInclude(BaseTemplateInclude):
@@ -8,13 +9,18 @@ class NovelInfoTemplateInclude(BaseTemplateInclude):
     def __init__(self, include_data, extra_data=None):
         super().__init__(include_data, extra_data)
 
-        comment_enable = self.include_data.get("novel")
+        comment_enable = self.include_data.get("comment_enable")
         if comment_enable is None:
             comment_enable = True
 
-        bookmark_enable = self.include_data.get("novel")
+        bookmark_enable = self.include_data.get("bookmark_enable")
         if bookmark_enable is None:
             bookmark_enable = True
+
+        hashtags = LinkTemplateInclude(include_data={
+            'link_type': self.include_data.get('hashtags_link_type'),
+            'link_label': self.include_data.get('hashtags_link_label'),
+        })
 
         self.include_data = {
             "novel": self.include_data.get("novel"),
@@ -31,4 +37,5 @@ class NovelInfoTemplateInclude(BaseTemplateInclude):
             "bookmark_label": self.include_data.get("bookmark_label") or "Bookmark",
             "comment_enable": comment_enable,
             "bookmark_enable": bookmark_enable,
+            "hashtags_html": hashtags.render_html(),
         }

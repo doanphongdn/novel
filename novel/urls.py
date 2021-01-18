@@ -24,7 +24,7 @@ from django.views.generic.base import TemplateView
 from crawl_service import settings
 from crawl_service.views.base import view_google_site_verification
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
-from novel.sitemap import NovelSitemap, StaticViewSitemap
+from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap
 from novel.views.chapter import ChapterView
 from novel.views.index import NovelIndexView
 from novel.views.novel import NovelDetailView
@@ -32,8 +32,9 @@ from novel.views.novel_all import NovelView
 
 
 sitemaps = {
-    'novels': NovelSitemap,
+    'genre': GenreSitemap,
     'static': StaticViewSitemap,
+    'novels': NovelSitemap,
 }
 
 urlpatterns = [
@@ -51,6 +52,7 @@ urlpatterns = [
     path('search', NovelDetailView.as_view()),
     path(settings.NOVEL_ALL_URL, NovelView.as_view(), name="novel_view"),
     path(settings.NOVEL_ALL_URL + '/<str:novel_type>', NovelView.as_view(), name="novel_all"),
+    path(settings.NOVEL_GENRE_URL + '/<str:genre>', NovelView.as_view(), name="novel_genre"),
 
     path('images/<str:img>', ChapterView.stream_image, name="stream_image"),
 

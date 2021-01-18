@@ -2,11 +2,23 @@ from django.contrib import sitemaps
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
-from novel.models import Novel
+from novel.models import Novel, Genre
 
 
 class LimitSitemap(Sitemap):
     limit = 500
+
+
+class GenreSitemap(LimitSitemap):
+    changefreq = "daily"
+    priority = 0.5
+
+    def items(self):
+        return Genre.objects.all()
+
+    @classmethod
+    def lastmod(cls, obj):
+        return obj.updated_at
 
 
 class NovelSitemap(LimitSitemap):

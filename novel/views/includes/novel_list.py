@@ -15,6 +15,7 @@ class NovelListTemplateInclude(BaseTemplateInclude):
     def __init__(self, include_data, extra_data=None):
         super().__init__(include_data, extra_data)
 
+        filter_by = self.include_data.get('filter_by') or {}
         view_type = self.include_data.get('view_type') or 'grid'
         show_button_type = self.include_data.get('show_button_type')
         show_button_view_all = self.include_data.get('show_button_view_all')
@@ -33,7 +34,7 @@ class NovelListTemplateInclude(BaseTemplateInclude):
         if paginate_enable is None:
             paginate_enable = True
 
-        list_novel = Novel.get_available_novel().order_by(order_by).all()
+        list_novel = Novel.get_available_novel().filter(**filter_by).order_by(order_by).all()
 
         novel_paginated = []
         novel_paginating = Paginator(list_novel, limit)

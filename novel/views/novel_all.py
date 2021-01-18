@@ -1,7 +1,6 @@
 from cms.models import TemplateManager
 from novel.views.base import NovelBaseView
 from novel.views.includes.__mapping import IncludeMapping
-from novel.views.includes.novel_list import NovelListTemplateInclude
 
 
 class NovelView(NovelBaseView):

@@ -29,7 +29,6 @@ from novel.views.index import NovelIndexView
 from novel.views.novel import NovelDetailView
 from novel.views.novel_all import NovelView
 
-
 sitemaps = {
     'novels': NovelSitemap,
     'static': StaticViewSitemap,
@@ -47,7 +46,7 @@ urlpatterns = [
     path('api/novel/update_list', APIViewNovelUpdateList.as_view()),
     path('api/novel/chapter/update_list', APIViewNovelChapterUpdateList.as_view()),
 
-    path('', NovelIndexView.as_view(), name="home"),
+    path('', cache_page(60 * 5)(NovelIndexView.as_view()), name="home"),
     path('search', NovelDetailView.as_view()),
     path(settings.NOVEL_ALL_URL, NovelView.as_view(), name="novel_view"),
     path(settings.NOVEL_ALL_URL + '/<str:novel_type>', NovelView.as_view(), name="novel_all"),
@@ -55,6 +54,6 @@ urlpatterns = [
     path('images/<str:img>', ChapterView.stream_image, name="stream_image"),
 
     path('<str:slug>', NovelDetailView.as_view(), name="novel"),
-    path('<str:slug>/<str:chapter_slug>', ChapterView.as_view(), name="chapter"),
+    path('<str:slug>/<str:chapter_slug>', cache_page(60 * 5)(ChapterView.as_view()), name="chapter"),
 
 ]

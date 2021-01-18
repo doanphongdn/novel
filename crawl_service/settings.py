@@ -232,5 +232,3 @@ CKEDITOR_CONFIGS = {
         'width': 1000,
     },
 }
-
-NOVEL_NOVEL_URL = '<str:slug>'

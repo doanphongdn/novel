@@ -1,6 +1,5 @@
 from cms.models import TemplateManager
 from novel.views.base import NovelBaseView
-from novel.views.includes.__mapping import IncludeMapping
 
 
 class NovelIndexView(NovelBaseView):
@@ -10,7 +9,7 @@ class NovelIndexView(NovelBaseView):
         response = super().get(request, *args, **kwargs)
 
         tmpl = TemplateManager.objects.filter(page_file='index').first()
-        index_include_html = IncludeMapping.render_include_html(tmpl)
+        index_include_html = self.include_mapping.render_include_html(tmpl)
 
         response.context_data.update({
             'index_include_html': index_include_html,

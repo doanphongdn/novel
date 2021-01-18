@@ -1,12 +1,34 @@
-from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
+from cms.include_mapping import IncludeMapping
 from cms.models import TemplateManager
 from novel.models import NovelSetting
-from novel.views.includes.__mapping import IncludeMapping
+from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
+from novel.views.includes.chapter_content import ChapterContentTemplateInclude
+from novel.views.includes.chapter_list import ChapterListTemplateInclude
+from novel.views.includes.footer_info import FooterInfoplateInclude
+from novel.views.includes.link import LinkTemplateInclude
+from novel.views.includes.novel_info import NovelInfoTemplateInclude
+from novel.views.includes.novel_list import NovelListTemplateInclude
+from novel.views.includes.pagination import PaginationTemplateInclude
+
+TEMPLATE_INCLUDE_MAPPING = {
+    "chapter_content": ChapterContentTemplateInclude,
+    "chapter_list": ChapterListTemplateInclude,
+    "link": LinkTemplateInclude,
+    "novel_info": NovelInfoTemplateInclude,
+    "novel_list": NovelListTemplateInclude,
+    "breadcrumb": BreadCrumbTemplateInclude,
+    "pagination": PaginationTemplateInclude,
+    "footer_info": FooterInfoplateInclude,
+}
 
 
 class NovelBaseView(TemplateView):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.include_mapping = IncludeMapping(TEMPLATE_INCLUDE_MAPPING)
 
     def get(self, request, *args, **kwargs):
         novel_setting = NovelSetting.get_setting()
@@ -33,12 +55,11 @@ class NovelBaseView(TemplateView):
                 "fa_icon": "fa fa-facebook-square",
             }
         ]
-        # navbar = NavBarTemplateInclude(menus=menu, title=title, logo=logo)
-        # footer = FooterTemplateInclude()
 
         kwargs["setting"] = {
             "title": title,
             "domain": domain,
+            "logo": logo,
             "favicon": favicon,
             "meta_keywords": novel_setting and novel_setting.meta_keywords or "",
             "meta_description": novel_setting and novel_setting.meta_description or "",
@@ -49,6 +70,6 @@ class NovelBaseView(TemplateView):
         }
 
         tmpl = TemplateManager.objects.filter(page_file='footer').first()
-        kwargs["footer_html"] = IncludeMapping.render_include_html(tmpl)
+        kwargs["footer_html"] = self.include_mapping.render_include_html(tmpl)
 
         return super().get(request, *args, **kwargs)

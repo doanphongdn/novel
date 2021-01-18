@@ -1,9 +1,8 @@
+from django import forms
 from django.contrib import admin
+from django_json_widget.widgets import JSONEditorWidget
 
 from cms.models import FooterInfo, Link, HtmlPage, TemplateManager, InludeTemplate
-
-
-# Register your models here.
 
 
 @admin.register(HtmlPage)
@@ -27,14 +26,33 @@ class LinkAdmin(admin.ModelAdmin):
     list_filter = ("active",)
 
 
-class InludeTemplateInlineAdmin(admin.TabularInline):
-    model = InludeTemplate
-    extra = 0
+class IncludeTemplateForm(forms.ModelForm):
+    class Meta:
+        model = InludeTemplate
+        fields = ("template", "include_file", "priority", "code", "params", "class_name", "full_width", "active")
+        widgets = {'params': JSONEditorWidget(options={
+            'modes': ['code', 'tree'],
+            'mode': 'tree',
+            'search': False,
+        }, attrs={
+            "class": "vLargeTextField",
+            "style": "height:400px; display:inline-block;",
+        })}
 
 
-@admin.register(TemplateManager)
+@admin.register(InludeTemplate)
+class InludeTemplateAdmin(admin.ModelAdmin):
+    list_display = ("template", "code", "include_file", "priority", "class_name", "full_width", "active")
+    form = IncludeTemplateForm
+
+
+class TemplateManagerForm(forms.ModelForm):
+    class Meta:
+        model = TemplateManager
+        fields = ("page_file", "includes_default")
+        widgets = {'includes_default': JSONEditorWidget}
+
+
 class TemplateManagerAdmin(admin.ModelAdmin):
     list_display = ("id", "page_file")
-    inlines = [
-        InludeTemplateInlineAdmin,
-    ]
+    form = TemplateManagerForm

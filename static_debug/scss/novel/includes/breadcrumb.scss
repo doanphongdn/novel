@@ -1,14 +1,24 @@
 $content: 'f054';
-.widget-breadcrumb {
-  ul {
-    margin: 10px 0;
-    padding: 0;
-    list-style: none;
-  }
+ul.widget-breadcrumb {
+  margin: 10px 0;
+  padding: 0;
+  list-style: none;
 
   li {
     display: inline-block;
     position: relative;
+
+    a {
+      display: block;
+      padding: 6px 12px;
+      text-decoration: none;
+    }
+  }
+
+  li:first-child {
+    a {
+      padding-left: 0;
+    }
   }
 
   li:not(:last-child):after {
@@ -21,10 +31,8 @@ $content: 'f054';
     right: -5px;
     font-size: 0.6rem;
   }
-
-  a {
-    display: block;
-    padding: 6px 12px;
-    text-decoration: none;
-  }
 }
+
+
+
+

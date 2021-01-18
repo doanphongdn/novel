@@ -1,22 +1,9 @@
 from cms.models import TemplateManager
 from novel.views.base import NovelBaseView
-from novel.views.includes.__mapping import IncludeMapping
 
 
 class NovelView(NovelBaseView):
     template_name = "novel/novel_all.html"
-
-    # content_type_mapping = {
-    #     'latest-update': {
-    #         'order_by': '-created_at',
-    #         'icon': 'fa fa-calendar-check',
-    #         'title': 'LATEST UPDATE',
-    #     },
-    #     'hot': {
-    #         'order_by': '-created_at',
-    #         'icon': 'fa fa-calendar-check',
-    #     },
-    # }
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
@@ -30,7 +17,7 @@ class NovelView(NovelBaseView):
             }
         }
         response.context_data.update({
-            'include_html': IncludeMapping.render_include_html(tmpl, extra_data=extra_data, default=novel_type),
+            'include_html': self.include_mapping.render_include_html(tmpl, extra_data=extra_data, default=novel_type),
         })
 
         return response

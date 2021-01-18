@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'crawl_service',
     'rest_framework',
     'ckeditor',
+    'django_json_widget',
     APP_NAME,
 ]
 
@@ -180,7 +181,7 @@ SITE_ID = 1
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_debug"), os.path.join(BASE_DIR, "static_files")]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_files"), os.path.join(BASE_DIR, "static_debug")]
 
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT')
 MEDIA_URL = '/media/'

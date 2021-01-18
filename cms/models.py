@@ -55,25 +55,30 @@ class Link(models.Model):
 class TemplateManager(models.Model):
     class Meta:
         db_table = "cms_template_manager"
+        ordering = ["page_file"]
 
     page_file = models.CharField(max_length=250, choices=TEMPLATE_PAGE_CHOISES.get(settings.APP_NAME),
                                  unique=True)
-    includes_default = models.TextField()
+    includes_default = models.JSONField(blank=True, null=True)
 
     def include_template(self):
         return InludeTemplate.objects.filter(template=self, active=True).order_by("priority").all()
+
+    def __str__(self):
+        return self.page_file.upper()
 
 
 class InludeTemplate(models.Model):
     class Meta:
         db_table = "cms_template_include"
         unique_together = [('template', 'code')]
+        ordering = ["template", "priority"]
 
     priority = models.IntegerField(default=0)
     template = models.ForeignKey(TemplateManager, on_delete=models.CASCADE)
     code = models.CharField(max_length=50, validators=[code_validate])
     include_file = models.CharField(max_length=250, choices=TEMPLATE_INCLUDE_CHOISES.get(settings.APP_NAME))
-    params = models.TextField()
+    params = models.JSONField(blank=True, null=True)
     class_name = models.CharField(max_length=250)
     full_width = models.BooleanField(default=False)
     active = models.BooleanField(default=True)

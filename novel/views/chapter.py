@@ -7,7 +7,6 @@ from django.shortcuts import redirect
 from cms.models import TemplateManager
 from novel.models import Novel, NovelChapter
 from novel.views.base import NovelBaseView
-from novel.views.includes.__mapping import IncludeMapping
 
 
 def url2yield(url, chunksize=1024, referer=None):
@@ -72,7 +71,7 @@ class ChapterView(NovelBaseView):
         }
 
         tmpl = TemplateManager.objects.filter(page_file='chapter').first()
-        include_html = IncludeMapping.render_include_html(tmpl, extra_data=extra_data)
+        include_html = self.include_mapping.render_include_html(tmpl, extra_data=extra_data)
 
         response.context_data.update({
             'novel_url': novel.get_absolute_url(),

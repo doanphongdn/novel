@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from django.urls import reverse
 
 from novel.models import Novel
-from novel.views.includes.__base import BaseTemplateInclude
+from novel.views.includes.base import BaseTemplateInclude
 from novel.views.includes.pagination import PaginationTemplateInclude
 
 

@@ -1,7 +1,5 @@
 import json
-import os
 from time import sleep
-from urllib.parse import urlparse
 
 import requests
 import scrapy
@@ -69,7 +67,13 @@ class NovelSpider(scrapy.Spider):
     @staticmethod
     def get_item_value(response, item):
         p_object = response.xpath(item.xpath)
-        item_value = p_object.getall() if item.multi else p_object.get()
+        if item.child_xpath:
+            item_value = []
+            for obj in p_object:
+                obj = obj.xpath(item.child_xpath).get()
+        else:
+            item_value = p_object.getall() if item.multi else p_object.get()
+
         if item_value:
             return {item.code: item_value}
 

@@ -1,5 +1,5 @@
 from cms.models import Link
-from novel.views.includes.__base import BaseTemplateInclude
+from novel.views.includes.base import BaseTemplateInclude
 
 
 class LinkTemplateInclude(BaseTemplateInclude):

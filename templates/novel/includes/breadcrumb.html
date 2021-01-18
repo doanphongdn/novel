@@ -1,12 +1,8 @@
 {% if breadcrumb_data %}
-    <div class="row">
-        <div class="col-12 widget-breadcrumb">
-            <ul>
-                <li><a href="/">Home</a></li>
-                {% for breadcrumb in breadcrumb_data %}
-                    <li><a href="{{ breadcrumb.url }}">{{ breadcrumb.name }}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
+    <ul class="widget-breadcrumb">
+        <li><a href="/">Home</a></li>
+        {% for breadcrumb in breadcrumb_data %}
+            <li><a href="{{ breadcrumb.url }}">{{ breadcrumb.name }}</a></li>
+        {% endfor %}
+    </ul>
 {% endif %}

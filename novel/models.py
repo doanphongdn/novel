@@ -1,4 +1,3 @@
-import os
 import zlib
 from datetime import datetime
 
@@ -8,6 +7,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from unidecode import unidecode
+
+from crawl_service import settings
 
 
 def datetime2string(value):
@@ -70,7 +71,7 @@ class Genre(models.Model):
         return Novel.get_available_novel().filter(categories=self).count()
 
     def get_absolute_url(self):
-        return f"/genre/{self.slug}"
+        return f"/{settings.NOVEL_GENRE_URL}/{self.slug}"
 
 
 class Novel(models.Model):

@@ -53,6 +53,7 @@ class TemplateManagerForm(forms.ModelForm):
         widgets = {'includes_default': JSONEditorWidget}
 
 
+@admin.register(TemplateManager)
 class TemplateManagerAdmin(admin.ModelAdmin):
     list_display = ("id", "page_file")
     form = TemplateManagerForm

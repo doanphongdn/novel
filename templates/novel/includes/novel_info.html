@@ -28,7 +28,9 @@
                             <div class="col-12 novel-categories">
                                 <label>{{ category_label }} </label>
                                 {% for gen in novel.genres.all %}
-                                    <span class="cate-item">{{ gen.name }}</span>
+                                    <a href="{{ gen.get_absolute_url }}">
+                                        <span class="cate-item">{{ gen.name }}</span>
+                                    </a>
                                 {% endfor %}
                             </div>
                             <div class="col-12">

@@ -200,20 +200,14 @@ class NovelChapter(models.Model):
         return datetime2string(self.created_at)
 
     @property
-    def next_chapter_url(self):
+    def next_chapter(self):
         next_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__gt=self.id).last()
-        if next_chap:
-            return next_chap.get_absolute_url()
-
-        return None
+        return next_chap
 
     @property
-    def prev_chapter_url(self):
+    def prev_chapter(self):
         prev_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__lt=self.id).first()
-        if prev_chap:
-            return prev_chap.get_absolute_url()
-
-        return
+        return prev_chap
 
     @property
     def decompress_content(self):

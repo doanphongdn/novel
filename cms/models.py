@@ -24,6 +24,7 @@ class HtmlPage(models.Model):
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify,
                          max_length=250, unique=True)
     content = models.TextField(blank=True, null=True)
+    type = models.CharField(max_length=30, blank=True, default='novel')
     active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

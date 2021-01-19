@@ -1,0 +1,9 @@
+{% extends 'novel/base.html' %}
+{% load static %}
+{% block stylesheet %}
+{% endblock %}
+{% block content %}
+  {% autoescape off %}
+    {{ page_html }}
+  {% endautoescape %}
+{% endblock %}

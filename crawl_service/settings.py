@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['*']
 APP_NAME = os.environ.get('APP_NAME', 'novel')
 NOVEL_ALL_URL = os.environ.get('NOVEL_ALL_URL', 'all')
 NOVEL_GENRE_URL = os.environ.get('NOVEL_GENRE_URL', 'genre')
+NOVEL_PAGE_URL = os.environ.get('NOVEL_PAGE_URL', 'page')
 
 # Application definition
 

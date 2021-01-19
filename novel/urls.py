@@ -22,7 +22,7 @@ from django.views.decorators.cache import cache_page
 from django.views.generic.base import TemplateView
 
 from crawl_service import settings
-from crawl_service.views.base import view_google_site_verification
+from crawl_service.views.base import view_dmca_validation, view_google_site_verification
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
 from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap
 from novel.views.chapter import ChapterView
@@ -39,7 +39,9 @@ sitemaps = {
 
 urlpatterns = [
     url(os.environ.get('GOOGLE_SITE_VERIFICATION', 'google-site-verification'), view_google_site_verification,
-        name="verification_page"),
+        name="google_verification"),
+    url(os.environ.get('DMCA_VALIDATION_URL', 'dmca-validation.html'), view_dmca_validation,
+        name="dmca_verification"),
     # url(r'^robots\.txt$', TemplateView.as_view(template_name="novel/robots.txt", content_type='text/plain')),
     path('web/sitemap.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemaps}),
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},

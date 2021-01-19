@@ -1,3 +1,4 @@
+import os
 import re
 
 from django.http import HttpResponse
@@ -15,3 +16,8 @@ def view_google_site_verification(request):
     if request.path:
         path = re.sub("[^A-Za-z0-9.]", "", request.path)
     return HttpResponse("google-site-verification: %s" % path)
+
+
+def view_dmca_validation(request):
+    value = os.environ.get('DMCA_VALIDATION_VALUE', '')
+    return HttpResponse("%s" % value)

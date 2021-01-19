@@ -23,7 +23,7 @@ class FooterAdmin(admin.ModelAdmin):
 class LinkAdmin(admin.ModelAdmin):
     list_display = ("id", "active", "name", "url", "type")
     search_fields = ("name", "url", "type")
-    list_filter = ("active",)
+    list_filter = ("active","type")
 
 
 class IncludeTemplateForm(forms.ModelForm):

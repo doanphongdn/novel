@@ -73,8 +73,9 @@ class CrawlItem(models.Model):
 
     campaign = models.ForeignKey(CrawlCampaign, on_delete=models.CASCADE)
     code = models.CharField(max_length=50, validators=[code_validate])
-    xpath = models.CharField(max_length=250)
     multi = models.BooleanField(default=False)
+    xpath = models.CharField(max_length=250)
+    child_xpath = models.CharField(max_length=250, help_text="Group all child item to one")
 
     @property
     def actions(self):

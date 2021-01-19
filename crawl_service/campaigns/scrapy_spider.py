@@ -70,7 +70,9 @@ class NovelSpider(scrapy.Spider):
         if item.child_xpath:
             item_value = []
             for obj in p_object:
-                obj = obj.xpath(item.child_xpath).get()
+                objs = obj.xpath(item.child_xpath).getall()
+                value = "".join(objs)
+                item_value.append(value)
         else:
             item_value = p_object.getall() if item.multi else p_object.get()
 

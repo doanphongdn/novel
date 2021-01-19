@@ -19,7 +19,7 @@ class NovelInfoTemplateInclude(BaseTemplateInclude):
             bookmark_enable = True
 
         link_objs = Link.objects.filter(type=self.include_data.get('hashtags_link_type'), active=True).all()
-        link_data = [{"name": "#" + novel.name + " " + obj.name, "url": novel.get_absolute_url()} for obj in link_objs]
+        link_data = [{"name": novel.name + " " + obj.name, "url": novel.get_absolute_url()} for obj in link_objs]
 
         hashtags = LinkTemplateInclude(include_data={
             'link_data': link_data,

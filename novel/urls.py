@@ -19,7 +19,6 @@ from django.conf.urls import url
 from django.contrib.sitemaps import views as sitemaps_views
 from django.urls import path
 from django.views.decorators.cache import cache_page
-from django.views.generic.base import TemplateView
 
 from crawl_service import settings
 from crawl_service.views.base import view_dmca_validation, view_google_site_verification

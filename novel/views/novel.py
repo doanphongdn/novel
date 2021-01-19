@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
 
 from cms.models import TemplateManager
 from novel.models import Novel
@@ -9,10 +10,11 @@ from novel.views.base import NovelBaseView
 class NovelDetailView(NovelBaseView):
     template_name = "novel/novel.html"
 
+    @csrf_exempt
     def post(self, request, *args, **kwargs):
         search = request.POST.get('q', "")
         if len(search) >= 3:
-            novels = Novel.get_available_novel().filter(name__unaccent__icontains=search)
+            novels = Novel.get_available_novel().filter(name__unaccent__icontains=search)[:50]
             res_data = []
             for novel in novels:
                 res_data.append({

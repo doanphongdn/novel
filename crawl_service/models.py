@@ -75,7 +75,7 @@ class CrawlItem(models.Model):
     code = models.CharField(max_length=50, validators=[code_validate])
     multi = models.BooleanField(default=False)
     xpath = models.CharField(max_length=250)
-    child_xpath = models.CharField(max_length=250, help_text="Group all child item to one")
+    child_xpath = models.CharField(max_length=250, help_text="Group all child item to one", null=True, blank=True)
 
     @property
     def actions(self):

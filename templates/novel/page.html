@@ -3,7 +3,11 @@
 {% block stylesheet %}
 {% endblock %}
 {% block content %}
-  {% autoescape off %}
-    {{ page_html }}
-  {% endautoescape %}
+  <div class="row">
+    <div class="container">
+      {% autoescape off %}
+        {{ page_html }}
+      {% endautoescape %}
+    </div>
+  </div>
 {% endblock %}

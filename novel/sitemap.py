@@ -16,10 +16,6 @@ class GenreSitemap(LimitSitemap):
     def items(self):
         return Genre.objects.all()
 
-    @classmethod
-    def lastmod(cls, obj):
-        return obj.updated_at
-
 
 class NovelSitemap(LimitSitemap):
     changefreq = "daily"

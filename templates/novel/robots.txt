@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://noveltop.net/web/sitemap.xml

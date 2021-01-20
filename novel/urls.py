@@ -19,6 +19,7 @@ from django.conf.urls import url
 from django.contrib.sitemaps import views as sitemaps_views
 from django.urls import path
 from django.views.decorators.cache import cache_page
+from django.views.generic import TemplateView
 
 from crawl_service import settings
 from crawl_service.views.base import view_dmca_validation, view_google_site_verification
@@ -42,7 +43,7 @@ urlpatterns = [
         name="google_verification"),
     url(os.environ.get('DMCA_VALIDATION_URL', 'dmca-validation.html'), view_dmca_validation,
         name="dmca_verification"),
-    # url(r'^robots\.txt$', TemplateView.as_view(template_name="novel/robots.txt", content_type='text/plain')),
+    url(r'^robots\.txt$', TemplateView.as_view(template_name="novel/robots.txt", content_type='text/plain')),
     path('web/sitemap.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemaps}),
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),

@@ -189,9 +189,16 @@ class NovelChapter(models.Model):
 
     @property
     def stream_images(self):
+        novel_setting = NovelSetting.get_setting()
+        img_ignoring = []
+        if novel_setting and novel_setting.img_ignoring:
+            img_ignoring = novel_setting.img_ignoring.split(",")
         images = self.images
         stream_images = []
         for i in range(len(images)):
+            # Not allow img url contains any sub-string from a list configuration's string
+            if len(img_ignoring) and any(sub_str in images[i] for sub_str in img_ignoring):
+                continue
             stream_images.append("/images/%s_%s.jpg" % (self.id, i))
         return stream_images
 
@@ -233,6 +240,7 @@ class NovelSetting(models.Model):
     meta_copyright = models.TextField(null=True, blank=True)
     meta_author = models.TextField(null=True, blank=True)
     meta_img = models.ImageField(upload_to="images", null=True, blank=True)
+    img_ignoring = models.TextField(null=True, blank=True)
     google_analystics_id = models.TextField(null=True, blank=True)
     novel_type = models.CharField(max_length=250, choices=[('COMIC', 'Comic'), ('TEXT', 'Text')])
 

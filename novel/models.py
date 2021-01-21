@@ -10,7 +10,7 @@ from django.utils.safestring import mark_safe
 from unidecode import unidecode
 
 from crawl_service import settings
-from crawl_service.models import CrawlCampaign
+from crawl_service.models import CrawlCampaign, CrawlCampaignSource
 
 
 def datetime2string(value):
@@ -110,6 +110,7 @@ class Novel(models.Model):
     latest_updated_time = models.DateTimeField(auto_now_add=True)
 
     attempt = models.SmallIntegerField(default=0)
+    campaign_source = models.ForeignKey(CrawlCampaignSource, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -183,13 +184,15 @@ class NovelChapter(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    source = models.ForeignKey(CrawlCampaign, on_delete=models.CASCADE)
-
     active = models.BooleanField(default=True)
     attempt = models.SmallIntegerField(default=0)
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def get_available_chapter(cls):
+        return cls.objects.filter(active=True, chapter_updated=True)
 
     @property
     def images(self):

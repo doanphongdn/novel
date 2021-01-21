@@ -24,18 +24,18 @@ from django.views.generic import TemplateView
 from crawl_service import settings
 from crawl_service.views.base import view_dmca_validation, view_google_site_verification
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
-from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap
+from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap, NovelChapterSitemap
 from novel.views.chapter import ChapterView
 from novel.views.index import NovelIndexView
 from novel.views.novel import NovelDetailView
 from novel.views.novel_all import NovelView
 from novel.views.page import PageView
 
-
 sitemaps = {
     'genre': GenreSitemap,
     'static': StaticViewSitemap,
     'novels': NovelSitemap,
+    'chapters': NovelChapterSitemap,
 }
 
 urlpatterns = [

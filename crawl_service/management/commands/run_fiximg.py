@@ -4,14 +4,13 @@ from functools import reduce
 
 from django.core.management.base import BaseCommand
 from django.db.models import Q
-from pprint import pprint
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
+# from webdriver_manager.chrome import ChromeDriverManager
 
 from crawl_service import settings
 from novel.models import NovelChapter, NovelSetting
@@ -77,7 +76,7 @@ class Command(BaseCommand):
             print('No chapter is invalid')
             return
         for chapter in chapters:
-            print('Update images content for Chapter ID: ', chapter.id, ', Chapter Name: ', chapter.name)
+            print('Update images content for Chapter ID: ', chapter.id, ' - Chapter Name: ', chapter.name)
             # url = 'http://www.nettruyen.com/truyen-tranh/trai-tim-sat/chap-12/678622'
             links = scraper.get_links(url=chapter.url, timeout=settings.SELENIUM_LAZY_LOADING_TIMEOUT,
                                       page_by_selector="div.page-chapter")

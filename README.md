@@ -54,6 +54,7 @@ sudo chmod +x /usr/bin/chromedriver
 chromedriver -v
 
 .venv/bin/pip install webdriver_manager
+
 .venv/bin/pip install selenium
 
 

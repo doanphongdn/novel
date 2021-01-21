@@ -13,6 +13,7 @@ from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
 from novel.views.includes.pagination import PaginationTemplateInclude
 
+
 TEMPLATE_INCLUDE_MAPPING = {
     "chapter_content": ChapterContentTemplateInclude,
     "chapter_list": ChapterListTemplateInclude,
@@ -40,13 +41,16 @@ class NovelBaseView(TemplateView):
         if novel_setting:
             title = novel_setting.title
             current_site = get_current_site(request)
+            domain = current_site.domain
+            if 'http' not in domain:
+                domain = "//" + domain
             if novel_setting.logo:
                 logo = novel_setting.logo.url
             if novel_setting.favicon:
                 favicon = novel_setting.favicon.url
-                img_view = current_site.domain + novel_setting.favicon.url
+                img_view = domain + novel_setting.favicon.url
             if novel_setting.meta_img:
-                img_view = current_site.domain + novel_setting.meta_img.url
+                img_view = domain + novel_setting.meta_img.url
 
         menu = [
             {

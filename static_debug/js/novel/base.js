@@ -42,7 +42,7 @@ $(document).ready(function (e) {
         threshold: 0,
         visibleOnly: true,
         onError: function (element) {
-            element.attr("src", "/static/images/default.png")
+            element.attr("src", "/static/images/lazyload.gif")
         }
     };
     $('.lazyload').Lazy(lazy_param);

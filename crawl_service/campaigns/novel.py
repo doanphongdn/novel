@@ -1,5 +1,6 @@
 import os
 import zlib
+from datetime import datetime
 from time import sleep
 
 from rest_framework import serializers
@@ -142,6 +143,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                 new_chapters = [NovelChapter(novel=novel, name=name, url=url) for url, name in chapters.items()]
                 if new_chapters:
                     NovelChapter.objects.bulk_create(new_chapters, ignore_conflicts=True)
+                    novel.latest_update_time = datetime.now()
 
                 update = True
 

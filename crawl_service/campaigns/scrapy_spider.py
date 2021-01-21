@@ -11,7 +11,7 @@ from crawl_service.models import CrawlCampaign
 class NovelSpider(scrapy.Spider):
     def __init__(self, campaign: CrawlCampaign, **kwargs):
         self.campaign = campaign
-        self.start_urls = [campaign.target_url]
+        self.start_urls = []
         self.other_urls = []
         self.prefetch_by_data = None
 
@@ -19,15 +19,17 @@ class NovelSpider(scrapy.Spider):
             res = requests.get(campaign.target_url, timeout=30)
             if res.status_code == 200:
                 data = res.json()
-                self.prefetch_by_data = {"url": [d for d in data]}
+                if data:
+                    self.prefetch_by_data = {"url": [d for d in data]}
+                    if data and self.campaign.run_synchonize:
+                        self.start_urls = data
+                    elif data:
+                        self.start_urls = [data.pop(0)]
+                        self.other_urls = data or []
+        else:
+            self.start_urls = [campaign.target_url]
 
-                if data and self.campaign.run_synchonize:
-                    self.start_urls = data
-                elif data:
-                    self.start_urls = [data.pop(0)]
-                    self.other_urls = data or []
-
-        campaign_mapping = CampaignMapping.type_mapping.get(self.campaign.campaign_type)
+        campaign_mapping = CampaignMapping.mapping.get(self.campaign.campaign_type)
         self.campaign_type = campaign_mapping(self.campaign, self.prefetch_by_data)
 
         super().__init__(name=campaign.name, **kwargs)
@@ -42,14 +44,15 @@ class NovelSpider(scrapy.Spider):
             res_data.update(_data)
 
         for act in self.campaign.actions:
-            action = ActionMapping.action_mapping.get(act.action)
+            action = ActionMapping.mapping.get(act.action)
             try:
                 params = json.loads(act.params)
                 res_data = action.handle(res_data, **params)
             except:
                 pass
 
-        continue_paging = self.campaign_type.handle(res_data, no_update_limit=self.campaign.no_update_limit)
+        continue_paging = self.campaign_type.handle(res_data, self.campaign,
+                                                    no_update_limit=self.campaign.no_update_limit)
 
         if self.campaign.paging_delay:
             sleep(self.campaign.paging_delay)
@@ -77,6 +80,8 @@ class NovelSpider(scrapy.Spider):
             item_value = p_object.getall() if item.multi else p_object.get()
 
         if item_value:
+            item_value = [str(val).replace("\x00", "") for val in item_value] \
+                if isinstance(item_value, list) else str(item_value).replace("\x00", "")
             return {item.code: item_value}
 
         return {}

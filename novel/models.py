@@ -9,6 +9,7 @@ from django.utils.safestring import mark_safe
 from unidecode import unidecode
 
 from crawl_service import settings
+from crawl_service.models import CrawlCampaign
 
 
 def datetime2string(value):
@@ -178,6 +179,8 @@ class NovelChapter(models.Model):
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    source = models.ForeignKey(CrawlCampaign, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

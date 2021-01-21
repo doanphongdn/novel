@@ -22,14 +22,14 @@ class NovelCampaignSchema(serializers.Serializer):
 
 
 class NovelCampaignType(BaseCrawlCampaignType):
+    schema_class = NovelCampaignSchema
     name = 'NOVEL'
     model_class = Novel
     # List keys use to check value duplicate
     update_by_fields = ['name', 'url']
 
-    def handle(self, crawled_data, *args, **kwargs):
-        if not NovelCampaignSchema(data=crawled_data).is_valid():
-            raise Exception("Loi schema")
+    def handle(self, crawled_data, campaign, *args, **kwargs):
+        continue_paging = super().handle(crawled_data, campaign, *args, **kwargs)
 
         values = crawled_data.get('novel_block', [])
         new_data = []
@@ -66,9 +66,9 @@ class NovelCampaignType(BaseCrawlCampaignType):
             Novel.objects.bulk_create(new_data, ignore_conflicts=True)
 
         if 0 < no_update_limit <= no_update_count:
-            return False
+            continue_paging = False
 
-        return True
+        return continue_paging
 
 
 class NovelChapterSerializer(serializers.Serializer):
@@ -87,15 +87,13 @@ class NovelInfoCampaignSchema(serializers.Serializer):
 
 
 class NovelInfoCampaignType(BaseCrawlCampaignType):
+    schema_class = NovelInfoCampaignSchema
     name = 'NOVEL_INFO'
     model_class = Novel
     update_by_fields = ['url']
 
-    def handle(self, crawled_data, *args, **kwargs):
-        if not NovelInfoCampaignSchema(data=crawled_data).is_valid():
-            raise Exception("Loi schema")
-
-        continue_paging = True
+    def handle(self, crawled_data, campaign, *args, **kwargs):
+        continue_paging = super().handle(crawled_data, campaign, *args, **kwargs)
         for field in self.update_by_fields:
             sleep(0.01)
 
@@ -173,13 +171,13 @@ class NovelChapterCampaignSchema(serializers.Serializer):
 
 
 class NovelChapterCampaignType(BaseCrawlCampaignType):
+    schema_class = NovelChapterCampaignSchema
     name = 'NOVEL_CHAPTER'
     model_class = NovelChapter
     update_by_fields = ['url']
 
-    def handle(self, crawled_data, *args, **kwargs):
-        if not NovelChapterCampaignSchema(data=crawled_data).is_valid():
-            raise Exception("Loi schema")
+    def handle(self, crawled_data, campaign, *args, **kwargs):
+        continue_paging = super().handle(crawled_data, campaign, *args, **kwargs)
 
         for field in self.update_by_fields:
             sleep(0.01)
@@ -204,4 +202,4 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
                 chapter.chapter_updated = True
                 chapter.save()
 
-        return True
+        return continue_paging

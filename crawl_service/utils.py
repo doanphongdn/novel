@@ -1,9 +1,17 @@
 import os
+import re
 
 import requests
+from django.core.exceptions import ValidationError
 from django.templatetags.static import static
 
 from crawl_service import settings
+
+
+def code_validate(value):
+    reg = re.compile(r'^[a-zA-Z0-9_]+$')
+    if not reg.match(value):
+        raise ValidationError(u'<%s> must be character, number or underline' % value)
 
 
 def download_image(source, target_file, referer=None):

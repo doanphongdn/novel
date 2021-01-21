@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from crawl_service.models import CrawlCampaign, CrawlItem, CrawlCampaignSource, CrawlItemAction
+from crawl_service.models import CrawlCampaign, CrawlItem, CrawlCampaignSource, CrawlItemAction, CrawlLog
 
 
 #
@@ -29,14 +29,22 @@ from crawl_service.models import CrawlCampaign, CrawlItem, CrawlCampaignSource, 
 
 class CrawlItemInlineAdmin(admin.TabularInline):
     model = CrawlItem
-    # formset = ItemInlineFormSet
     extra = 0
 
 
 class CrawlItemActionInlineAdmin(admin.TabularInline):
     model = CrawlItemAction
-    # formset = ItemInlineFormSet
     extra = 0
+
+
+class CrawlLogInlineAdmin(admin.TabularInline):
+    model = CrawlLog
+    readonly_fields = ("source_url", "crawled_data", "log")
+    extra = 0
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.first()
 
 
 @admin.register(CrawlCampaign)
@@ -46,6 +54,7 @@ class CrawlCampaignAdmin(admin.ModelAdmin):
     inlines = [
         CrawlItemInlineAdmin,
         CrawlItemActionInlineAdmin,
+        CrawlLogInlineAdmin
     ]
     actions = ["campaign_active", "campaign_deactive"]
 

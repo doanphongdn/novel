@@ -9,7 +9,7 @@ from unidecode import unidecode
 
 from cms.template_config import TEMPLATE_PAGE_CHOISES, TEMPLATE_INCLUDE_CHOISES
 from crawl_service import settings
-from crawl_service.models import code_validate
+from crawl_service.utils import code_validate
 
 
 def unicode_slugify(name):

@@ -29,7 +29,7 @@ class NovelSpider(scrapy.Spider):
         else:
             self.start_urls = [campaign.target_url]
 
-        campaign_mapping = CampaignMapping.mapping.get(self.campaign.campaign_type)
+        campaign_mapping = CampaignMapping.get_mapping(self.campaign.campaign_type)
         self.campaign_type = campaign_mapping(self.campaign, self.prefetch_by_data)
 
         super().__init__(name=campaign.name, **kwargs)
@@ -44,7 +44,7 @@ class NovelSpider(scrapy.Spider):
             res_data.update(_data)
 
         for act in self.campaign.actions:
-            action = ActionMapping.mapping.get(act.action)
+            action = ActionMapping.get_mapping(act.action)
             try:
                 params = json.loads(act.params)
                 res_data = action.handle(res_data, **params)

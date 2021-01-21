@@ -108,6 +108,8 @@ class Novel(models.Model):
     latest_chapter_url = models.CharField(max_length=250, blank=True, null=True)
     latest_updated_time = models.DateTimeField(auto_now_add=True)
 
+    attempt = models.SmallIntegerField(default=0)
+
     def __str__(self):
         return self.name
 
@@ -125,7 +127,7 @@ class Novel(models.Model):
 
     @property
     def chapters(self):
-        return NovelChapter.objects.filter(novel=self, chapter_updated=True)
+        return NovelChapter.objects.filter(novel=self, chapter_updated=True, active=True)
 
     @property
     def first_chapter_url(self):
@@ -181,6 +183,9 @@ class NovelChapter(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     source = models.ForeignKey(CrawlCampaign, on_delete=models.CASCADE)
+
+    active = models.BooleanField(default=True)
+    attempt = models.SmallIntegerField(default=0)
 
     def __str__(self):
         return self.name

@@ -3,12 +3,16 @@ from crawl_service.campaigns.novel import NovelCampaignType, NovelInfoCampaignTy
 
 
 class BaseMapping(object):
-    __campaign_list = []
-    mapping = {cam.__name__: cam for cam in __campaign_list}
+    _campaign_list = []
+
+    @classmethod
+    def get_mapping(cls, name):
+        mapping = {cam.__name__: cam for cam in cls._campaign_list}
+        return mapping.get(name)
 
 
 class CampaignMapping(BaseMapping):
-    __campaign_list = [
+    _campaign_list = [
         NovelCampaignType,
         NovelInfoCampaignType,
         NovelChapterCampaignType,
@@ -16,7 +20,7 @@ class CampaignMapping(BaseMapping):
 
 
 class ActionMapping(BaseMapping):
-    __campaign_list = [
+    _campaign_list = [
         ReverseAction,
         FormatChapterContent,
         GroupItem,

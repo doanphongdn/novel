@@ -159,7 +159,14 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
             if update:
                 novel.publish = True
                 novel.novel_updated = True
-                novel.save()
+            elif novel.attempt >= 10:
+                novel.publish = False
+                novel.novel_updated = False
+                novel.active = False
+            else:
+                novel.attempt += 1
+
+            novel.save()
 
         return continue_paging
 
@@ -201,5 +208,10 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
             if updated:
                 chapter.chapter_updated = True
                 chapter.save()
+            elif chapter.attempt >= 10:
+                chapter.chapter_updated = False
+                chapter.active = False
+            else:
+                chapter.attempt += 1
 
         return continue_paging

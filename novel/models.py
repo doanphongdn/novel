@@ -190,6 +190,10 @@ class NovelChapter(models.Model):
     def __str__(self):
         return self.name
 
+    @classmethod
+    def get_available_chapter(cls):
+        return cls.objects.filter(active=True, chapter_updated=True)
+
     @property
     def images(self):
         images = []

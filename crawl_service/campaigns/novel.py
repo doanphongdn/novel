@@ -1,5 +1,6 @@
 import os
 import zlib
+from datetime import datetime
 from time import sleep
 
 from rest_framework import serializers
@@ -21,14 +22,14 @@ class NovelCampaignSchema(serializers.Serializer):
 
 
 class NovelCampaignType(BaseCrawlCampaignType):
+    schema_class = NovelCampaignSchema
     name = 'NOVEL'
     model_class = Novel
     # List keys use to check value duplicate
     update_by_fields = ['name', 'url']
 
-    def handle(self, crawled_data, *args, **kwargs):
-        if not NovelCampaignSchema(data=crawled_data).is_valid():
-            raise Exception("Loi schema")
+    def handle(self, crawled_data, campaign, *args, **kwargs):
+        continue_paging = super().handle(crawled_data, campaign, *args, **kwargs)
 
         values = crawled_data.get('novel_block', [])
         new_data = []
@@ -65,9 +66,9 @@ class NovelCampaignType(BaseCrawlCampaignType):
             Novel.objects.bulk_create(new_data, ignore_conflicts=True)
 
         if 0 < no_update_limit <= no_update_count:
-            return False
+            continue_paging = False
 
-        return True
+        return continue_paging
 
 
 class NovelChapterSerializer(serializers.Serializer):
@@ -86,15 +87,13 @@ class NovelInfoCampaignSchema(serializers.Serializer):
 
 
 class NovelInfoCampaignType(BaseCrawlCampaignType):
+    schema_class = NovelInfoCampaignSchema
     name = 'NOVEL_INFO'
     model_class = Novel
     update_by_fields = ['url']
 
-    def handle(self, crawled_data, *args, **kwargs):
-        if not NovelInfoCampaignSchema(data=crawled_data).is_valid():
-            raise Exception("Loi schema")
-
-        continue_paging = True
+    def handle(self, crawled_data, campaign, *args, **kwargs):
+        continue_paging = super().handle(crawled_data, campaign, *args, **kwargs)
         for field in self.update_by_fields:
             sleep(0.01)
 
@@ -142,6 +141,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                 new_chapters = [NovelChapter(novel=novel, name=name, url=url) for url, name in chapters.items()]
                 if new_chapters:
                     NovelChapter.objects.bulk_create(new_chapters, ignore_conflicts=True)
+                    novel.latest_update_time = datetime.now()
 
                 update = True
 
@@ -157,8 +157,16 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                 update = True
 
             if update:
+                novel.publish = True
                 novel.novel_updated = True
-                novel.save()
+            elif novel.attempt >= 10:
+                novel.publish = False
+                novel.novel_updated = False
+                novel.active = False
+            else:
+                novel.attempt += 1
+
+            novel.save()
 
         return continue_paging
 
@@ -170,13 +178,13 @@ class NovelChapterCampaignSchema(serializers.Serializer):
 
 
 class NovelChapterCampaignType(BaseCrawlCampaignType):
+    schema_class = NovelChapterCampaignSchema
     name = 'NOVEL_CHAPTER'
     model_class = NovelChapter
     update_by_fields = ['url']
 
-    def handle(self, crawled_data, *args, **kwargs):
-        if not NovelChapterCampaignSchema(data=crawled_data).is_valid():
-            raise Exception("Loi schema")
+    def handle(self, crawled_data, campaign, *args, **kwargs):
+        continue_paging = super().handle(crawled_data, campaign, *args, **kwargs)
 
         for field in self.update_by_fields:
             sleep(0.01)
@@ -185,17 +193,25 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
             if not chapter:
                 continue
 
+            updated = False
             content_text = crawled_data.get("content_text")
             if content_text:
                 compressed = zlib.compress(content_text.encode())
                 chapter.binary_content = compressed
-                chapter.chapter_updated = True
-                chapter.save()
+                updated = True
 
             content_images = crawled_data.get("content_images")
             if content_images:
                 chapter.images_content = '\n'.join(content_images)
+                updated = True
+
+            if updated:
                 chapter.chapter_updated = True
                 chapter.save()
+            elif chapter.attempt >= 10:
+                chapter.chapter_updated = False
+                chapter.active = False
+            else:
+                chapter.attempt += 1
 
-        return True
+        return continue_paging

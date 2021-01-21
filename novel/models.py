@@ -10,6 +10,7 @@ from django.utils.safestring import mark_safe
 from unidecode import unidecode
 
 from crawl_service import settings
+from crawl_service.models import CrawlCampaign
 
 
 def datetime2string(value):
@@ -93,6 +94,7 @@ class Novel(models.Model):
     status = models.ForeignKey(Status, on_delete=models.CASCADE, blank=True, null=True)
     novel_updated = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
+    publish = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -105,6 +107,9 @@ class Novel(models.Model):
     view_total = models.IntegerField(default=0)
 
     latest_chapter_url = models.CharField(max_length=250, blank=True, null=True)
+    latest_updated_time = models.DateTimeField(auto_now_add=True)
+
+    attempt = models.SmallIntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -119,11 +124,11 @@ class Novel(models.Model):
 
     @classmethod
     def get_available_novel(cls):
-        return cls.objects.filter(active=True)
+        return cls.objects.filter(active=True, publish=True)
 
     @property
     def chapters(self):
-        return NovelChapter.objects.filter(novel=self)
+        return NovelChapter.objects.filter(novel=self, chapter_updated=True, active=True)
 
     @property
     def first_chapter_url(self):
@@ -177,6 +182,11 @@ class NovelChapter(models.Model):
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    source = models.ForeignKey(CrawlCampaign, on_delete=models.CASCADE)
+
+    active = models.BooleanField(default=True)
+    attempt = models.SmallIntegerField(default=0)
 
     def __str__(self):
         return self.name

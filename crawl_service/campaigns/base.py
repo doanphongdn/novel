@@ -3,8 +3,11 @@ from operator import or_
 
 from django.db.models import Q
 
+from crawl_service.models import CrawlLog
+
 
 class BaseCrawlCampaignType(object):
+    schema_class = None
     name = "base"
     model_class = None
     update_by_fields = []
@@ -39,7 +42,15 @@ class BaseCrawlCampaignType(object):
 
         return url
 
-    def handle(self, crawled_data, *args, **kwargs):
+    def handle(self, crawled_data, campaign, *args, **kwargs):
+        schema = self.schema_class(data=crawled_data)
+        schema.is_valid()
+        errors = schema.errors
+        if errors:
+            CrawlLog.objects.create(campaign=campaign,
+                                    source_url=crawled_data.get("url"),
+                                    crawled_data=crawled_data, log=dict(errors))
+
         return True
 
 

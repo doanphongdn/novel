@@ -1,16 +1,8 @@
-import re
-
-from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q
 
-from crawl_service.campaigns.mapping import CampaignMapping, ActionMapping
-
-
-def code_validate(value):
-    reg = re.compile(r'^[a-zA-Z0-9_]+$')
-    if not reg.match(value):
-        raise ValidationError(u'<%s> must be character, number or underline' % value)
+# from crawl_service.campaigns.mapping import CampaignMapping, ActionMapping
+from crawl_service import settings
+from crawl_service.utils import code_validate
 
 
 class CrawlCampaignSource(models.Model):
@@ -35,7 +27,7 @@ class CrawlCampaign(models.Model):
         db_table = "crawl_campaigns"
 
     campaign_source = models.ForeignKey(CrawlCampaignSource, on_delete=models.CASCADE)
-    campaign_type = models.CharField(max_length=50, choices=CampaignMapping.list_types)
+    campaign_type = models.CharField(max_length=50, choices=settings.CRAWL_TYPE_MAPPING.get(settings.APP_NAME))
     name = models.CharField(max_length=250)
     target_url = models.CharField(max_length=250)
     target_direct = models.BooleanField(default=True,
@@ -87,5 +79,20 @@ class CrawlItemAction(models.Model):
         db_table = "crawl_campaign_actions"
 
     campaign = models.ForeignKey(CrawlCampaign, on_delete=models.CASCADE)
-    action = models.CharField(max_length=250, choices=ActionMapping.list_types)
+    action = models.CharField(max_length=250, choices=settings.CRAWL_ACTION_MAPPING.get(settings.APP_NAME))
     params = models.CharField(max_length=250, blank=True, null=True)
+
+
+class CrawlLog(models.Model):
+    class Meta:
+        db_table = "crawl_campaign_logs"
+        ordering = ["-created_at"]
+
+    campaign = models.ForeignKey(CrawlCampaign, on_delete=models.CASCADE)
+    source_url = models.TextField(max_length=250, null=True, blank=True)
+    crawled_data = models.JSONField(null=True, blank=True)
+    log = models.JSONField(null=True, blank=True)
+
+    # Datetime
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

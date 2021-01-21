@@ -10,7 +10,10 @@ class NovelView(NovelBaseView):
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 
+        genre = kwargs.get('genre')
         novel_type = kwargs.get('novel_type')
+        default_config = genre or novel_type
+
         tmpl = TemplateManager.objects.filter(page_file='novel_all').first()
         extra_data = {
             "novel_list": {
@@ -19,7 +22,6 @@ class NovelView(NovelBaseView):
             }
         }
 
-        genre = kwargs.get('genre')
         if genre:
             genre_pre_title = tmpl.includes_default.get("genre_pre_title") or ""
             genre_obj = Genre.objects.filter(slug=genre).first()
@@ -31,7 +33,7 @@ class NovelView(NovelBaseView):
 
         response.context_data.update({
             'include_html': self.include_mapping.render_include_html(tmpl, extra_data=extra_data,
-                                                                     default=genre or novel_type),
+                                                                     default=default_config),
         })
 
         return response

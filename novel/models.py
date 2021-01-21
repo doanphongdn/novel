@@ -91,7 +91,7 @@ class Novel(models.Model):
 
     status = models.ForeignKey(Status, on_delete=models.CASCADE, blank=True, null=True)
     novel_updated = models.BooleanField(default=False)
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -104,6 +104,7 @@ class Novel(models.Model):
     view_total = models.IntegerField(default=0)
 
     latest_chapter_url = models.CharField(max_length=250, blank=True, null=True)
+    latest_updated_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -122,7 +123,7 @@ class Novel(models.Model):
 
     @property
     def chapters(self):
-        return NovelChapter.objects.filter(novel=self)
+        return NovelChapter.objects.filter(novel=self, active=True)
 
     @property
     def first_chapter_url(self):
@@ -173,6 +174,7 @@ class NovelChapter(models.Model):
     binary_content = models.BinaryField(blank=True, null=True)
     images_content = models.TextField(blank=True, null=True)
 
+    active = models.BooleanField(default=False)
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

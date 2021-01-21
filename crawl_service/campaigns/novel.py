@@ -157,6 +157,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                 update = True
 
             if update:
+                novel.active = True
                 novel.novel_updated = True
                 novel.save()
 
@@ -185,16 +186,20 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
             if not chapter:
                 continue
 
+            updated = False
             content_text = crawled_data.get("content_text")
             if content_text:
                 compressed = zlib.compress(content_text.encode())
                 chapter.binary_content = compressed
-                chapter.chapter_updated = True
-                chapter.save()
+                updated = True
 
             content_images = crawled_data.get("content_images")
             if content_images:
                 chapter.images_content = '\n'.join(content_images)
+                updated = True
+
+            if updated:
+                chapter.active = True
                 chapter.chapter_updated = True
                 chapter.save()
 

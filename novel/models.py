@@ -1,3 +1,4 @@
+import hashlib
 import zlib
 from datetime import datetime
 
@@ -213,7 +214,7 @@ class NovelChapter(models.Model):
             # Not allow img url contains any sub-string from a list configuration's string
             if len(img_ignoring) and any(sub_str in images[i] for sub_str in img_ignoring):
                 continue
-            stream_images.append("/images/%s_%s.jpg" % (self.id, i))
+            stream_images.append("/images/%s_%s_%s.jpg" % (self.id, i, hashlib.md5(images[i].encode()).hexdigest()))
         return stream_images
 
     @property

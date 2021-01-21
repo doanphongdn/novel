@@ -159,7 +159,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                 update = True
 
             if update:
-                novel.active = True
+                novel.publish = True
                 novel.novel_updated = True
                 novel.save()
 
@@ -201,7 +201,6 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
                 updated = True
 
             if updated:
-                chapter.active = True
                 chapter.chapter_updated = True
                 chapter.save()
 

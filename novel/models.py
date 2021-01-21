@@ -91,7 +91,8 @@ class Novel(models.Model):
 
     status = models.ForeignKey(Status, on_delete=models.CASCADE, blank=True, null=True)
     novel_updated = models.BooleanField(default=False)
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
+    publish = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -119,11 +120,11 @@ class Novel(models.Model):
 
     @classmethod
     def get_available_novel(cls):
-        return cls.objects.filter(active=True)
+        return cls.objects.filter(active=True, publish=True)
 
     @property
     def chapters(self):
-        return NovelChapter.objects.filter(novel=self, active=True)
+        return NovelChapter.objects.filter(novel=self, chapter_updated=True)
 
     @property
     def first_chapter_url(self):
@@ -174,7 +175,6 @@ class NovelChapter(models.Model):
     binary_content = models.BinaryField(blank=True, null=True)
     images_content = models.TextField(blank=True, null=True)
 
-    active = models.BooleanField(default=False)
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

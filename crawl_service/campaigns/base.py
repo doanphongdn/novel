@@ -45,11 +45,11 @@ class BaseCrawlCampaignType(object):
     def handle(self, crawled_data, campaign, *args, **kwargs):
         schema = self.schema_class(data=crawled_data)
         schema.is_valid()
-        errors = schema.errors()
+        errors = schema.errors
         if errors:
             CrawlLog.objects.create(campaign=campaign,
                                     source_url=crawled_data.get("url"),
-                                    crawled_data=crawled_data, log=errors)
+                                    crawled_data=crawled_data, log=dict(errors))
 
         return True
 

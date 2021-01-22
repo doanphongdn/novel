@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 
 import requests
+from django.db import transaction
 from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import redirect
 
@@ -46,6 +47,24 @@ class ChapterView(NovelBaseView):
                             chapter.slug.replace('-', ' '), chapter.name]
                 response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)
 
+                # Update view count
+                chapter_id = chapter.id
+                chapters_viewed = request.session.get("chapters_viewed") or []
+                if chapter_id not in chapters_viewed:
+                    with transaction.atomic():
+                        chapter.view_total += 1
+                        chapter.save()
+
+                        novel.view_total += 1
+                        novel.view_daily += 1
+                        novel.view_monthly += 1
+                        novel.save()
+
+                        chapters_viewed.append(chapter_id)
+
+                    request.session["chapters_viewed"] = chapters_viewed
+                    request.session.set_expiry(3600)
+
             breadcrumb_data = [
                 {
                     "name": novel.name,
@@ -77,6 +96,7 @@ class ChapterView(NovelBaseView):
             'novel_url': novel.get_absolute_url(),
             'include_html': include_html,
         })
+
 
         return response
 

@@ -20,6 +20,6 @@ class Command(BaseCommand):
         novels = Novel.objects.all()
         for novel in novels:
             if novel.thumbnail_image:
-                thumbnail_image = self.full_schema_url(novel.thumbnail_image)
+                thumbnail_image = self.full_schema_url(novel.thumbnail_image, novel)
                 utils.download_image(thumbnail_image, novel.slug,
                                      referer=novel.campaign_source.homepage)

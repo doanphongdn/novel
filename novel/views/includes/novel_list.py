@@ -24,6 +24,17 @@ class NovelListTemplateInclude(BaseTemplateInclude):
         novel_type = self.include_data.get('novel_type') or 'latest-update'
         page = self.include_data.get('page') or 1
         limit = self.include_data.get('limit') or 12
+        novel_list_col = self.include_data.get('novel_list_col') or 12
+        novel_grid_col = self.include_data.get('novel_grid_col') or 4
+        novel_grid_col_md = self.include_data.get('novel_grid_col_md') or 3
+        novel_grid_col_lg = self.include_data.get('novel_grid_col_lg') or 2
+
+        css_class = {
+            "novel_list_col": novel_list_col,
+            "novel_grid_col": novel_grid_col,
+            "novel_grid_col_md": novel_grid_col_md,
+            "novel_grid_col_lg": novel_grid_col_lg
+        }
 
         if show_button_type is None:
             show_button_type = True
@@ -74,4 +85,5 @@ class NovelListTemplateInclude(BaseTemplateInclude):
             "view_all_url": reverse("novel_all", kwargs={"novel_type": novel_type}) if show_button_view_all else "",
             "button_type_urls": button_type_urls,
             "pagination_html": pagination.render_html() if pagination else "",
+            "css_class": css_class,
         }

@@ -12,12 +12,14 @@ from novel.views.includes.link import LinkTemplateInclude
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
 from novel.views.includes.pagination import PaginationTemplateInclude
+from novel.views.includes.novel_cat import NovelCatTemplateInclude
 
 
 TEMPLATE_INCLUDE_MAPPING = {
     "chapter_content": ChapterContentTemplateInclude,
     "chapter_list": ChapterListTemplateInclude,
     "link": LinkTemplateInclude,
+    "novel_genres": NovelCatTemplateInclude,
     "novel_info": NovelInfoTemplateInclude,
     "novel_list": NovelListTemplateInclude,
     "breadcrumb": BreadCrumbTemplateInclude,

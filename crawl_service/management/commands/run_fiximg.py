@@ -32,11 +32,16 @@ class SeleniumScraper:
         # return self.driver.find_element_by_css_selector("div.reading-detail > div:last-child").get_attribute(by)
         return self.driver.find_elements_by_css_selector(by_selector)
 
-    def get_links(self, url, timeout=3, page_by_selector="div.page-chapter"):
+    def get_links(self, url, timeout=3, page_by_selector="div.page-chapter", show_log=False):
         """Extracts and returns company links (maximum number of company links for return is provided)."""
+        if show_log:
+            print('[get_links] starting...')
+        init_time = time.time()
         self.driver.get(url)
         self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, page_by_selector)))
 
+        if show_log:
+            print('[get_links] get pages')
         pages = self.get_pages(page_by_selector)
 
         # store all initial src before scroll it
@@ -48,20 +53,33 @@ class SeleniumScraper:
         if not initial_sources:
             return []
 
+        if show_log:
+            print('[get_links] %s pages fetched' % len(pages))
+
+        new_img = []
         for idx, page in enumerate(pages):
             start_time = time.time()
-            self.driver.execute_script("return arguments[0].scrollIntoView(true);", page)
+            if idx % 2 == 0 or idx == len(pages) - 1:
+                self.driver.execute_script("return arguments[0].scrollIntoView(true);", page)
+
             img = page.find_element_by_tag_name("img")
             self.wait.until(lambda driver: img.get_attribute("src") != initial_sources[idx]
                                            or time.time() > start_time + timeout)
+            new_img.append(img.get_attribute("src"))
 
-        return [img_link.get_attribute("src")
-                for img_link in self.driver.find_elements_by_css_selector(page_by_selector + " > img")]
+        end_time = time.time() - init_time
+        if show_log:
+            print('[get_links] new images %s' % new_img)
+            print('[get_links] total time %s' % end_time)
+        # return [img_link.get_attribute("src")
+        #         for img_link in self.driver.find_elements_by_css_selector(page_by_selector + " > img")]
+        return new_img
 
 
 class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
+        print('[Selenium Scraper] Starting...')
         scraper = SeleniumScraper()
         novel_setting = NovelSetting.get_setting()
         img_ignoring = []
@@ -69,17 +87,18 @@ class Command(BaseCommand):
             img_ignoring = novel_setting.img_ignoring.split(",")
         if not img_ignoring:
             return
-
+        print('[Selenium Scraper] Query chapters...')
         query = reduce(operator.and_, (Q(images_content__icontains=item) for item in img_ignoring))
         chapters = NovelChapter.objects.filter(query)
         if not chapters:
             print('No chapter is invalid')
             return
         for chapter in chapters:
-            print('Update images content for Chapter ID: ', chapter.id, ' - Chapter Name: ', chapter.name)
+            print('[Selenium Scraper] Update images content for Chapter ID: ', chapter.id, ' - Chapter Name: ',
+                  chapter.name)
             # url = 'http://www.nettruyen.com/truyen-tranh/trai-tim-sat/chap-12/678622'
             links = scraper.get_links(url=chapter.url, timeout=settings.SELENIUM_LAZY_LOADING_TIMEOUT,
                                       page_by_selector="div.page-chapter")
             chapter.images_content = '\n'.join(links)
             chapter.save()
-
+        print('[Selenium Scraper] Finish')

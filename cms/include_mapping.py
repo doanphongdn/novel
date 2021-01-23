@@ -27,15 +27,17 @@ class IncludeMapping(object):
 
             inc_params = params.get('default') or {}
             inc_params.update(params.get(tmpl_incl_default.get(inc.code) or default) or {})
-            inc_obj = mapping.get(inc.include_file)(inc_params, extra_data)
+            inc_func = mapping.get(inc.include_file)
+            if inc_func:
+                inc_obj = inc_func(inc_params, extra_data)
 
-            html = format_html_join("\n", """
-                <div class='container'>
-                    <div class='row'>
-                        <div class='{}'>{}</div>
-                    </div>
-                </div>
-            """, [(inc.class_name, inc_obj.render_html())])
+                html = format_html_join("\n", """
+                            <div class='{}'>{}</div>
+                """, [(inc.class_name, inc_obj.render_html())])
+            else:
+                html = format_html_join("\n", """
+                                            <div class='mising-include-page'>Missing Include Page {}:{}</div>
+                                """, [(inc.class_name, inc.include_file)])
 
             inc_htmls.append((html,))
 

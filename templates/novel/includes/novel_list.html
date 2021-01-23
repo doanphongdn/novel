@@ -33,9 +33,9 @@
 <div class="row">
     {% for novel in novels %}
         {% if view_type == 'list' %}
-            <div class="col-12 novel-item">
+            <div class="col-{{ css_class.novel_list_col }} novel-item">
         {% else %}
-            <div class="col-4 col-md-3 col-lg-2 novel-item form-group">
+            <div class="col-{{ css_class.novel_grid_col }} col-md-{{ css_class.novel_grid_col_md }} col-lg-{{ css_class.novel_grid_col_lg }} novel-item form-group">
         {% endif %}
     <div class="novel-wrap">
         <div class="novel-thumbnail-image">

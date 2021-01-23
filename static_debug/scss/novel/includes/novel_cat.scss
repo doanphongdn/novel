@@ -1,0 +1,36 @@
+.darkBox {
+  h2 {
+    font-size: 16px;
+    margin: 0;
+    margin-bottom: 10px;
+    font-weight: 400;
+    color: #2980b9;
+  }
+
+  ul {
+    padding-left: 0;
+    margin: 0;
+  }
+
+  a {
+    color: #000;
+  }
+}
+
+.card-box {
+  ul {
+    li {
+      padding: 6px 5px;
+    }
+  }
+}
+
+.genres ul li a {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.nav > li, .nav > li > a {
+  //display: block;
+  position: relative;
+}

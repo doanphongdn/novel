@@ -16,6 +16,7 @@ TEMPLATE_INCLUDE_CHOISES = {
         ("link", "link"),
         ("novel_info", "novel_info"),
         ("novel_list", "novel_list"),
+        ("novel_genres", "novel_cat"),
         ("breadcrumb", "breadcrumb"),
         ("footer_info", "footer_info"),
     ],

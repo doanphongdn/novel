@@ -1,31 +1,25 @@
-from datetime import datetime
-
 from django.core.management.base import BaseCommand
-from scrapy.crawler import CrawlerProcess
-from scrapy.utils.project import get_project_settings
 
-from crawl_service.campaigns.scrapy_spider import NovelSpider
-from crawl_service.models import CrawlCampaign
+from crawl_service import utils
+from novel.models import Novel
 
 
 class Command(BaseCommand):
 
+    def full_schema_url(self, url, novel):
+        if url.strip().startswith('//'):
+            url = "http:" + url
+        elif url.strip().startswith('/'):
+            url = novel.campaign_source.homepage.strip('/') + url
+        else:
+            url = url.rstrip('/')
+
+        return url
+
     def handle(self, *args, **kwargs):
-        campaigns = CrawlCampaign.objects.filter(active=True, status='stopped').all()
-
-        process = CrawlerProcess(get_project_settings())
-        campaigns_update = []
-        for cam in campaigns:
-            run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time
-            if run_able:
-                cam.status = 'running'
-                cam.save()
-                campaigns_update.append(cam)
-                process.crawl(NovelSpider, campaign=cam)
-
-        process.start()  # the script will block here until all crawling jobs are finished
-
-        for cam in campaigns_update:
-            cam.last_run = datetime.now()
-            cam.status = 'stopped'
-            cam.save()
+        novels = Novel.objects.all()
+        for novel in novels:
+            if novel.thumbnail_image:
+                thumbnail_image = self.full_schema_url(novel.thumbnail_image)
+                utils.download_image(thumbnail_image, novel.slug,
+                                     referer=novel.campaign_source.homepage)

@@ -1,3 +1,4 @@
+from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 from django_json_widget.widgets import JSONEditorWidget
@@ -5,8 +6,19 @@ from django_json_widget.widgets import JSONEditorWidget
 from cms.models import FooterInfo, Link, HtmlPage, TemplateManager, InludeTemplate
 
 
+class HtmlPageForm(forms.ModelForm):
+    content = forms.CharField(
+        widget=CKEditorWidget(attrs={'style': 'width:100%;', 'cols': 80, 'rows': 10, 'class': ""}),
+        required=False)
+
+    class Meta:
+        model = HtmlPage
+        fields = '__all__'
+
+
 @admin.register(HtmlPage)
-class NovelAdmin(admin.ModelAdmin):
+class HtmlPageAdmin(admin.ModelAdmin):
+    form = HtmlPageForm
     list_display = ("id", "name", "active", "created_at", "updated_at")
     search_fields = ("name", "slug")
     list_filter = ("active",)
@@ -23,7 +35,7 @@ class FooterAdmin(admin.ModelAdmin):
 class LinkAdmin(admin.ModelAdmin):
     list_display = ("id", "active", "name", "url", "type")
     search_fields = ("name", "url", "type")
-    list_filter = ("active","type")
+    list_filter = ("active", "type")
 
 
 class IncludeTemplateForm(forms.ModelForm):

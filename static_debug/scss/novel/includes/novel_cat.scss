@@ -15,6 +15,18 @@
   a {
     color: #000;
   }
+
+  a:hover {
+    color: #833321;
+  }
+
+  .list-group-item-success:hover {
+    background-color: #FEF5E7;
+  }
+
+  .list-group-item-primary:hover {
+    background-color: #FEF5E7;
+  }
 }
 
 .card-box {

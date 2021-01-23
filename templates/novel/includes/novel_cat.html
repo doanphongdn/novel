@@ -11,12 +11,12 @@
         {% if forloop.counter0|divisibleby:2 %}
           <li class="{{ class_column }} list-group-item-success">
             <span><i class="fa fa-book"></i></span>
-            <a href="/{{ gen.get_absolute_url }} " title="{{ genre.name }} ">{{ genre.name }} </a>
+            <a href="{{ genre.get_absolute_url }} " title="{{ genre.name }} ">{{ genre.name }} </a>
           </li>
         {% else %}
-          <li class="{{ class_column }} list-group-item-light">
+          <li class="{{ class_column }} list-group-item-primary">
             <span><i class="fa fa-book"></i></span>
-            <a href="/{{ gen.get_absolute_url }} " title="{{ genre.name }} ">{{ genre.name }} </a>
+            <a href="/{{ genre.get_absolute_url }} " title="{{ genre.name }} ">{{ genre.name }} </a>
           </li>
         {% endif %}
       {% endfor %}

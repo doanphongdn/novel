@@ -20,7 +20,7 @@ body {
 }
 
 .content-wrap {
-  padding: 20px;
+  padding: 15px;
   background: #fff;
   margin: 15px auto;
 }
@@ -49,7 +49,9 @@ a {
 
 /* Small Devices, Tablets */
 @media (max-width: 768px) {
-
+  .content-wrap {
+    margin: 0 auto;
+  }
 }
 
 /* Small Devices, Phones */

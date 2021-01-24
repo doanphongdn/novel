@@ -3,59 +3,53 @@
 {% block stylesheet %}
 {% endblock %}
 {% block content %}
-  <div class="row">
-    <div class="col-12">
-      <div class="container content-wrap">
-        <div class="row">
-          {{ include_html }}
-          <div class="float-button">
+    <div class="row">
+        {{ include_html }}
+        <div class="float-button">
             <ul>
-              <li><a href="{{ novel_url }}"><i class="fa fa-book"></i></a></li>
-              <li><i class="fa fa-cog" data-toggle="modal" data-target="#modal-config"></i></li>
+                <li><a href="{{ novel_url }}"><i class="fa fa-book"></i></a></li>
+                <li><i class="fa fa-cog" data-toggle="modal" data-target="#modal-config"></i></li>
             </ul>
-          </div>
-          <div class="modal fade page-config" id="modal-config" tabindex="-1" role="dialog"
-               aria-labelledby="modal-config"
-               aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-              <div class="modal-content">
-                <div class="modal-body p-0">
-                  <div class="card bg-secondary shadow border-0 mb-0">
-                    <div class="card-body px-lg-5 py-lg-5">
-                      <div class="input-slider-container">
-                        <small class="d-block text-uppercase font-weight-bold mb-3">
-                          <i class="fa fa-tint"></i> Background Color</small>
-                        <ul class="colors">
-                          <li data-color="#222222" data-text-color="#eae4d3"></li>
-                          <li data-color="#f0f0f0" class="active-color"></li>
-                          <li data-color="#e1e8e8"></li>
-                          <li data-color="#e2eee2"></li>
-                          <li data-color="#e5e3df"></li>
-                          <li data-color="#eae4d3"></li>
-                        </ul>
-                        <small class="d-block text-uppercase font-weight-bold mb-3">
-                          <i class="fa fa-font"></i> Font size</small>
-                        <div id="fontSizeSlider" class="slider"></div>
-                        <small class="d-block text-uppercase font-weight-bold mb-3">
-                          <i class="fa fa-bold"></i> Text bold</small>
-                        <div id="fontWeightSlider" class="slider"></div>
-                        <small class="d-block text-uppercase font-weight-bold mb-3">
-                          <i class="fa fa-text-height"></i> Text height</small>
-                        <div id="lineHeightSlider" class="slider"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
+        <div class="modal fade page-config" id="modal-config" tabindex="-1" role="dialog"
+             aria-labelledby="modal-config"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-body p-0">
+                        <div class="card bg-secondary shadow border-0 mb-0">
+                            <div class="card-body px-lg-5 py-lg-5">
+                                <div class="input-slider-container">
+                                    <small class="d-block text-uppercase font-weight-bold mb-3">
+                                        <i class="fa fa-tint"></i> Background Color</small>
+                                    <ul class="colors">
+                                        <li data-color="#222222" data-text-color="#eae4d3"></li>
+                                        <li data-color="#f0f0f0" class="active-color"></li>
+                                        <li data-color="#e1e8e8"></li>
+                                        <li data-color="#e2eee2"></li>
+                                        <li data-color="#e5e3df"></li>
+                                        <li data-color="#eae4d3"></li>
+                                    </ul>
+                                    <small class="d-block text-uppercase font-weight-bold mb-3">
+                                        <i class="fa fa-font"></i> Font size</small>
+                                    <div id="fontSizeSlider" class="slider"></div>
+                                    <small class="d-block text-uppercase font-weight-bold mb-3">
+                                        <i class="fa fa-bold"></i> Text bold</small>
+                                    <div id="fontWeightSlider" class="slider"></div>
+                                    <small class="d-block text-uppercase font-weight-bold mb-3">
+                                        <i class="fa fa-text-height"></i> Text height</small>
+                                    <div id="lineHeightSlider" class="slider"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 {% endblock %}
 
 {% block scripts %}
-  <script type="text/javascript" src="{% static 'argon/assets/js/plugins/nouislider.min.js' %}"></script>
-  <script type="text/javascript" src="{% static 'js/novel/chapter.js' %}"></script>
+    <script type="text/javascript" src="{% static 'argon/assets/js/plugins/nouislider.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/novel/chapter.js' %}"></script>
 {% endblock %}

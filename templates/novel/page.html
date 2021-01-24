@@ -3,15 +3,11 @@
 {% block stylesheet %}
 {% endblock %}
 {% block content %}
+
     <div class="row">
-        <div class="col-12">
-            <div class="container content-wrap">
-                <div class="row">
-                    {% autoescape off %}
-                        {{ page_html }}
-                    {% endautoescape %}
-                </div>
-            </div>
-        </div>
+        {% autoescape off %}
+            {{ page_html }}
+        {% endautoescape %}
     </div>
+
 {% endblock %}

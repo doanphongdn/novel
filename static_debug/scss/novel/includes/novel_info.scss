@@ -8,7 +8,8 @@
     .novel-thumbnail {
       padding: 10px;
       background: #fff;
-      box-shadow: 0 1px 3px rgba(50,50,93,0.15), 0 1px 0 rgba(0,0,0,0.02);
+      box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02);
+
       img {
         width: 100%;
         height: auto;
@@ -121,5 +122,12 @@
 
 /* Small Devices, Tablets */
 @media (max-width: 768px) {
-
+  .novel-info {
+    .novel-detail {
+      .novel-detail-wrap {
+        margin-left: -15px;
+        margin-right: -15px;
+      }
+    }
+  }
 }

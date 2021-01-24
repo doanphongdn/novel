@@ -52,8 +52,12 @@
 {{ top_menu_html }}
 <div class="container-fluid" id="particles-js">
     <canvas class="particles-js-canvas-el" style="width: 100%; height: 100%;"></canvas>
-    {% block content %}
-    {% endblock %}
+    <div class="row">
+        <div class="container content-wrap">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
 </div>
 <div class="container-fluid">
     <div class="row footer">

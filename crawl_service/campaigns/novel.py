@@ -57,6 +57,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
 
                 novel.save()
             else:
+                item['campaign_source_id'] = campaign.id
                 for url in ['url', 'latest_chapter_url']:
                     if item.get(url):
                         item[url] = self.full_schema_url(item[url] or "")

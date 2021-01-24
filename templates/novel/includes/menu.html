@@ -1,39 +1,37 @@
-<div class="row">
-    <nav class="navbar navbar-expand-lg bg-white navbar-light navbar-menu d-none d-lg-block">
-        <div class="container">
-            <div class="collapse navbar-collapse">
-                <div class="row">
-                    <ul class="navbar-nav">
-                        {% for menu in menu_data %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ menu.url }}">
-                                    {% if menu.icon %}
-                                        <i class="{{ menu.icon }}"></i>
-                                    {% endif %}
-                                    {{ menu.name }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                        {% if genre_menu %}
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button"
-                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {% if genre_menu.icon %}
-                                        <i class="{{ genre_menu.icon }}"></i>
-                                    {% endif %}
-                                    {{ genre_menu.name }}
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="nav-inner-primary_dropdown_1">
-                                    {% for genre in genre_menu.data %}
-                                        <a class="dropdown-item"
-                                           href="{{ genre.get_absolute_url }}">{{ genre.name }}</a>
-                                    {% endfor %}
-                                </div>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </div>
+<nav class="navbar navbar-expand-lg bg-white navbar-light navbar-menu d-none d-lg-block">
+    <div class="container">
+        <div class="collapse navbar-collapse">
+            <div class="row">
+                <ul class="navbar-nav">
+                    {% for menu in menu_data %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ menu.url }}">
+                                {% if menu.icon %}
+                                    <i class="{{ menu.icon }}"></i>
+                                {% endif %}
+                                {{ menu.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    {% if genre_menu %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% if genre_menu.icon %}
+                                    <i class="{{ genre_menu.icon }}"></i>
+                                {% endif %}
+                                {{ genre_menu.name }}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="nav-inner-primary_dropdown_1">
+                                {% for genre in genre_menu.data %}
+                                    <a class="dropdown-item"
+                                       href="{{ genre.get_absolute_url }}">{{ genre.name }}</a>
+                                {% endfor %}
+                            </div>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
-    </nav>
-</div>
+    </div>
+</nav>

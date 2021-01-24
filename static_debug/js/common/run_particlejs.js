@@ -1,11 +1,11 @@
 particlesJS('particles-js', {
     'particles': {
         'number': {'value': 50},
-        'color': {'value': '#ffffff'},
+        'color': {'value': '#333'},
         'shape': {'type': 'triangle', 'polygon': {'nb_sides': 5}},
         'opacity': {'value': 0.06, 'random': false},
         'size': {'value': 11, 'random': true},
-        'line_linked': {'enable': true, 'distance': 150, 'color': '#ffffff', 'opacity': 0.4, 'width': 1},
+        'line_linked': {'enable': true, 'distance': 150, 'color': '#333', 'opacity': 0.4, 'width': 1},
         'move': {
             'enable': true,
             'speed': 4,

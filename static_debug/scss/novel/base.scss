@@ -5,7 +5,7 @@
   width: 100%;
   height: 100%;
   z-index: -1000;
-  opacity: .3;
+  opacity: .5;
 }
 
 body {
@@ -17,6 +17,12 @@ body {
   color: #243239;
   text-align: left;
   background: #F0F0F0;
+}
+
+.content-wrap {
+  padding: 20px;
+  background: #fff;
+  margin: 15px auto;
 }
 
 button:focus {

@@ -2,7 +2,6 @@
 {% block stylesheet %}
 {% endblock %}
 {% if novel %}
-    <div class="row">
         <div class="novel-info">
             <div class="col-12 novel-info-wrap">
                 <div class="row">
@@ -11,21 +10,21 @@
                     </div>
                     <div class="col-md-9 col-12 novel-detail">
                         <div class="row novel-detail-wrap">
-                            <div class="col-12 novel-name">
+                            <div class="novel-name">
                                 <h3>{{ novel.name }}</h3>
                             </div>
-                            <div class="col-12 rating">
+                            <div class="rating">
                                 {% for rating in novel.rating_classes %}
                                     <i class="{{ rating }} fa fa-star"></i>
                                 {% endfor %}
                                 <span>{{ novel.vote }}</span>
                             </div>
 
-                            <div class="col-12 novel-authors">
+                            <div class="novel-authors">
                                 <label>{{ author_label }} </label>
                                 <span>{{ novel.authors_name }}</span>
                             </div>
-                            <div class="col-12 novel-categories">
+                            <div class="novel-categories">
                                 <label>{{ category_label }} </label>
                                 {% for gen in novel.genres.all %}
                                     <a href="{{ gen.get_absolute_url }}">
@@ -33,11 +32,11 @@
                                     </a>
                                 {% endfor %}
                             </div>
-                            <div class="col-12">
+                            <div>
                                 <label>{{ latest_update_label }} </label>
                                 <span>{{ novel.chapters.0.created_at_str }}</span>
                             </div>
-                            <div class="col-12 novel-summary">
+                            <div class="novel-summary">
                                 <div class="row">
                                     <div class="col-4 col-md-2 novel-summury-item chapters">
                                         <label>{{ chapter_total_label }}</label>
@@ -64,7 +63,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 novel-button">
+                            <div class="novel-button">
                                 <a href="{{ novel.first_chapter_url }}">
                                     <button class="btn btn-sm btn-primary">
                                         <i class="fa fa-sort-numeric-asc"></i> {{ first_chapter_label }}
@@ -84,7 +83,7 @@
                                     {{ hashtags_html }}
                                 </div>
                             {% endif %}
-                            <div class="col-12 novel-mobile-action d-md-none">
+                            <div class="novel-mobile-action d-md-none">
                                 <div class="row">
                                     {% if comment_enable %}
                                         <div class="col-6 action-item">
@@ -106,5 +105,4 @@
                 </div>
             </div>
         </div>
-    </div>
 {% endif %}

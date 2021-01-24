@@ -257,7 +257,12 @@ class NovelSetting(models.Model):
     meta_description = models.TextField(null=True, blank=True)
     meta_copyright = models.TextField(null=True, blank=True)
     meta_author = models.TextField(null=True, blank=True)
+    # facebook
+    meta_og_type = models.CharField(max_length=250, null=True, blank=True)
     meta_img = models.ImageField(upload_to="images", null=True, blank=True)
+    meta_og_description = models.TextField(null=True, blank=True)
+    meta_fb_app_id = models.CharField(max_length=250, blank=True)
+    # others
     img_ignoring = models.TextField(null=True, blank=True)
     google_analystics_id = models.TextField(null=True, blank=True)
     novel_type = models.CharField(max_length=250, choices=[('COMIC', 'Comic'), ('TEXT', 'Text')])

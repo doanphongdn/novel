@@ -37,6 +37,8 @@ class NovelDetailView(NovelBaseView):
         novel = Novel.objects.filter(slug=slug).first()
 
         if novel:
+            # referer = urlparse(chapter.url)
+            # referer_url = referer.scheme + "://" + referer.netloc
             response.context_data["setting"]["title"] = novel.name
             response.context_data['setting']['meta_img'] = novel.thumbnail_image
             keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full']

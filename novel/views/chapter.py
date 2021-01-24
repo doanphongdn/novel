@@ -42,6 +42,8 @@ class ChapterView(NovelBaseView):
         if novel:
             chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).first()
             if chapter:
+                # referer = urlparse(chapter.url)
+                # referer_url = referer.scheme + "://" + referer.netloc
                 response.context_data["setting"]["title"] = novel.name + " " + chapter.name
                 response.context_data['setting']['meta_img'] = novel.thumbnail_image
                 keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full',
@@ -115,7 +117,8 @@ class ChapterView(NovelBaseView):
 
             elif origin_url.strip().startswith('/'):
                 origin_url = referer_url.strip('/') + "/" + origin_url
-
+            if 'blogspot.com' in origin_url:
+                referer_url = None
             return StreamingHttpResponse(url2yield(origin_url, referer=referer_url),
                                          content_type="image/jpeg")
         return HttpResponse({})

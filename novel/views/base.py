@@ -54,8 +54,18 @@ class NovelBaseView(TemplateView):
             if novel_setting.favicon:
                 favicon = novel_setting.favicon.url
                 img_view = domain + novel_setting.favicon.url
+
+            # Other meta for facebook
             if novel_setting.meta_img:
                 img_view = domain + novel_setting.meta_img.url
+            meta_og_url = request.build_absolute_uri('?')
+            meta_og_type = novel_setting.meta_og_type or "article"
+            meta_og_title = title
+            if novel_setting.meta_og_description:
+                meta_og_description = novel_setting.meta_og_description
+            else:
+                meta_og_description = novel_setting.meta_description or ""
+            meta_fb_app_id = novel_setting.meta_fb_app_id or None
 
         menu = [
             {
@@ -74,6 +84,11 @@ class NovelBaseView(TemplateView):
             "meta_description": novel_setting and novel_setting.meta_description or "",
             "meta_copyright": novel_setting and novel_setting.meta_copyright or "",
             "meta_author": novel_setting and novel_setting.meta_author or "",
+            "meta_og_url": meta_og_url,
+            "meta_og_type": meta_og_type,
+            "meta_og_title": meta_og_title,
+            "meta_og_description": meta_og_description,
+            "meta_fb_app_id": meta_fb_app_id,
             "meta_img": img_view,
             "google_analystics_id": novel_setting and novel_setting.google_analystics_id or "",
         }

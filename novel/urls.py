@@ -24,6 +24,7 @@ from django.views.generic import TemplateView
 from crawl_service import settings
 from crawl_service.views.base import view_dmca_validation, view_google_site_verification
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
+from novel.models import NovelChapter
 from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap, NovelChapterSitemap
 from novel.views.chapter import ChapterView
 from novel.views.index import NovelIndexView
@@ -35,15 +36,17 @@ sitemaps = {
     'genre': GenreSitemap,
     'static': StaticViewSitemap,
     'novels': NovelSitemap,
-    'chapters': NovelChapterSitemap,
 }
-
+chapter_sitemaps = {
+    'chapter': NovelChapterSitemap(0),
+}
 urlpatterns = [
     url(os.environ.get('GOOGLE_SITE_VERIFICATION', 'google-site-verification'), view_google_site_verification,
         name="google_verification"),
     url(os.environ.get('DMCA_VALIDATION_URL', 'dmca-validation.html'), view_dmca_validation,
         name="dmca_verification"),
     url(r'^robots\.txt$', TemplateView.as_view(template_name="novel/robots.txt", content_type='text/plain')),
+
     path('web/sitemap.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemaps}),
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
@@ -62,5 +65,21 @@ urlpatterns = [
 
     path('<str:slug>', NovelDetailView.as_view(), name="novel"),
     path('<str:slug>/<str:chapter_slug>', cache_page(60 * 5)(ChapterView.as_view()), name="chapter"),
-
 ]
+
+chap_limit = 250000
+c_total = divmod(NovelChapter.objects.count(), chap_limit)
+for i in range(c_total[0]):
+    c_obj = NovelChapterSitemap(i)
+    urlpatterns.append(path('web/sitemap%s.xml' % (i + 1), cache_page(86400)(sitemaps_views.index),
+                            {'sitemaps': c_obj}))
+    urlpatterns.append(path('web/sitemap%s-<section>.xml' % (i + 1), cache_page(86400)(sitemaps_views.sitemap),
+                            {'sitemaps': c_obj}, name='django.contrib.sitemaps.views.sitemap'))
+
+if c_total[1] > 0:
+    c_obj = NovelChapterSitemap(c_total[0])
+    urlpatterns.append(path('web/sitemap-%s.xml' % (c_total[0] + 1), cache_page(86400)(sitemaps_views.index),
+                            {'sitemaps': c_obj}))
+    urlpatterns.append(
+        path('web/sitemap-%s-<section>.xml' % (c_total[0] + 1), cache_page(86400)(sitemaps_views.sitemap),
+             {'sitemaps': c_obj}, name='django.contrib.sitemaps.views.sitemap'))

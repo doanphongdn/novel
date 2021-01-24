@@ -10,7 +10,7 @@ class LimitSitemap(Sitemap):
 
 
 class GenreSitemap(LimitSitemap):
-    changefreq = "daily"
+    changefreq = "weekly"
     priority = 0.5
 
     def items(self):
@@ -18,11 +18,14 @@ class GenreSitemap(LimitSitemap):
 
 
 class NovelChapterSitemap(LimitSitemap):
-    changefreq = "daily"
+    changefreq = "weekly"
     priority = 0.5
 
+    def __init__(self, idx=0):
+        self.idx = idx
+
     def items(self):
-        return NovelChapter.get_available_chapter().all()
+        return NovelChapter.get_available_chapter().all()[self.idx * 250000:250000]
 
     @classmethod
     def lastmod(cls, obj):
@@ -30,7 +33,7 @@ class NovelChapterSitemap(LimitSitemap):
 
 
 class NovelSitemap(LimitSitemap):
-    changefreq = "daily"
+    changefreq = "weekly"
     priority = 0.5
 
     def items(self):
@@ -43,7 +46,7 @@ class NovelSitemap(LimitSitemap):
 
 class StaticViewSitemap(sitemaps.Sitemap):
     priority = 0.5
-    changefreq = 'daily'
+    changefreq = 'weekly'
 
     def items(self):
         return ['home']

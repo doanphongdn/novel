@@ -13,7 +13,7 @@ from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
 from novel.views.includes.pagination import PaginationTemplateInclude
 from novel.views.includes.novel_cat import NovelCatTemplateInclude
-from novel.views.includes.top_menu import TopMenuTemplateInclude
+from novel.views.includes.menu import TopMenuTemplateInclude
 
 TEMPLATE_INCLUDE_MAPPING = {
     "chapter_content": ChapterContentTemplateInclude,
@@ -25,7 +25,7 @@ TEMPLATE_INCLUDE_MAPPING = {
     "breadcrumb": BreadCrumbTemplateInclude,
     "pagination": PaginationTemplateInclude,
     "footer_info": FooterInfoplateInclude,
-    "top_menu": TopMenuTemplateInclude,
+    "menu": TopMenuTemplateInclude,
 }
 
 

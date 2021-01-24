@@ -4,8 +4,8 @@ from novel.views.includes.base import BaseTemplateInclude
 
 
 class TopMenuTemplateInclude(BaseTemplateInclude):
-    name = "top_menu"
-    template = "novel/includes/top_menu.html"
+    name = "menu"
+    template = "novel/includes/menu.html"
 
     def __init__(self, include_data, extra_data=None):
         super().__init__(include_data, extra_data)

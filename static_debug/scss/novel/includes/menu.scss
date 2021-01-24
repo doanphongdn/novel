@@ -9,6 +9,7 @@
     -webkit-columns: 5;
     columns: 5;
     margin-top: 13px;
+    padding: 15px;
   }
 
   .dropdown-menu {
@@ -17,16 +18,16 @@
     }
 
     .dropdown-item {
-      padding: 5px 20px;
+      padding: 10px 20px;
     }
   }
-
+  li{
+    border-right: thin solid #F0F0F0;
+  }
   li:first-child {
     .nav-link {
       padding-left: 0;
     }
-
-    border-right: thin solid #F0F0F0;
   }
 
   .nav-link {

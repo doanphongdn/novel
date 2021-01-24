@@ -45,7 +45,8 @@ class NovelBaseView(TemplateView):
             current_site = get_current_site(request)
             domain = current_site.domain
             if 'http' not in domain:
-                domain = "//" + domain
+                protocol = 'https' if request.is_secure() else 'http'
+                domain = protocol + "://" + domain
             if novel_setting.logo:
                 logo = novel_setting.logo.url
             if novel_setting.favicon:

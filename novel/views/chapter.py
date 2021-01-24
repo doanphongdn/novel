@@ -43,6 +43,7 @@ class ChapterView(NovelBaseView):
             chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).first()
             if chapter:
                 response.context_data["setting"]["title"] = novel.name + " " + chapter.name
+                response.context_data['setting']['meta_img'] = novel.thumbnail_image
                 keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full',
                             chapter.slug.replace('-', ' '), chapter.name]
                 response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)

@@ -26,4 +26,4 @@ urlpatterns = [
     path('', include('novel.urls')),
 ]
 
-handler404 = 'crawl_service.views.base.view_404'
+# handler404 = 'crawl_service.views.base.view_404'

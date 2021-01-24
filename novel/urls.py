@@ -37,9 +37,7 @@ sitemaps = {
     'static': StaticViewSitemap,
     'novels': NovelSitemap,
 }
-chapter_sitemaps = {
-    'chapter': NovelChapterSitemap(0),
-}
+
 urlpatterns = [
     url(os.environ.get('GOOGLE_SITE_VERIFICATION', 'google-site-verification'), view_google_site_verification,
         name="google_verification"),
@@ -50,6 +48,46 @@ urlpatterns = [
     path('web/sitemap.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemaps}),
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
+
+    path('chapter/sitemap1.xml', cache_page(86400)(sitemaps_views.index),
+         {'sitemaps': {'chapter': NovelChapterSitemap(0)}}),
+    path('chapter/sitemap1-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
+         {'sitemaps': {'chapter': NovelChapterSitemap(0)}}, name='django.contrib.sitemaps.views.sitemap'),
+
+    path('chapter/sitemap2.xml', cache_page(86400)(sitemaps_views.index),
+         {'sitemaps': {'chapter': NovelChapterSitemap(1)}}),
+    path('chapter/sitemap2-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
+         {'sitemaps': {'chapter': NovelChapterSitemap(1)}}, name='django.contrib.sitemaps.views.sitemap'),
+
+    path('chapter/sitemap3.xml', cache_page(86400)(sitemaps_views.index),
+         {'sitemaps': {'chapter': NovelChapterSitemap(2)}}),
+    path('chapter/sitemap3-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
+         {'sitemaps': {'chapter': NovelChapterSitemap(2)}}, name='django.contrib.sitemaps.views.sitemap'),
+
+    path('chapter/sitemap4.xml', cache_page(86400)(sitemaps_views.index),
+         {'sitemaps': {'chapter': NovelChapterSitemap(3)}}),
+    path('chapter/sitemap4-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
+         {'sitemaps': {'chapter': NovelChapterSitemap(3)}}, name='django.contrib.sitemaps.views.sitemap'),
+
+    path('chapter/sitemap5.xml', cache_page(86400)(sitemaps_views.index),
+         {'sitemaps': {'chapter': NovelChapterSitemap(4)}}),
+    path('chapter/sitemap5-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
+         {'sitemaps': {'chapter': NovelChapterSitemap(4)}}, name='django.contrib.sitemaps.views.sitemap'),
+
+    path('chapter/sitemap6.xml', cache_page(86400)(sitemaps_views.index),
+         {'sitemaps': {'chapter': NovelChapterSitemap(5)}}),
+    path('chapter/sitemap6-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
+         {'sitemaps': {'chapter': NovelChapterSitemap(5)}}, name='django.contrib.sitemaps.views.sitemap'),
+
+    path('chapter/sitemap7.xml', cache_page(86400)(sitemaps_views.index),
+         {'sitemaps': {'chapter': NovelChapterSitemap(6)}}),
+    path('chapter/sitemap7-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
+         {'sitemaps': {'chapter': NovelChapterSitemap(6)}}, name='django.contrib.sitemaps.views.sitemap'),
+
+    path('chapter/sitemap8.xml', cache_page(86400)(sitemaps_views.index),
+         {'sitemaps': {'chapter': NovelChapterSitemap(7)}}),
+    path('chapter/sitemap8-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
+         {'sitemaps': {'chapter': NovelChapterSitemap(7)}}, name='django.contrib.sitemaps.views.sitemap'),
 
     path('api/novel/update_list', APIViewNovelUpdateList.as_view()),
     path('api/novel/chapter/update_list', APIViewNovelChapterUpdateList.as_view()),
@@ -66,20 +104,3 @@ urlpatterns = [
     path('<str:slug>', NovelDetailView.as_view(), name="novel"),
     path('<str:slug>/<str:chapter_slug>', cache_page(60 * 5)(ChapterView.as_view()), name="chapter"),
 ]
-
-chap_limit = 250000
-c_total = divmod(NovelChapter.objects.count(), chap_limit)
-for i in range(c_total[0]):
-    c_obj = NovelChapterSitemap(i)
-    urlpatterns.append(path('web/sitemap%s.xml' % (i + 1), cache_page(86400)(sitemaps_views.index),
-                            {'sitemaps': c_obj}))
-    urlpatterns.append(path('web/sitemap%s-<section>.xml' % (i + 1), cache_page(86400)(sitemaps_views.sitemap),
-                            {'sitemaps': c_obj}, name='django.contrib.sitemaps.views.sitemap'))
-
-if c_total[1] > 0:
-    c_obj = NovelChapterSitemap(c_total[0])
-    urlpatterns.append(path('web/sitemap-%s.xml' % (c_total[0] + 1), cache_page(86400)(sitemaps_views.index),
-                            {'sitemaps': c_obj}))
-    urlpatterns.append(
-        path('web/sitemap-%s-<section>.xml' % (c_total[0] + 1), cache_page(86400)(sitemaps_views.sitemap),
-             {'sitemaps': c_obj}, name='django.contrib.sitemaps.views.sitemap'))

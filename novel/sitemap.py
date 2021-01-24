@@ -7,7 +7,7 @@ from novel.models import Novel, Genre, NovelChapter
 
 
 class LimitSitemap(Sitemap):
-    limit = 50000
+    limit = 10000
 
 
 class GenreSitemap(LimitSitemap):

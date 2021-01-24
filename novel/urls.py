@@ -36,6 +36,7 @@ sitemaps = {
     'genre': GenreSitemap,
     'static': StaticViewSitemap,
     'novels': NovelSitemap,
+    'chapters': NovelChapterSitemap,
 }
 
 urlpatterns = [
@@ -48,46 +49,6 @@ urlpatterns = [
     path('web/sitemap.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemaps}),
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
-
-    path('chapter/sitemap1.xml', cache_page(86400)(sitemaps_views.index),
-         {'sitemaps': {'chapter': NovelChapterSitemap(0)}}),
-    path('chapter/sitemap1-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
-         {'sitemaps': {'chapter': NovelChapterSitemap(0)}}, name='django.contrib.sitemaps.views.sitemap'),
-
-    path('chapter/sitemap2.xml', cache_page(86400)(sitemaps_views.index),
-         {'sitemaps': {'chapter': NovelChapterSitemap(1)}}),
-    path('chapter/sitemap2-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
-         {'sitemaps': {'chapter': NovelChapterSitemap(1)}}, name='django.contrib.sitemaps.views.sitemap'),
-
-    path('chapter/sitemap3.xml', cache_page(86400)(sitemaps_views.index),
-         {'sitemaps': {'chapter': NovelChapterSitemap(2)}}),
-    path('chapter/sitemap3-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
-         {'sitemaps': {'chapter': NovelChapterSitemap(2)}}, name='django.contrib.sitemaps.views.sitemap'),
-
-    path('chapter/sitemap4.xml', cache_page(86400)(sitemaps_views.index),
-         {'sitemaps': {'chapter': NovelChapterSitemap(3)}}),
-    path('chapter/sitemap4-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
-         {'sitemaps': {'chapter': NovelChapterSitemap(3)}}, name='django.contrib.sitemaps.views.sitemap'),
-
-    path('chapter/sitemap5.xml', cache_page(86400)(sitemaps_views.index),
-         {'sitemaps': {'chapter': NovelChapterSitemap(4)}}),
-    path('chapter/sitemap5-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
-         {'sitemaps': {'chapter': NovelChapterSitemap(4)}}, name='django.contrib.sitemaps.views.sitemap'),
-
-    path('chapter/sitemap6.xml', cache_page(86400)(sitemaps_views.index),
-         {'sitemaps': {'chapter': NovelChapterSitemap(5)}}),
-    path('chapter/sitemap6-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
-         {'sitemaps': {'chapter': NovelChapterSitemap(5)}}, name='django.contrib.sitemaps.views.sitemap'),
-
-    path('chapter/sitemap7.xml', cache_page(86400)(sitemaps_views.index),
-         {'sitemaps': {'chapter': NovelChapterSitemap(6)}}),
-    path('chapter/sitemap7-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
-         {'sitemaps': {'chapter': NovelChapterSitemap(6)}}, name='django.contrib.sitemaps.views.sitemap'),
-
-    path('chapter/sitemap8.xml', cache_page(86400)(sitemaps_views.index),
-         {'sitemaps': {'chapter': NovelChapterSitemap(7)}}),
-    path('chapter/sitemap8-<section>.xml', cache_page(86400)(sitemaps_views.sitemap),
-         {'sitemaps': {'chapter': NovelChapterSitemap(7)}}, name='django.contrib.sitemaps.views.sitemap'),
 
     path('api/novel/update_list', APIViewNovelUpdateList.as_view()),
     path('api/novel/chapter/update_list', APIViewNovelChapterUpdateList.as_view()),

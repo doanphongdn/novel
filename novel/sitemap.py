@@ -1,12 +1,13 @@
 from django.contrib import sitemaps
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
+from django.views.decorators.cache import cache_page
 
 from novel.models import Novel, Genre, NovelChapter
 
 
 class LimitSitemap(Sitemap):
-    limit = 500
+    limit = 5000
 
 
 class GenreSitemap(LimitSitemap):
@@ -21,11 +22,8 @@ class NovelChapterSitemap(LimitSitemap):
     changefreq = "weekly"
     priority = 0.5
 
-    def __init__(self, idx=0):
-        self.idx = idx
-
     def items(self):
-        return NovelChapter.get_available_chapter().all()[self.idx * 250000:250000]
+        return NovelChapter.get_available_chapter().all()
 
     @classmethod
     def lastmod(cls, obj):

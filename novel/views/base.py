@@ -42,6 +42,11 @@ class NovelBaseView(TemplateView):
         favicon = ""
         img_view = ""
         domain = ""
+        meta_og_url = ""
+        meta_og_type = ""
+        meta_og_title = ""
+        meta_og_description = ""
+        meta_fb_app_id = ""
         if novel_setting:
             title = novel_setting.title
             current_site = get_current_site(request)

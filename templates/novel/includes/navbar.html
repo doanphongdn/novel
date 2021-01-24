@@ -1,10 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-danger"
+                aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        {% if setting.logo %}
+            <a class="navbar-brand" href="/">
+                <img src="{{ setting.logo }}" alt="{{ setting.title }}">
+            </a>
+        {% endif %}
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle Search">
+            <span class="mobile-search-toggle">
+                <i class="fa fa-search"></i>
+            </span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-danger">
+            <div class="navbar-collapse-header">
+                <div class="row">
+                    <div class="col-6 collapse-brand">
+                        {% if setting.logo %}
+                            <a href="/">
+                                <img src="{{ setting.logo }}" alt="{{ setting.title }}">
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div class="col-6 collapse-close">
+                        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-danger"
+                                aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation">
+                            <span></span>
+                            <span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <ul class="navbar-nav ml-auto">
+                {% for menu in menus %}
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-icon" href="{{ menu.url }}">
+                            <i class="{{ menu.fa_icon }}"></i>
+                            <span class="nav-link-inner--text">{{ menu.name }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="search-wrap d-lg-flex">
+            <div class="input-group input-group-alternative">
+                <input class="form-control search" placeholder="Search..." type="text">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div id="search-area"></div>
+    </div>
+</nav>

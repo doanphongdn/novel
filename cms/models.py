@@ -53,6 +53,18 @@ class Link(models.Model):
     active = models.BooleanField(default=True)
 
 
+class Menu(models.Model):
+    class Meta:
+        db_table = "cms_menus"
+
+    priority = models.SmallIntegerField(default=0)
+    name = models.CharField(max_length=250, unique=True)
+    url = models.CharField(max_length=255)
+    icon = models.CharField(max_length=250, blank=True, null=True)
+    type = models.CharField(max_length=30, blank=True, null=True)
+    active = models.BooleanField(default=True)
+
+
 class TemplateManager(models.Model):
     class Meta:
         db_table = "cms_template_manager"

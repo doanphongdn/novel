@@ -1,0 +1,40 @@
+
+.navbar-menu {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  box-shadow: 0 1px 10px rgba(50, 50, 93, .1), 0 1px 5px rgba(0, 0, 0, .07) !important;
+
+  .dropdown-menu.show {
+    animation: none !important;
+    -webkit-columns: 5;
+    columns: 5;
+    margin-top: 13px;
+  }
+
+  .dropdown-menu {
+    &:before {
+      left: 30px;
+    }
+
+    .dropdown-item {
+      padding: 5px 20px;
+    }
+  }
+
+  li:first-child {
+    .nav-link {
+      padding-left: 0;
+    }
+
+    border-right: thin solid #F0F0F0;
+  }
+
+  .nav-link {
+    padding: 10px !important;
+    margin-right: 0;
+
+    i {
+      margin-right: .2rem;
+    }
+  }
+}

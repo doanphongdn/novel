@@ -1,0 +1,20 @@
+.chapter-list {
+  .chapter-list-item {
+    .chapter-wrap {
+      margin-right: 20px;
+      border-bottom: thin solid #F5F5F5;
+      width: 100%;
+      padding: 7px 0;
+
+      .chapter-name {
+        h6 {
+          font-size: 1rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          margin: 0;
+        }
+      }
+    }
+  }
+}

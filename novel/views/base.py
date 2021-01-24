@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 
 from cms.include_mapping import IncludeMapping
 from cms.models import TemplateManager
-from novel.models import NovelSetting
+from novel.models import NovelSetting, Genre
 from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
 from novel.views.includes.chapter_content import ChapterContentTemplateInclude
 from novel.views.includes.chapter_list import ChapterListTemplateInclude
@@ -13,7 +13,7 @@ from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
 from novel.views.includes.pagination import PaginationTemplateInclude
 from novel.views.includes.novel_cat import NovelCatTemplateInclude
-
+from novel.views.includes.top_menu import TopMenuTemplateInclude
 
 TEMPLATE_INCLUDE_MAPPING = {
     "chapter_content": ChapterContentTemplateInclude,
@@ -25,6 +25,7 @@ TEMPLATE_INCLUDE_MAPPING = {
     "breadcrumb": BreadCrumbTemplateInclude,
     "pagination": PaginationTemplateInclude,
     "footer_info": FooterInfoplateInclude,
+    "top_menu": TopMenuTemplateInclude,
 }
 
 
@@ -40,6 +41,7 @@ class NovelBaseView(TemplateView):
         logo = ""
         favicon = ""
         img_view = ""
+        domain = ""
         if novel_setting:
             title = novel_setting.title
             current_site = get_current_site(request)
@@ -65,7 +67,7 @@ class NovelBaseView(TemplateView):
 
         kwargs["setting"] = {
             "title": title,
-            "domain": current_site.domain,
+            "domain": domain,
             "logo": logo,
             "favicon": favicon,
             "meta_keywords": novel_setting and novel_setting.meta_keywords or "",
@@ -76,7 +78,12 @@ class NovelBaseView(TemplateView):
             "google_analystics_id": novel_setting and novel_setting.google_analystics_id or "",
         }
 
-        tmpl = TemplateManager.objects.filter(page_file='footer').first()
-        kwargs["footer_html"] = self.include_mapping.render_include_html(tmpl)
+        footer_tmpl = TemplateManager.objects.filter(page_file='footer').first()
+        # navbar_tmpl = TemplateManager.objects.filter(page_file='navbar').first()
+
+        top_menu_tmpl = TemplateManager.objects.filter(page_file='top_menu').first()
+
+        kwargs["footer_html"] = self.include_mapping.render_include_html(footer_tmpl)
+        kwargs["top_menu_html"] = self.include_mapping.render_include_html(top_menu_tmpl)
 
         return super().get(request, *args, **kwargs)

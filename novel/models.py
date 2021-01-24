@@ -75,6 +75,10 @@ class Genre(models.Model):
     def get_absolute_url(self):
         return f"/{settings.NOVEL_GENRE_URL}/{self.slug}"
 
+    @classmethod
+    def get_available_genre(cls):
+        return cls.objects.filter(active=True)
+
 
 class Novel(models.Model):
     class Meta:

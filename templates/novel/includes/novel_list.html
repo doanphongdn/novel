@@ -1,79 +1,80 @@
 {% load static %}
 <div class="row">
-  {% if view_type == 'list' %}
-    <div class="novel-list">
-  {% else %}
-    <div class="novel-grid">
-  {% endif %}
-  <div class="row">
-    <div class="col-12">
-      <div class="widget-title">
-        <label>
-          {% if icon %}
-            <i class="{{ icon }}"></i>
-          {% endif %}
-          {{ title }}
-        </label>
-        <div class="widget-actions">
-          {% if novels.has_next and view_all_url %}
-            <span class="widget-view-all"><a href="{{ view_all_url }}">View all</a></span>
-          {% endif %}
-          {% if button_type_urls %}
-            <a href="{{ button_type_urls.list }}">
-              <span class="widget-view-list"><i class="fa fa-list-ul"></i></span>
-            </a>
-            <a href="{{ button_type_urls.grid }}">
-              <span class="widget-view-grid"><i class="fa fa-th"></i></span>
-            </a>
-          {% endif %}
+    {% if view_type == 'list' %}
+        <div class="novel-list">
+    {% else %}
+        <div class="novel-grid">
+    {% endif %}
+    <div class="row">
+        <div class="col-12">
+            <div class="widget-title">
+                <label>
+                    {% if icon %}
+                        <i class="{{ icon }}"></i>
+                    {% endif %}
+                    {{ title }}
+                </label>
+                <div class="widget-actions">
+                    {% if novels.has_next and view_all_url %}
+                        <span class="widget-view-all"><a href="{{ view_all_url }}">View all</a></span>
+                    {% endif %}
+                    {% if button_type_urls %}
+                        <a href="{{ button_type_urls.list }}">
+                            <span class="widget-view-list"><i class="fa fa-list-ul"></i></span>
+                        </a>
+                        <a href="{{ button_type_urls.grid }}">
+                            <span class="widget-view-grid"><i class="fa fa-th"></i></span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="row">
-    {% for novel in novels %}
-      {% if view_type == 'list' %}
-        <div class="col-{{ css_class.novel_list_col }} novel-item">
-      {% else %}
-        <div
-            class="col-{{ css_class.novel_grid_col }} col-md-{{ css_class.novel_grid_col_md }} col-lg-{{ css_class.novel_grid_col_lg }} novel-item form-group">
-      {% endif %}
-    <div class="novel-wrap">
-      <div class="novel-thumbnail-image">
-        <a href="{{ novel.get_absolute_url }}">
-          <img class="lazyload" data-src="{{ novel.thumbnail_image }}" src="{% static "images/lazyload.gif" %}"
-               alt="{{ novel.name }}">
-        </a>
-      </div>
-      <div class="novel-name">
-        <h5><a href="{{ novel.get_absolute_url }}">{{ novel.name }}</a></h5>
-        <div class="novel-rating">
-          {% for rating in novel.rating_classes %}
-            <i class="{{ rating }} fa fa-star"></i>
-          {% endfor %}
+    <div class="row">
+        {% for novel in novels %}
+            {% if view_type == 'list' %}
+                <div class="col-{{ css_class.novel_list_col }} novel-item">
+            {% else %}
+                <div
+                        class="col-{{ css_class.novel_grid_col }} col-md-{{ css_class.novel_grid_col_md }} col-lg-{{ css_class.novel_grid_col_lg }} novel-item form-group">
+            {% endif %}
+        <div class="novel-wrap">
+            <div class="novel-thumbnail-image">
+                <a href="{{ novel.get_absolute_url }}">
+                    <img class="lazyload" data-src="{{ novel.thumbnail_image }}"
+                         src="{% static "images/lazyload.gif" %}"
+                         alt="{{ novel.name }}">
+                </a>
+            </div>
+            <div class="novel-name">
+                <h5><a href="{{ novel.get_absolute_url }}">{{ novel.name }}</a></h5>
+                <div class="novel-rating">
+                    {% for rating in novel.rating_classes %}
+                        <i class="{{ rating }} fa fa-star"></i>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="novel-chapter">
+                <h6><a href="{{ novel.chapters.0.get_absolute_url }}">{{ novel.chapters.0.name }}</a></h6>
+                {% if view_type == 'list' %}
+                    <div class="updated-time">
+                        <i class="far fa-clock"></i> {{ novel.chapters.0.created_at_str }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="novel-genres">
+                {% for genre in novel.genres.all %}
+                    <a href="{{ genre.get_absolute_url }}">{{ genre.name }}</a>
+                {% endfor %}
+            </div>
         </div>
-      </div>
-      <div class="novel-chapter">
-        <h6><a href="{{ novel.chapters.0.get_absolute_url }}">{{ novel.chapters.0.name }}</a></h6>
-        {% if view_type == 'list' %}
-          <div class="updated-time">
-            <i class="far fa-clock"></i> {{ novel.chapters.0.created_at_str }}
-          </div>
-        {% endif %}
-      </div>
-      <div class="novel-genres">
-        {% for genre in novel.genres.all %}
-          <a href="{{ genre.get_absolute_url }}">{{ genre.name }}</a>
+        </div>
         {% endfor %}
-      </div>
+        </div>
+    </div>
+    <div class="col-12">
+        {{ pagination_html }}
     </div>
     </div>
-    {% endfor %}
-    </div>
-  </div>
-  <div class="row">
-    {{ pagination_html }}
-  </div>
-  </div>
 
 

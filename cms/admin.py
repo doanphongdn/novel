@@ -3,7 +3,7 @@ from django import forms
 from django.contrib import admin
 from django_json_widget.widgets import JSONEditorWidget
 
-from cms.models import FooterInfo, Link, HtmlPage, TemplateManager, InludeTemplate
+from cms.models import FooterInfo, Link, HtmlPage, TemplateManager, InludeTemplate, Menu
 
 
 class HtmlPageForm(forms.ModelForm):
@@ -29,6 +29,13 @@ class FooterAdmin(admin.ModelAdmin):
     list_display = ("id", "active", "content", "copyright")
     search_fields = ("content", "copyright")
     list_filter = ("active",)
+
+
+@admin.register(Menu)
+class MenuAdmin(admin.ModelAdmin):
+    list_display = ("id", "priority", "name", "url", "type")
+    search_fields = ("name", "url", "type")
+    list_filter = ("active", "type")
 
 
 @admin.register(Link)

@@ -1,8 +1,71 @@
+
 .novel-info {
+  p {
+    margin-bottom: 0;
+  }
+
+  .novel-info-wrap {
+    .novel-thumbnail {
+      padding: 10px;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(50,50,93,0.15), 0 1px 0 rgba(0,0,0,0.02);
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+
+
   .novel-detail {
     padding: 15px;
 
+    .novel-name {
+      h3 {
+        font-weight: 600;
+      }
+    }
+
     .novel-detail-wrap {
+      .cate-item {
+        color: #FFF;
+        background: #5b707b;
+        border: thin solid #576675;
+        padding: 2px 7px;
+        margin-right: 5px;
+        font-size: 0.9rem;
+        border-radius: 4px;
+      }
+
+      .novel-mobile-action {
+        margin-top: 30px;
+
+        .action-item {
+          text-align: center;
+
+          i {
+            font-size: 2rem;
+            color: #5b707b;
+          }
+        }
+      }
+
+      .novel-summary {
+        .novel-summury-item:not(:last-child):not(:nth-child(3)) {
+          border-right: thin solid #EEE;
+        }
+
+        .novel-summury-item.action-item {
+          text-align: center;
+
+          i {
+            font-size: 2rem;
+            color: #5b707b;
+          }
+        }
+
+      }
+
       label {
         font-size: 1rem;
         min-width: 120px;
@@ -19,6 +82,14 @@
           margin-left: 10px;
           font-weight: 500;
         }
+      }
+
+      .rating_none {
+        color: gray;
+      }
+
+      .rating_current {
+        color: orange;
       }
 
       .novel-button {
@@ -46,10 +117,6 @@
       }
     }
   }
-}
-
-.novel-info .novel-info-wrap .rating_current {
-  color: orange;
 }
 
 /* Small Devices, Tablets */

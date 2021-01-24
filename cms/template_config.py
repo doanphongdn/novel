@@ -6,6 +6,7 @@ TEMPLATE_PAGE_CHOISES = {
         ("novel_all", "novel_all"),
         ("footer", "footer"),
         ("navbar", "navbar"),
+        ("top_menu", "top_menu"),
     ],
 }
 
@@ -19,5 +20,6 @@ TEMPLATE_INCLUDE_CHOISES = {
         ("novel_genres", "novel_cat"),
         ("breadcrumb", "breadcrumb"),
         ("footer_info", "footer_info"),
+        ("top_menu", "top_menu"),
     ],
 }

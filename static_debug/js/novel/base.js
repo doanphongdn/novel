@@ -5,7 +5,8 @@ $(document).ready(function (e) {
             $.ajax({
                 type: "POST",
                 url: "/search",
-                dataType: 'json',
+                // dataType: 'json',
+                dataType: 'application/x-www-form-urlencoded',
                 data: {
                     q: req.term,
                     'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()

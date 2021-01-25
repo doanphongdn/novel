@@ -17,4 +17,51 @@
       }
     }
   }
+
+  .novel-hashtags {
+    margin-top: 10px;
+
+    .box-links {
+      a.default {
+        margin: 0 5px 5px 0;
+        color: #7d5022;
+        border: 1px solid #dda13c;
+        background: #eeb14b;
+        background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2VlYjE0YiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNjYzkxMmQiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+        background: -moz-linear-gradient(top, #eeb14b 0, #cc912d 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #eeb14b), color-stop(100%, #cc912d));
+        background: -webkit-linear-gradient(top, #eeb14b 0, #cc912d 100%);
+        background: -o-linear-gradient(top, #eeb14b 0, #cc912d 100%);
+        background: -ms-linear-gradient(top, #eeb14b 0, #cc912d 100%);
+        background: linear-gradient(top, #eeb14b 0, #cc912d 100%);
+        display: inline-block;
+        text-decoration: none;
+        text-decoration-style: initial;
+        text-decoration-color: initial;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, .4);
+        padding: 4px 7px;
+        font-family: helvetica neue, helvetica, sans-serif;
+        font-size: 12px;
+        line-height: 14px;
+        vertical-align: middle;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .2), inset 0 1px 0 0 rgba(255, 255, 255, .4);
+        -moz-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .2), inset 0 1px 0 0 rgba(255, 255, 255, .4);
+        box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .2), inset 0 1px 0 0 rgba(255, 255, 255, .4);
+
+        &:before {
+          content: '\2022';
+          color: #fff;
+          margin-right: 4px;
+          font-size: 15px;
+          line-height: 13px;
+          height: 13px;
+          vertical-align: text-top;
+          text-shadow: 0 -1px -1px rgba(0, 0, 0, .2);
+        }
+      }
+    }
+  }
 }

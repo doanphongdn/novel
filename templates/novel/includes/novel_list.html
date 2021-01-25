@@ -38,6 +38,7 @@
                     class="col-{{ css_class.novel_grid_col }} col-md-{{ css_class.novel_grid_col_md }} col-lg-{{ css_class.novel_grid_col_lg }} novel-item form-group">
         {% endif %}
     <div class="novel-wrap">
+        <div class="ribbon-right">{{ novel.latest_updated_at_str }}</div>
         <div class="novel-thumbnail-image">
             <a href="{{ novel.get_absolute_url }}">
                 <img class="lazyload" data-src="{{ novel.thumbnail_image }}"

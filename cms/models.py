@@ -50,6 +50,7 @@ class Link(models.Model):
     name = models.CharField(max_length=250, unique=True)
     url = models.CharField(max_length=255, null=True)
     type = models.CharField(max_length=30, blank=True, default='hashtag')
+    class_name = models.CharField(max_length=250, blank=True, null=True)
     active = models.BooleanField(default=True)
 
 

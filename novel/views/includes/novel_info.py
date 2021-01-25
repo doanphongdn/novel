@@ -18,14 +18,6 @@ class NovelInfoTemplateInclude(BaseTemplateInclude):
         if bookmark_enable is None:
             bookmark_enable = True
 
-        link_objs = Link.objects.filter(type=self.include_data.get('hashtags_link_type'), active=True).all()
-        link_data = [{"name": novel.name + " " + obj.name, "url": novel.get_absolute_url()} for obj in link_objs]
-
-        hashtags = LinkTemplateInclude(include_data={
-            'link_data': link_data,
-            'link_label': self.include_data.get('hashtags_link_label'),
-        })
-
         self.include_data = {
             "novel": novel,
             "author_label": self.include_data.get("author_label") or "Authors",
@@ -41,5 +33,4 @@ class NovelInfoTemplateInclude(BaseTemplateInclude):
             "bookmark_label": self.include_data.get("bookmark_label") or "Bookmark",
             "comment_enable": comment_enable,
             "bookmark_enable": bookmark_enable,
-            "hashtags_html": hashtags.render_html(),
         }

@@ -165,6 +165,10 @@ class Novel(models.Model):
 
         return classes
 
+    @property
+    def latest_updated_at_str(self):
+        return datetime2string(self.latest_updated_time)
+
 
 class NovelChapter(models.Model):
     class Meta:

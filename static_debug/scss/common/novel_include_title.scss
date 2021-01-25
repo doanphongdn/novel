@@ -5,10 +5,39 @@
   justify-content: space-between;
 
   label {
-    border-bottom: 2px solid #5e72e4;
-    margin-bottom: -2px;
+    border-bottom: 2px solid #fb6340;
+  }
+
+  label, li {
+    margin-bottom: -2px !important;
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 400;
     text-transform: uppercase;
+    color: #525f7f;
+
+    a {
+      border-top: 0 !important;
+      border-left: 0 !important;
+      border-right: 0 !important;
+      color: #525f7f !important;;
+    }
+  }
+
+  ul.nav-tabs {
+    border-bottom: none;
+  }
+
+  li.nav-item {
+    a {
+      padding: 0;
+      border-bottom: 2px solid #F0F0F0;
+
+      &.active {
+        border-bottom: 2px solid #fb6340 !important;
+
+      }
+    }
+
+    margin-right: 30px;
   }
 }

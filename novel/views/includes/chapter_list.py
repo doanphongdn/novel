@@ -1,6 +1,8 @@
 from django.core.paginator import Paginator
 
+from cms.models import Link
 from novel.views.includes.base import BaseTemplateInclude
+from novel.views.includes.link import LinkTemplateInclude
 from novel.views.includes.pagination import PaginationTemplateInclude
 
 
@@ -15,6 +17,7 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
         page = self.include_data.get("chap_page") or 1
         title = self.include_data.get("title")
         icon = self.include_data.get("icon")
+        novel = self.include_data.get("novel")
 
         chapters = Paginator(chapters, limit)
         try:
@@ -25,9 +28,25 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
         paging_data = {"paginated_data": chapters, "page_label": "chap-page"}
         pagination = PaginationTemplateInclude(paging_data)
 
+        link_objs = Link.objects.filter(type=self.include_data.get('hashtags_link_type'), active=True).all()
+        link_data = [
+            {
+                "name": novel.name + " " + link.name,
+                "url": novel.get_absolute_url(),
+                'class_name': link.class_name
+            }
+            for link in link_objs
+        ]
+
+        hashtags = LinkTemplateInclude(include_data={
+            'link_data': link_data,
+            'link_label': self.include_data.get('hashtags_link_label'),
+        })
+
         self.include_data = {
             "chapters": chapters,
             "title": title,
             "icon": icon,
             "pagination_html": pagination.render_html(),
+            "hashtags_html": hashtags.render_html(),
         }

@@ -67,6 +67,7 @@ class NovelDetailView(NovelBaseView):
                 "novel": novel,
             },
             "chapter_list": {
+                "novel": novel,
                 "chap_data": chapters,
                 "chap_page": chapter_page,
             }

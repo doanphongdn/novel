@@ -1,31 +1,58 @@
 {% load static %}
 <div class="chapter-list">
-  <div class="col-12">
-    <div class="row widget-title">
-      <label>
-        {% if icon %}
-          <i class="{{ icon }}"></i>
-        {% endif %}
-        {{ title }}
-      </label>
-    </div>
-  </div>
-  <div class="col-12 chapter-list-item">
     <div class="row">
-      {% for chapter in chapters %}
-        <div class="col-12 col-md-6">
-          <div class="row">
-            <div class="chapter-wrap">
-              <div class="chapter-name">
-                <h6><a href="{{ chapter.get_absolute_url }}">{{ chapter.name }}</a></h6>
-              </div>
+        <div class="col-12">
+            <div class="widget-title">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#chapter-list" role="tab" data-toggle="tab">
+                            {% if icon %}
+                                <i class="{{ icon }}"></i>
+                            {% endif %}
+                            {{ title }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#novel-info" role="tab" data-toggle="tab">
+                            {% if icon %}
+                                <i class="{{ icon }}"></i>
+                            {% endif %}
+                            {{ info_title }}
+                        </a>
+                    </li>
+                </ul>
             </div>
-          </div>
         </div>
-      {% endfor %}
     </div>
-  </div>
-  <div class="col-12">
-    {{ pagination_html }}
-  </div>
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane fade in show active" id="chapter-list">
+            <div class="col-12 chapter-list-item">
+                <div class="row">
+                    {% for chapter in chapters %}
+                        <div class="col-12 col-md-6">
+                            <div class="row">
+                                <div class="chapter-wrap">
+                                    <div class="chapter-name">
+                                        <h6><a href="{{ chapter.get_absolute_url }}">{{ chapter.name }}</a></h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-12">
+                {{ pagination_html }}
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="novel-info">
+            {% if hashtags_html %}
+                <div class="col-12 novel-hashtags">
+                    {{ hashtags_html }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
 </div>
+

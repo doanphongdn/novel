@@ -1,9 +1,7 @@
-<div class="box-links">
-  <ul>
-    {% for link in link_data %}
-      <li>
-        <a target="_self" href="{{ link.url }}">{{ link.name }}</a>
-      </li>
-    {% endfor %}
-  </ul>
+<div class="row">
+    <div class="box-links">
+        {% for link in link_data %}
+            <a class="default {{ link.class_name }}" target="_self" href="{{ link.url }}">{{ link.name }}</a>
+        {% endfor %}
+    </div>
 </div>

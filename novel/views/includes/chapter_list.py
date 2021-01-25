@@ -32,21 +32,19 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
         pagination = PaginationTemplateInclude(paging_data)
 
         link_objs = Link.objects.filter(type=self.include_data.get('hashtags_link_type'), active=True).all()
-        link_data = []
+        link_data = {}
         for link in link_objs:
-            link_data.append({
-                "name": novel.name + " " + link.name,
-                "url": novel.get_absolute_url(),
-                'class_name': link.class_name
-            })
-            link_data.append({
-                "name": unidecode(novel.name) + " " + link.name,
-                "url": novel.get_absolute_url(),
-                'class_name': link.class_name
-            })
+            for name in [novel.name, unidecode(novel.name)]:
+                name = name + " " + link.name
+                if name not in link_data:
+                    link_data[name] = {
+                        "name": name,
+                        "url": novel.get_absolute_url(),
+                        'class_name': link.class_name
+                    }
 
         hashtags = LinkTemplateInclude(include_data={
-            'link_data': link_data,
+            'link_data': list(link_data.values()),
             'link_label': self.include_data.get('hashtags_link_label'),
         })
 

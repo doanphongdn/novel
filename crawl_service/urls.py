@@ -16,7 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-
 # NOTE: not working
 # from django.conf.urls import handler404, handler500
 # from crawl_service.views.base import view_404
@@ -26,4 +25,4 @@ urlpatterns = [
     path('', include('novel.urls')),
 ]
 
-# handler404 = 'crawl_service.views.base.view_404'
+handler404 = 'crawl_service.views.base.view_404'

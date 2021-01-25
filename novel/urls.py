@@ -53,7 +53,7 @@ urlpatterns = [
     path('api/novel/update_list', APIViewNovelUpdateList.as_view()),
     path('api/novel/chapter/update_list', APIViewNovelChapterUpdateList.as_view()),
 
-    path('', cache_page(60 * 5)(NovelIndexView.as_view()), name="home"),
+    path('', (NovelIndexView.as_view()), name="home"),
     path('search', NovelDetailView.as_view()),
     path(settings.NOVEL_ALL_URL, NovelView.as_view(), name="novel_view"),
     path(settings.NOVEL_ALL_URL + '/<str:novel_type>', NovelView.as_view(), name="novel_all"),

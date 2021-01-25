@@ -1,25 +1,22 @@
-<section class="card-box genres darkBox">
-  <div class="widget-title">
-    <label><i class="fa fa-th-list"></i>
-      {{ title }}
-    </label>
-    <div class="widget-actions"></div>
-  </div>
-  <div class="categories clearfix">
-    <ul class="nav">
-      {% for genre in genres %}
-        {% if forloop.counter0|divisibleby:2 %}
-          <li class="{{ class_column }} list-group-item-success">
-            <span><i class="fa fa-book"></i></span>
-            <a href="{{ genre.get_absolute_url }} " title="{{ genre.name }} ">{{ genre.name }} </a>
-          </li>
-        {% else %}
-          <li class="{{ class_column }} list-group-item-primary">
-            <span><i class="fa fa-book"></i></span>
-            <a href="/{{ genre.get_absolute_url }} " title="{{ genre.name }} ">{{ genre.name }} </a>
-          </li>
-        {% endif %}
-      {% endfor %}
-    </ul>
-  </div>
+<section class="novel-genre">
+    <div class="row">
+        <div class="col-12">
+            <div class="widget-title">
+                <label><i class="fa fa-tags"></i>
+                    {{ title }}
+                </label>
+                <div class="widget-actions"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 novel-genre-wrap" style="-webkit-columns:{{ col_number }};columns:{{ col_number }};">
+            {% for genre in genres %}
+                <div class="novel-genre-item">
+                    <i class="fa fa-book"></i>
+                    <a href="{{ genre.get_absolute_url }} " title="{{ genre.name }} ">{{ genre.name }} </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 </section>

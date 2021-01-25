@@ -16,6 +16,8 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
         limit = self.include_data.get("limit") or 30
         page = self.include_data.get("chap_page") or 1
         title = self.include_data.get("title")
+        info_title = self.include_data.get("info_title")
+        info_icon = self.include_data.get("info_icon")
         icon = self.include_data.get("icon")
         novel = self.include_data.get("novel")
 
@@ -46,6 +48,8 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
         self.include_data = {
             "chapters": chapters,
             "title": title,
+            "info_title": info_title,
+            "info_icon": info_icon,
             "icon": icon,
             "pagination_html": pagination.render_html(),
             "hashtags_html": hashtags.render_html(),

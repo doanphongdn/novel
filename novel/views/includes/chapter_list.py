@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from unidecode import unidecode
 
 from cms.models import Link
 from novel.views.includes.base import BaseTemplateInclude
@@ -31,14 +32,18 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
         pagination = PaginationTemplateInclude(paging_data)
 
         link_objs = Link.objects.filter(type=self.include_data.get('hashtags_link_type'), active=True).all()
-        link_data = [
-            {
+        link_data = []
+        for link in link_objs:
+            link_data.append({
                 "name": novel.name + " " + link.name,
                 "url": novel.get_absolute_url(),
                 'class_name': link.class_name
-            }
-            for link in link_objs
-        ]
+            })
+            link_data.append({
+                "name": unidecode(novel.name) + " " + link.name,
+                "url": novel.get_absolute_url(),
+                'class_name': link.class_name
+            })
 
         hashtags = LinkTemplateInclude(include_data={
             'link_data': link_data,

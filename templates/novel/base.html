@@ -29,6 +29,12 @@
         <meta property="og:image" content="{{ setting.meta_img }}">
     {% endif %}
 
+    {% if setting.meta_og_title %}
+        <meta property="og:image:alt" content="{{ setting.meta_og_title }}">
+    {% else %}
+        <meta property="og:image:alt" content="{{ setting.title }}">
+    {% endif %}
+
     {% if setting.meta_og_description %}
         <meta property="og:description" content="{{ setting.meta_og_description }}">
     {% else %}
@@ -47,6 +53,8 @@
     {% block stylesheet %}{% endblock %}
 </head>
 <body>
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v9.0&appId={{ setting.meta_fb_app_id }}&autoLogAppEvents=1" nonce="fzz7rsRH"></script>
 {% csrf_token %}
 {% include "novel/includes/navbar.html" %}
 {{ top_menu_html }}

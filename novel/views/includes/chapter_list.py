@@ -49,6 +49,7 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
         })
 
         self.include_data = {
+            # "novel": novel,
             "chapters": chapters,
             "title": title,
             "info_title": info_title,

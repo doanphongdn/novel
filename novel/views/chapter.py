@@ -42,10 +42,14 @@ class ChapterView(NovelBaseView):
         if novel:
             chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).first()
             if chapter:
-                # referer = urlparse(chapter.url)
-                # referer_url = referer.scheme + "://" + referer.netloc
+                referer = urlparse(chapter.url)
+                if novel.thumbnail_image.strip().startswith('//'):
+                    referer_url = referer.scheme
+                else:
+                    referer_url = referer.scheme + "://"  # + referer.netloc
+
                 response.context_data["setting"]["title"] = novel.name + " " + chapter.name
-                response.context_data['setting']['meta_img'] = novel.thumbnail_image
+                response.context_data['setting']['meta_img'] = referer_url + novel.thumbnail_image
                 keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full',
                             chapter.slug.replace('-', ' '), chapter.name]
                 response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)
@@ -99,7 +103,6 @@ class ChapterView(NovelBaseView):
             'novel_url': novel.get_absolute_url(),
             'include_html': include_html,
         })
-
 
         return response
 

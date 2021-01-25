@@ -33,7 +33,7 @@ class NovelInfoTemplateInclude(BaseTemplateInclude):
             "latest_update_label": self.include_data.get("latest_update_label") or "Latest update",
             "chapter_total_label": self.include_data.get("chapter_total_label") or "Chapters",
             "view_total_label": self.include_data.get("view_total_label") or "Views",
-            "status_label": self.include_data.get("view_total_label") or "Status",
+            "status_label": self.include_data.get("status_label") or "Status",
             "first_chapter_label": self.include_data.get("first_chapter_label") or "First chap",
             "latest_chapter_label": self.include_data.get("latest_chapter_label") or "Latest chap",
             "issue_label": self.include_data.get("issue_label") or "Issue",

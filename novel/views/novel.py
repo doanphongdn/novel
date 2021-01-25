@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -37,10 +39,14 @@ class NovelDetailView(NovelBaseView):
         novel = Novel.objects.filter(slug=slug).first()
 
         if novel:
-            # referer = urlparse(chapter.url)
-            # referer_url = referer.scheme + "://" + referer.netloc
+            referer = urlparse(novel.url)
+            if novel.thumbnail_image.strip().startswith('//'):
+                referer_url = referer.scheme  # + referer.netloc
+            else:
+                referer_url = referer.scheme + "://"  # + referer.netloc
+
             response.context_data["setting"]["title"] = novel.name
-            response.context_data['setting']['meta_img'] = novel.thumbnail_image
+            response.context_data['setting']['meta_img'] = referer_url + novel.thumbnail_image
             keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full']
             response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)
 

@@ -55,7 +55,7 @@
 <body>
 {#<div id="fb-root"></div>#}
 {#<script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v9.0&appId={{ setting.meta_fb_app_id }}&autoLogAppEvents=1" nonce="fzz7rsRH"></script>#}
-{% csrf_token %}
+{#{% csrf_token %}#}
 {% include "novel/includes/navbar.html" %}
 {{ top_menu_html }}
 <div class="container-fluid" id="particles-js">
@@ -85,7 +85,7 @@
 <script type="text/javascript" src="{% static 'js/common/particles.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/run_particlejs.js' %}"></script>
 {% block scripts %}{% endblock %}
-<script type="text/javascript" src="{% static 'js/novel/base.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/novel/base.js' %}?v=0.1"></script>
 
 {% if setting.google_analystics_id %}
     <!-- Global site tag (gtag.js) - Google Analytics -->

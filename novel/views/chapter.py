@@ -4,6 +4,8 @@ import requests
 from django.db import transaction
 from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 from cms.models import TemplateManager
 from novel.models import Novel, NovelChapter
@@ -32,6 +34,7 @@ def url2yield(url, chunksize=1024, referer=None):
 class ChapterView(NovelBaseView):
     template_name = "novel/chapter.html"
 
+    @method_decorator(cache_page(60 * 5), name='cache_chapter')
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 

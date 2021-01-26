@@ -2,7 +2,9 @@ from urllib.parse import urlparse
 
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 from cms.models import TemplateManager
 from novel.models import Novel
@@ -12,7 +14,7 @@ from novel.views.base import NovelBaseView
 class NovelDetailView(NovelBaseView):
     template_name = "novel/novel.html"
 
-    @csrf_exempt
+    @csrf_protect
     def post(self, request, *args, **kwargs):
         search = request.POST.get('q', "")
         if len(search) >= 3:
@@ -30,6 +32,7 @@ class NovelDetailView(NovelBaseView):
 
         return JsonResponse({"data": []})
 
+    @method_decorator(cache_page(60 * 5), name='cache_novel')
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 

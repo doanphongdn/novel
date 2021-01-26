@@ -1,3 +1,6 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
 from cms.models import TemplateManager
 from novel.views.base import NovelBaseView
 
@@ -5,6 +8,7 @@ from novel.views.base import NovelBaseView
 class NovelIndexView(NovelBaseView):
     template_name = "novel/index.html"
 
+    @method_decorator(cache_page(60 * 5), name='cache_index')
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 

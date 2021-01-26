@@ -105,6 +105,7 @@ class ChapterView(NovelBaseView):
         response.context_data.update({
             'novel_url': novel.get_absolute_url(),
             'include_html': include_html,
+            'request_url': request.build_absolute_uri(),
         })
 
         return response

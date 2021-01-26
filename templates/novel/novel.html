@@ -6,4 +6,15 @@
     <div class="row">
         {{ include_html }}
     </div>
+    <div class="row">
+        <div class="fb-comments" data-href="{{ request_url }}"
+             data-width="100%" data-numposts="5">
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script async defer crossorigin="anonymous"
+            src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v9.0&appId={{ setting.meta_fb_app_id }}&autoLogAppEvents=1"
+            nonce="fzz7rsRH">
+    </script>
 {% endblock %}

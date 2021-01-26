@@ -82,6 +82,7 @@ class NovelDetailView(NovelBaseView):
         tmpl = TemplateManager.objects.filter(page_file='novel').first()
         response.context_data.update({
             'include_html': self.include_mapping.render_include_html(tmpl, extra_data=extra_data),
+            'request_url': request.build_absolute_uri(),
         })
 
         return response

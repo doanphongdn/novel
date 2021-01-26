@@ -4,7 +4,7 @@ from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 
-from novel.models import Novel, NovelChapter, NovelSetting
+from novel.models import Novel, NovelChapter, NovelSetting, Genre
 
 
 class NovelForm(forms.ModelForm):
@@ -20,6 +20,11 @@ class NovelForm(forms.ModelForm):
     class Meta:
         model = Novel
         fields = '__all__'
+
+
+@admin.register(Genre)
+class GenreAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "slug", "active")
 
 
 @admin.register(Novel)

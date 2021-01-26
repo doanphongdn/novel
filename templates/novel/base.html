@@ -53,8 +53,8 @@
     {% block stylesheet %}{% endblock %}
 </head>
 <body>
-<div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v9.0&appId={{ setting.meta_fb_app_id }}&autoLogAppEvents=1" nonce="fzz7rsRH"></script>
+{#<div id="fb-root"></div>#}
+{#<script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v9.0&appId={{ setting.meta_fb_app_id }}&autoLogAppEvents=1" nonce="fzz7rsRH"></script>#}
 {% csrf_token %}
 {% include "novel/includes/navbar.html" %}
 {{ top_menu_html }}

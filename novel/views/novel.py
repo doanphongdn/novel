@@ -2,6 +2,7 @@ from urllib.parse import urlparse
 
 from django.http import JsonResponse
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
@@ -41,6 +42,9 @@ class NovelDetailView(NovelBaseView):
 
         novel = Novel.objects.filter(slug=slug).first()
 
+        if any(gen for gen in novel.genres.all() if not gen.active):
+            return redirect("home")
+
         if novel:
             referer = urlparse(novel.url)
             if novel.thumbnail_image.strip().startswith('//'):
@@ -60,7 +64,7 @@ class NovelDetailView(NovelBaseView):
                 "url": novel.get_absolute_url(),
             }]
         else:
-            return redirect('/')
+            return redirect('home')
 
         extra_data = {
             "breadcrumb": {

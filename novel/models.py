@@ -5,12 +5,13 @@ from datetime import datetime
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from unidecode import unidecode
 
 from crawl_service import settings
-from crawl_service.models import CrawlCampaign, CrawlCampaignSource
+from crawl_service.models import CrawlCampaignSource
 
 
 def datetime2string(value):
@@ -60,6 +61,7 @@ class Author(models.Model):
 class Genre(models.Model):
     class Meta:
         db_table = 'novel_genres'
+        ordering = ["name"]
 
     name = models.CharField(max_length=250, unique=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify,
@@ -129,7 +131,11 @@ class Novel(models.Model):
 
     @classmethod
     def get_available_novel(cls):
-        return cls.objects.filter(active=True, publish=True)
+        deactive_ids = cls.objects.filter(genres__active=False).values_list('id', flat=True).distinct()
+        available_novels = cls.objects.filter(~Q(id__in=deactive_ids),
+                                              active=True, publish=True).distinct()
+
+        return available_novels
 
     @property
     def chapters(self):

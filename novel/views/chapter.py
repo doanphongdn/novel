@@ -73,7 +73,7 @@ class ChapterView(NovelBaseView):
                         chapters_viewed.append(chapter_id)
 
                     request.session["chapters_viewed"] = chapters_viewed
-                    request.session.set_expiry(3600)
+                    # request.session.set_expiry(3600)
 
             breadcrumb_data = [
                 {

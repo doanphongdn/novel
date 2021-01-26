@@ -14,7 +14,7 @@ from novel.views.base import NovelBaseView
 class NovelDetailView(NovelBaseView):
     template_name = "novel/novel.html"
 
-    @csrf_protect
+    @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         search = request.POST.get('q', "")
         if len(search) >= 3:

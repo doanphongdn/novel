@@ -1,14 +1,15 @@
 $(document).ready(function (e) {
     /* -------- START SEARCH ----------- */
+    let csrf_token = Cookies.get('csrftoken');
     $('input.search').autocomplete({
         source: function (req, res) {
             $.ajax({
+                headers: { "X-CSRFToken": csrf_token },
                 type: "POST",
                 url: "/search",
                 dataType: 'json',
                 data: {
-                    q: req.term,
-                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+                    q: req.term
                 },
                 success: function (json_data) {
                     res(json_data.data);

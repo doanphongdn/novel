@@ -34,7 +34,7 @@ class IncludeMapping(object):
             if inc_func:
                 cache_enable = inc_params.get("cache_enabled") or False
                 if cache_enable and self.request_url:
-                    cache_key = self.request_url + inc.code
+                    cache_key = self.request_url + inc.template.page_file + inc.code
                     html = cache.get(cache_key)
                     if not html or not repr(html):
                         inc_obj = inc_func(inc_params, extra_data)

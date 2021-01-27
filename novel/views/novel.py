@@ -2,10 +2,8 @@ from urllib.parse import urlparse
 
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from django.urls import reverse
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.csrf import csrf_protect
 
 from cms.models import TemplateManager
 from novel.models import Novel
@@ -33,7 +31,6 @@ class NovelDetailView(NovelBaseView):
 
         return JsonResponse({"data": []})
 
-    @method_decorator(cache_page(60 * 5), name='cache_novel')
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 
@@ -42,10 +39,10 @@ class NovelDetailView(NovelBaseView):
 
         novel = Novel.objects.filter(slug=slug).first()
 
-        if any(gen for gen in novel.genres.all() if not gen.active):
-            return redirect("home")
-
         if novel:
+            if any(gen for gen in novel.genres.all() if novel and not gen.active):
+                return redirect("home")
+
             referer = urlparse(novel.url)
             if novel.thumbnail_image.strip().startswith('//'):
                 referer_url = referer.scheme  # + referer.netloc

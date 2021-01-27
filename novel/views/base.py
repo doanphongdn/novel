@@ -1,19 +1,22 @@
+from hashlib import md5
+
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.cache import cache
 from django.views.generic import TemplateView
 
 from cms.include_mapping import IncludeMapping
 from cms.models import TemplateManager
-from novel.models import NovelSetting, Genre
+from novel.models import NovelSetting
 from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
 from novel.views.includes.chapter_content import ChapterContentTemplateInclude
 from novel.views.includes.chapter_list import ChapterListTemplateInclude
 from novel.views.includes.footer_info import FooterInfoplateInclude
 from novel.views.includes.link import LinkTemplateInclude
+from novel.views.includes.menu import TopMenuTemplateInclude
+from novel.views.includes.novel_cat import NovelCatTemplateInclude
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
 from novel.views.includes.pagination import PaginationTemplateInclude
-from novel.views.includes.novel_cat import NovelCatTemplateInclude
-from novel.views.includes.menu import TopMenuTemplateInclude
 
 TEMPLATE_INCLUDE_MAPPING = {
     "chapter_content": ChapterContentTemplateInclude,
@@ -33,10 +36,18 @@ class NovelBaseView(TemplateView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.include_mapping = IncludeMapping(TEMPLATE_INCLUDE_MAPPING)
+        self.include_mapping = None
 
     def get(self, request, *args, **kwargs):
-        novel_setting = NovelSetting.get_setting()
+        request_url = request.build_absolute_uri()
+        cache_key_md5 = md5(request_url.encode("utf-8")).hexdigest()
+        novel_setting = cache.get(cache_key_md5)
+        if not novel_setting:
+            novel_setting = NovelSetting.get_setting()
+            cache.set(cache_key_md5, novel_setting)
+
+        self.include_mapping = IncludeMapping(TEMPLATE_INCLUDE_MAPPING, cache_key_md5)
+
         title = ""
         logo = ""
         favicon = ""

@@ -53,8 +53,7 @@
     {% block stylesheet %}{% endblock %}
 </head>
 <body>
-<div id="fb-root"></div>
-{#{% csrf_token %}#}
+{% csrf_token %}
 {% include "novel/includes/navbar.html" %}
 {{ top_menu_html }}
 <div class="container-fluid" id="particles-js">

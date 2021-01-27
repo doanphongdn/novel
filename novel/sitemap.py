@@ -1,7 +1,6 @@
 from django.contrib import sitemaps
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
-from django.views.decorators.cache import cache_page
 
 from novel.models import Novel, Genre, NovelChapter
 

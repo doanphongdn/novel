@@ -28,6 +28,7 @@ class NovelSpider(scrapy.Spider):
                         self.other_urls = data or []
         else:
             self.start_urls = [campaign.target_url]
+            self.prefetch_by_data = {"url": self.start_urls}
 
         campaign_mapping = CampaignMapping.get_mapping(self.campaign.campaign_type)
         self.campaign_type = campaign_mapping(self.campaign, self.prefetch_by_data)

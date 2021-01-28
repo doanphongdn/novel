@@ -4,7 +4,7 @@ from novel.models import Genre
 from novel.views.base import NovelBaseView
 
 
-class NovelView(NovelBaseView):
+class NovelAllView(NovelBaseView):
     template_name = "novel/novel_all.html"
 
     def get(self, request, *args, **kwargs):

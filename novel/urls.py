@@ -29,7 +29,7 @@ from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap, NovelCh
 from novel.views.chapter import ChapterView
 from novel.views.index import NovelIndexView
 from novel.views.novel import NovelDetailView
-from novel.views.novel_all import NovelView
+from novel.views.novel_all import NovelAllView
 from novel.views.page import PageView
 
 sitemaps = {
@@ -55,12 +55,13 @@ urlpatterns = [
 
     path('', NovelIndexView.as_view(), name="home"),
     path('search', NovelDetailView.as_view()),
-    path(settings.NOVEL_ALL_URL, NovelView.as_view(), name="novel_view"),
-    path(settings.NOVEL_ALL_URL + '/<str:novel_type>', NovelView.as_view(), name="novel_all"),
-    path(settings.NOVEL_GENRE_URL + '/<str:genre>', NovelView.as_view(), name="novel_genre"),
+    path(settings.NOVEL_ALL_URL, NovelAllView.as_view(), name="novel_view"),
+    path(settings.NOVEL_ALL_URL + '/<str:novel_type>', NovelAllView.as_view(), name="novel_all"),
+    path(settings.NOVEL_GENRE_URL + '/<str:genre>', NovelAllView.as_view(), name="novel_genre"),
     path(settings.NOVEL_PAGE_URL + '/<str:slug>', PageView.as_view(), name="page_view"),
 
     path('images/<str:img>', ChapterView.stream_image, name="stream_image"),
+    path('thumbnail_images/<str:img>', NovelDetailView.stream_thumbnail_image, name="stream_thumbnail_image"),
 
     path('<str:slug>', NovelDetailView.as_view(), name="novel"),
     path('<str:slug>/<str:chapter_slug>', ChapterView.as_view(), name="chapter"),

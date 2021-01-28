@@ -41,7 +41,7 @@
         <div class="ribbon-right">{{ novel.latest_updated_at_str }}</div>
         <div class="novel-thumbnail-image">
             <a href="{{ novel.get_absolute_url }}">
-                <img class="lazyload" data-src="{{ novel.thumbnail_image }}"
+                <img class="lazyload" data-src="{{ novel.stream_thumbnail_image }}"
                      src="{% static "images/lazyload.gif" %}"
                      alt="{{ novel.name }}">
             </a>

@@ -175,6 +175,10 @@ class Novel(models.Model):
     def latest_updated_at_str(self):
         return datetime2string(self.latest_updated_time)
 
+    @property
+    def stream_thumbnail_image(self):
+        return "/thumbnail_images/%s_%s.jpg" % (self.id, hashlib.md5(self.thumbnail_image.encode()).hexdigest())
+
 
 class NovelChapter(models.Model):
     class Meta:

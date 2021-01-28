@@ -60,7 +60,9 @@
                 {% endif %}
             {% endautoescape %}
             {% for image_url in chapter.stream_images %}
-                <img src="{{ image_url }}" alt="" class="lazyload">
+                <img data-src="{{ image_url }}"
+                     src="{% static "images/lazyload.gif" %}"
+                     alt="" class="lazyload">
             {% endfor %}
         </div>
     </div>

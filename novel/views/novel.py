@@ -98,8 +98,7 @@ class NovelDetailView(NovelBaseView):
             if origin_url.strip().startswith('//'):
                 origin_url = referer.scheme + ":" + origin_url
 
-            elif origin_url.strip().startswith('/static/'):
-                # referer_url = "http://" +
+            elif origin_url.strip().startswith('/static'):
                 referer_url = None
                 current_site = get_current_site(self)
                 origin_url = ('https' if self.is_secure() else 'http') + "://" + current_site.domain + origin_url

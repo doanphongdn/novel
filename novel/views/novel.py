@@ -1,5 +1,6 @@
 from urllib.parse import urlparse
 
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import JsonResponse, StreamingHttpResponse, HttpResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
@@ -97,8 +98,14 @@ class NovelDetailView(NovelBaseView):
             if origin_url.strip().startswith('//'):
                 origin_url = referer.scheme + ":" + origin_url
 
+            elif origin_url.strip().startswith('/static/'):
+                # referer_url = "http://" +
+                current_site = get_current_site(self)
+                origin_url = ('https' if self.is_secure() else 'http') + "://" + current_site.domain + origin_url
+
             elif origin_url.strip().startswith('/'):
                 origin_url = referer_url.strip('/') + "/" + origin_url
+
             if 'blogspot.com' in origin_url:
                 referer_url = None
             return StreamingHttpResponse(url2yield(origin_url, referer=referer_url),

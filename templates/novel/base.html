@@ -44,6 +44,7 @@
     {% if setting.meta_fb_app_id %}
         <meta property="fb:app_id" content="{{ setting.meta_fb_app_id }}">
     {% endif %}
+    {% block meta %}{% endblock %}
 
     <link rel="shortcut icon" href="{{ setting.favicon }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">

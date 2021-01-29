@@ -60,7 +60,7 @@
                 {% endif %}
             {% endautoescape %}
             {% for image_url in chapter.stream_images %}
-                {% if forloop.counter <= 3 %}
+                {% if forloop.counter == 1 %}
                     <img src="{{ image_url }}" alt="">
                 {% else %}
                     <img data-src="{{ image_url }}" src="{% static "images/lazyload.gif" %}" alt="" class="lazyload">

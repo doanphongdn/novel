@@ -38,7 +38,6 @@ $(document).ready(function (e) {
         scrollDirection: 'vertical',
         effect: 'fadeIn',
         effectTime: 200,
-        threshold: 1000,
         visibleOnly: true,
         onError: function (element) {
             element.attr("src", "/static/images/lazyload.gif")

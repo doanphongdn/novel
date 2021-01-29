@@ -21,6 +21,7 @@ from django.urls import path, include
 # from crawl_service.views.base import view_404
 
 urlpatterns = [
+    path('accounts/', include('allauth.urls')),
     path('myadmin/login', admin.site.urls),
     path('', include('novel.urls')),
 ]

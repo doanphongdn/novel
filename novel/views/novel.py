@@ -40,9 +40,8 @@ class NovelDetailView(NovelBaseView):
         slug = kwargs.get('slug')
 
         novel = Novel.objects.filter(slug=slug).first()
-
         if novel:
-            if any(gen for gen in novel.genres.all() if novel and not gen.active):
+            if any(gen for gen in novel.genres.all() if not gen.active):
                 return redirect("home")
 
             referer = urlparse(novel.url)

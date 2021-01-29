@@ -12,10 +12,13 @@ django-ckeditor~=6.0.0
 psycopg2-binary==2.8.6
 psycopg2~=2.8.6
 requests~=2.25.1
-django-pipeline~=2.0.5
+django-pipeline~=2.0.6
 libsass~=0.20.1
 mistletoe~=0.7.2
 html2text~=2020.1.16
 pillow~=8.1.0
 python-memcached~=1.59
 django-json-widget~=1.0.1
+django-allauth~=0.44.0
+django-extensions~=3.1.0
+Werkzeug~=1.0.1

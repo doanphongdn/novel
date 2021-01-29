@@ -60,9 +60,11 @@
                 {% endif %}
             {% endautoescape %}
             {% for image_url in chapter.stream_images %}
-                <img data-src="{{ image_url }}"
-                     src="{% static "images/lazyload.gif" %}"
-                     alt="" class="lazyload">
+                {% if forloop.counter <= 3 %}
+                    <img src="{{ image_url }}" alt="">
+                {% else %}
+                    <img data-src="{{ image_url }}" src="{% static "images/lazyload.gif" %}" alt="" class="lazyload">
+                {% endif %}
             {% endfor %}
         </div>
     </div>
@@ -73,7 +75,6 @@
                title="{{ chapter.novel.name }} {{ chapter.next_chapter.name }}">{{ chapter.novel.name }} {{ chapter.next_chapter.name }}</a>
         </div>
     {% endif %}
-    {#  <div class="fb-comments" data-href="{{ domain }}{{ novel.get_absolute_url }}" data-width="100%" data-numposts="5"></div>#}
 </div>
 <div class="modal fade modal-chapter" id="modal-chapter" tabindex="-1" role="dialog" aria-labelledby="modal-chapter"
      aria-hidden="true">

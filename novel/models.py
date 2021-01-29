@@ -142,7 +142,7 @@ class Novel(models.Model):
         return NovelChapter.objects.filter(novel=self, chapter_updated=True, active=True)
 
     @property
-    def first_chapter_url(self):
+    def novel_first_chapter_url(self):
         first_chap_url = None
         chapter = self.chapters.last()
         if chapter:
@@ -151,7 +151,7 @@ class Novel(models.Model):
         return first_chap_url
 
     @property
-    def last_chapter(self):
+    def novel_latest_chapter_url(self):
         last_chapter_url = None
         chapter = self.chapters.first()
         if chapter:

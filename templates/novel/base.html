@@ -44,6 +44,11 @@
     {% if setting.meta_fb_app_id %}
         <meta property="fb:app_id" content="{{ setting.meta_fb_app_id }}">
     {% endif %}
+
+    {% if setting.no_image_index %}
+        <meta name="robots" content="noimageindex">
+    {% endif %}
+
     {% block meta %}{% endblock %}
 
     <link rel="shortcut icon" href="{{ setting.favicon }}">

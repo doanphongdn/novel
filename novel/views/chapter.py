@@ -54,6 +54,9 @@ class ChapterView(NovelBaseView):
                             chapter.slug.replace('-', ' '), chapter.name]
                 response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)
 
+                # hard code to ionore index img google bot
+                response.context_data["setting"]["no_image_index"] = True
+
                 # Update view count
                 chapter_id = chapter.id
                 chapters_viewed = request.session.get("chapters_viewed") or []

@@ -35,10 +35,17 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
         link_data = {}
         for link in link_objs:
             for name in [novel.name, unidecode(novel.name)]:
-                name = name + " " + link.name
-                if name not in link_data:
-                    link_data[name] = {
-                        "name": name,
+                name1 = name + " " + link.name
+                if name1 not in link_data:
+                    link_data[name1] = {
+                        "name": name1,
+                        "url": novel.get_absolute_url(),
+                        'class_name': link.class_name
+                    }
+                name2 = link.name + " " + name
+                if name2 not in link_data:
+                    link_data[name2] = {
+                        "name": name2,
                         "url": novel.get_absolute_url(),
                         'class_name': link.class_name
                     }

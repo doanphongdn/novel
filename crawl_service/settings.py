@@ -13,10 +13,11 @@ import os
 from pathlib import Path
 
 from django.templatetags.static import static
-
-from .pipeline_config import *
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from dotenv import load_dotenv
+
+from custom_allauth.settings import *
+from .pipeline_config import *
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, '.env'), override=True, verbose=True)
@@ -51,12 +52,14 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.postgres',
     'django_extensions',
+    # allauth
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
-
+    'custom_allauth.socialaccount.providers.zalo',
+    # other app
     'pipeline',
     'cms',
     'crawl_service',
@@ -262,47 +265,3 @@ CRAWL_ACTION_MAPPING = {
         ('JoinItem', "Join Items"),
     ]
 }
-
-AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
-
-# Provider specific settings
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
-        'APP': {
-            'client_id': '123',
-            'secret': '456',
-            'key': ''
-        }
-    },
-    'facebook': {
-        'METHOD': 'oauth2',
-        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
-        'SCOPE': ['email', 'public_profile'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'INIT_PARAMS': {'cookie': True},
-        'FIELDS': [
-            'id',
-            'first_name',
-            'last_name',
-            'middle_name',
-            'name',
-            'name_format',
-            'picture',
-            'short_name'
-        ],
-        'EXCHANGE_TOKEN': True,
-        'LOCALE_FUNC': 'path.to.callable',
-        'VERIFIED_EMAIL': False,
-        'VERSION': 'v7.0',
-    }
-}
-
-LOGIN_REDIRECT_URL = False

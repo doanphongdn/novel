@@ -34,6 +34,136 @@ a {
   color: #243239;
 }
 
+
+//NAVBAR
+.navbar-base {
+  .container {
+    padding-right: 0;
+  }
+}
+
+#navbar-danger {
+  justify-content: flex-end;
+
+  .navbar_menu {
+    ul {
+      margin-right: 30px;
+    }
+  }
+}
+
+.mobile-search-toggle i {
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+/* Let's get this party started */
+.ui-helper-hidden-accessible {
+  display: none;
+}
+
+/* Let's get this party started */
+.ui-autocomplete::-webkit-scrollbar {
+  width: 3px;
+}
+
+/* Track */
+.ui-autocomplete::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 1);
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+/* Handle */
+.ui-autocomplete::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: rgba(136, 136, 136, 1);
+}
+
+.ui-autocomplete::-webkit-scrollbar-thumb:window-inactive {
+  background: rgba(162, 162, 162, 1);
+}
+
+.ui-autocomplete {
+  position: absolute;
+  min-width: 300px;
+  right: 0 !important;
+  left: auto !important;
+  z-index: 1000;
+  display: none;
+  float: left;
+  padding: 0 0 2px 0;
+  margin: 2px 0 0;
+  list-style: none;
+  font-size: 14px;
+  text-align: left;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+#search-area {
+  position: relative;
+}
+
+.search-item {
+  display: block;
+  overflow: hidden;
+  border-bottom: thin solid #F0F0F0;
+  padding: 3px;
+  cursor: pointer;
+}
+
+.search-item img {
+  width: 50px;
+  float: left;
+  margin-right: 5px;
+}
+
+.search-item .search-item-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.search-wrap {
+  width: 300px;
+  display: none;
+}
+
+.navbar {
+  background: #243239;
+}
+
+.navbar-brand img {
+  height: 30px;
+}
+
+.navbar-nav {
+  margin-right: 100px;
+}
+
+nav.pagination-wrap {
+  width: 100%;
+  padding: 0 15px;
+}
+
+span.navbar-toggler-icon {
+  &:before {
+    content: '\f0c9';
+    font-family: 'FontAwesome', serif;
+    font-size: 30px;
+    color: #FFF;
+    left: 30px;
+    position: absolute;
+  }
+}
+
+//END NAVBAR
 .footer {
   min-height: 100px;
   background: url("/static/images/black-bg.png");
@@ -53,6 +183,24 @@ a {
   .content-wrap {
     margin: 0 auto;
   }
+
+  //NAVBAR
+  #navbar-danger {
+    justify-content: start;
+  }
+  .ui-autocomplete {
+    min-width: 100%;
+  }
+
+  #search-area {
+    width: 100%;
+  }
+
+  .search-wrap {
+    width: 100%;
+    margin-top: 20px;
+  }
+  //END NAVBAR
 }
 
 /* Small Devices, Phones */

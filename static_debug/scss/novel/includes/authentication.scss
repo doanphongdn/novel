@@ -1,0 +1,29 @@
+#modal-login {
+  input {
+    height: 46px;
+  }
+
+  a {
+    &.btn {
+      text-transform: none;
+    }
+  }
+
+  .nav-tabs {
+    display: flex;
+    justify-content: flex-end;
+    border: 0 !important;
+
+    .nav-item {
+      a {
+        border: 0 solid transparent;
+        background-color: transparent;
+        padding: 0 0 0 30px;
+
+        &.active {
+          display: none
+        }
+      }
+    }
+  }
+}

@@ -4,6 +4,7 @@ from datetime import datetime
 
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -297,3 +298,15 @@ class NovelSetting(models.Model):
     @classmethod
     def get_setting(cls):
         return cls.objects.first()
+
+
+class NovelUserProfile(models.Model):
+    class Meta:
+        db_table = "novel_user_profiles"
+
+    user_id = models.IntegerField(primary_key=True)
+    avatar = models.CharField(max_length=250, null=True, blank=True)
+
+    @classmethod
+    def get_profiles(cls, user_id):
+        return cls.objects.filter(user_id=user_id).first()

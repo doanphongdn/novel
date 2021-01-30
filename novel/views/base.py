@@ -7,12 +7,14 @@ from django.views.generic import TemplateView
 from cms.include_mapping import IncludeMapping
 from cms.models import TemplateManager
 from novel.models import NovelSetting
+from novel.views.includes.base_auth_modal import BaseAuthModalTemplateInclude
+from novel.views.includes.base_navbar_menu import BaseNavbarTemplateInclude
 from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
 from novel.views.includes.chapter_content import ChapterContentTemplateInclude
 from novel.views.includes.chapter_list import ChapterListTemplateInclude
-from novel.views.includes.footer_info import FooterInfoplateInclude
+from novel.views.includes.base_footer_info import FooterInfoplateInclude
 from novel.views.includes.link import LinkTemplateInclude
-from novel.views.includes.menu import TopMenuTemplateInclude
+from novel.views.includes.base_top_menu import TopMenuTemplateInclude
 from novel.views.includes.novel_cat import NovelCatTemplateInclude
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
@@ -27,8 +29,10 @@ TEMPLATE_INCLUDE_MAPPING = {
     "novel_list": NovelListTemplateInclude,
     "breadcrumb": BreadCrumbTemplateInclude,
     "pagination": PaginationTemplateInclude,
-    "footer_info": FooterInfoplateInclude,
-    "menu": TopMenuTemplateInclude,
+    "base_footer_info": FooterInfoplateInclude,
+    "base_top_menu": TopMenuTemplateInclude,
+    "base_navbar_menu": BaseNavbarTemplateInclude,
+    "base_auth_modal": BaseAuthModalTemplateInclude,
 }
 
 
@@ -46,6 +50,7 @@ class NovelBaseView(TemplateView):
             novel_setting = NovelSetting.get_setting()
             cache.set(cache_key_md5, novel_setting)
 
+        # define list of include template class
         self.include_mapping = IncludeMapping(TEMPLATE_INCLUDE_MAPPING, cache_key_md5)
 
         title = ""
@@ -83,14 +88,6 @@ class NovelBaseView(TemplateView):
                 meta_og_description = novel_setting.meta_description or ""
             meta_fb_app_id = novel_setting.meta_fb_app_id or None
 
-        menu = [
-            {
-                "url": "#",
-                "name": "Facebook",
-                "fa_icon": "fa fa-facebook-square",
-            }
-        ]
-
         kwargs["setting"] = {
             "title": title,
             "domain": domain,
@@ -109,12 +106,14 @@ class NovelBaseView(TemplateView):
             "google_analystics_id": novel_setting and novel_setting.google_analystics_id or "",
         }
 
-        footer_tmpl = TemplateManager.objects.filter(page_file='footer').first()
-        # navbar_tmpl = TemplateManager.objects.filter(page_file='navbar').first()
+        base_footer_tmpl = TemplateManager.objects.filter(page_file='base_footer').first()
+        base_other_html_tmpl = TemplateManager.objects.filter(page_file='base_other_html').first()
+        base_navbar_tmpl = TemplateManager.objects.filter(page_file='base_navbar').first()
+        base_top_menu_tmpl = TemplateManager.objects.filter(page_file='base_top_menu').first()
 
-        top_menu_tmpl = TemplateManager.objects.filter(page_file='top_menu').first()
-
-        kwargs["footer_html"] = self.include_mapping.render_include_html(footer_tmpl)
-        kwargs["top_menu_html"] = self.include_mapping.render_include_html(top_menu_tmpl)
+        kwargs["base_footer_html"] = self.include_mapping.render_include_html(base_footer_tmpl)
+        kwargs["base_other_html"] = self.include_mapping.render_include_html(base_other_html_tmpl)
+        kwargs["base_top_menu_html"] = self.include_mapping.render_include_html(base_top_menu_tmpl)
+        kwargs["base_navbar_menu_html"] = self.include_mapping.render_include_html(base_navbar_tmpl)
 
         return super().get(request, *args, **kwargs)

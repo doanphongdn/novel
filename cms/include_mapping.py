@@ -1,6 +1,5 @@
 from django.core.cache import cache
 from django.utils.html import format_html_join
-from django.utils.safestring import SafeString
 
 
 class IncludeMapping(object):

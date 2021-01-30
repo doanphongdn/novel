@@ -1,0 +1,24 @@
+<ul class="navbar-nav ml-auto">
+    {% for menu in menus %}
+        <li class="nav-item">
+            <a class="nav-link nav-link-icon" href="{{ menu.url }}">
+                <i class="{{ menu.fa_icon }}"></i>
+                <span class="nav-link-inner--text">{{ menu.name }}</span>
+            </a>
+        </li>
+    {% endfor %}
+    {% if enable_auth_menu %}
+        <li class="nav-item">
+            <a class="nav-link nav-link-icon btn-login" href="#" data-toggle="modal" data-target="#modal-login">
+                <i class="fa fa-sign-in"></i>
+                <span class="nav-link-inner--text">Login</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link nav-link-icon btn-register" href="#" data-toggle="modal" data-target="#modal-login">
+                <i class="fa fa-user-plus"></i>
+                <span class="nav-link-inner--text">Register</span>
+            </a>
+        </li>
+    {% endif %}
+</ul>

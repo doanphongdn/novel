@@ -24,7 +24,6 @@ from django.views.generic import TemplateView
 from crawl_service import settings
 from crawl_service.views.base import view_dmca_validation, view_google_site_verification
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
-from novel.models import NovelChapter
 from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap, NovelChapterSitemap
 from novel.views.chapter import ChapterView
 from novel.views.index import NovelIndexView

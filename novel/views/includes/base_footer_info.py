@@ -3,8 +3,8 @@ from novel.views.includes.base import BaseTemplateInclude
 
 
 class FooterInfoplateInclude(BaseTemplateInclude):
-    name = "footer_info"
-    template = "novel/includes/footer_info.html"
+    name = "base_footer_info"
+    template = "novel/includes/base_footer_info.html"
 
     def __init__(self, include_data, extra_data=None):
         super().__init__(include_data, extra_data)

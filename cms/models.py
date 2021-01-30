@@ -1,7 +1,3 @@
-import os
-from os import listdir
-from os.path import isfile
-
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
 from django.db import models
@@ -66,14 +62,25 @@ class Menu(models.Model):
     active = models.BooleanField(default=True)
 
 
+def json_template_default():
+    return {
+        "default": {}
+    }
+
+
 class TemplateManager(models.Model):
+    """
+    all class handling for this model must be define in TEMPLATE_PAGE_CHOISES at CMS application.
+    PATH: cms/template_config.py
+    """
+
     class Meta:
         db_table = "cms_template_manager"
         ordering = ["page_file"]
 
     page_file = models.CharField(max_length=250, choices=TEMPLATE_PAGE_CHOISES.get(settings.APP_NAME),
                                  unique=True)
-    includes_default = models.JSONField(blank=True, null=True)
+    includes_default = models.JSONField(blank=True, null=True, default=json_template_default)
 
     def include_template(self):
         return InludeTemplate.objects.filter(template=self, active=True).order_by("priority").all()
@@ -83,6 +90,11 @@ class TemplateManager(models.Model):
 
 
 class InludeTemplate(models.Model):
+    """
+    all class handling for this model must be define in TEMPLATE_INCLUDE_CHOISES at CMS application.
+    PATH: cms/template_config.py
+    """
+
     class Meta:
         db_table = "cms_template_include"
         unique_together = [('template', 'code')]
@@ -92,7 +104,7 @@ class InludeTemplate(models.Model):
     template = models.ForeignKey(TemplateManager, on_delete=models.CASCADE)
     code = models.CharField(max_length=50, validators=[code_validate])
     include_file = models.CharField(max_length=250, choices=TEMPLATE_INCLUDE_CHOISES.get(settings.APP_NAME))
-    params = models.JSONField(blank=True, null=True)
+    params = models.JSONField(blank=True, null=True, default=json_template_default)
     class_name = models.CharField(max_length=250)
     full_width = models.BooleanField(default=False)
     active = models.BooleanField(default=True)

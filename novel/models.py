@@ -5,6 +5,7 @@ from datetime import datetime
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -123,6 +124,67 @@ class Novel(models.Model):
         return self.name
 
     @property
+    def structured_data(self):
+        first_chapter = self.first_chapter
+        latest_chapter = self.latest_chapter
+        url = "https://" + Site.objects.get_current().domain + self.get_absolute_url()
+        data = {
+            '@id': '#novel',
+            '@type': 'Book',
+            'name': self.name,
+            'genre': [
+                genre.get_absolute_url()
+                for genre in self.genres.all()
+            ],
+            'author': [{
+                '@type': 'Person',
+                'name': author.name,
+            } for author in self.authors.all()],
+            'dateModified': self.latest_updated_time.strftime('%Y-%m-%d'),
+            'url': url,
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": self.vote,
+                "reviewCount": self.vote_total or 1,
+            },
+            'hasPart': [
+            ]
+
+        }
+
+        if self.thumbnail_image:
+            data['image'] = self.thumbnail_image
+
+        if first_chapter:
+            data['hasPart'].append({
+                '@id': '#first',
+                "@type": [
+                    "Book",
+                    "PublicationVolume"
+                ],
+                "name": first_chapter.name,
+                "url": first_chapter.get_absolute_url(),
+                "isPartOf": "#novel",
+                "inLanguage": "vi",
+                "volumeNumber": "1",
+            })
+        if latest_chapter:
+            data['hasPart'].append({
+                '@id': '#latest',
+                "@type": [
+                    "Book",
+                    "PublicationVolume"
+                ],
+                "name": latest_chapter.name,
+                "url": latest_chapter.get_absolute_url(),
+                "isPartOf": "#novel",
+                "inLanguage": "vi",
+                "volumeNumber": self.chapters.count(),
+            })
+
+        return data
+
+    @property
     def authors_name(self):
         return ", ".join([str(p.name) for p in self.authors.all()])
 
@@ -143,22 +205,12 @@ class Novel(models.Model):
         return NovelChapter.objects.filter(novel=self, chapter_updated=True, active=True)
 
     @property
-    def novel_first_chapter_url(self):
-        first_chap_url = None
-        chapter = self.chapters.last()
-        if chapter:
-            first_chap_url = chapter.get_absolute_url()
-
-        return first_chap_url
+    def first_chapter(self):
+        return self.chapters.last()
 
     @property
-    def novel_latest_chapter_url(self):
-        last_chapter_url = None
-        chapter = self.chapters.first()
-        if chapter:
-            last_chapter_url = chapter.get_absolute_url()
-
-        return last_chapter_url
+    def latest_chapter(self):
+        return self.chapters.first()
 
     def get_absolute_url(self):
         return reverse("novel", args=[self.slug])

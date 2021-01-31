@@ -3,6 +3,10 @@
 {% block stylesheet %}
 {% endblock %}
 {% block content %}
+    {% load opengraph %}
+    {% og_for novel %}
+    {% load jsonld %}
+    {% json_ld_for novel %}
     <div class="row">
         {{ include_html }}
     </div>
@@ -17,4 +21,5 @@
             src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v9.0&appId={{ setting.meta_fb_app_id }}&autoLogAppEvents=1"
             nonce="fzz7rsRH">
     </script>
+
 {% endblock %}

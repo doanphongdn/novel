@@ -17,6 +17,7 @@ from django.templatetags.static import static
 from dotenv import load_dotenv
 
 from custom_allauth.settings import *
+from novel.settings import *
 from .pipeline_config import *
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -66,6 +67,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'ckeditor',
     'django_json_widget',
+    'structured_data',
     APP_NAME,
 ]
 

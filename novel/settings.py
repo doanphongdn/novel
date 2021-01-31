@@ -1,0 +1,1 @@
+JSON_LD_DEFAULT_TYPE = 'Book'

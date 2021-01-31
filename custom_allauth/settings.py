@@ -1,5 +1,6 @@
 LOGIN_REDIRECT_URL = '/'
 SOCIALACCOUNT_ADAPTER = 'custom_allauth.socialaccount.adapter.CustomSocialAccountAdapter'
+ACCOUNT_ADAPTER = 'custom_allauth.account.adapter.CustomAccountAdapter'
 
 AUTHENTICATION_BACKENDS = [
     # # Needed to login by username in Django admin, regardless of `allauth`

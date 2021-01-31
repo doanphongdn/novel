@@ -127,13 +127,14 @@ class Novel(models.Model):
     def structured_data(self):
         first_chapter = self.first_chapter
         latest_chapter = self.latest_chapter
-        url = "https://" + Site.objects.get_current().domain + self.get_absolute_url()
+        site_url = "https://" + Site.objects.get_current().domain
+        url = site_url + self.get_absolute_url()
         data = {
             '@id': '#novel',
             '@type': 'Book',
             'name': self.name,
             'genre': [
-                genre.get_absolute_url()
+                site_url + genre.get_absolute_url()
                 for genre in self.genres.all()
             ],
             'author': [{
@@ -163,7 +164,7 @@ class Novel(models.Model):
                     "PublicationVolume"
                 ],
                 "name": first_chapter.name,
-                "url": first_chapter.get_absolute_url(),
+                "url": site_url + first_chapter.get_absolute_url(),
                 "isPartOf": "#novel",
                 "inLanguage": "vi",
                 "volumeNumber": "1",
@@ -176,7 +177,7 @@ class Novel(models.Model):
                     "PublicationVolume"
                 ],
                 "name": latest_chapter.name,
-                "url": latest_chapter.get_absolute_url(),
+                "url": site_url + latest_chapter.get_absolute_url(),
                 "isPartOf": "#novel",
                 "inLanguage": "vi",
                 "volumeNumber": self.chapters.count(),

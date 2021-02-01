@@ -10,7 +10,7 @@ class LimitSitemap(Sitemap):
 
 
 class GenreSitemap(LimitSitemap):
-    changefreq = "weekly"
+    changefreq = "daily"
     priority = 0.5
 
     def items(self):
@@ -18,7 +18,7 @@ class GenreSitemap(LimitSitemap):
 
 
 class NovelChapterSitemap(LimitSitemap):
-    changefreq = "weekly"
+    changefreq = "daily"
     priority = 0.5
 
     def items(self):
@@ -30,7 +30,7 @@ class NovelChapterSitemap(LimitSitemap):
 
 
 class NovelSitemap(LimitSitemap):
-    changefreq = "weekly"
+    changefreq = "daily"
     priority = 0.5
 
     def items(self):
@@ -43,7 +43,7 @@ class NovelSitemap(LimitSitemap):
 
 class StaticViewSitemap(sitemaps.Sitemap):
     priority = 0.5
-    changefreq = 'weekly'
+    changefreq = 'daily'
 
     def items(self):
         return ['home']

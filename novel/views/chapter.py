@@ -6,6 +6,7 @@ from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import redirect
 
 from cms.models import PageTemplate
+from novel.cache_manager import NovelCache
 from novel.models import Novel, NovelChapter
 from novel.views.base import NovelBaseView
 
@@ -38,7 +39,7 @@ class ChapterView(NovelBaseView):
         slug = kwargs.get('slug')
         chapter_slug = kwargs.get('chapter_slug')
 
-        novel = Novel.objects.filter(slug=slug).first()
+        novel = NovelCache().get_from_cache(slug=slug)
         if novel:
             chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).first()
             if chapter:

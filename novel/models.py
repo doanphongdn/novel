@@ -235,7 +235,10 @@ class Novel(models.Model):
 
     @property
     def stream_thumbnail_image(self):
-        return "/thumbnail_images/%s_%s.jpg" % (self.id, hashlib.md5(self.thumbnail_image.encode()).hexdigest())
+        if self.thumbnail_image:
+            return "/thumbnail_images/%s_%s.jpg" % (self.id, hashlib.md5(self.thumbnail_image.encode()).hexdigest())
+
+        return "#"
 
 
 class NovelChapter(models.Model):

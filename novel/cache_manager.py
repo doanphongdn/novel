@@ -15,11 +15,11 @@ class NovelCacheManager(object):
     def _get_data(self, **kwargs):
         return []
 
-    def get_from_cache(self, data=None, **kwargs):
+    def get_from_cache(self, **kwargs):
         cache_key = "_".join((self.name, *kwargs.values()))
         cached = cache.get(cache_key)
         if cached is None:
-            data = data or self._get_data(**kwargs)
+            data = self._get_data(**kwargs)
             cache.set(cache_key, data)
             return data
 
@@ -71,16 +71,3 @@ class NovelCache(NovelCacheManager):
     def _get_data(self, **kwargs):
         return Novel.get_available_novel().filter(slug=kwargs.get('slug')).first()
 
-
-class ChapterCache(NovelCacheManager):
-    name = "cache_chapter"
-
-    def _get_data(self, **kwargs):
-        return NovelChapter.get_available_chapter().filter(slug=kwargs.get('slug')).first()
-
-
-class ChapterListCache(NovelCacheManager):
-    name = "cache_chapter_list"
-
-    def _get_data(self, **kwargs):
-        return NovelChapter.get_available_chapter().filter(novel__slug=kwargs.get('novel_slug')).all()

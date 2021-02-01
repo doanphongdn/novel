@@ -13,7 +13,6 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
 
     def __init__(self, include_data, extra_data=None):
         super().__init__(include_data, extra_data)
-        chapters = self.include_data.get("chap_data") or []
         limit = self.include_data.get("limit") or 30
         page = self.include_data.get("chap_page") or 1
         title = self.include_data.get("title")
@@ -22,6 +21,7 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
         icon = self.include_data.get("icon")
         novel = self.include_data.get("novel")
 
+        chapters = novel.chapters.all()
         chapters = Paginator(chapters, limit)
         try:
             chapters = chapters.page(page)

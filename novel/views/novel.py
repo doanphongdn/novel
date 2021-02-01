@@ -6,8 +6,7 @@ from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 
-from cms.models import PageTemplate
-from novel.cache_manager import NovelCache, ChapterListCache
+from novel.cache_manager import NovelCache
 from novel.models import Novel
 from novel.views.base import NovelBaseView
 from novel.views.chapter import url2yield
@@ -53,8 +52,6 @@ class NovelDetailView(NovelBaseView):
             keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full']
             response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)
 
-            chapters = ChapterListCache().get_from_cache(novel_slug=slug)
-
             breadcrumb_data = [{
                 "name": novel.name,
                 "url": novel.get_absolute_url(),
@@ -71,7 +68,6 @@ class NovelDetailView(NovelBaseView):
             },
             "chapter_list": {
                 "novel": novel,
-                "chap_data": chapters,
                 "chap_page": chapter_page,
             }
         }

@@ -5,7 +5,7 @@ from django.db import transaction
 from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import redirect
 
-from cms.models import TemplateManager
+from cms.models import PageTemplate
 from novel.models import Novel, NovelChapter
 from novel.views.base import NovelBaseView
 
@@ -99,9 +99,7 @@ class ChapterView(NovelBaseView):
             }
         }
 
-        tmpl = TemplateManager.objects.filter(page_file='chapter').first()
-        include_html = self.include_mapping.render_include_html(tmpl, extra_data=extra_data)
-
+        include_html = self.incl_manager.render_include_html('chapter', extra_data=extra_data)
         response.context_data.update({
             'novel_url': novel.get_absolute_url(),
             'include_html': include_html,

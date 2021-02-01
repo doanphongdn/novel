@@ -1,54 +1,53 @@
-from django.core.cache import cache
+from hashlib import md5
+
 from django.utils.html import format_html_join
+from novel.cache_manager import TemplateCache, IncludeCache, IncludeHtmlCache
 
 
-class IncludeMapping(object):
-    def __init__(self, mapping, request_url):
+class IncludeManager(object):
+    CACHE_TEMPLATE = {}
+
+    def __init__(self, mapping):
         self.TEMPLATE_INCLUDE_MAPPING = mapping
-        self.request_url = request_url
+        self.request_hash = None
 
-    def render_include_html(self, template, extra_data=None, default='default'):
+    def set_request_hash(self, request):
+        """
+        Set unique hash for each request from client to caching
+        :param request: client request from view
+        """
+        self.request_hash = md5(request.build_absolute_uri().encode("utf-8")).hexdigest()
+
+    def render_include_html(self, tmpl_code, extra_data=None, default='default'):
         if not extra_data:
             extra_data = {}
 
-        if not template:
+        if not tmpl_code:
             return ""
 
-        tmpl_incl_default = {}
-        if template.includes_default and isinstance(template.includes_default, str):
-            tmpl_incl_default = template.includes_default
+        # Get template from cache
+        template = TemplateCache().get_from_cache(page_tmpl_code=tmpl_code)
+        includes = IncludeCache().get_from_cache(page_tmpl_code=tmpl_code)
 
-        includes = template.include_template()
-
-        mapping = self.TEMPLATE_INCLUDE_MAPPING
         inc_htmls = []
         for inc in includes:
-            params = {}
-            if inc.params:
-                params = inc.params
-
-            inc_params = params.get('default') or {}
-            inc_params.update(params.get(tmpl_incl_default.get(inc.code) or default) or {})
-            inc_func = mapping.get(inc.include_file)
-            if inc_func:
-                cache_enable = inc_params.get("cache_enabled") or False
-                if cache_enable and self.request_url:
-                    cache_key = self.request_url + inc.template.page_file + inc.code
-                    html = cache.get(cache_key)
-                    if not html or not repr(html):
-                        inc_obj = inc_func(inc_params, extra_data)
-                        html = format_html_join("\n", """<div class='{}'>{}</div>""",
-                                                [(inc.class_name, inc_obj.render_html())])
-                        cache.set(cache_key, html)
-                else:
-                    inc_obj = inc_func(inc_params, extra_data)
-                    html = format_html_join("\n", """<div class='{}'>{}</div>""",
-                                            [(inc.class_name, inc_obj.render_html())])
-            else:
-                html = format_html_join("\n", """
-                                            <div class='mising-include-page'>Missing Include Page {}:{}</div>
-                                """, [(inc.class_name, inc.include_file)])
-
-            inc_htmls.append((html,))
+            # Get incude param default from code in template.includes_default of template
+            # default code must be begin with default_<include_code>
+            default_param = inc.params.get(template.includes_default.get("default_" + inc.code) or default) or {}
+            # Get default param of include template
+            inc_params = inc.params.get('default') or {}
+            # Update override default param by dynamic param from request or nothing if dynamic = default
+            inc_params.update(default_param)
+            # Get include object from mapping
+            inc_func = self.TEMPLATE_INCLUDE_MAPPING.get(inc.include_file)
+            # Get render html from cache
+            incl_html_cache = IncludeHtmlCache(inc_func, inc_params, extra_data, inc.class_name)
+            html = incl_html_cache.get_from_cache(request_hash=self.request_hash,
+                                                  page_tmpl_code=tmpl_code,
+                                                  include_code=inc.code)
+            inc_htmls.append((html, ))
 
         return format_html_join("", "{}", inc_htmls)
+
+    def get_include_htmls(self, tmpl_codes):
+        return {code: self.render_include_html(code) for code in tmpl_codes}

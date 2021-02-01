@@ -3,7 +3,7 @@ from django import forms
 from django.contrib import admin
 from django_json_widget.widgets import JSONEditorWidget
 
-from cms.models import FooterInfo, Link, HtmlPage, TemplateManager, InludeTemplate, Menu
+from cms.models import FooterInfo, Link, HtmlPage, PageTemplate, InludeTemplate, Menu
 
 
 class HtmlPageForm(forms.ModelForm):
@@ -67,12 +67,12 @@ class InludeTemplateAdmin(admin.ModelAdmin):
 
 class TemplateManagerForm(forms.ModelForm):
     class Meta:
-        model = TemplateManager
+        model = PageTemplate
         fields = ("page_file", "includes_default")
         widgets = {'includes_default': JSONEditorWidget}
 
 
-@admin.register(TemplateManager)
+@admin.register(PageTemplate)
 class TemplateManagerAdmin(admin.ModelAdmin):
     list_display = ("id", "page_file")
     form = TemplateManagerForm

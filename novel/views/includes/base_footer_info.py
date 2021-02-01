@@ -2,7 +2,7 @@ from cms.models import Link, FooterInfo
 from novel.views.includes.base import BaseTemplateInclude
 
 
-class FooterInfoplateInclude(BaseTemplateInclude):
+class FooterInfotemplateInclude(BaseTemplateInclude):
     name = "base_footer_info"
     template = "novel/includes/base_footer_info.html"
 

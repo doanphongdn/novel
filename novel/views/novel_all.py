@@ -1,5 +1,6 @@
-from cms.models import TemplateManager
+from cms.models import PageTemplate
 from crawl_service import settings
+from novel.cache_manager import TemplateCache
 from novel.models import Genre
 from novel.views.base import NovelBaseView
 
@@ -14,7 +15,7 @@ class NovelAllView(NovelBaseView):
         novel_type = kwargs.get('novel_type')
         default_config = genre or novel_type
 
-        tmpl = TemplateManager.objects.filter(page_file='novel_all').first()
+        tmpl = TemplateCache().get_from_cache(page_tmpl_code='novel_all')
         extra_data = {
             "novel_list": {
                 "page": request.GET.get('page') or 1,
@@ -32,8 +33,8 @@ class NovelAllView(NovelBaseView):
             })
 
         response.context_data.update({
-            'include_html': self.include_mapping.render_include_html(tmpl, extra_data=extra_data,
-                                                                     default=default_config),
+            'include_html': self.incl_manager.render_include_html('novel_all', extra_data=extra_data,
+                                                                  default=default_config),
         })
 
         return response

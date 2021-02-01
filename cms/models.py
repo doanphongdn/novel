@@ -68,7 +68,7 @@ def json_template_default():
     }
 
 
-class TemplateManager(models.Model):
+class PageTemplate(models.Model):
     """
     all class handling for this model must be define in TEMPLATE_PAGE_CHOISES at CMS application.
     PATH: cms/template_config.py
@@ -82,6 +82,7 @@ class TemplateManager(models.Model):
                                  unique=True)
     includes_default = models.JSONField(blank=True, null=True, default=json_template_default)
 
+    @property
     def include_template(self):
         return InludeTemplate.objects.filter(template=self, active=True).order_by("priority").all()
 
@@ -101,7 +102,7 @@ class InludeTemplate(models.Model):
         ordering = ["template", "priority"]
 
     priority = models.IntegerField(default=0)
-    template = models.ForeignKey(TemplateManager, on_delete=models.CASCADE)
+    template = models.ForeignKey(PageTemplate, on_delete=models.CASCADE)
     code = models.CharField(max_length=50, validators=[code_validate])
     include_file = models.CharField(max_length=250, choices=TEMPLATE_INCLUDE_CHOISES.get(settings.APP_NAME))
     params = models.JSONField(blank=True, null=True, default=json_template_default)

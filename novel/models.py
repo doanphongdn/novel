@@ -125,6 +125,10 @@ class Novel(models.Model):
 
     @property
     def structured_data(self):
+        """
+        This property cached in html template
+        :return:
+        """
         first_chapter = self.first_chapter
         latest_chapter = self.latest_chapter
         site_url = "https://" + Site.objects.get_current().domain

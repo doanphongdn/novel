@@ -6,7 +6,8 @@ from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 
-from cms.models import TemplateManager
+from cms.models import PageTemplate
+from novel.cache_manager import NovelCache, ChapterListCache
 from novel.models import Novel
 from novel.views.base import NovelBaseView
 from novel.views.chapter import url2yield
@@ -39,11 +40,8 @@ class NovelDetailView(NovelBaseView):
         chapter_page = request.GET.get('chap-page') or 1
         slug = kwargs.get('slug')
 
-        novel = Novel.objects.filter(slug=slug).first()
+        novel = NovelCache().get_from_cache(slug=slug)
         if novel:
-            if any(gen for gen in novel.genres.all() if not gen.active):
-                return redirect("home")
-
             referer = urlparse(novel.url)
             if novel.thumbnail_image.strip().startswith('//'):
                 referer_url = referer.scheme  # + referer.netloc
@@ -55,7 +53,7 @@ class NovelDetailView(NovelBaseView):
             keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full']
             response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)
 
-            chapters = novel.chapters.all()
+            chapters = ChapterListCache().get_from_cache(novel_slug=slug)
 
             breadcrumb_data = [{
                 "name": novel.name,
@@ -77,9 +75,8 @@ class NovelDetailView(NovelBaseView):
                 "chap_page": chapter_page,
             }
         }
-        tmpl = TemplateManager.objects.filter(page_file='novel').first()
         response.context_data.update({
-            'include_html': self.include_mapping.render_include_html(tmpl, extra_data=extra_data),
+            'include_html': self.incl_manager.render_include_html("novel", extra_data=extra_data),
             'request_url': request.build_absolute_uri(),
             'novel': novel,
         })

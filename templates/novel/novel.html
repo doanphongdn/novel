@@ -3,10 +3,14 @@
 {% block stylesheet %}
 {% endblock %}
 {% block content %}
-    {% load opengraph %}
-    {% og_for novel %}
-    {% load jsonld %}
-    {% json_ld_for novel %}
+    {% load cache %}
+    {% cache 500 json_ld %}
+        {% load opengraph %}
+        {% og_for novel %}
+        {% load jsonld %}
+        {% json_ld_for novel %}
+    {% endcache %}
+
     <div class="row">
         {{ include_html }}
     </div>

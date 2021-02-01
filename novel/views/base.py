@@ -4,15 +4,16 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
 from django.views.generic import TemplateView
 
-from cms.include_mapping import IncludeMapping
-from cms.models import TemplateManager
+from cms.include_mapping import IncludeManager
+from cms.models import PageTemplate
+from novel.cache_manager import NovelSettingCache
 from novel.models import NovelSetting
 from novel.views.includes.base_auth_modal import BaseAuthModalTemplateInclude
 from novel.views.includes.base_navbar_menu import BaseNavbarTemplateInclude
 from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
 from novel.views.includes.chapter_content import ChapterContentTemplateInclude
 from novel.views.includes.chapter_list import ChapterListTemplateInclude
-from novel.views.includes.base_footer_info import FooterInfoplateInclude
+from novel.views.includes.base_footer_info import FooterInfotemplateInclude
 from novel.views.includes.link import LinkTemplateInclude
 from novel.views.includes.base_top_menu import TopMenuTemplateInclude
 from novel.views.includes.novel_cat import NovelCatTemplateInclude
@@ -29,7 +30,7 @@ TEMPLATE_INCLUDE_MAPPING = {
     "novel_list": NovelListTemplateInclude,
     "breadcrumb": BreadCrumbTemplateInclude,
     "pagination": PaginationTemplateInclude,
-    "base_footer_info": FooterInfoplateInclude,
+    "base_footer_info": FooterInfotemplateInclude,
     "base_top_menu": TopMenuTemplateInclude,
     "base_navbar_menu": BaseNavbarTemplateInclude,
     "base_auth_modal": BaseAuthModalTemplateInclude,
@@ -40,18 +41,14 @@ class NovelBaseView(TemplateView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.include_mapping = None
+        self.incl_manager = IncludeManager(TEMPLATE_INCLUDE_MAPPING)
 
     def get(self, request, *args, **kwargs):
-        request_url = request.build_absolute_uri()
-        cache_key_md5 = md5(request_url.encode("utf-8")).hexdigest()
-        novel_setting = cache.get(cache_key_md5)
-        if not novel_setting:
-            novel_setting = NovelSetting.get_setting()
-            cache.set(cache_key_md5, novel_setting)
+        # Set hash for each request to use cache
+        self.incl_manager.set_request_hash(request)
 
-        # define list of include template class
-        self.include_mapping = IncludeMapping(TEMPLATE_INCLUDE_MAPPING, cache_key_md5)
+        # Get novel setting from cache
+        novel_setting = NovelSettingCache().get_from_cache()
 
         title = ""
         logo = ""
@@ -106,14 +103,9 @@ class NovelBaseView(TemplateView):
             "google_analystics_id": novel_setting and novel_setting.google_analystics_id or "",
         }
 
-        base_footer_tmpl = TemplateManager.objects.filter(page_file='base_footer').first()
-        base_other_html_tmpl = TemplateManager.objects.filter(page_file='base_other_html').first()
-        base_navbar_tmpl = TemplateManager.objects.filter(page_file='base_navbar').first()
-        base_top_menu_tmpl = TemplateManager.objects.filter(page_file='base_top_menu').first()
-
-        kwargs["base_footer_html"] = self.include_mapping.render_include_html(base_footer_tmpl)
-        kwargs["base_other_html"] = self.include_mapping.render_include_html(base_other_html_tmpl)
-        kwargs["base_top_menu_html"] = self.include_mapping.render_include_html(base_top_menu_tmpl)
-        kwargs["base_navbar_menu_html"] = self.include_mapping.render_include_html(base_navbar_tmpl)
+        tmpl_codes = ['base_footer', 'base_other_html', 'base_navbar', 'base_top_menu']
+        tmpl_htmls = self.incl_manager.get_include_htmls(tmpl_codes)
+        for page_tmpl_code, html in tmpl_htmls.items():
+            kwargs[page_tmpl_code] = html
 
         return super().get(request, *args, **kwargs)

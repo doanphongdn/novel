@@ -1,4 +1,4 @@
-from cms.models import TemplateManager
+from cms.models import PageTemplate
 from novel.views.base import NovelBaseView
 
 
@@ -8,8 +8,7 @@ class NovelIndexView(NovelBaseView):
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 
-        tmpl = TemplateManager.objects.filter(page_file='index').first()
-        index_include_html = self.include_mapping.render_include_html(tmpl)
+        index_include_html = self.incl_manager.render_include_html('index')
 
         response.context_data.update({
             'index_include_html': index_include_html,

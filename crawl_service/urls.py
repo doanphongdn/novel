@@ -24,6 +24,7 @@ urlpatterns = [
     path('accounts/', include('custom_allauth.urls')),
     path('myadmin/login', admin.site.urls),
     path('', include('novel.urls')),
+    path('', include('django_backblaze_b2.urls')),
 ]
 
 handler404 = 'crawl_service.views.base.view_404'

@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'django_json_widget',
     'structured_data',
+    'django_backblaze_b2',
     APP_NAME,
 ]
 
@@ -231,6 +232,8 @@ LOG_FILE = os.environ.get('LOG_FILE')
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
 
+CDN_FILE_FOLDER = os.environ.get('CDN_FILE_FOLDER', '/data/cdn/novel')
+
 NOVEL_STATIC_IMAGE_FOLDER = "images/novel"
 NOVEL_STATIC_IMAGE_PATH = os.path.join(STATIC_ROOT, NOVEL_STATIC_IMAGE_FOLDER)
 
@@ -267,3 +270,10 @@ CRAWL_ACTION_MAPPING = {
         ('JoinItem', "Join Items"),
     ]
 }
+
+BACKBLAZE_CONFIG = {
+    "application_key_id": os.environ.get('BACKBLAZE_KEY_ID', ""),  # however you want to securely retrieve these values
+    "application_key": os.environ.get("BACKBLAZE_KEY", ""),
+}
+
+BACKBLAZE_MAX_RETRY = int(os.environ.get('BACKBLAZE_MAX_RETRY', 5))

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from crawl_service.models import CrawlCampaign, CrawlItem, CrawlCampaignSource, CrawlItemAction, CrawlLog
+from crawl_service.models import CDNServer, CrawlCampaign, CrawlItem, CrawlCampaignSource, CrawlItemAction, CrawlLog
 
 
 #
@@ -75,3 +75,8 @@ class CrawlCampaignAdmin(admin.ModelAdmin):
 @admin.register(CrawlCampaignSource)
 class CrawlSourceAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "homepage")
+
+
+@admin.register(CDNServer)
+class CDNServerAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "server_id", "endpoint")

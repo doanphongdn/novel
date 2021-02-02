@@ -13,7 +13,7 @@ from django.utils.safestring import mark_safe
 from unidecode import unidecode
 
 from crawl_service import settings
-from crawl_service.models import CrawlCampaignSource
+from crawl_service.models import CDNServer, CrawlCampaignSource
 
 
 def datetime2string(value):
@@ -270,6 +270,11 @@ class NovelChapter(models.Model):
         return self.name
 
     @classmethod
+    def get_undownloaded_images_chapters(cls):
+        return cls.objects.filter(active=True, cdnnovelfile=None) \
+                   .order_by('-updated_at', '-view_total', '-id')[0:1000]
+
+    @classmethod
     def get_available_chapter(cls):
         return cls.objects.filter(active=True, chapter_updated=True)
 
@@ -370,3 +375,24 @@ class NovelUserProfile(models.Model):
     @classmethod
     def get_profiles(cls, user_id):
         return cls.objects.filter(user_id=user_id).first()
+
+class CDNNovelFile(models.Model):
+    class Meta:
+        db_table = "cdn_novel_files"
+        unique_together = [('cdn', 'hash_origin_url')]
+
+    cdn = models.ForeignKey(CDNServer, on_delete=models.CASCADE)
+    chapter = models.ForeignKey(NovelChapter, on_delete=models.CASCADE, null=True, blank=True)
+    type = models.CharField(max_length=250)
+    hash_origin_url = models.CharField(max_length=250, db_index=True)
+    url = models.TextField(blank=True, null=True)
+    retry = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    full = models.BooleanField(default=False)
+
+    @classmethod
+    def get_missing_files(cls):
+        return cls.objects.filter(full=False, retry__lte=settings.BACKBLAZE_MAX_RETRY)[0:5000]

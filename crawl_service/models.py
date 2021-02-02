@@ -96,3 +96,22 @@ class CrawlLog(models.Model):
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class CDNServer(models.Model):
+    class Meta:
+        db_table = "cdn_server"
+        ordering = ["name"]
+
+    name = models.CharField(max_length=250, unique=True)
+    server_id = models.CharField(max_length=250, blank=True, null=True)
+    endpoint = models.CharField(max_length=250)
+
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def get_cdn(cls):
+        return cls.objects.first()

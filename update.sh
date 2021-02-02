@@ -11,10 +11,11 @@ set -e
 # The command line help #
 #########################
 display_help() {
-	echo "Usage: $0 [option...] {-i|-mi|-mm|-rg|-rn|-ru|-rm|-f}" >&2
+	echo "Usage: $0 [option...] {-i|-np|-mi|-mm|-rg|-rn|-ru|-rm|-f}" >&2
 	echo
 	echo "   -h | --help    help"
 	echo "   -i           	install requirements"
+	echo "   -np           	not pull code"
 	echo "   -mi          	migrate"
 	echo "   -mm           	makemigrations"
 	echo "   -rg           	reset git"
@@ -39,6 +40,7 @@ for item in "$@"; do
 		exit 0
 		;;
 	-i) install_requirements="$item" ;;
+	-np) not_pull_code="$item" ;;
 	-mm) make_migrations="$item" ;;
 	-mi) migrate="$item" ;;
 	-rg) reset_git="$item" ;;
@@ -66,8 +68,10 @@ if [[ -n "$reset_git" || -n "$full" ]]; then
 	git reset --hard
 fi
 
-echo "Pulling ... "
-git pull
+if [[ -z "$not_pull_code" || -n "$full" ]]; then
+	echo "Pulling ... "
+	git pull
+fi
 
 if [[ -n "$install_requirements" || -n "$full" ]]; then
 	echo "Installing requirement ... "

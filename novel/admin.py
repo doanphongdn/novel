@@ -4,7 +4,7 @@ from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 
-from novel.models import Novel, NovelChapter, NovelSetting, Genre
+from novel.models import CDNNovelFile, Novel, NovelChapter, NovelSetting, Genre
 
 
 class NovelForm(forms.ModelForm):
@@ -86,3 +86,10 @@ class NovelSettingAdmin(admin.ModelAdmin):
               "meta_og_type", "meta_og_description", "meta_fb_app_id",
               "google_analystics_id", ]
     readonly_fields = ['logo_tag', 'favicon_tag', 'meta_img_tag']
+
+
+@admin.register(CDNNovelFile)
+class CDNNovelFileAdmin(admin.ModelAdmin):
+    list_display = ("id", "cdn", "chapter", "type", "hash_origin_url", "retry", "full")
+    search_fields = ("cdn", "chapter", "hash_origin_url", "url")
+

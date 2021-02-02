@@ -17,10 +17,15 @@ from novel.models import CDNNovelFile, NovelChapter
 class CDNProcess:
 
     def __init__(self):
-        self.cdn = CDNServer.get_available_cdn()
+        available_cdn = CDNServer.get_available_cdn()
+        if available_cdn:
+            self.cdn = available_cdn[0]
+            self.b2 = BackblazeB2Storage(opts={'bucket': self.cdn[0].name, 'allowFileOverwrites': True})
+        else:
+            raise ValueError("Not found CDN server configuration!")
+
         self.origin_domain = None
         self.local_path = None
-        self.b2 = BackblazeB2Storage(opts={'bucket': self.cdn.name, 'allowFileOverwrites': True})
 
     def update_status(self, status):
         """

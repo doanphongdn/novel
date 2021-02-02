@@ -1,5 +1,8 @@
 import hashlib
+import json
+from urllib.parse import urlparse
 
+from novel import settings
 from novel.cache_manager import NovelSettingCache
 from novel.views.includes.base import BaseTemplateInclude
 
@@ -15,13 +18,35 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
         img_ignoring = []
         if novel_setting and novel_setting.img_ignoring:
             img_ignoring = novel_setting.img_ignoring.split(",")
-        images = chapter.images
+
         stream_images = []
-        for i in range(len(images)):
+        images = chapter.images
+        for image in images:
             # Not allow img url contains any sub-string from a list configuration's string
-            if len(img_ignoring) and any(sub_str in images[i] for sub_str in img_ignoring):
+            if len(img_ignoring) and any(sub_str in image for sub_str in img_ignoring):
                 continue
-            stream_images.append("/images/%s_%s_%s.jpg" % (chapter.id, i, hashlib.md5(images[i].encode()).hexdigest()))
+
+            referer = urlparse(chapter.url)
+            referer_url = referer.scheme + "://" + referer.netloc
+            origin_url = (image or "").strip()
+
+            if origin_url.strip().startswith('//'):
+                origin_url = referer.scheme + ":" + origin_url
+            elif origin_url.strip().startswith('/'):
+                origin_url = referer_url.strip('/') + "/" + origin_url
+            if 'blogspot.com' in origin_url:
+                referer_url = None
+
+            json_str = json.dumps({
+                "origin_url": origin_url,
+                "referer": referer_url,
+            })
+            image_hash = hashlib.md5(json_str.encode()).hexdigest()
+            if not settings.redis_image.get(image_hash):
+                settings.redis_image.set(image_hash, json_str)
+
+            stream_images.append("/images/%s.jpg" % image_hash)
+
         return stream_images
 
     def __init__(self, include_data, extra_data=None):

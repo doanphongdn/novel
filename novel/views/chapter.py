@@ -1,3 +1,4 @@
+import json
 from urllib.parse import urlparse
 
 import requests
@@ -5,9 +6,9 @@ from django.db import transaction
 from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import redirect
 
-from cms.models import PageTemplate
+from novel import settings
 from novel.cache_manager import NovelCache
-from novel.models import Novel, NovelChapter
+from novel.models import NovelChapter
 from novel.views.base import NovelBaseView
 
 
@@ -110,21 +111,16 @@ class ChapterView(NovelBaseView):
         return response
 
     def stream_image(self, *args, **kwargs):
-        img = kwargs.get('img') or ""
-        image_files = img.strip('.jpg').split('_')
-        chapter = NovelChapter.objects.filter(id=image_files[0]).first()
-        if chapter:
-            referer = urlparse(chapter.url)
-            referer_url = referer.scheme + "://" + referer.netloc
-            origin_url = (chapter.images[int(image_files[1])] or "").strip()
+        img_hash = (kwargs.get('img') or "").strip('.jpg')
+        json_str = settings.redis_image.get(img_hash)
+        if json_str:
+            try:
+                json_str = json.loads(json_str)
+            except:
+                return HttpResponse({})
 
-            if origin_url.strip().startswith('//'):
-                origin_url = referer.scheme + ":" + origin_url
+            origin_url = json_str.get("origin_url", "")
+            referer_url = json_str.get("referer")
+            return StreamingHttpResponse(url2yield(origin_url, referer=referer_url), content_type="image/jpeg")
 
-            elif origin_url.strip().startswith('/'):
-                origin_url = referer_url.strip('/') + "/" + origin_url
-            if 'blogspot.com' in origin_url:
-                referer_url = None
-            return StreamingHttpResponse(url2yield(origin_url, referer=referer_url),
-                                         content_type="image/jpeg")
         return HttpResponse({})

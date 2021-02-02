@@ -2,7 +2,7 @@ from django.core.cache import cache
 from django.utils.html import format_html_join
 
 from cms.models import PageTemplate, InludeTemplate
-from novel.models import NovelSetting, Novel, NovelChapter
+from novel.models import NovelSetting, Novel
 
 
 class NovelCacheManager(object):

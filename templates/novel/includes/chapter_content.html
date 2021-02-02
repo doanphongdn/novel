@@ -61,7 +61,7 @@
                         {{ chapter.decompress_content }}
                     {% endif %}
                 {% endautoescape %}
-                {% for image_url in chapter.stream_images %}
+                {% for image_url in stream_images %}
                     {% if forloop.counter == 2 %}
                         <img src="{{ image_url }}" alt="">
                     {% else %}

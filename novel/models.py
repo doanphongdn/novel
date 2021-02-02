@@ -286,21 +286,6 @@ class NovelChapter(models.Model):
         return images
 
     @property
-    def stream_images(self):
-        novel_setting = NovelSetting.get_setting()
-        img_ignoring = []
-        if novel_setting and novel_setting.img_ignoring:
-            img_ignoring = novel_setting.img_ignoring.split(",")
-        images = self.images
-        stream_images = []
-        for i in range(len(images)):
-            # Not allow img url contains any sub-string from a list configuration's string
-            if len(img_ignoring) and any(sub_str in images[i] for sub_str in img_ignoring):
-                continue
-            stream_images.append("/images/%s_%s_%s.jpg" % (self.id, i, hashlib.md5(images[i].encode()).hexdigest()))
-        return stream_images
-
-    @property
     def created_at_str(self):
         return datetime2string(self.created_at)
 

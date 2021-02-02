@@ -119,4 +119,4 @@ class CDNServer(models.Model):
 
     @classmethod
     def get_available_cdn(cls):
-        return cls.objects.filter(active=False, status='stopped').all()
+        return cls.objects.filter(active=True, status='stopped').all()[:1]

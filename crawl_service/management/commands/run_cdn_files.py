@@ -20,7 +20,7 @@ class CDNProcess:
         available_cdn = CDNServer.get_available_cdn()
         if available_cdn:
             self.cdn = available_cdn[0]
-            self.b2 = BackblazeB2Storage(opts={'bucket': self.cdn[0].name, 'allowFileOverwrites': True})
+            self.b2 = BackblazeB2Storage(opts={'bucket': self.cdn.name, 'allowFileOverwrites': True})
         else:
             raise ValueError("Not found CDN server configuration!")
 

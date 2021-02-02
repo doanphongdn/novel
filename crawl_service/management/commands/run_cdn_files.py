@@ -251,8 +251,7 @@ class Command(BaseCommand):
         print('[CDN Processing Files] Starting...')
         if not self.cdn_process:
             self.cdn_process = CDNProcess()
-        self.cdn_process.remove_path_files('hoang-thuong-o-tren-than-o-duoi')
-        return
+            
         ### Test code
         # self.cdn_process.upload_file2b2("/data/cdn/novel/goong-hoang-cung/chapter-24/0.jpg",
         #                                 "goong-hoang-cung/chapter-24/0.jpg")

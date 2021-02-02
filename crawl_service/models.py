@@ -108,7 +108,7 @@ class CDNServer(models.Model):
     endpoint = models.CharField(max_length=250)
 
     active = models.BooleanField(default=True)
-    status = models.CharField(max_length=10, choices=CAMPAIGN_STATUS)
+    status = models.CharField(max_length=10, choices=CAMPAIGN_STATUS, default='stopped')
 
     def __str__(self):
         return self.name

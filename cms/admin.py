@@ -26,8 +26,8 @@ class HtmlPageAdmin(admin.ModelAdmin):
 
 @admin.register(FooterInfo)
 class FooterAdmin(admin.ModelAdmin):
-    list_display = ("id", "active", "content", "copyright")
-    search_fields = ("content", "copyright")
+    list_display = ("id", "active", "content")
+    search_fields = ("content",)
     list_filter = ("active",)
 
 

@@ -19,7 +19,7 @@ class NovelDetailView(NovelBaseView):
     def post(self, request, *args, **kwargs):
         search = request.POST.get('q', "")
         if len(search) >= 3:
-            novels = Novel.get_available_novel().filter(name__unaccent__icontains=search.strip()).order_by('name')[:15]
+            novels = NovelCache.get_all_from_cache(name__unaccent__icontains=search.strip()).filter()[:15]
             res_data = []
             for novel in novels:
                 res_data.append({
@@ -39,7 +39,7 @@ class NovelDetailView(NovelBaseView):
         chapter_page = request.GET.get('chap-page') or 1
         slug = kwargs.get('slug')
 
-        novel = NovelCache().get_from_cache(slug=slug)
+        novel = NovelCache.get_first_from_cache(slug=slug)
         if novel:
             referer = urlparse(novel.url)
             if novel.thumbnail_image.strip().startswith('//'):

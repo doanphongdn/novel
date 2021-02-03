@@ -1,3 +1,4 @@
+from cms.cache_manager import FooterInfoCache
 from cms.models import Link, FooterInfo
 from novel.views.includes.base import BaseTemplateInclude
 
@@ -9,15 +10,9 @@ class FooterInfotemplateInclude(BaseTemplateInclude):
     def __init__(self, include_data, extra_data=None):
         super().__init__(include_data, extra_data)
 
-        ft_copyright = ""
-        ft_content = ""
+        footer_type = self.include_data.get("footer_type") or ""
 
-        footer_info = FooterInfo.objects.filter(active=True).first()
-        if footer_info:
-            ft_copyright = footer_info.copyright
-            ft_content = footer_info.content
-
+        ft_copyright = FooterInfoCache.get_all_from_cache(type=footer_type)
         self.include_data = {
-            "copyright": ft_copyright,
-            "content": ft_content,
+            "copyright": ft_copyright and ft_copyright.content or "",
         }

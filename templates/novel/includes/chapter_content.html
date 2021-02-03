@@ -1,8 +1,5 @@
 {% load static %}
 {% load cache %}
-{#{% block meta %}#}
-{#    <meta name="robots" content="noimageindex">#}
-{#{% endblock %}#}
 {% cache 500 "chapter_content" chapter.id %}
     <div class="chapter-content">
         <div class="row chapter-actions">
@@ -62,7 +59,7 @@
                     {% endif %}
                 {% endautoescape %}
                 {% for image_url in stream_images %}
-                    {% if forloop.counter == 2 %}
+                    {% if forloop.counter <= 2 %}
                         <img src="{{ image_url }}" alt="">
                     {% else %}
                         <img data-src="{{ image_url }}" src="{% static "images/lazyload.gif" %}" alt=""

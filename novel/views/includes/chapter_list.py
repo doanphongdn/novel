@@ -2,6 +2,7 @@ from django.core.paginator import Paginator
 from unidecode import unidecode
 
 from cms.models import Link
+from novel.paginator import ChapterPaginator
 from novel.views.includes.base import BaseTemplateInclude
 from novel.views.includes.link import LinkTemplateInclude
 from novel.views.includes.pagination import PaginationTemplateInclude
@@ -21,15 +22,7 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
         icon = self.include_data.get("icon")
         novel = self.include_data.get("novel")
 
-        chapters = novel.chapters.all()
-        chapters = Paginator(chapters, limit)
-        try:
-            chapters = chapters.page(page)
-        except:
-            pass
-
-        paging_data = {"paginated_data": chapters, "page_label": "chap-page"}
-        pagination = PaginationTemplateInclude(paging_data)
+        chapters = ChapterPaginator(limit, page, order_by="", novel__id=novel.id, chapter_updated=True, active=True)
 
         link_objs = Link.objects.filter(type=self.include_data.get('hashtags_link_type'), active=True).all()
         link_data = {}
@@ -55,8 +48,13 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
             'link_label': self.include_data.get('hashtags_link_label'),
         })
 
+        paging_data = {
+            "paginated_data": chapters,
+            "page_label": "chap-page"
+        }
+        pagination = PaginationTemplateInclude(paging_data)
+
         self.include_data = {
-            # "novel": novel,
             "chapters": chapters,
             "title": title,
             "info_title": info_title,

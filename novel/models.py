@@ -73,21 +73,18 @@ class Genre(models.Model):
     def __str__(self):
         return self.name
 
-    def novel_count(self):
-        return Novel.get_available_novel().filter(categories=self).count()
-
     def get_absolute_url(self):
         return f"/{settings.NOVEL_GENRE_URL}/{self.slug}"
 
     @classmethod
-    def get_available_genre(cls):
-        return cls.objects.filter(active=True)
+    def get_available_genre(cls, **kwargs):
+        return cls.objects.filter(**kwargs, active=True).all()
 
 
 class Novel(models.Model):
     class Meta:
         db_table = "novel_novels"
-        ordering = ['id']
+        ordering = ['-id']
 
     name = models.CharField(max_length=250, db_index=True, unique=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, db_index=True,
@@ -276,7 +273,7 @@ class NovelChapter(models.Model):
 
     @classmethod
     def get_available_chapter(cls):
-        return cls.objects.filter(active=True, chapter_updated=True)
+        return cls.objects.filter(active=True, chapter_updated=True).all()
 
     @property
     def images(self):
@@ -347,7 +344,7 @@ class NovelSetting(models.Model):
 
     @classmethod
     def get_setting(cls):
-        return cls.objects.first()
+        return cls.objects.all()
 
 
 class NovelUserProfile(models.Model):
@@ -360,6 +357,7 @@ class NovelUserProfile(models.Model):
     @classmethod
     def get_profiles(cls, user_id):
         return cls.objects.filter(user_id=user_id).first()
+
 
 class CDNNovelFile(models.Model):
     class Meta:

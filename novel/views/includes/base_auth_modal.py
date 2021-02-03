@@ -9,6 +9,4 @@ class BaseAuthModalTemplateInclude(BaseTemplateInclude):
         super().__init__(include_data, extra_data)
 
         self.include_data = {
-            # "link_data": link_data,
-            # "link_label": link_label,
         }

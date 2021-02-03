@@ -3,7 +3,7 @@ import json
 from urllib.parse import urlparse
 
 from novel import settings
-from novel.cache_manager import NovelSettingCache
+from novel.cache_manager import SettingCache
 from novel.views.includes.base import BaseTemplateInclude
 
 
@@ -14,7 +14,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
     @staticmethod
     def stream_images(chapter):
         # Get novel setting from cache
-        novel_setting = NovelSettingCache().get_from_cache()
+        novel_setting = SettingCache.get_first_from_cache()
         img_ignoring = []
         if novel_setting and novel_setting.img_ignoring:
             img_ignoring = novel_setting.img_ignoring.split(",")

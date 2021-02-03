@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'custom_allauth.socialaccount.providers.zalo',
     # other app
+    'django_redis',
     'pipeline',
     'cms',
     'crawl_service',
@@ -158,8 +159,12 @@ LOGGING = {
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "example"
     }
 }
 

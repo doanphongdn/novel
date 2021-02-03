@@ -12,5 +12,4 @@ class BaseNavbarTemplateInclude(BaseTemplateInclude):
 
         self.include_data = {
             "enable_auth_menu": enable_auth_menu,
-            # "link_label": link_label,
         }

@@ -1,21 +1,16 @@
-from hashlib import md5
-
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.cache import cache
 from django.views.generic import TemplateView
 
 from cms.include_mapping import IncludeManager
-from cms.models import PageTemplate
-from novel.cache_manager import NovelSettingCache
-from novel.models import NovelSetting
+from novel.cache_manager import SettingCache
 from novel.views.includes.base_auth_modal import BaseAuthModalTemplateInclude
+from novel.views.includes.base_footer_info import FooterInfotemplateInclude
 from novel.views.includes.base_navbar_menu import BaseNavbarTemplateInclude
+from novel.views.includes.base_top_menu import TopMenuTemplateInclude
 from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
 from novel.views.includes.chapter_content import ChapterContentTemplateInclude
 from novel.views.includes.chapter_list import ChapterListTemplateInclude
-from novel.views.includes.base_footer_info import FooterInfotemplateInclude
 from novel.views.includes.link import LinkTemplateInclude
-from novel.views.includes.base_top_menu import TopMenuTemplateInclude
 from novel.views.includes.novel_cat import NovelCatTemplateInclude
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
@@ -48,7 +43,7 @@ class NovelBaseView(TemplateView):
         self.incl_manager.set_request_hash(request)
 
         # Get novel setting from cache
-        novel_setting = NovelSettingCache().get_from_cache()
+        novel_setting = SettingCache.get_first_from_cache()
 
         title = ""
         logo = ""

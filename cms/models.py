@@ -34,8 +34,8 @@ class FooterInfo(models.Model):
     class Meta:
         db_table = "cms_footer"
 
+    type = models.CharField(max_length=30, blank=True, default='copyright', unique=True)
     content = models.TextField(blank=True, null=True)
-    copyright = models.TextField(blank=True, null=True)
     active = models.BooleanField(default=True)
 
 

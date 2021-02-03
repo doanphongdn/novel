@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.urls import reverse
 
 from novel.models import Novel
+from novel.paginator import ChapterPaginator, NovelPaginator
 from novel.views.includes.base import BaseTemplateInclude
 from novel.views.includes.pagination import PaginationTemplateInclude
 
@@ -45,14 +46,7 @@ class NovelListTemplateInclude(BaseTemplateInclude):
         if paginate_enable is None:
             paginate_enable = True
 
-        list_novel = Novel.get_available_novel().filter(**filter_by).order_by(order_by).all()
-
-        novel_paginated = []
-        novel_paginating = Paginator(list_novel, limit)
-        try:
-            novel_paginated = novel_paginating.page(page)
-        except:
-            pass
+        novel_paginated = NovelPaginator(5, page, order_by, **filter_by)
 
         button_type_urls = {}
         if show_button_type:

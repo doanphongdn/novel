@@ -40,8 +40,9 @@ class ChapterView(NovelBaseView):
         slug = kwargs.get('slug')
         chapter_slug = kwargs.get('chapter_slug')
 
-        novel = NovelCache().get_from_cache(slug=slug)
+        novel = NovelCache.get_first_from_cache(slug=slug)
         if novel:
+            # TODO: not yet apply cache
             chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).first()
             if chapter:
                 referer = urlparse(chapter.url)

@@ -1,4 +1,5 @@
 from cms.models import Menu
+from novel.cache_manager import MenuCache, GenreCache
 from novel.models import Genre
 from novel.views.includes.base import BaseTemplateInclude
 
@@ -11,7 +12,7 @@ class TopMenuTemplateInclude(BaseTemplateInclude):
         super().__init__(include_data, extra_data)
 
         menu_type = self.include_data.get('menu_type') or ''
-        menu_data = self.include_data.get('menu_data') or Menu.objects.filter(type=menu_type, active=True).all()
+        menu_data = self.include_data.get('menu_data') or MenuCache.get_all_from_cache(type=menu_type)
 
         genre_menu_enable = self.include_data.get("genre_menu_enable")
         genre_menu = {}
@@ -21,7 +22,7 @@ class TopMenuTemplateInclude(BaseTemplateInclude):
                 "icon": self.include_data.get("genre_menu_icon"),
                 "data": []
             }
-            genres = Genre.get_available_genre().all()
+            genres = GenreCache.get_all_from_cache()
             for gen in genres:
                 genre_menu["data"].append(gen)
 

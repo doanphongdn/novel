@@ -57,4 +57,21 @@ chromedriver -v
 
 .venv/bin/pip install selenium
 
+# Install django-backblaze-b2
 
+.venv/bin/pip install django-backblaze-b2
+> or .venv/bin/pip install -r requirements.txt
+
+## Setting backblaze in .evn
+
+BACKBLAZE_KEY_ID = ''
+
+BACKBLAZE_KEY = ''
+
+BACKBLAZE_MAX_RETRY = 5
+
+CAMPAIGNS_THREAD_NUM = 2
+
+
+### Setting in CDNServer and CDN novel files from Admin page
+### Settings cron to run_cdn_files.py

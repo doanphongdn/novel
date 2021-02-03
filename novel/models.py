@@ -269,7 +269,7 @@ class NovelChapter(models.Model):
     @classmethod
     def get_undownloaded_images_chapters(cls):
         return cls.objects.filter(active=True, cdnnovelfile=None) \
-                   .order_by('-updated_at', '-view_total', '-id')[0:1000]
+                   .order_by('-updated_at', '-view_total', '-id')[0:200]
 
     @classmethod
     def get_available_chapter(cls):

@@ -33,6 +33,14 @@ $(document).ready(function (e) {
         $('.search-wrap').slideToggle('fast');
     });
 
+    $("input.search").keydown(function (event) {
+        if (event.keyCode == 13) {
+            if ($("input.search").val().length == 0) {
+                event.preventDefault();
+                return false;
+            }
+        }
+    });
 
     var lazy_param = {
         scrollDirection: 'vertical',

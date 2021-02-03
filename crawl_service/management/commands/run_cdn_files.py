@@ -17,10 +17,22 @@ from novel.models import CDNNovelFile, NovelChapter
 class CDNProcess:
 
     def __init__(self):
-        self.cdn = CDNServer.get_cdn()
+        available_cdn = CDNServer.get_available_cdn()
+        if available_cdn:
+            self.cdn = available_cdn[0]
+            self.b2 = BackblazeB2Storage(opts={'bucket': self.cdn.name, 'allowFileOverwrites': True})
+        else:
+            raise ValueError("Not found CDN server configuration!")
+
         self.origin_domain = None
         self.local_path = None
-        self.b2 = BackblazeB2Storage(opts={'bucket': self.cdn.name, 'allowFileOverwrites': True})
+
+    def update_status(self, status):
+        """
+        Update status as 'running' or 'stopped'
+        """
+        self.cdn.status = status
+        self.cdn.save()
 
     def upload_file2b2(self, file_path, b2_file_name, bucket_name='nettruyen'):
         if not self.b2.bucket:
@@ -172,7 +184,7 @@ class Command(BaseCommand):
             self.cdn_process.remove_path_files(file.chapter.novel.slug)
 
         finish_time = time.time() - init_time
-        print('[process_missing_files] Finish in %s', finish_time)
+        print('[process_missing_files] Finish in ', finish_time, 's')
 
     def process_rest_files(self):
         print('[process_rest_files] Starting...')
@@ -187,6 +199,7 @@ class Command(BaseCommand):
 
         new_files = []
 
+        batch_records = int(os.environ.get('BACKBLAZE_BATCH_RECORD_INSERT', 50))
         # Handle downloading & storing
         for chapter in chapters:
             start_time = time.time()
@@ -237,6 +250,11 @@ class Command(BaseCommand):
                                     url=result_url, full=full)
             new_files.append(new_file)
 
+            # insert batch data to cdn novel file
+            if new_files and len(new_files) == batch_records:
+                CDNNovelFile.objects.bulk_create(new_files, ignore_conflicts=True)
+                new_files = []
+
             # Remove Files from local
             self.cdn_process.remove_path_files(chapter.novel.slug)
 
@@ -251,11 +269,14 @@ class Command(BaseCommand):
         print('[CDN Processing Files] Starting...')
         if not self.cdn_process:
             self.cdn_process = CDNProcess()
-            
+
         ### Test code
         # self.cdn_process.upload_file2b2("/data/cdn/novel/goong-hoang-cung/chapter-24/0.jpg",
         #                                 "goong-hoang-cung/chapter-24/0.jpg")
         try:
+            # Set status to running CDN server
+            self.cdn_process.update_status('running')
+
             # Create threads
             t1 = Thread(target=self.process_missing_files)
             t2 = Thread(target=self.process_rest_files)
@@ -270,4 +291,7 @@ class Command(BaseCommand):
 
         except Exception as e:
             print("[CDN Processing Files] Error: %s" % e)
+
+        # Set status to running CDN server
+        self.cdn_process.update_status('stopped')
         print('[CDN Processing Files] Finish')

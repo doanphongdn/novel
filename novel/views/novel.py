@@ -1,3 +1,4 @@
+import re
 from urllib.parse import urlparse
 
 from django.contrib.sites.shortcuts import get_current_site
@@ -20,6 +21,13 @@ class NovelDetailView(NovelBaseView):
         search = request.POST.get('q', "")
         if len(search) >= 3:
             novels = NovelCache.get_all_from_cache(name__unaccent__icontains=search.strip()).filter()[:15]
+            if not novels:
+                # split to multiple keywords
+                unique_sub_keywords = set(re.split(r'\W+', search))
+                novels = NovelCache.get_all_from_cache(
+                    name__unaccent__iregex=r'(' + '|'.join([k for k in unique_sub_keywords if len(k) > 2]) + ')'
+                )[:10]
+
             res_data = []
             for novel in novels:
                 res_data.append({
@@ -38,6 +46,10 @@ class NovelDetailView(NovelBaseView):
 
         chapter_page = request.GET.get('chap-page') or 1
         slug = kwargs.get('slug')
+        if not slug:
+            # TODO: define 404 page
+            # direct to homepage
+            return redirect('home')
 
         novel = NovelCache.get_first_from_cache(slug=slug)
         if novel:

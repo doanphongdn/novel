@@ -22,7 +22,7 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
         icon = self.include_data.get("icon")
         novel = self.include_data.get("novel")
 
-        chapters = ChapterPaginator(limit, page, order_by="", novel__id=novel.id, chapter_updated=True, active=True)
+        chapters = ChapterPaginator(limit, page, novel__id=novel.id, chapter_updated=True, active=True)
 
         link_objs = Link.objects.filter(type=self.include_data.get('hashtags_link_type'), active=True).all()
         link_data = {}

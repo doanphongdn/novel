@@ -18,7 +18,7 @@ class ChapterView(NovelBaseView):
         chapter_slug = kwargs.get('chapter_slug')
         breadcrumb_data = []
 
-        novel = NovelCache.get_first_from_cache(slug=slug)
+        novel = NovelCache.get_from_cache(slug=slug)
         if novel:
             # TODO: not yet apply cache
             chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).first()

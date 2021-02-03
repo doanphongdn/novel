@@ -17,11 +17,11 @@ class NovelDetailView(NovelBaseView):
     def post(self, request, *args, **kwargs):
         search = request.POST.get('q', "")
         if len(search) >= 3:
-            novels = NovelCache.get_all_from_cache(name__unaccent__icontains=search.strip()).filter()[:15]
+            novels = NovelCache.get_from_cache(get_all=True, name__unaccent__icontains=search.strip()).filter()[:15]
             if not novels:
                 # split to multiple keywords
                 unique_sub_keywords = set(re.split(r'\W+', search))
-                novels = NovelCache.get_all_from_cache(
+                novels = NovelCache.get_from_cache(get_all=True,
                     name__unaccent__iregex=r'(' + '|'.join([k for k in unique_sub_keywords if len(k) > 2]) + ')'
                 )[:10]
 
@@ -47,7 +47,7 @@ class NovelDetailView(NovelBaseView):
             # direct to homepage
             return redirect('home')
 
-        novel = NovelCache.get_first_from_cache(slug=slug)
+        novel = NovelCache.get_from_cache(slug=slug)
         if novel:
             referer = urlparse(novel.url)
             if novel.thumbnail_image.strip().startswith('//'):

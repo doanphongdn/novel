@@ -1,4 +1,4 @@
-from cms.models import Link
+from cms.cache_manager import LinkCache
 from novel.views.includes.base import BaseTemplateInclude
 
 
@@ -6,14 +6,10 @@ class LinkTemplateInclude(BaseTemplateInclude):
     name = "link"
     template = "novel/includes/link.html"
 
-    def __init__(self, include_data, extra_data=None):
-        super().__init__(include_data, extra_data)
+    def prepare_include_data(self):
+        link_type = self.include_data.get('link_type')
+        link_data = self.include_data.get('link_data', LinkCache.get_from_cache(get_all=True, **{"type": link_type}))
 
-        link_type = self.include_data.get('link_type') or ''
-        link_label = self.include_data.get('link_label') or ''
-        link_data = self.include_data.get('link_data') or Link.objects.filter(type=link_type, active=True).all()
-
-        self.include_data = {
+        self.include_data.update({
             "link_data": link_data,
-            "link_label": link_label,
-        }
+        })

@@ -8,25 +8,27 @@ class TopMenuTemplateInclude(BaseTemplateInclude):
     name = "menu"
     template = "novel/includes/base_top_menu.html"
 
-    def __init__(self, include_data, extra_data=None):
-        super().__init__(include_data, extra_data)
+    def prepare_include_data(self):
 
-        menu_type = self.include_data.get('menu_type') or ''
-        menu_data = self.include_data.get('menu_data') or MenuCache.get_all_from_cache(type=menu_type)
+        menu_type = self.include_data.get('menu_type')
+        menu_data = self.include_data.get('menu_data', MenuCache.get_from_cache(get_all=True, **{"type": menu_type}))
 
-        genre_menu_enable = self.include_data.get("genre_menu_enable")
         genre_menu = {}
+        genre_menu_name = self.include_data.get("genre_menu_name")
+        genre_menu_icon = self.include_data.get("genre_menu_icon")
+        genre_menu_enable = self.include_data.get("genre_menu_enable")
         if genre_menu_enable:
             genre_menu = {
-                "name": self.include_data.get("genre_menu_name"),
-                "icon": self.include_data.get("genre_menu_icon"),
+                "name": genre_menu_name,
+                "icon": genre_menu_icon,
                 "data": []
             }
-            genres = GenreCache.get_all_from_cache()
+            genres = GenreCache.get_from_cache(get_all=True)
             for gen in genres:
                 genre_menu["data"].append(gen)
 
-        self.include_data = {
+        self.include_data.update({
             "menu_data": menu_data,
             "genre_menu": genre_menu,
-        }
+        })
+

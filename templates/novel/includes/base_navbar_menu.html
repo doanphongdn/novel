@@ -1,6 +1,6 @@
 {% load cache %}
 <ul class="navbar-nav ml-auto">
-    {% for menu in menus %}
+    {% for menu in navbar_menus %}
         <li class="nav-item">
             <a class="nav-link nav-link-icon" href="{{ menu.url }}">
                 <i class="{{ menu.fa_icon }}"></i>
@@ -8,7 +8,6 @@
             </a>
         </li>
     {% endfor %}
-    {{ user.first_name }}
     {% if enable_auth_menu %}
         {% if user.is_authenticated %}
             {% cache 500 "user_profile" user.id %}

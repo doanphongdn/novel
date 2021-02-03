@@ -79,10 +79,6 @@ class Genre(models.Model):
     def get_absolute_url(self):
         return f"/{settings.NOVEL_GENRE_URL}/{self.slug}"
 
-    @classmethod
-    def get_available_genre(cls, **kwargs):
-        return cls.objects.filter(**kwargs, active=True).all()
-
 
 class Novel(models.Model):
     class Meta:
@@ -197,6 +193,14 @@ class Novel(models.Model):
     def genres_name(self):
         return ", ".join([str(p.name) for p in self.genres.all()])
 
+    @cached_property
+    def status_name(self):
+        return self.status.name
+
+    @cached_property
+    def genre_all(self):
+        return self.genres.all()
+
     @classmethod
     def get_available_novel(cls):
         deactive_ids = cls.objects.filter(genres__active=False).values_list('id', flat=True).distinct()
@@ -245,7 +249,7 @@ class Novel(models.Model):
     def latest_updated_at_str(self):
         return datetime2string(self.latest_updated_time)
 
-    @property
+    @cached_property
     def stream_thumbnail_image(self):
         if not self.thumbnail_image:
             return "#"
@@ -307,14 +311,14 @@ class NovelChapter(models.Model):
     def get_available_chapter(cls):
         return cls.objects.filter(active=True, chapter_updated=True).all()
 
-    @property
+    @cached_property
     def images(self):
         images = []
         if self.images_content:
             images = self.images_content.split('\n')
         return images
 
-    @property
+    @cached_property
     def created_at_str(self):
         return datetime2string(self.created_at)
 

@@ -63,7 +63,7 @@
             {% endif %}
         </div>
         <div class="novel-genres">
-            {% for genre in novel.genres.all %}
+            {% for genre in novel.genre_all %}
                 <a href="{{ genre.get_absolute_url }}">{{ genre.name }}</a>
             {% endfor %}
         </div>

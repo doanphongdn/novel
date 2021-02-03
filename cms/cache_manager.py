@@ -1,31 +1,34 @@
+from hashlib import md5
+
 from django.core.cache import cache
 from django.utils.html import format_html_join
 
-from cms.models import InludeTemplate, PageTemplate, FooterInfo
+from cms.models import InludeTemplate, PageTemplate, FooterInfo, Link
 
 
 class CacheManager(object):
-    get_list = False
+    class_model = None
+    order_by = None
 
     @classmethod
     def _get_data(cls, **kwargs):
-        return []
+        if hasattr(cls.class_model, 'active'):
+            kwargs["active"] = True
+        if cls.order_by:
+            return cls.class_model.objects.filter(**kwargs).order_by(cls.order_by).all()
+
+        return cls.class_model.objects.filter(**kwargs).all()
 
     @classmethod
-    def get_first_from_cache(cls, **kwargs):
-        lst_data = cls.get_all_from_cache(**kwargs)
-        if lst_data:
-            return lst_data[0]
-
-        return None
-
-    @classmethod
-    def get_all_from_cache(cls, **kwargs):
+    def get_from_cache(cls, get_all=False, **kwargs):
         kwargs_key = [str(val) for val in kwargs.values()]
-        cache_key = "_".join(("CacheManager_", cls.__name__, *kwargs_key))
+        cache_key = "CacheManager_" + md5("_".join((cls.__name__, *kwargs_key)).encode()).hexdigest()
         cached = cache.get(cache_key)
         if cached is None:
             data = cls._get_data(**kwargs)
+            if not get_all:
+                data = data[0]
+
             cache.set(cache_key, data)
             return data
 
@@ -33,15 +36,12 @@ class CacheManager(object):
 
 
 class TemplateCache(CacheManager):
-    @classmethod
-    def _get_data(cls, **kwargs):
-        return PageTemplate.objects.filter(**kwargs).all()
+    class_model = PageTemplate
 
 
 class IncludeCache(CacheManager):
-    @classmethod
-    def _get_data(cls, **kwargs):
-        return InludeTemplate.objects.filter(**kwargs, active=True).order_by("priority").all()
+    class_model = InludeTemplate
+    order_by = "priority"
 
 
 class IncludeHtmlCache(CacheManager):
@@ -51,15 +51,15 @@ class IncludeHtmlCache(CacheManager):
         self.extra_data = extra_data
         self.wrap_class_name = wrap_class_name
 
-    def get_first_from_cache(self, **kwargs):
-        lst_data = self.get_all_from_cache(**kwargs)
-        return lst_data
-
-    def get_all_from_cache(self, **kwargs):
-        cache_key = "_".join((self.__class__.__name__, *kwargs.values()))
+    def get_from_cache(self, get_all=True, **kwargs):
+        kwargs_key = [str(val) for val in kwargs.values()]
+        cache_key = "CacheManager_" + md5("_".join((self.__class__.__name__, *kwargs_key)).encode()).hexdigest()
         cached = cache.get(cache_key)
         if cached is None:
             data = self._get_data(**kwargs)
+            if not get_all:
+                data = data[0]
+
             cache.set(cache_key, data)
             return data
 
@@ -74,6 +74,8 @@ class IncludeHtmlCache(CacheManager):
 
 
 class FooterInfoCache(CacheManager):
-    @classmethod
-    def _get_data(cls, **kwargs):
-        return FooterInfo.objects.filter(**kwargs, active=True).all()
+    class_model = FooterInfo
+
+
+class LinkCache(CacheManager):
+    class_model = Link

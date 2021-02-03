@@ -6,14 +6,11 @@ class NovelCatTemplateInclude(BaseTemplateInclude):
     name = "novel_cat"
     template = "novel/includes/novel_cat.html"
 
-    def __init__(self, include_data, extra_data=None):
-        super().__init__(include_data, extra_data)
-        genre_label = self.include_data.get('title') or ''
-        col_number = self.include_data.get('col_number') or 2
-        genres = self.include_data.get("genres") or GenreCache.get_all_from_cache()
+    def prepare_include_data(self):
+        col_number = self.include_data.get('col_number', 2)
+        genres = self.include_data.get("genres", GenreCache.get_from_cache(get_all=True))
 
-        self.include_data = {
+        self.include_data .update({
             "col_number": col_number,
-            "title": genre_label,
             "genres": genres,
-        }
+        })

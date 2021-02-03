@@ -1,7 +1,6 @@
-from django.core.paginator import Paginator
 from unidecode import unidecode
 
-from cms.models import Link
+from cms.cache_manager import LinkCache
 from novel.paginator import ChapterPaginator
 from novel.views.includes.base import BaseTemplateInclude
 from novel.views.includes.link import LinkTemplateInclude
@@ -12,19 +11,26 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
     name = "chapter_list"
     template = "novel/includes/chapter_list.html"
 
-    def __init__(self, include_data, extra_data=None):
-        super().__init__(include_data, extra_data)
-        limit = self.include_data.get("limit") or 30
-        page = self.include_data.get("chap_page") or 1
-        title = self.include_data.get("title")
-        info_title = self.include_data.get("info_title")
-        info_icon = self.include_data.get("info_icon")
-        icon = self.include_data.get("icon")
+    def prepare_include_data(self):
+        page_label = "chap-page"
         novel = self.include_data.get("novel")
+        limit = self.include_data.get("limit", 30)
+        page = self.include_data.get("chap_page", 1)
+        hashtags_link_type = self.include_data.get('hashtags_link_type')
+        hashtags_link_label = self.include_data.get('hashtags_link_label')
 
-        chapters = ChapterPaginator(limit, page, novel__id=novel.id, chapter_updated=True, active=True)
+        chapter_conditions = {
+            "novel__id": novel.id,
+            "chapter_updated": True,
+            "active": True
+        }
+        chapter_paginated = ChapterPaginator(limit, page, **chapter_conditions)
 
-        link_objs = Link.objects.filter(type=self.include_data.get('hashtags_link_type'), active=True).all()
+        link_conditions = {
+            "type": hashtags_link_type,
+            "active": True
+        }
+        link_objs = LinkCache.get_from_cache(get_all=True, **link_conditions)
         link_data = {}
         for link in link_objs:
             for name in [novel.name, unidecode(novel.name)]:
@@ -45,21 +51,17 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
 
         hashtags = LinkTemplateInclude(include_data={
             'link_data': list(link_data.values()),
-            'link_label': self.include_data.get('hashtags_link_label'),
+            'link_label': hashtags_link_label,
         })
 
         paging_data = {
-            "paginated_data": chapters,
-            "page_label": "chap-page"
+            "paginated_data": chapter_paginated,
+            "page_label": page_label
         }
         pagination = PaginationTemplateInclude(paging_data)
 
-        self.include_data = {
-            "chapters": chapters,
-            "title": title,
-            "info_title": info_title,
-            "info_icon": info_icon,
-            "icon": icon,
+        self.include_data.update({
+            "chapter_list": chapter_paginated,
             "pagination_html": pagination.render_html(),
             "hashtags_html": hashtags.render_html(),
-        }
+        })

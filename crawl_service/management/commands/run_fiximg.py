@@ -82,7 +82,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         print('[Selenium Scraper] Starting...')
         scraper = SeleniumScraper()
-        novel_setting = SettingCache.get_first_from_cache()
+        novel_setting = SettingCache.get_from_cache()
         img_ignoring = []
         if novel_setting and novel_setting.img_ignoring:
             img_ignoring = novel_setting.img_ignoring.split(",")

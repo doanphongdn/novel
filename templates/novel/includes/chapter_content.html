@@ -4,8 +4,8 @@
     <div class="row chapter-actions">
         <div class="col-5">
             <div class="row">
-                {% if chapter.prev_chapter %}
-                    <a href="{{ chapter.prev_chapter.get_absolute_url }}">
+                {% if chapter_prev_url %}
+                    <a href="{{ chapter_prev_url }}">
                         <button type="button" class="btn btn-sm btn-default d-lg-none">
                             <i class="fa fa-chevron-left"></i> Prev
                         </button>
@@ -30,8 +30,8 @@
         </div>
         <div class="col-5">
             <div class="row justify-content-end">
-                {% if chapter.next_chapter.get_absolute_url %}
-                    <a href="{{ chapter.next_chapter.get_absolute_url }}">
+                {% if chapter_next_url %}
+                    <a href="{{ chapter_next_url }}">
                         <button type="button" class="btn btn-sm btn-default d-lg-none">
                             Next <i class="fa fa-chevron-right"></i>
                         </button>
@@ -68,8 +68,8 @@
     <hr class="hr-text" data-content="END CHAPTER">
     {% if chapter.next_chapter %}
         <div class="col-12 chapter-hashtags">
-            <a href="{{ chapter.next_chapter.get_absolute_url }}" class="btn btn-sm btn-warning"
-               title="{{ novel.name }} {{ chapter.next_chapter.name }}">{{ novel.name }} {{ chapter.next_chapter.name }}</a>
+            <a href="{{ chapter_next_url }}" class="btn btn-sm btn-warning"
+               title="{{ novel.name }} {{ chapter_next_name }}">{{ novel.name }} {{ chapter_next_name }}</a>
         </div>
     {% endif %}
 </div>
@@ -85,7 +85,7 @@
             </div>
             <div class="modal-body" id="chapter-list">
                 <ul>
-{#                    {% for chap in chapter.novel.chapters %}#}
+{#                    {% for chap in novel.chapters %}#}
 {#                        <li>#}
 {#                            <a href="{% if chapter == chap %}#current{% else %}{{ chap.get_absolute_url }}{% endif %}">{{ chap.name }}</a>#}
 {#                        </li>#}

@@ -27,8 +27,8 @@ class IncludeManager(object):
             return ""
 
         # Get template from cache
-        template = TemplateCache.get_first_from_cache(page_file=tmpl_code)
-        includes = IncludeCache.get_all_from_cache(template__page_file=tmpl_code)
+        template = TemplateCache.get_from_cache(page_file=tmpl_code)
+        includes = IncludeCache.get_from_cache(get_all=True, template__page_file=tmpl_code)
 
         inc_htmls = []
         for inc in includes:
@@ -43,10 +43,10 @@ class IncludeManager(object):
             inc_func = self.TEMPLATE_INCLUDE_MAPPING.get(inc.include_file)
             # Get render html from cache
             incl_html_cache = IncludeHtmlCache(inc_func, inc_params, extra_data, inc.class_name)
-            html = incl_html_cache.get_first_from_cache(request_hash=self.request_hash,
+            html = incl_html_cache.get_from_cache(request_hash=self.request_hash,
                                                   page_tmpl_code=tmpl_code,
                                                   include_code=inc.code)
-            inc_htmls.append((html, ))
+            inc_htmls.append((html,))
 
         return format_html_join("", "{}", inc_htmls)
 

@@ -1,12 +1,10 @@
 from cms.cache_manager import CacheManager
 from cms.models import Menu
-from novel.models import NovelSetting, Novel, Genre, NovelChapter
+from novel.models import NovelSetting, Novel, Genre
 
 
 class SettingCache(CacheManager):
-    @classmethod
-    def _get_data(cls, **kwargs):
-        return NovelSetting.get_setting()
+    class_model = NovelSetting
 
 
 class NovelCache(CacheManager):
@@ -20,12 +18,8 @@ class NovelChapterCache(CacheManager):
 
 
 class MenuCache(CacheManager):
-    @classmethod
-    def _get_data(cls, **kwargs):
-        return Menu.objects.filter(**kwargs, active=True).all()
+    class_model = Menu
 
 
 class GenreCache(CacheManager):
-    @classmethod
-    def _get_data(cls, **kwargs):
-        return Genre.get_available_genre(**kwargs)
+    class_model = Genre

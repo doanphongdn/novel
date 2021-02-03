@@ -43,7 +43,7 @@ class NovelBaseView(TemplateView):
         self.incl_manager.set_request_hash(request)
 
         # Get novel setting from cache
-        novel_setting = SettingCache.get_first_from_cache()
+        novel_setting = SettingCache.get_from_cache()
 
         title = ""
         logo = ""

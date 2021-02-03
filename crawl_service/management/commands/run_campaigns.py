@@ -10,13 +10,13 @@ from crawl_service.models import CrawlCampaign
 
 from scrapy.crawler import Crawler
 from scrapy import signals
-# from scrapy.utils.project import get_project_settings
 from twisted.internet import reactor
 from billiard import Process
 
+
 class CrawlerScript(Process):
     def __init__(self, spider, cam):
-        print("[%s] Crawler Running...", cam.name)
+        print("[%s] Crawler Running..." % cam.name)
         Process.__init__(self)
         settings = get_project_settings()
         self.crawler = Crawler(spider.__class__, settings)
@@ -47,7 +47,7 @@ class CrawlerRunning:
         self.spider.campaign.status = 'stopped'
         self.spider.campaign.save()
         self.stopped = True
-        print("[%s] Finish campaign ", self.spider.campaign.name)
+        print("[%s] Finish campaign " % self.spider.campaign.name)
 
 
 class Command(BaseCommand):
@@ -75,13 +75,13 @@ class Command(BaseCommand):
         max_thread = int(os.environ.get('CAMPAIGNS_THREAD_NUM', 2))
         running_campaigns_number = sum(1 for c in campaigns if c.status == 'running')
         if max_thread <= running_campaigns_number:
-            print("Max thread %s is running", running_campaigns_number)
+            print("Max thread %s is running" % running_campaigns_number)
             return
 
         running_campaigns = []
 
         for cam in campaigns:
-            print("[%s] Starting campaign...", cam.name)
+            print("[%s] Starting campaign..." % cam.name)
             if cam.status == 'running':
                 running_campaigns.append(cam)
                 continue
@@ -95,4 +95,3 @@ class Command(BaseCommand):
                 crawl_running = CrawlerRunning(cam)
                 crawl_running.crawl_async()
                 running_campaigns.append(crawl_running)
-

@@ -15,26 +15,27 @@ from billiard import Process
 
 
 class CrawlerScript(Process):
-    def __init__(self, spider, cam):
-        print("[%s] Crawler Running..." % cam.name)
+    def __init__(self, spider):
+        print("[%s] Crawler Running..." % spider.campaign.name)
         Process.__init__(self)
         settings = get_project_settings()
         self.crawler = Crawler(spider.__class__, settings)
         self.crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
         self.spider = spider
-        self.campaign = cam
+        self.campaign = spider.campaign
         self.campaign.status = 'running'
         self.campaign.save()
 
     def run(self):
-        self.crawler.crawl(self.spider, self.campaign)
+        self.crawler.crawl(spider=self.spider, campaign=self.campaign)
+        # self.crawler.start()
         reactor.run()
 
 
 class CrawlerRunning:
     def __init__(self, cam):
         self.spider = NovelSpider(cam)
-        self.crawler = CrawlerScript(self.spider, cam)
+        self.crawler = CrawlerScript(self.spider)
         self.stopped = False
 
     def crawl_async(self):
@@ -86,12 +87,14 @@ class Command(BaseCommand):
                 running_campaigns.append(cam)
                 continue
 
-            running_campaigns_number = sum(1 for c in running_campaigns if c.status == 'running')
+            running_campaigns_number = sum(1 for c in running_campaigns if c.stopped == False)
             if running_campaigns_number >= max_thread:
                 break
 
             run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time
             if run_able:
                 crawl_running = CrawlerRunning(cam)
-                crawl_running.crawl_async()
                 running_campaigns.append(crawl_running)
+
+        for crawl_running in running_campaigns:
+            crawl_running.crawl_async()

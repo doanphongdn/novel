@@ -195,7 +195,7 @@ class Novel(models.Model):
 
     @cached_property
     def status_name(self):
-        return self.status.name
+        return self.status and self.status.name or None
 
     @cached_property
     def genre_all(self):

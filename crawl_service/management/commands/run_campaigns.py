@@ -34,7 +34,7 @@ class CrawlerScript(Process):
 class CrawlerRunning:
     def __init__(self, cam):
         self.spider = NovelSpider(cam)
-        self.crawler = CrawlerScript(self.spider)
+        self.crawler = CrawlerScript(self.spider, cam)
         self.stopped = False
 
     def crawl_async(self):

@@ -1,16 +1,13 @@
 import re
 from urllib.parse import urlparse
 
-from django.contrib.sites.shortcuts import get_current_site
-from django.http import JsonResponse, StreamingHttpResponse, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 
 from novel.cache_manager import NovelCache
-from novel.models import Novel
 from novel.views.base import NovelBaseView
-from novel.views.chapter import url2yield
 
 
 class NovelDetailView(NovelBaseView):
@@ -33,7 +30,6 @@ class NovelDetailView(NovelBaseView):
                 res_data.append({
                     "thumbnail_image": novel.thumbnail_image,
                     "name": novel.name,
-                    "latest_chapter_name": novel.chapters and novel.chapters[0].name or "",
                     "url": novel.get_absolute_url(),
                 })
 
@@ -90,29 +86,3 @@ class NovelDetailView(NovelBaseView):
         })
 
         return response
-
-    def stream_thumbnail_image(self, *args, **kwargs):
-        img = kwargs.get('img') or ""
-        image_files = img.strip('.jpg').split('_')
-        novel = Novel.objects.filter(id=image_files[0]).first()
-        if novel:
-            referer = urlparse(novel.url)
-            referer_url = referer.scheme + "://" + referer.netloc
-            origin_url = novel.thumbnail_image.strip()
-
-            if origin_url.strip().startswith('//'):
-                origin_url = referer.scheme + ":" + origin_url
-
-            elif origin_url.strip().startswith('/static'):
-                referer_url = None
-                current_site = get_current_site(self)
-                origin_url = ('https' if self.is_secure() else 'http') + "://" + current_site.domain + origin_url
-
-            elif origin_url.strip().startswith('/'):
-                origin_url = referer_url.strip('/') + "/" + origin_url
-
-            if 'blogspot.com' in origin_url:
-                referer_url = None
-            return StreamingHttpResponse(url2yield(origin_url, referer=referer_url),
-                                         content_type="image/jpeg")
-        return HttpResponse({})

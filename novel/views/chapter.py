@@ -1,34 +1,11 @@
-import json
 from urllib.parse import urlparse
 
-import requests
 from django.db import transaction
-from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import redirect
 
-from novel import settings
 from novel.cache_manager import NovelCache
 from novel.models import NovelChapter
 from novel.views.base import NovelBaseView
-
-
-def url2yield(url, chunksize=1024, referer=None):
-    s = requests.Session()
-    if referer:
-        s.headers.update({
-            "Referer": referer
-        })
-    # Note: here i enabled the streaming
-    response = s.get(url, stream=True)
-
-    chunk = True
-    while chunk:
-        chunk = response.raw.read(chunksize)
-
-        if not chunk:
-            break
-
-        yield chunk
 
 
 class ChapterView(NovelBaseView):
@@ -110,18 +87,3 @@ class ChapterView(NovelBaseView):
         })
 
         return response
-
-    def stream_image(self, *args, **kwargs):
-        img_hash = (kwargs.get('img') or "").strip('.jpg')
-        json_str = settings.redis_image.get(img_hash)
-        if json_str:
-            try:
-                json_str = json.loads(json_str)
-            except:
-                return HttpResponse({})
-
-            origin_url = json_str.get("origin_url", "")
-            referer_url = json_str.get("referer")
-            return StreamingHttpResponse(url2yield(origin_url, referer=referer_url), content_type="image/jpeg")
-
-        return HttpResponse({})

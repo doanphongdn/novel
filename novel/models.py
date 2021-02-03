@@ -1,6 +1,8 @@
 import hashlib
+import json
 import zlib
 from datetime import datetime
+from urllib.parse import urlparse
 
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
@@ -9,6 +11,7 @@ from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from unidecode import unidecode
 
@@ -181,7 +184,7 @@ class Novel(models.Model):
                 "url": site_url + latest_chapter.get_absolute_url(),
                 "isPartOf": "#novel",
                 "inLanguage": "vi",
-                "volumeNumber": self.chapters.count(),
+                "volumeNumber": self.chapter_total,
             })
 
         return data
@@ -203,16 +206,28 @@ class Novel(models.Model):
         return available_novels
 
     @property
+    def novel_chapter_condition(self):
+        return {
+            "novel_id": self.id,
+            "chapter_updated": True,
+            "active": True
+        }
+
+    @cached_property
+    def chapter_total(self):
+        return NovelChapter.objects.filter(**self.novel_chapter_condition).count()
+
+    @cached_property
     def chapters(self):
-        return NovelChapter.objects.filter(novel=self, chapter_updated=True, active=True)
+        return NovelChapter.objects.filter(**self.novel_chapter_condition).all()
 
-    @property
+    @cached_property
     def first_chapter(self):
-        return self.chapters.last()
+        return NovelChapter.objects.filter(**self.novel_chapter_condition).last()
 
-    @property
+    @cached_property
     def latest_chapter(self):
-        return self.chapters.first()
+        return NovelChapter.objects.filter(**self.novel_chapter_condition).first()
 
     def get_absolute_url(self):
         return reverse("novel", args=[self.slug])
@@ -232,10 +247,27 @@ class Novel(models.Model):
 
     @property
     def stream_thumbnail_image(self):
-        if self.thumbnail_image:
-            return "/thumbnail_images/%s_%s.jpg" % (self.id, hashlib.md5(self.thumbnail_image.encode()).hexdigest())
+        if not self.thumbnail_image:
+            return "#"
 
-        return "#"
+        if self.thumbnail_image.startswith('/static'):
+            return self.thumbnail_image
+
+        referer = urlparse(self.url)
+        referer_url = referer.scheme + "://" + referer.netloc
+
+        if 'blogspot.com' in self.thumbnail_image:
+            referer_url = None
+
+        json_str = json.dumps({
+            "origin_url": self.thumbnail_image,
+            "referer": referer_url,
+        })
+        image_hash = hashlib.md5(json_str.encode()).hexdigest()
+        if not settings.redis_image.get(image_hash):
+            settings.redis_image.set(image_hash, json_str)
+
+        return "/images/thumbnail/%s.jpg" % image_hash
 
 
 class NovelChapter(models.Model):

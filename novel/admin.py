@@ -30,8 +30,7 @@ class GenreAdmin(admin.ModelAdmin):
 @admin.register(Novel)
 class NovelAdmin(admin.ModelAdmin):
     form = NovelForm
-    list_display = ("id", "name", "novel_updated", "status",
-                    "authors_name", "genres_name", "active", "created_at", "updated_at")
+    list_display = ("id", "name", "novel_updated", "status", "active", "created_at", "updated_at")
     search_fields = ("name", "slug")
     list_filter = ("status",)
     filter_horizontal = ("authors", "genres")

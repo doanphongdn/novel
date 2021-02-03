@@ -30,6 +30,7 @@ from novel.views.index import NovelIndexView
 from novel.views.novel import NovelDetailView
 from novel.views.novel_all import NovelAllView
 from novel.views.page import PageView
+from novel.views import stream
 
 sitemaps = {
     'genre': GenreSitemap,
@@ -59,8 +60,8 @@ urlpatterns = [
     path(settings.NOVEL_GENRE_URL + '/<str:genre>', NovelAllView.as_view(), name="novel_genre"),
     path(settings.NOVEL_PAGE_URL + '/<str:slug>', PageView.as_view(), name="page_view"),
 
-    path('images/<str:img>', ChapterView.stream_image, name="stream_image"),
-    path('thumbnail_images/<str:img>', NovelDetailView.stream_thumbnail_image, name="stream_thumbnail_image"),
+    path('images/<str:img>', stream.stream_image, name="stream_image"),
+    path('images/thumbnail/<str:img>', stream.stream_image, name="stream_thumbnail_image"),
 
     path('<str:slug>', NovelDetailView.as_view(), name="novel"),
     path('<str:slug>/<str:chapter_slug>', ChapterView.as_view(), name="chapter"),

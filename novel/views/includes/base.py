@@ -2,6 +2,7 @@ from django.template import loader
 
 
 class BaseTemplateInclude(object):
+    cache = True
     name = None
     template = None
     default_values = {}

@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 
 from novel.cache_manager import NovelCache
+from novel.models import Novel
 from novel.views.base import NovelBaseView
 
 
@@ -17,13 +18,15 @@ class NovelDetailView(NovelBaseView):
     def post(self, request, *args, **kwargs):
         search = request.POST.get('q', "")
         if len(search) >= 3:
-            novels = NovelCache.get_from_cache(get_all=True, name__unaccent__icontains=search.strip()).filter()[:15]
+            novels = NovelCache(Novel, **{"name__unaccent__icontains": search.strip()}) \
+                         .get_from_cache(get_all=True)[:15]
             if not novels:
                 # split to multiple keywords
                 unique_sub_keywords = set(re.split(r'\W+', search))
-                novels = NovelCache.get_from_cache(get_all=True,
-                    name__unaccent__iregex=r'(' + '|'.join([k for k in unique_sub_keywords if len(k) > 2]) + ')'
-                )[:10]
+                conditions = {
+                    "name__unaccent__iregex": r'(' + '|'.join([k for k in unique_sub_keywords if len(k) > 2]) + ')'
+                }
+                novels = NovelCache(Novel, **conditions).get_from_cache(get_all=True)[:10]
 
             res_data = []
             for novel in novels:
@@ -47,7 +50,7 @@ class NovelDetailView(NovelBaseView):
             # direct to homepage
             return redirect('home')
 
-        novel = NovelCache.get_from_cache(slug=slug)
+        novel = NovelCache(Novel, **{"slug": slug}).get_from_cache()
         if novel:
             referer = urlparse(novel.url)
             if novel.thumbnail_image.strip().startswith('//'):

@@ -1,4 +1,5 @@
-from novel.cache_manager import GenreCache
+from cms.cache_manager import CacheManager
+from novel.models import Genre
 from novel.views.includes.base import BaseTemplateInclude
 
 
@@ -8,9 +9,9 @@ class NovelCatTemplateInclude(BaseTemplateInclude):
 
     def prepare_include_data(self):
         col_number = self.include_data.get('col_number', 2)
-        genres = self.include_data.get("genres", GenreCache.get_from_cache(get_all=True))
+        genres = self.include_data.get("genres", CacheManager(Genre).get_from_cache(get_all=True))
 
-        self.include_data .update({
+        self.include_data.update({
             "col_number": col_number,
             "genres": genres,
         })

@@ -4,16 +4,15 @@ from functools import reduce
 
 from django.core.management.base import BaseCommand
 from django.db.models import Q
-
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-# from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
+# from webdriver_manager.chrome import ChromeDriverManager
+from cms.cache_manager import CacheManager
 from crawl_service import settings
-from novel.cache_manager import SettingCache
 from novel.models import NovelChapter, NovelSetting
 
 
@@ -82,7 +81,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         print('[Selenium Scraper] Starting...')
         scraper = SeleniumScraper()
-        novel_setting = SettingCache.get_from_cache()
+        novel_setting = CacheManager(NovelSetting).get_from_cache()
         img_ignoring = []
         if novel_setting and novel_setting.img_ignoring:
             img_ignoring = novel_setting.img_ignoring.split(",")

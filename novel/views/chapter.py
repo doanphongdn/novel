@@ -4,7 +4,7 @@ from django.db import transaction
 from django.shortcuts import redirect
 
 from novel.cache_manager import NovelCache
-from novel.models import NovelChapter
+from novel.models import NovelChapter, Novel
 from novel.views.base import NovelBaseView
 
 
@@ -18,7 +18,7 @@ class ChapterView(NovelBaseView):
         chapter_slug = kwargs.get('chapter_slug')
         breadcrumb_data = []
 
-        novel = NovelCache.get_from_cache(slug=slug)
+        novel = NovelCache(Novel, **{"slug": slug}).get_from_cache()
         if novel:
             # TODO: not yet apply cache
             chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).first()

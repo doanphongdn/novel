@@ -1,8 +1,9 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.views.generic import TemplateView
 
+from cms.cache_manager import CacheManager
 from cms.include_mapping import IncludeManager
-from novel.cache_manager import SettingCache
+from novel.models import NovelSetting
 from novel.views.includes.base_auth_modal import BaseAuthModalTemplateInclude
 from novel.views.includes.base_footer_info import FooterInfotemplateInclude
 from novel.views.includes.base_navbar_menu import BaseNavbarTemplateInclude
@@ -43,7 +44,7 @@ class NovelBaseView(TemplateView):
         self.incl_manager.set_request_hash(request)
 
         # Get novel setting from cache
-        novel_setting = SettingCache.get_from_cache()
+        novel_setting = CacheManager(NovelSetting).get_from_cache()
 
         title = ""
         logo = ""
@@ -98,7 +99,16 @@ class NovelBaseView(TemplateView):
             "google_analystics_id": novel_setting and novel_setting.google_analystics_id or "",
         }
 
-        tmpl_codes = ['base_footer', 'base_other_html', 'base_navbar', 'base_top_menu']
+        extra_data = {
+            "base_navbar_menu": {
+                "user": request.user,
+            }
+        }
+
+        base_navbar = self.incl_manager.render_include_html('base_navbar', extra_data=extra_data)
+        kwargs["base_navbar"] = base_navbar
+
+        tmpl_codes = ['base_footer', 'base_other_html', 'base_top_menu']
         tmpl_htmls = self.incl_manager.get_include_htmls(tmpl_codes)
         for page_tmpl_code, html in tmpl_htmls.items():
             kwargs[page_tmpl_code] = html

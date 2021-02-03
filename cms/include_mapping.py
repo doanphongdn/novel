@@ -2,7 +2,8 @@ from hashlib import md5
 
 from django.utils.html import format_html_join
 
-from cms.cache_manager import TemplateCache, IncludeCache, IncludeHtmlCache
+from cms.cache_manager import CacheManager, IncludeHtmlCache
+from cms.models import PageTemplate, InludeTemplate
 
 
 class IncludeManager(object):
@@ -19,7 +20,7 @@ class IncludeManager(object):
         """
         self.request_hash = md5(request.build_absolute_uri().encode("utf-8")).hexdigest()
 
-    def render_include_html(self, tmpl_code, extra_data=None, default='default', cache=True):
+    def render_include_html(self, tmpl_code, extra_data=None, default='default'):
         if not extra_data:
             extra_data = {}
 
@@ -27,8 +28,9 @@ class IncludeManager(object):
             return ""
 
         # Get template from cache
-        template = TemplateCache.get_from_cache(page_file=tmpl_code)
-        includes = IncludeCache.get_from_cache(get_all=True, template__page_file=tmpl_code)
+        template = CacheManager(PageTemplate, **{"page_file": tmpl_code}).get_from_cache()
+        includes = CacheManager(InludeTemplate, 'priority',
+                                **{"template__page_file": tmpl_code}).get_from_cache(get_all=True)
 
         inc_htmls = []
         for inc in includes:
@@ -43,9 +45,12 @@ class IncludeManager(object):
             inc_func = self.TEMPLATE_INCLUDE_MAPPING.get(inc.include_file)
             # Get render html from cache
             incl_html_cache = IncludeHtmlCache(inc_func, inc_params, extra_data, inc.class_name)
-            html = incl_html_cache.get_from_cache(request_hash=self.request_hash,
-                                                  page_tmpl_code=tmpl_code,
-                                                  include_code=inc.code)
+            if inc_func.cache:
+                html = incl_html_cache.get_from_cache(request_hash=self.request_hash, page_tmpl_code=tmpl_code,
+                                                      include_code=inc.code)
+            else:
+                html = incl_html_cache.get_from_data()
+
             inc_htmls.append((html,))
 
         return format_html_join("", "{}", inc_htmls)

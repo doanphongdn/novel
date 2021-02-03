@@ -10,20 +10,18 @@
     {% endfor %}
     {% if enable_auth_menu %}
         {% if user.is_authenticated %}
-            {% cache 500 "user_profile" user.id %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link nav-link-icon" href="#" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        <span class="nav-link-inner--text d-lg-none">{{ user.first_name }}</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-default_dropdown_1">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </li>
-            {% endcache %}
+            <li class="nav-item dropdown">
+                <a class="nav-link nav-link-icon" href="#" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="nav-link-inner--text">{{ user.first_name }} {{ user.last_name }}</span>
+                </a>
+{#                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-default_dropdown_1">#}
+{#                    <a class="dropdown-item" href="#"></a>#}
+{#                    <a class="dropdown-item" href="#">Another action</a>#}
+{#                    <div class="dropdown-divider"></div>#}
+{#                    <a class="dropdown-item" href="#">Something else here</a>#}
+{#                </div>#}
+            </li>
         {% else %}
             <li class="nav-item">
                 <a class="nav-link nav-link-icon btn-login" href="#" data-toggle="modal" data-target="#modal-login">

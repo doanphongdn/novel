@@ -342,8 +342,9 @@ class NovelChapter(models.Model):
             pass
         return None
 
-    def get_absolute_url(self):
-        return reverse("chapter", args=[self.novel.slug, self.slug])
+    def get_absolute_url(self, novel=None):
+        novel_slug = novel and novel.slug or self.novel.slug
+        return reverse("chapter", args=[novel_slug, self.slug])
 
 
 class NovelSetting(models.Model):

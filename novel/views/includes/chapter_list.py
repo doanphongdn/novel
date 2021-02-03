@@ -1,6 +1,7 @@
 from unidecode import unidecode
 
-from cms.cache_manager import LinkCache
+from cms.cache_manager import CacheManager
+from cms.models import Link
 from novel.paginator import ChapterPaginator
 from novel.views.includes.base import BaseTemplateInclude
 from novel.views.includes.link import LinkTemplateInclude
@@ -30,7 +31,8 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
             "type": hashtags_link_type,
             "active": True
         }
-        link_objs = LinkCache.get_from_cache(get_all=True, **link_conditions)
+
+        link_objs = CacheManager(Link, **link_conditions).get_from_cache(get_all=True)
         link_data = {}
         for link in link_objs:
             for name in [novel.name, unidecode(novel.name)]:

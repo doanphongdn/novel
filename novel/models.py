@@ -189,11 +189,11 @@ class Novel(models.Model):
 
         return data
 
-    @property
+    @cached_property
     def authors_name(self):
         return ", ".join([str(p.name) for p in self.authors.all()])
 
-    @property
+    @cached_property
     def genres_name(self):
         return ", ".join([str(p.name) for p in self.genres.all()])
 
@@ -318,22 +318,24 @@ class NovelChapter(models.Model):
     def created_at_str(self):
         return datetime2string(self.created_at)
 
-    @property
+    @cached_property
     def next_chapter(self):
         next_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__gt=self.id).last()
         return next_chap
 
-    @property
+    @cached_property
     def prev_chapter(self):
         prev_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__lt=self.id).first()
         return prev_chap
 
-    @property
+    @cached_property
     def decompress_content(self):
-        if self.binary_content and len(self.binary_content) > 0:
-            decompresed = zlib.decompress(self.binary_content).decode()
-            return decompresed
-
+        try:
+            if self.binary_content and len(self.binary_content) > 0:
+                decompresed = zlib.decompress(self.binary_content).decode()
+                return decompresed
+        except:
+            pass
         return None
 
     def get_absolute_url(self):

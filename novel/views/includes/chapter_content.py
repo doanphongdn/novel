@@ -52,8 +52,10 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
     def __init__(self, include_data, extra_data=None):
         super().__init__(include_data, extra_data)
         chapter = self.include_data.get("chapter")
+        novel = self.include_data.get("novel")
 
         self.include_data = {
             "chapter": chapter,
+            "novel": novel,
             "stream_images": self.stream_images(chapter),
         }

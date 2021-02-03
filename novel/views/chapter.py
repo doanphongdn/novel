@@ -16,12 +16,24 @@ class ChapterView(NovelBaseView):
 
         slug = kwargs.get('slug')
         chapter_slug = kwargs.get('chapter_slug')
+        breadcrumb_data = []
 
         novel = NovelCache.get_first_from_cache(slug=slug)
         if novel:
             # TODO: not yet apply cache
             chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).first()
             if chapter:
+                breadcrumb_data = [
+                    {
+                        "name": novel.name,
+                        "url": novel.get_absolute_url(),
+                    },
+                    {
+                        "name": chapter.name if chapter else '',
+                        "url": chapter.get_absolute_url() if chapter else '',
+                    }
+                ]
+
                 referer = urlparse(chapter.url)
                 if novel.thumbnail_image.strip().startswith('//'):
                     referer_url = referer.scheme
@@ -54,17 +66,6 @@ class ChapterView(NovelBaseView):
 
                     request.session["chapters_viewed"] = chapters_viewed
                     # request.session.set_expiry(3600)
-
-            breadcrumb_data = [
-                {
-                    "name": novel.name,
-                    "url": novel.get_absolute_url(),
-                },
-                {
-                    "name": chapter.name if chapter else '',
-                    "url": chapter.get_absolute_url() if chapter else '',
-                }
-            ]
         else:
             # TODO: define 404 page
             # direct to homepage
@@ -75,7 +76,8 @@ class ChapterView(NovelBaseView):
                 "breadcrumb_data": breadcrumb_data,
             },
             "chapter_content": {
-                "chapter": chapter
+                "chapter": chapter,
+                "novel": novel
             }
         }
 

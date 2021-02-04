@@ -49,8 +49,8 @@ class NovelSpider(scrapy.Spider):
             try:
                 params = json.loads(act.params)
                 res_data = action.handle(res_data, **params)
-            except:
-                pass
+            except Exception as e:
+                print("[NovelSpider] parsing error ", e)
 
         continue_paging = self.campaign_type.handle(res_data, self.campaign,
                                                     no_update_limit=self.campaign.no_update_limit)

@@ -46,12 +46,15 @@ class NovelCampaignType(BaseCrawlCampaignType):
 
                 latest_chapter = self.full_schema_url(item.get('latest_chapter_url') or "")
                 if latest_chapter:
-                    if latest_chapter != novel.latest_chapter_url or (
-                            novel.chapters and latest_chapter != novel.chapters[0].url):
+                    print("[NovelCampaignType][handle] novel %s - latest_chapter %" % (novel.name, latest_chapter))
+                    if latest_chapter != novel.latest_chapter_url \
+                            or (novel.chapter_total and latest_chapter != novel.latest_chapter.url):
+                        # print("[NovelCampaignType][handle] Update latest_chapter ", latest_chapter)
                         novel.latest_chapter_url = latest_chapter
                         novel.novel_updated = False
                         no_update_count = 0
                     else:
+                        # print("[NovelCampaignType][handle] novel_updated with count:", no_update_count)
                         novel.novel_updated = True
                         no_update_count += 1
 
@@ -66,6 +69,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
 
         if new_data:
             Novel.objects.bulk_create(new_data, ignore_conflicts=True)
+            print("[NovelCampaignType][handle] Updated %s new Novel " % len(new_data))
 
         if 0 < no_update_limit <= no_update_count:
             continue_paging = False
@@ -148,7 +152,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                 update = True
 
             status = crawled_data.get("status")
-            if status and status != novel.status:
+            if status and status != novel.status.name:
                 status, _ = Status.objects.get_or_create(name=status.title().strip())
                 novel.status = status
                 update = True

@@ -28,6 +28,9 @@ cp .env.example .env
 # Install memcached
 sudo apt-get install memcached
 
+# Install Redis Server (using default)
+sudo apt-get install redis-server
+
 # Install Selenium
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add 
 

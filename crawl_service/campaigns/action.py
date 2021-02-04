@@ -66,6 +66,9 @@ class GroupItem(BaseAction):
         fields = kwargs.get("fields") or []
         name = kwargs.get("name")
 
+        if not name:
+            return obj
+
         group_values = [obj.pop(f) for f in fields]
         res_data = []
         for val in zip(*group_values):

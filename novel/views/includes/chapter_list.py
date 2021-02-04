@@ -25,7 +25,7 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
             "chapter_updated": True,
             "active": True
         }
-        chapter_paginated = ChapterPaginator(limit, page, **chapter_conditions)
+        chapter_paginated = ChapterPaginator(novel, limit, page, **chapter_conditions)
 
         link_conditions = {
             "type": hashtags_link_type,

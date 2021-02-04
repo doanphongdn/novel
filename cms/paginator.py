@@ -9,10 +9,13 @@ class ModelPaginator:
     def __init__(self, per_page, number, order_by='-id', **kwargs):
         self.per_page = per_page
         self.order_by = order_by
-        self.count = self.model.objects.filter(**kwargs).count()
+        self.total = self.calc_total()
         self.number = self.validate_number(number)
         self.offset = per_page * (self.number - 1)
         self.data = self.get_data(**kwargs)
+
+    def calc_total(self, **kwargs):
+        return self.model.objects.filter(**kwargs).count()
 
     def get_data(self, **kwargs):
         limit = self.offset + self.per_page
@@ -56,9 +59,9 @@ class ModelPaginator:
     @property
     def num_pages(self):
         """Return the total number of pages."""
-        if self.count == 0:
+        if self.total == 0:
             return 0
-        hits = max(1, self.count)
+        hits = max(1, self.total)
         return ceil(hits / self.per_page)
 
     def has_next(self):

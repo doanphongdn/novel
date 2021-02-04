@@ -55,10 +55,10 @@
             </div>
         </div>
         <div class="novel-chapter">
-            <h6><a href="{{ novel.latest_chapter.get_absolute_url }}">{{ novel.latest_chapter.name }}</a></h6>
+            <h6><a href="{{ novel.novel_flat.latest_chapter.url }}">{{ novel.novel_flat.latest_chapter.name }}</a></h6>
             {% if view_type == 'list' %}
                 <div class="updated-time">
-                    <i class="far fa-clock"></i> {{ novel.latest_chapter.created_at_str }}
+                    <i class="far fa-clock"></i> {{ novel.novel_flat.latest_chapter.created_at }}
                 </div>
             {% endif %}
         </div>

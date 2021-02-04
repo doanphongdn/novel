@@ -35,13 +35,13 @@
                             </div>
                             <div>
                                 <label>{{ latest_update_label }} </label>
-                                <span>{{ novel.latest_chapter.created_at_str }}</span>
+                                <span>{{ novel.novel_flat.latest_chapter.created_at }}</span>
                             </div>
                             <div class="novel-summary">
                                 <div class="row">
                                     <div class="col-4 col-md-2 novel-summury-item chapters">
                                         <label>{{ chapter_total_label }}</label>
-                                        <p><i class="fa fa-list"></i> {{ novel.chapter_total }}</p>
+                                        <p><i class="fa fa-list"></i> {{ novel.novel_flat.chapters.chapter_total }}</p>
                                     </div>
                                     <div class="col-4 col-md-2 novel-summury-item view-total">
                                         <label>{{ view_total_label }}</label>
@@ -65,12 +65,12 @@
                             </div>
 
                             <div class="novel-button">
-                                <a href="{{ novel.first_chapter.get_absolute_url }}">
+                                <a href="{{ novel.novel_flat.first_chapter.get_absolute_url }}">
                                     <button class="btn btn-sm btn-primary">
                                         <i class="fa fa-sort-numeric-asc"></i> {{ first_chapter_label }}
                                     </button>
                                 </a>
-                                <a href="{{ novel.latest_chapter.get_absolute_url }}">
+                                <a href="{{ novel.novel_flat.latest_chapter.get_absolute_url }}">
                                     <button class="btn btn-sm btn-primary">
                                         <i class="fa fa-sort-numeric-desc"></i> {{ latest_chapter_label }}
                                     </button>

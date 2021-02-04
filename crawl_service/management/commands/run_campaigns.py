@@ -34,14 +34,17 @@ class CrawlerScript(Process):
 
 class CrawlerRunning:
     def __init__(self, cam):
+        print("[%s] Starting campaign..." % cam.name)
         self.spider = NovelSpider(cam)
         self.crawler = CrawlerScript(self.spider)
         self.stopped = False
 
-    def crawl_async(self):
+    def crawl_start(self):
+        self.crawler.start()
+
+    def crawl_join_async(self):
         # spider = NovelSpider()
         # crawler = CrawlerScript(spider, cam)
-        self.crawler.start()
         self.crawler.join()
 
         self.spider.campaign.last_run = datetime.now()
@@ -76,13 +79,12 @@ class Command(BaseCommand):
         max_thread = int(os.environ.get('CAMPAIGNS_THREAD_NUM', 2))
         running_campaigns_number = sum(1 for c in campaigns if c.status == 'running')
         if max_thread <= running_campaigns_number:
-            print("Max thread %s is running" % running_campaigns_number)
+            print("Max %s threads are running" % running_campaigns_number)
             return
 
         running_campaigns = []
 
         for cam in campaigns:
-            print("[%s] Starting campaign..." % cam.name)
             if cam.status == 'running':
                 running_campaigns.append(cam)
                 continue
@@ -94,7 +96,14 @@ class Command(BaseCommand):
             run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time
             if run_able:
                 crawl_running = CrawlerRunning(cam)
+                crawl_running.crawl_start()
                 running_campaigns.append(crawl_running)
 
         for crawl_running in running_campaigns:
-            crawl_running.crawl_async()
+            # Ignore type as CrawlCampaign added before
+            if not isinstance(crawl_running, CrawlerRunning):
+                continue
+            crawl_running.crawl_join_async()
+
+        if len(running_campaigns) >= max_thread:
+            print("%s threads are running" % len(running_campaigns))

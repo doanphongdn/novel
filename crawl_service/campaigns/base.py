@@ -16,7 +16,7 @@ class BaseCrawlCampaignType(object):
         self.campaign = campaign
         self.update_values = {}
         if prefetch_by_data and self.update_by_fields:
-            exists_data = self.model_class.objects.filter(self.build_condition_or(prefetch_by_data))
+            exists_data = self.model_class.objects.filter(self.build_condition_or(prefetch_by_data)).all()
 
             self.update_values = {f: {} for f in self.update_by_fields}
             for obj in exists_data:

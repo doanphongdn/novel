@@ -47,9 +47,9 @@ class CrawlerRunning:
         # crawler = CrawlerScript(spider, cam)
         self.crawler.join()
 
-        self.spider.campaign.last_run = datetime.now()
-        self.spider.campaign.status = 'stopped'
-        self.spider.campaign.save()
+        self.crawler.campaign.last_run = datetime.now()
+        self.crawler.campaign.status = 'stopped'
+        self.crawler.campaign.save()
         self.stopped = True
         print("[%s] Finish campaign " % self.spider.campaign.name)
 

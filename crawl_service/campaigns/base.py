@@ -1,3 +1,4 @@
+import itertools
 from functools import reduce
 from operator import or_
 
@@ -16,14 +17,23 @@ class BaseCrawlCampaignType(object):
         self.campaign = campaign
         self.update_values = {}
         if prefetch_by_data and self.update_by_fields:
-            exists_data = self.model_class.objects.filter(self.build_condition_or(prefetch_by_data)).all()
 
             self.update_values = {f: {} for f in self.update_by_fields}
-            for obj in exists_data:
-                for key, value in self.update_values.items():
-                    val = getattr(obj, key, None)
-                    if val:
-                        value[val] = obj
+
+            batch = 50
+            first = 0
+            last = batch
+
+            while last < len(prefetch_by_data):
+                sub_data = prefetch_by_data[first:last]
+                exists_data = self.model_class.objects.filter(self.build_condition_or(sub_data)).all()
+                for obj in exists_data:
+                    for key, value in self.update_values.items():
+                        val = getattr(obj, key, None)
+                        if val:
+                            value[val] = obj
+                first = batch
+                last += batch
 
         pass
 

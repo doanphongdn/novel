@@ -137,7 +137,7 @@ class Command(BaseCommand):
 
             if len(threads) + running_campaigns_number < max_thread:
                 thread = Thread(target=process.start)
-                thread.daemon = True  # Daemonize thread
+                thread.daemon = False  # Daemonize thread
                 threads.append({'campaign': cam, 'thread': thread})
 
         for thread in threads:

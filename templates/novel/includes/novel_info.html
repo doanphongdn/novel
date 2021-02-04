@@ -65,12 +65,12 @@
                             </div>
 
                             <div class="novel-button">
-                                <a href="{{ novel.novel_flat.first_chapter.get_absolute_url }}">
+                                <a href="{{ novel.novel_flat.first_chapter.url }}">
                                     <button class="btn btn-sm btn-primary">
                                         <i class="fa fa-sort-numeric-asc"></i> {{ first_chapter_label }}
                                     </button>
                                 </a>
-                                <a href="{{ novel.novel_flat.latest_chapter.get_absolute_url }}">
+                                <a href="{{ novel.novel_flat.latest_chapter.url }}">
                                     <button class="btn btn-sm btn-primary">
                                         <i class="fa fa-sort-numeric-desc"></i> {{ latest_chapter_label }}
                                     </button>

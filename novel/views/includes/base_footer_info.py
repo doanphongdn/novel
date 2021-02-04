@@ -13,5 +13,5 @@ class FooterInfotemplateInclude(BaseTemplateInclude):
         ft_info = CacheManager(FooterInfo, **{"type": footer_type}).get_from_cache(get_all=True)
 
         self.include_data.update({
-            "content": ft_info and ft_info.content or "",
+            "content": ft_info and ft_info[0].content or "",
         })

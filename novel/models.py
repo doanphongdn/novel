@@ -81,10 +81,24 @@ class Genre(models.Model):
         return f"/{settings.NOVEL_GENRE_URL}/{self.slug}"
 
 
+def default_novel_flat():
+    return {}
+
+
+class NovelFlat(models.Model):
+    class Meta:
+        db_table = "novel_novels_flat"
+
+    latest_chapter = models.JSONField(null=True, blank=True, default=default_novel_flat)
+    first_chapter = models.JSONField(null=True, blank=True, default=default_novel_flat)
+    chapters = models.JSONField(null=True, blank=True, default=default_novel_flat)
+
+
 class Novel(models.Model):
     class Meta:
         db_table = "novel_novels"
 
+    novel_flat = models.ForeignKey(NovelFlat, on_delete=models.CASCADE, unique=True, null=True)
     name = models.CharField(max_length=250, db_index=True, unique=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, db_index=True,
                          max_length=250, blank=True, unique=True, null=True)
@@ -206,7 +220,6 @@ class Novel(models.Model):
         deactive_ids = cls.objects.filter(genres__active=False).values_list('id', flat=True).distinct()
         available_novels = cls.objects.filter(~Q(id__in=deactive_ids),
                                               active=True, publish=True).distinct()
-
         return available_novels
 
     @property
@@ -282,6 +295,8 @@ class NovelChapter(models.Model):
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, db_index=True)
     url = models.TextField()
+
+    novel_slug = models.CharField(max_length=250, blank=True, null=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, max_length=250, blank=True, null=True,
                          db_index=True)
 
@@ -342,7 +357,7 @@ class NovelChapter(models.Model):
         return None
 
     def get_absolute_url(self):
-        return reverse("chapter", args=[self.novel.slug, self.slug])
+        return reverse("chapter", args=[self.novel_slug, self.slug])
 
 
 class NovelSetting(models.Model):

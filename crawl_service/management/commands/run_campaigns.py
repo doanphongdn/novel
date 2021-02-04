@@ -1,18 +1,15 @@
 from datetime import datetime
 
-import os
+from billiard import Process
 from django.core.management.base import BaseCommand
+from scrapy import signals
+from scrapy.crawler import Crawler
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
-from threading import Thread
+from twisted.internet import reactor
 
 from crawl_service.campaigns.scrapy_spider import NovelSpider
 from crawl_service.models import CrawlCampaign
-
-from scrapy.crawler import Crawler
-from scrapy import signals
-from twisted.internet import reactor
-from billiard import Process
 
 
 class CrawlerScript(Process):
@@ -59,26 +56,26 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         ### Cach 1
-        # campaigns = CrawlCampaign.objects.filter(active=True, status='stopped').all()
-        #
-        # process = CrawlerProcess(get_project_settings())
-        # campaigns_update = []
-        # for cam in campaigns:
-        #     run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time
-        #     if run_able:
-        #         print("[%s] Starting campaign... " % cam.name)
-        #         cam.status = 'running'
-        #         cam.save()
-        #         campaigns_update.append(cam)
-        #         process.crawl(NovelSpider, campaign=cam)
-        #
-        # process.start()  # the script will block here until all crawling jobs are finished
-        #
-        # for cam in campaigns_update:
-        #     print("[%s] Finish campaign " % cam.name)
-        #     cam.last_run = datetime.now()
-        #     cam.status = 'stopped'
-        #     cam.save()
+        campaigns = CrawlCampaign.objects.filter(active=True, status='stopped').all()
+
+        process = CrawlerProcess(get_project_settings())
+        campaigns_update = []
+        for cam in campaigns:
+            run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time
+            if run_able:
+                print("[%s] Starting campaign... " % cam.name)
+                cam.status = 'running'
+                cam.save()
+                campaigns_update.append(cam)
+                process.crawl(NovelSpider, campaign=cam)
+
+        process.start()  # the script will block here until all crawling jobs are finished
+
+        for cam in campaigns_update:
+            print("[%s] Finish campaign " % cam.name)
+            cam.last_run = datetime.now()
+            cam.status = 'stopped'
+            cam.save()
 
         #### Cach 2
         # max_thread = int(os.environ.get('CAMPAIGNS_THREAD_NUM', 2))
@@ -113,43 +110,43 @@ class Command(BaseCommand):
         # if len(running_campaigns) >= max_thread:
         #     print("%s threads are running" % len(running_campaigns))
 
-        ### Cach 3
-        campaigns = CrawlCampaign.objects.filter(active=True).all()
-        max_thread = int(os.environ.get('CAMPAIGNS_THREAD_NUM', 2))
-        running_campaigns_number = sum(1 for c in campaigns if c.status == 'running')
-        if max_thread <= running_campaigns_number:
-            print("[Crawl Campaign Command] Max %s threads are running" % running_campaigns_number)
-            return
-
-        process = CrawlerProcess(get_project_settings())
-        # campaigns_update = []
-        threads = []
-        for cam in campaigns:
-            run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time
-            if not run_able:
-                continue
-
-            print("[%s] Starting campaign... " % cam.name)
-            cam.status = 'running'
-            cam.save()
-            # campaigns_update.append(cam)
-            process.crawl(NovelSpider, campaign=cam)
-
-            if len(threads) + running_campaigns_number < max_thread:
-                thread = Thread(target=process.start)
-                thread.daemon = False  # Daemonize thread
-                threads.append({'campaign': cam, 'thread': thread})
-
-        for thread in threads:
-            thread.get('thread').start()
-
-        for thread in threads:
-            thread.get('thread').join()
-
-            cam = thread.get('campaign')
-            if not cam:
-                continue
-            print("[%s] Finish campaign. " % cam.name)
-            cam.last_run = datetime.now()
-            cam.status = 'stopped'
-            cam.save()
+        # ### Cach 3
+        # campaigns = CrawlCampaign.objects.filter(active=True).all()
+        # max_thread = int(os.environ.get('CAMPAIGNS_THREAD_NUM', 2))
+        # running_campaigns_number = sum(1 for c in campaigns if c.status == 'running')
+        # if max_thread <= running_campaigns_number:
+        #     print("[Crawl Campaign Command] Max %s threads are running" % running_campaigns_number)
+        #     return
+        #
+        # process = CrawlerProcess(get_project_settings())
+        # # campaigns_update = []
+        # threads = []
+        # for cam in campaigns:
+        #     run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time
+        #     if not run_able:
+        #         continue
+        #
+        #     print("[%s] Starting campaign... " % cam.name)
+        #     cam.status = 'running'
+        #     cam.save()
+        #     # campaigns_update.append(cam)
+        #     process.crawl(NovelSpider, campaign=cam)
+        #
+        #     if len(threads) + running_campaigns_number < max_thread:
+        #         thread = Thread(target=process.start)
+        #         thread.daemon = False  # Daemonize thread
+        #         threads.append({'campaign': cam, 'thread': thread})
+        #
+        # for thread in threads:
+        #     thread.get('thread').start()
+        #
+        # for thread in threads:
+        #     thread.get('thread').join()
+        #
+        #     cam = thread.get('campaign')
+        #     if not cam:
+        #         continue
+        #     print("[%s] Finish campaign. " % cam.name)
+        #     cam.last_run = datetime.now()
+        #     cam.status = 'stopped'
+        #     cam.save()

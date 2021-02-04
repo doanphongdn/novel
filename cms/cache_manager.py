@@ -22,7 +22,7 @@ class CacheManager(object):
         cached = cache.get(cache_key)
         if cached is None:
             data = self._get_data(**self.kwargs)
-            if not get_all:
+            if data and not get_all:
                 data = data[0]
 
             cache.set(cache_key, data)

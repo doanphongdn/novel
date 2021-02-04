@@ -16,8 +16,25 @@ class HtmlPageForm(forms.ModelForm):
         fields = '__all__'
 
 
+class ActionAdmin(admin.ModelAdmin):
+    actions = ["active", "deactive"]
+
+    def active(self, request, queryset):
+        for obj in queryset:
+            obj.active = True
+            obj.save()
+
+    def deactive(self, request, queryset):
+        for obj in queryset:
+            obj.active = False
+            obj.save()
+
+    active.short_description = ">>>> V Active"
+    deactive.short_description = "<<<< X Deactive"
+
+
 @admin.register(HtmlPage)
-class HtmlPageAdmin(admin.ModelAdmin):
+class HtmlPageAdmin(ActionAdmin):
     form = HtmlPageForm
     list_display = ("id", "name", "active", "created_at", "updated_at")
     search_fields = ("name", "slug")
@@ -39,7 +56,7 @@ class MenuAdmin(admin.ModelAdmin):
 
 
 @admin.register(Link)
-class LinkAdmin(admin.ModelAdmin):
+class LinkAdmin(ActionAdmin):
     list_display = ("id", "active", "name", "url", "type")
     search_fields = ("name", "url", "type")
     list_filter = ("active", "type")
@@ -60,7 +77,7 @@ class IncludeTemplateForm(forms.ModelForm):
 
 
 @admin.register(InludeTemplate)
-class InludeTemplateAdmin(admin.ModelAdmin):
+class InludeTemplateAdmin(ActionAdmin):
     list_display = ("template", "code", "include_file", "priority", "class_name", "full_width", "active")
     form = IncludeTemplateForm
 

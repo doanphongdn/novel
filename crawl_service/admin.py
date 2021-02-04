@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from cms.admin import ActionAdmin
 from crawl_service.models import CDNServer, CrawlCampaign, CrawlItem, CrawlCampaignSource, CrawlItemAction, CrawlLog
 
 
@@ -48,7 +49,7 @@ class CrawlLogInlineAdmin(admin.TabularInline):
 
 
 @admin.register(CrawlCampaign)
-class CrawlCampaignAdmin(admin.ModelAdmin):
+class CrawlCampaignAdmin(ActionAdmin):
     list_display = ("name", "campaign_source", "campaign_type", "status", "last_run", "target_url", "active")
     # readonly_fields = ("status",)
     inlines = [
@@ -56,20 +57,6 @@ class CrawlCampaignAdmin(admin.ModelAdmin):
         CrawlItemActionInlineAdmin,
         CrawlLogInlineAdmin
     ]
-    actions = ["campaign_active", "campaign_deactive"]
-
-    def campaign_active(self, request, queryset):
-        for obj in queryset:
-            obj.active = True
-            obj.save()
-
-    def campaign_deactive(self, request, queryset):
-        for obj in queryset:
-            obj.active = False
-            obj.save()
-
-    campaign_active.short_description = "Active >>"
-    campaign_deactive.short_description = "Deactive >>"
 
 
 @admin.register(CrawlCampaignSource)

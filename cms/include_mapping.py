@@ -45,11 +45,11 @@ class IncludeManager(object):
             inc_func = self.TEMPLATE_INCLUDE_MAPPING.get(inc.include_file)
             # Get render html from cache
             incl_html_cache = IncludeHtmlCache(inc_func, inc_params, extra_data, inc.class_name)
-            if inc_func.cache:
+            if inc_func and inc_func.cache:
                 html = incl_html_cache.get_from_cache(request_hash=self.request_hash, page_tmpl_code=tmpl_code,
                                                       include_code=inc.code)
             else:
-                html = incl_html_cache.get_from_data()
+                html = incl_html_cache.get_from_data() if incl_html_cache else 'Missing incl_html_cache'
 
             inc_htmls.append((html,))
 

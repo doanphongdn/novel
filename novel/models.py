@@ -84,7 +84,6 @@ class Genre(models.Model):
 class Novel(models.Model):
     class Meta:
         db_table = "novel_novels"
-        ordering = ['-id']
 
     name = models.CharField(max_length=250, db_index=True, unique=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, db_index=True,
@@ -279,7 +278,6 @@ class NovelChapter(models.Model):
     class Meta:
         db_table = "novel_chapters"
         unique_together = [('name', 'novel'), ('slug', 'novel'), ('url', 'novel')]
-        ordering = ['-id']
 
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, db_index=True)

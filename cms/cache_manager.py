@@ -5,25 +5,18 @@ from django.utils.html import format_html_join
 
 
 class CacheManager(object):
-    order_by = None
-
     def __init__(self, class_model, order_by: str = None, **kwargs):
         self.class_model = class_model
-        self.order_by = order_by
         self.kwargs = kwargs
 
     def _get_data(self, **kwargs):
         if hasattr(self.class_model, 'active'):
             kwargs["active"] = True
-        if self.order_by:
-            return self.class_model.objects.filter(**kwargs).order_by(self.order_by).all()
 
         return self.class_model.objects.filter(**kwargs).all()
 
     def get_from_cache(self, get_all=False):
         kwargs_key = [str(val) for val in self.kwargs.values()]
-        if self.order_by:
-            kwargs_key.append(self.order_by)
 
         cache_key = "CacheManager_" + md5("_".join((self.class_model.__name__, *kwargs_key)).encode()).hexdigest()
         cached = cache.get(cache_key)

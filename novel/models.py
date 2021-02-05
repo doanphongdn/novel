@@ -4,7 +4,6 @@ from datetime import datetime
 
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
-from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models import Q
@@ -272,7 +271,7 @@ class NovelChapter(models.Model):
     @classmethod
     def get_undownloaded_images_chapters(cls):
         return cls.objects.filter(active=True, cdnnovelfile=None) \
-                   .order_by('-updated_at', '-view_total', '-id')[0:200]
+                   .order_by('-updated_at', '-view_total', '-id').all()[0:20]
 
     @classmethod
     def get_available_chapter(cls):
@@ -361,6 +360,7 @@ class NovelUserProfile(models.Model):
     def get_profiles(cls, user_id):
         return cls.objects.filter(user_id=user_id).first()
 
+
 class CDNNovelFile(models.Model):
     class Meta:
         db_table = "cdn_novel_files"
@@ -377,7 +377,10 @@ class CDNNovelFile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     full = models.BooleanField(default=False)
+    allow_limit = models.BooleanField(default=False)
 
     @classmethod
     def get_missing_files(cls):
-        return cls.objects.filter(full=False, retry__lte=settings.BACKBLAZE_MAX_RETRY)[0:5000]
+        return cls.objects.filter(full=False,
+                                  allow_limit=settings.BACKBLAZE_NOT_ALLOW_LIMIT,
+                                  retry__lte=settings.BACKBLAZE_MAX_RETRY).all()[0:50]

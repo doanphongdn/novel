@@ -64,7 +64,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                     file_path = "%s/%s" % (chapter.novel.slug, chapter.slug)
                     full_origin_url = full_schema_url(image, referer)
                     _, ext = os.path.splitext(full_origin_url)
-                    target_file = "%s/%s/%s%s" % (cdn_file_url.strip('/'), file_path, str(idx), ext)
+                    target_file = "%s/%s/%s%s" % (cdn_file_url.strip('/'), file_path, str(idx), ext or '.jpg')
                     cdn_referer = None
                     if cdn_friendly_alias_url:
                         current_site = get_current_site(chapter)

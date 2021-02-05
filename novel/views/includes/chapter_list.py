@@ -58,7 +58,8 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
 
         paging_data = {
             "paginated_data": chapter_paginated,
-            "page_label": page_label
+            "page_label": page_label,
+            "page_target": "chap-list"
         }
         pagination = PaginationTemplateInclude(paging_data)
 

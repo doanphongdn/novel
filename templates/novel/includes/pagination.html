@@ -4,7 +4,7 @@
             <ul class="pagination justify-content-center">
                 {% if paginated_data.num_pages != 1 %}
                     <li class="page-item">
-                        <a class="page-link" href="?{{ page_label }}=1{{ other_params }}">
+                        <a class="page-link" href="?{{ page_label }}=1{{ other_params }}#{{ page_target }}">
                             <i class="fa fa-angle-double-left"></i>
                         </a>
                     </li>
@@ -21,15 +21,16 @@
                             <a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>
                         </li>
                     {% elif paginated_data.number > i|add:"-3" and paginated_data.number < i|add:"+3" %}
-                        <li class="page-item"><a class="page-link"
-                                                 href="?{{ page_label }}={{ i }}{{ other_params }}">{{ i }}</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="?{{ page_label }}={{ i }}{{ other_params }}#{{ page_target }}">
+                                {{ i }}</a></li>
                     {% endif %}
                 {% endfor %}
 
                 {% if paginated_data.num_pages != paginated_data.number %}
                     <li class="page-item">
                         <a class="page-link"
-                           href="?{{ page_label }}={{ paginated_data.num_pages }}{{ other_params }}">
+                           href="?{{ page_label }}={{ paginated_data.num_pages }}{{ other_params }}#{{ page_target }}">
                             <i class="fa fa-angle-double-right"></i>
                         </a>
                     </li>

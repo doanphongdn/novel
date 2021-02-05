@@ -1,8 +1,9 @@
 import hashlib
 import json
+import os
 from urllib.parse import urlparse
 
-import os
+from django.contrib.sites.shortcuts import get_current_site
 
 from crawl_service import settings as craw_settings
 from crawl_service.utils import full_schema_url
@@ -27,6 +28,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
         try:
             ignore_referer_for = craw_settings.IGNORE_REFERER_FOR.split(',')
             cdn_file_url = craw_settings.BACKBLAZE_FRIENDLY_URL
+            cdn_friendly_alias_url = craw_settings.BACKBLAZE_FRIENDLY_ALIAS_URL
             if not cdn_file_url:
                 cdn_file_url = craw_settings.BACKBLAZE_S3_URL
             # TODO: if BACKBLAZE_FRIENDLY_URL is not set in the .evn file, we should query it from cdn_server
@@ -58,13 +60,20 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                     "referer": referer_url,
                 }
 
-                if cdn_file_url:
+                if cdn_file_url or cdn_friendly_alias_url:
                     file_path = "%s/%s" % (chapter.novel.slug, chapter.slug)
                     full_origin_url = full_schema_url(image, referer)
                     _, ext = os.path.splitext(full_origin_url)
                     target_file = "%s/%s/%s%s" % (cdn_file_url.strip('/'), file_path, str(idx), ext)
+                    cdn_referer = None
+                    if cdn_friendly_alias_url:
+                        current_site = get_current_site(chapter)
+                        if current_site:
+                            target_file = "%s/%s/%s%s" % (cdn_friendly_alias_url.strip('/'), file_path, str(idx), ext)
+                            cdn_referer = "http://" + current_site.domain if 'http' not in current_site.domain else current_site.domain
+
                     if target_file:
-                        json_obj.update({'cdn_origin_url': target_file})
+                        json_obj.update({'cdn_origin_url': target_file, 'cdn_referer': cdn_referer})
 
                 json_str = json.dumps(json_obj)
 

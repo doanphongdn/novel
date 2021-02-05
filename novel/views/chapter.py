@@ -116,11 +116,25 @@ class ChapterView(NovelBaseView):
         if json_str:
             try:
                 json_str = json.loads(json_str)
-            except:
-                return HttpResponse({})
 
-            origin_url = json_str.get("origin_url", "")
-            referer_url = json_str.get("referer")
-            return StreamingHttpResponse(url2yield(origin_url, referer=referer_url), content_type="image/jpeg")
+                referer_url = json_str.get("referer")
+                cdn_origin_url = json_str.get("cdn_origin_url", "")
+                origin_url = json_str.get("origin_url", "")
+                if cdn_origin_url:
+                    response = StreamingHttpResponse(url2yield(cdn_origin_url, referer=None), content_type="image/jpeg")
+                    if response.status_code == 200:
+                        return response
+                    else:
+                        # failed to stream from CDN
+                        cdn_origin_url = None
+                # Stream origin image if not found from CDN
+                if not cdn_origin_url:
+                    return StreamingHttpResponse(url2yield(origin_url, referer=referer_url), content_type="image/jpeg")
+
+            except Exception as e:
+                print("[stream_image] Error when parse image %s : %s" % (img_hash, e))
+                import traceback
+                traceback.print_exc()
+                return HttpResponse({})
 
         return HttpResponse({})

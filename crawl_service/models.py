@@ -106,6 +106,8 @@ class CDNServer(models.Model):
     name = models.CharField(max_length=250, unique=True)
     server_id = models.CharField(max_length=250, blank=True, null=True)
     endpoint = models.CharField(max_length=250)
+    friendly_url = models.CharField(max_length=250, default='https://f000.backblazeb2.com/file/nettruyen/')
+    s3_url = models.CharField(max_length=250, blank=True, null=True)
 
     active = models.BooleanField(default=True)
     status = models.CharField(max_length=10, choices=CAMPAIGN_STATUS, default='stopped')

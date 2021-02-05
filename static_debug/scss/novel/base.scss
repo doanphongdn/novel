@@ -19,6 +19,10 @@ body {
   background: #efefef;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .content-wrap {
   padding: 15px;
   background: #fff;

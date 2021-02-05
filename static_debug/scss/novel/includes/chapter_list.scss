@@ -2,7 +2,7 @@
   .chapter-list-item {
     .chapter-wrap {
       margin: 5px 5px 5px 0;
-      border: thin solid #F5F5F5;
+      border: thin solid #F0F0F0;
       width: 100%;
       padding: 10px;
 
@@ -74,6 +74,17 @@
           vertical-align: text-top;
           text-shadow: 0 -1px -1px rgba(0, 0, 0, .2);
         }
+      }
+    }
+  }
+}
+
+/* Small Devices, Phones */
+@media (max-width: 600px) {
+  .chapter-list {
+    .chapter-list-item {
+      .chapter-wrap {
+        margin: 5px 0 5px 0;
       }
     }
   }

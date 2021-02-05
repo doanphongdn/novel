@@ -10,7 +10,7 @@
                     </li>
                 {% else %}
                     <li class="page-item disabled">
-                        <a class="page-link" href="#">
+                        <a class="page-link" href="#{{ page_target }}">
                             <i class="fa fa-angle-double-left"></i>
                         </a>
                     </li>
@@ -18,7 +18,7 @@
                 {% for i in paginated_data.page_range %}
                     {% if paginated_data.number == i %}
                         <li class="page-item active">
-                            <a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>
+                            <a class="page-link" href="#{{ page_target }}">{{ i }} <span class="sr-only">(current)</span></a>
                         </li>
                     {% elif paginated_data.number > i|add:"-3" and paginated_data.number < i|add:"+3" %}
                         <li class="page-item">
@@ -36,7 +36,7 @@
                     </li>
                 {% else %}
                     <li class="page-item disabled">
-                        <a class="page-link" href="#">
+                        <a class="page-link" href="#{{ page_target }}">
                             <i class="fa fa-angle-double-right"></i>
                         </a>
                     </li>

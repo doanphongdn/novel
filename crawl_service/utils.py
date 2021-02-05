@@ -22,7 +22,7 @@ def download_image(source, target_file, referer=None):
         headers.update({"Referer": referer})
     try:
         _, ext = os.path.splitext(source)
-        target_file = "%s%s" % (target_file, ext)
+        target_file = "%s%s" % (target_file, ext or '.jpg')
         target = "%s/%s" % (settings.NOVEL_STATIC_IMAGE_PATH, target_file)
         image = requests.get(source, headers=headers, timeout=5)
         if image.status_code == 200:
@@ -60,7 +60,7 @@ def download_cdn_file(source, target_file, ext=None, referer=None):
     try:
         if not ext:
             _, ext = os.path.splitext(source)
-        target_file = "%s%s" % (target_file, ext)
+        target_file = "%s%s" % (target_file, ext or '.jpg')
         target_dir = "%s/%s" % (settings.CDN_FILE_FOLDER, target_file)
         file_request = requests.get(source, headers=headers, timeout=5)
         if file_request.status_code == 200:

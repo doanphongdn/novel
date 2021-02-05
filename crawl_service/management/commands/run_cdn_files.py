@@ -49,6 +49,7 @@ class CDNProcess:
             # Check local is exist the file, just return to upload it without download it again
             source = origin_file.get('url')
             _, ext = os.path.splitext(source)
+            ext = ext or '.jpg'
             output_file = "%s/%s/%s" % (settings.CDN_FILE_FOLDER, local_path, str(origin_file.get('index')))
             if os.path.isfile(output_file + ext):
                 success_files.append({'index': origin_file.get('index'), 'url': output_file + ext})
@@ -172,7 +173,7 @@ class Command(BaseCommand):
 
             # we have to sort the list to make sure the images is correct ordering
             # regex map url: ^(.+\/)*(.+)\.(.+)$
-            existed_urls = list(set(existed_urls)) # Ensure have no duplication items
+            existed_urls = list(set(existed_urls))  # Ensure have no duplication items
             new_list = [splitext(basename(x))[0] for x in existed_urls]
             fin_list = list(zip(existed_urls, new_list))
             fin_list = [x[0] for x in sorted(fin_list, key=lambda x: int(x[1]))]
@@ -268,7 +269,7 @@ class Command(BaseCommand):
                 print('[process_rest_files] Unable to get files for %s-%s/%s-%s'
                       % (chapter.novel.id, chapter.novel.slug, chapter.id, chapter.slug))
                 continue
-            valid_urls = list(set(valid_urls)) # Ensure have no duplication items
+            valid_urls = list(set(valid_urls))  # Ensure have no duplication items
             result_url = "\n".join(valid_urls) if len(valid_urls) else None
             if number_urls == len(valid_urls):
                 full = True

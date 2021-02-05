@@ -106,8 +106,13 @@ class ChapterView(NovelBaseView):
                 if cdn_origin_url:
                     response = StreamingHttpResponse(url2yield(cdn_origin_url, referer=cdn_referer),
                                                      content_type="image/jpeg")
-                    if response.status_code == 200:
-                        return response
+                    if response and response.status_code == 200:
+                        result = json.loads(response.getvalue())
+                        if result and result.get('status') != 200:
+                            # failed to stream from CDN
+                            cdn_origin_url = None
+                        else:
+                            return response
                     else:
                         # failed to stream from CDN
                         cdn_origin_url = None

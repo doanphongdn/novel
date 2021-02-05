@@ -96,3 +96,15 @@ def upload_file_to_b2(file_path, b2_file_name, bucket_name='nettruyen'):
     os.system(
         ".venv/bin/b2 upload-file " + bucket_name + " \"" + file_path + "\" \"" + b2_file_name + "\"  >> upload.log 2>&1")
     os.system("mv \"" + file_path + "\" " + settings.CDN_FILE_FOLDER + "/done/ >> upload.log 2>&1")
+
+
+def full_schema_url(url, origin_domain=None):
+    if url.strip().startswith('//'):
+        url = "http:" + url
+    elif url.strip().startswith('/'):
+        if origin_domain:
+            url = origin_domain.strip('/') + url
+    else:
+        url = url.rstrip('/')
+
+    return url

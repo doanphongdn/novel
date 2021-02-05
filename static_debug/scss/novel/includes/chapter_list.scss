@@ -1,10 +1,19 @@
 .chapter-list {
   .chapter-list-item {
     .chapter-wrap {
-      margin-right: 20px;
-      border-bottom: thin solid #F5F5F5;
+      margin: 5px 5px 5px 0;
+      border: thin solid #F5F5F5;
       width: 100%;
-      padding: 10px 0;
+      padding: 10px;
+
+      &:hover {
+        cursor: pointer;
+        background: #F5F5F5;
+      }
+
+      &.even {
+        margin: 5px 0 5px 5px;
+      }
 
       .chapter-name {
         h6 {

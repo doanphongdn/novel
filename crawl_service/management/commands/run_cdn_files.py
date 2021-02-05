@@ -23,6 +23,7 @@ class CDNProcess:
             self.cdn = available_cdn[0]
             self.b2 = BackblazeB2Storage(opts={'bucket': self.cdn.name, 'allowFileOverwrites': True})
         else:
+            print('[CDN Processing Files] Not found CDN server configuration!')
             raise ValueError("Not found CDN server configuration!")
 
         self.origin_domain = None

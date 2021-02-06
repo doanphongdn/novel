@@ -41,12 +41,15 @@ class CDNProcess:
             self.b2.bucket = bucket_name
         self.b2.bucket.upload_local_file(file_path, b2_file_name)
 
-    def download_file_to_local(self, origin_file_urls, local_path, referer=None, limit_image=-1):
+    def download_file_to_local(self, origin_file_urls, local_path, referer=None, limit_image=-1, num_downloaded_url=0):
         success_files = []
         for idx, origin_file in enumerate(origin_file_urls):
             # stop download if reach limit images
-            if limit_image and idx >= limit_image:
+            if 0 < limit_image <= idx and settings.BACKBLAZE_ALLOW_LIMIT:
                 break
+            # when we need to run full images after run for a limit number
+            if settings.BACKBLAZE_NOT_ALLOW_LIMIT and idx < num_downloaded_url:
+                continue
             # Check local is exist the file, just return to upload it without download it again
             source = origin_file.get('url')
             _, ext = os.path.splitext(source)
@@ -66,13 +69,16 @@ class CDNProcess:
 
     def upload_file_to_cdn(self, local_files):
         # Process to upload local files to remote CDN server
+        img_hash = []
         for local_file in local_files:
             if not local_file.get('url'):
                 continue
             b2_file_name = local_file.get('url').replace(settings.CDN_FILE_FOLDER, '')
             # utils.upload_file_to_b2(local_file, b2_file_name)
             self.upload_file2b2(local_file.get('url'), b2_file_name.lstrip('/'))
-        return
+            if local_file.get('url_hash'):
+                img_hash.append(local_file.get('url_hash'))
+        return img_hash
 
     def remove_file(self, local_files, local_path, exclude_path=False):
         # Process to remove local files after we upload them to the CDN server
@@ -124,6 +130,8 @@ class Command(BaseCommand):
         init_time = time.time()
 
         files = CDNNovelFile.get_missing_files()
+        processed_files = []
+        limit_image = int(os.environ.get('BACKBLAZE_LIMIT_IMG', 150))
         print('[process_missing_files] total %s records' % len(files))
         for file in files:
             start_time = time.time()
@@ -136,8 +144,13 @@ class Command(BaseCommand):
             missing_files = []
             for idx, chapter_image in enumerate(urls):
                 origin_img = hashlib.md5(chapter_image.encode()).hexdigest()
-                if not file.url or origin_img not in file.url:
-                    missing_files.append({"index": idx, "url": chapter_image})
+                if not file.url or origin_img not in file.url_hash:
+                    missing_files.append({"index": idx, "url": chapter_image, "url_hash": origin_img})
+
+            # compute number of downloaded url
+            num_downloaded_url = 0
+            if file.url:
+                num_downloaded_url = len(file.url.split("\n"))
 
             # get_img_time = time.time() - start_time
             # print('[process_missing_files][%s-%s] spent %s to get %s missing images'
@@ -146,7 +159,8 @@ class Command(BaseCommand):
             # Download Files to local server
             success_files = self.cdn_process.download_file_to_local(origin_file_urls=missing_files,
                                                                     local_path=local_path,
-                                                                    referer=referer)
+                                                                    referer=referer, limit_image=limit_image,
+                                                                    num_downloaded_url=num_downloaded_url)
             # downloaded_time = time.time() - get_img_time - start_time
             # print('[process_missing_files][%s-%s] spent %s to download %s missing images'
             #       % (local_path, file.chapter.id, downloaded_time, len(missing_files)))
@@ -156,7 +170,7 @@ class Command(BaseCommand):
                 continue
 
             # Upload Files to CDN
-            self.cdn_process.upload_file_to_cdn(local_files=success_files)
+            url_hashed = self.cdn_process.upload_file_to_cdn(local_files=success_files)
 
             # uploaded_time = time.time() - downloaded_time - get_img_time - start_time
             uploaded_time = time.time() - start_time
@@ -179,6 +193,7 @@ class Command(BaseCommand):
             fin_list = list(zip(existed_urls, new_list))
             fin_list = [x[0] for x in sorted(fin_list, key=lambda x: int(x[1]))]
             file.url = "\n".join(fin_list) if len(fin_list) else None
+            file.url_hash = ",".join(url_hashed) if len(url_hashed) else None
 
             if not len(fin_list):
                 print('[process_missing_files][%s-%s] unable to download any missing images'
@@ -189,10 +204,14 @@ class Command(BaseCommand):
             else:
                 file.full = False
                 file.retry = file.retry + 1
-            file.save()
+            processed_files.append(file)
+            # file.save()
 
             # Remove Files from local
             self.cdn_process.remove_path_files(file.chapter.novel.slug)
+
+        if processed_files:
+            CDNNovelFile.objects.bulk_update(processed_files, ['url', 'url_hash', 'full', 'retry'])
 
         finish_time = time.time() - init_time
         print('[process_missing_files] Finish in ', finish_time, 's')
@@ -232,10 +251,12 @@ class Command(BaseCommand):
 
             referer = self.get_referer(chapter)
             local_path = "%s/%s" % (chapter.novel.slug, chapter.slug)
-            urls = [
-                {'index': idx, 'url': self.cdn_process.full_schema_url(img_url)}
-                for idx, img_url in enumerate(chapter.images_content.split("\n"))
-            ]
+            urls = []
+            for idx, img_url in enumerate(chapter.images_content.split("\n")):
+                full_img_url = self.cdn_process.full_schema_url(img_url)
+                origin_img = hashlib.md5(full_img_url.encode()).hexdigest()
+                url = {'index': idx, 'url': full_img_url, 'url_hash': origin_img}
+                urls.append(url)
 
             number_urls = len(urls)
 
@@ -252,7 +273,7 @@ class Command(BaseCommand):
                 continue
 
             # Upload Files to CDN
-            self.cdn_process.upload_file_to_cdn(local_files=success_files)
+            url_hashed = self.cdn_process.upload_file_to_cdn(local_files=success_files)
 
             # uploaded_time = time.time() - downloaded_time - start_time
             uploaded_time = time.time() - start_time
@@ -287,6 +308,7 @@ class Command(BaseCommand):
                     inserted_file.url = result_url
                     inserted_file.full = full
                     inserted_file.allow_limit = allow_limit
+                    inserted_file.url_hash = ",".join(url_hashed) if len(url_hashed) else None
                     updated_files.append(inserted_file)
                     # inserted_file.save() ### => Do not save here
 
@@ -294,7 +316,7 @@ class Command(BaseCommand):
             self.cdn_process.remove_path_files(chapter.novel.slug)
 
         if updated_files:
-            CDNNovelFile.objects.bulk_update(updated_files, ['url', 'full', 'allow_limit'])
+            CDNNovelFile.objects.bulk_update(updated_files, ['url', 'full', 'allow_limit', 'url_hash'])
 
         finish_time = time.time() - init_time
         print('[process_rest_files] Finish in', finish_time, 's')

@@ -51,11 +51,16 @@ class CDNProcess:
                 continue
             # Check local is exist the file, just return to upload it without download it again
             source = origin_file.get('url')
-            _, ext = os.path.splitext(source)
+            short_path = utils.get_short_url(source)
+            _, ext = os.path.splitext(short_path)
             ext = ext or '.jpg'
             output_file = "%s/%s/%s" % (settings.CDN_FILE_FOLDER, local_path, str(origin_file.get('index')))
             if os.path.isfile(output_file + ext):
-                success_files.append({'index': origin_file.get('index'), 'url': output_file + ext})
+                success_files.append({
+                    'index': origin_file.get('index'),
+                    'url': output_file + ext,
+                    'url_hash': origin_file.get('url_hash')
+                })
                 continue
 
             # Get file from origin url and download to local server
@@ -63,7 +68,11 @@ class CDNProcess:
                 local_path = self.local_path
             target_file = "%s/%s" % (local_path, str(origin_file.get('index')))
             local_image = utils.download_cdn_file(source=source, target_file=target_file, ext=ext, referer=referer)
-            success_files.append({'index': origin_file.get('index'), 'url': local_image})
+            success_files.append({
+                'index': origin_file.get('index'),
+                'url': local_image,
+                'url_hash': origin_file.get('url_hash')
+            })
         return success_files
 
     def upload_file_to_cdn(self, local_files):
@@ -136,14 +145,16 @@ class Command(BaseCommand):
             start_time = time.time()
 
             referer = self.get_referer(file.chapter)
-            local_path = "%s/%s" % (file.chapter.novel.slug, file.chapter.slug)
+            novel_slug = utils.str_format_num_alpha_only(file.chapter.novel.slug)
+            chapter_slug = utils.str_format_num_alpha_only(file.chapter.slug)
+            local_path = "%s/%s" % (novel_slug, chapter_slug)
             urls = [self.cdn_process.full_schema_url(img_url) for img_url in file.chapter.images_content.split("\n")]
 
             # validate images are missing
             missing_files = []
             for idx, chapter_image in enumerate(urls):
                 origin_img = hashlib.md5(chapter_image.encode()).hexdigest()
-                if not file.url or origin_img not in file.url_hash:
+                if not file.url or (file.url_hash and origin_img not in file.url_hash):
                     missing_files.append({"index": idx, "url": chapter_image, "url_hash": origin_img})
 
             # compute number of downloaded url
@@ -207,7 +218,7 @@ class Command(BaseCommand):
             # file.save()
 
             # Remove Files from local
-            self.cdn_process.remove_path_files(file.chapter.novel.slug)
+            self.cdn_process.remove_path_files(novel_slug)
 
         if processed_files:
             CDNNovelFile.objects.bulk_update(processed_files, ['url', 'url_hash', 'full', 'retry'])
@@ -249,7 +260,9 @@ class Command(BaseCommand):
             start_time = time.time()
 
             referer = self.get_referer(chapter)
-            local_path = "%s/%s" % (chapter.novel.slug, chapter.slug)
+            novel_slug = utils.str_format_num_alpha_only(chapter.novel.slug)
+            chapter_slug = utils.str_format_num_alpha_only(chapter.slug)
+            local_path = "%s/%s" % (novel_slug, chapter_slug)
             urls = []
             for idx, img_url in enumerate(chapter.images_content.split("\n")):
                 full_img_url = self.cdn_process.full_schema_url(img_url)
@@ -288,7 +301,7 @@ class Command(BaseCommand):
                 valid_urls.append(sub.get('url').replace(settings.CDN_FILE_FOLDER, '').lstrip('/'))
             if not len(valid_urls):
                 print('[process_rest_files] Unable to get files for %s-%s/%s-%s'
-                      % (chapter.novel.id, chapter.novel.slug, chapter.id, chapter.slug))
+                      % (chapter.novel.id, novel_slug, chapter.id, chapter_slug))
                 continue
             valid_urls = list(set(valid_urls))  # Ensure have no duplication items
             result_url = "\n".join(valid_urls) if len(valid_urls) else None

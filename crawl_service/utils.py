@@ -1,6 +1,7 @@
 import errno
 import os
 import re
+from urllib.parse import urlparse
 
 import requests
 from PIL import Image
@@ -59,7 +60,8 @@ def download_cdn_file(source, target_file, ext=None, referer=None):
         headers.update({"Referer": referer})
     try:
         if not ext:
-            _, ext = os.path.splitext(source)
+            short_path = get_short_url(source)
+            _, ext = os.path.splitext(short_path)
         target_file = "%s%s" % (target_file, ext or '.jpg')
         target_dir = "%s/%s" % (settings.CDN_FILE_FOLDER, target_file)
         file_request = requests.get(source, headers=headers, timeout=5)
@@ -115,3 +117,15 @@ def full_schema_url(url, origin_domain=None):
         url = url.rstrip('/')
 
     return url
+
+
+def str_format_num_alpha_only(s):
+    # Remove All Characters Except the Alphabets and the Numbers From a String
+    return re.sub("[^A-Za-z0-9]", "-", s)
+
+
+def get_short_url(url):
+    # urlparse('http://www.cwi.nl:80/%7Eguido/Python.html')
+    # Get scheme='http', netloc='www.cwi.nl:80', path='/%7Eguido/Python.html'
+    parsed_url = urlparse(url)
+    return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path

@@ -8,7 +8,7 @@ from cms.cache_manager import CacheManager
 =======
 from django.contrib.sites.shortcuts import get_current_site
 
-from crawl_service import settings as craw_settings
+from crawl_service import settings as craw_settings, utils
 from crawl_service.utils import full_schema_url
 >>>>>>> 6f04978... Update alias cdn
 from novel import settings
@@ -76,7 +76,9 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                 settings.redis_image.set(image_hash, json_str)
 =======
                 if cdn_file_url or cdn_friendly_alias_url:
-                    file_path = "%s/%s" % (chapter.novel.slug, chapter.slug)
+                    novel_slug = utils.str_format_num_alpha_only(chapter.novel.slug)
+                    chapter_slug = utils.str_format_num_alpha_only(chapter.slug)
+                    file_path = "%s/%s" % (novel_slug, chapter_slug)
                     full_origin_url = full_schema_url(image, referer)
                     _, ext = os.path.splitext(full_origin_url)
                     target_file = "%s/%s/%s%s" % (cdn_file_url.strip('/'), file_path, str(idx), ext or '.jpg')

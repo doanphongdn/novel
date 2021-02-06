@@ -282,7 +282,8 @@ BACKBLAZE_CONFIG = {
 }
 
 BACKBLAZE_MAX_RETRY = int(os.environ.get('BACKBLAZE_MAX_RETRY', 5))
-BACKBLAZE_NOT_ALLOW_LIMIT = os.environ.get('BACKBLAZE_ALLOW_LIMIT', 'TRUE').lower() != 'true'
+BACKBLAZE_ALLOW_LIMIT = os.environ.get('BACKBLAZE_ALLOW_LIMIT', 'True').lower() == 'true'
+BACKBLAZE_NOT_ALLOW_LIMIT = os.environ.get('BACKBLAZE_ALLOW_LIMIT', 'False').lower() != 'true'
 BACKBLAZE_FRIENDLY_URL = os.environ.get('BACKBLAZE_FRIENDLY_URL', '')
 BACKBLAZE_FRIENDLY_ALIAS_URL = os.environ.get('BACKBLAZE_FRIENDLY_ALIAS_URL', '')
 BACKBLAZE_S3_URL = os.environ.get('BACKBLAZE_S3_URL', '')

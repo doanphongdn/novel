@@ -1,7 +1,7 @@
 import hashlib
 import json
 import zlib
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
 from autoslug import AutoSlugField
@@ -447,6 +447,7 @@ class CDNNovelFile(models.Model):
     type = models.CharField(max_length=250)
     hash_origin_url = models.CharField(max_length=250, db_index=True)
     url = models.TextField(blank=True, null=True)
+    url_hash = models.TextField(blank=True, null=True)
     retry = models.IntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -457,6 +458,8 @@ class CDNNovelFile(models.Model):
 
     @classmethod
     def get_missing_files(cls):
+        limit_time = datetime.now() - timedelta(minutes=10)
         return cls.objects.filter(full=False,
                                   allow_limit=settings.BACKBLAZE_NOT_ALLOW_LIMIT,
-                                  retry__lte=settings.BACKBLAZE_MAX_RETRY).all()[0:50]
+                                  retry__lte=settings.BACKBLAZE_MAX_RETRY,
+                                  updated_at__lte=limit_time).all()[0:50]

@@ -67,7 +67,9 @@ def download_cdn_file(source, target_file, ext=None, referer=None):
             # with open(target_dir, 'wb') as f:
             with safe_open_w(target_dir) as f:
                 f.write(file_request.content)
-                return "%s/%s" % (settings.CDN_FILE_FOLDER, target_file)
+                output = "%s/%s" % (settings.CDN_FILE_FOLDER, target_file)
+                optimize_image(output)
+                return output
     except Exception as e:
         print("[download_cdn_file] Error: %s : %s" % (source, e))
 
@@ -88,6 +90,11 @@ def image_processing(image):
     img = img.resize((wsize, baseheight), Image.ANTIALIAS)
     rgb_im = img.convert('RGB')
     rgb_im.save(image, optimize=True, quality=95)
+
+
+def optimize_image(img_path, quality=80):
+    image = Image.open(img_path)
+    image.save(img_path, quality=quality, optimize=True)
 
 
 def upload_file_to_b2(file_path, b2_file_name, bucket_name='nettruyen'):

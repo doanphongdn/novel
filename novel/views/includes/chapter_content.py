@@ -40,7 +40,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                 referer_url = None
 
             json_str = json.dumps({
-                "origin_url": image,
+                "origin_url": origin_url,
                 "referer": referer_url,
             })
             image_hash = hashlib.md5(json_str.encode()).hexdigest()

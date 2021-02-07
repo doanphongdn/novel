@@ -306,7 +306,6 @@ class NovelChapter(models.Model):
     class Meta:
         db_table = "novel_chapters"
         unique_together = [('name', 'novel'), ('slug', 'novel'), ('src_url', 'novel')]
-        ordering = ["-id"]
 
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, db_index=True)
@@ -335,6 +334,7 @@ class NovelChapter(models.Model):
 
     def flat_info(self):
         return {
+            "id": self.id,
             "name": self.name,
             "url": self.get_absolute_url(),
             "source_url": self.src_url,
@@ -363,12 +363,12 @@ class NovelChapter(models.Model):
 
     @cached_property
     def next_chapter(self):
-        next_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__gt=self.id).last()
+        next_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__gt=self.id).first()
         return next_chap
 
     @cached_property
     def prev_chapter(self):
-        prev_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__lt=self.id).first()
+        prev_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__lt=self.id).last()
         return prev_chap
 
     @cached_property

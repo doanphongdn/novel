@@ -122,6 +122,7 @@ class Novel(models.Model):
     view_monthly = models.IntegerField(default=0)
     view_total = models.IntegerField(default=0)
 
+    latest_updated_time = models.DateTimeField(auto_now_add=True)
     src_url = models.TextField(unique=True)
     src_latest_chapter_url = models.CharField(max_length=250, blank=True, null=True)
     src_campaign = models.ForeignKey(CrawlCampaignSource, on_delete=models.CASCADE)

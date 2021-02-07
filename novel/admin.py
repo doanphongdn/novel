@@ -39,6 +39,7 @@ class NovelAdmin(admin.ModelAdmin):
     def update_flat_info(self, request, queryset):
         for obj in queryset:
             obj.update_flat_info()
+            obj.save()
 
     update_flat_info.short_description = "Update flat info"
 

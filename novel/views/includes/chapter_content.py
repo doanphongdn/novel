@@ -6,7 +6,6 @@ from urllib.parse import urlparse
 from django.contrib.sites.shortcuts import get_current_site
 
 from crawl_service import settings as craw_settings, utils
-from crawl_service.utils import full_schema_url
 from novel import settings
 from novel.cache_manager import NovelSettingCache
 from novel.views.includes.base import BaseTemplateInclude
@@ -64,7 +63,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                     novel_slug = utils.str_format_num_alpha_only(chapter.novel.slug)
                     chapter_slug = utils.str_format_num_alpha_only(chapter.slug)
                     file_path = "%s/%s" % (novel_slug, chapter_slug)
-                    full_origin_url = full_schema_url(image, referer)
+                    full_origin_url = utils.full_schema_url(image, referer)
                     _, ext = os.path.splitext(full_origin_url)
                     target_file = "%s/%s/%s%s" % (cdn_file_url.strip('/'), file_path, str(idx), ext or '.jpg')
                     cdn_referer = None

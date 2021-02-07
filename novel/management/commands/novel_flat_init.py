@@ -7,7 +7,16 @@ class Command(BaseCommand):
     DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
     def handle(self, *args, **kwargs):
-        novels = Novel.objects.prefetch_related("novel_flat").all()
-        for novel in novels:
-            novel.update_flat_info()
-            novel.save()
+        chunk_size = 1000
+        idx = 0
+        while True:
+            offset = idx * chunk_size
+            novels = Novel.objects.prefetch_related("novel_flat").all()[offset:offset + chunk_size]
+            if not novels:
+                return
+
+            for novel in novels:
+                novel.update_flat_info()
+                novel.save()
+
+            idx += 1

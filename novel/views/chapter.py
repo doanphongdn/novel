@@ -1,6 +1,7 @@
 import json
 from urllib.parse import urlparse
 
+import logging
 import requests
 from django.db import transaction
 from django.http import StreamingHttpResponse, HttpResponse
@@ -12,6 +13,9 @@ from novel.models import NovelChapter
 from novel.views.base import NovelBaseView
 
 
+logger = logging.getLogger(__name__)
+
+
 def url2yield(url, chunksize=1024, referer=None):
     s = requests.Session()
     if referer:
@@ -20,6 +24,10 @@ def url2yield(url, chunksize=1024, referer=None):
         })
     # Note: here i enabled the streaming
     response = s.get(url, stream=True)
+
+    if response.status_code != 200:
+        logger.warning("[url2yield][Status = %s] Unable to get image for %s with referer %s",
+                       response.status_code, url, referer)
 
     chunk = True
     while chunk:
@@ -148,7 +156,6 @@ class ChapterView(NovelBaseView):
                     is_stream_cdn = False
                     stream_content = list(response.streaming_content)
                     for item in stream_content:
-                        print(item)
                         json_obj = is_json(item)
                         if json_obj and json_obj.get('status') != 200:
                             # failed to stream from CDN

@@ -36,6 +36,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
         no_update_limit = kwargs.get('no_update_limit') or 0
 
         for item in values:
+            sleep(0.01)
             # replace field to storage in db
             item['src_url'] = item.pop('url', '').rstrip("/")
             item['src_latest_chapter_url'] = item.pop('latest_chapter_url', '').rstrip("/")
@@ -188,7 +189,8 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
         continue_paging = super().handle(crawled_data, campaign, *args, **kwargs)
 
         for field in self.update_by_fields:
-            crawled_data['src_'] = crawled_data.pop('url', '').rstrip("/")
+            sleep(0.01)
+            crawled_data['src_url'] = crawled_data.pop('url', '').rstrip("/")
             chapter = self.update_values.get(field, {}).get(crawled_data.get(field))
             if not chapter:
                 continue

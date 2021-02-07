@@ -31,6 +31,26 @@ def url2yield(url, chunksize=1024, referer=None):
         yield chunk
 
 
+def get_image(url, referer=None):
+    s = requests.Session()
+    if referer:
+        s.headers.update({
+            "Referer": referer
+        })
+    # Note: here i enabled the streaming
+    response = s.get(url, stream=True)
+
+    return response
+
+
+def is_json(json_str):
+    try:
+        json_object = json.loads(json_str)
+    except ValueError as e:
+        return False
+    return json_object
+
+
 class ChapterView(NovelBaseView):
     template_name = "novel/chapter.html"
 
@@ -118,21 +138,37 @@ class ChapterView(NovelBaseView):
                 json_str = json.loads(json_str)
 
                 referer_url = json_str.get("referer")
-                # cdn_referer = json_str.get("cdn_referer", None)
-                # cdn_origin_url = json_str.get("cdn_origin_url", "")
+                cdn_referer = json_str.get("cdn_referer", None)
+                cdn_origin_url = json_str.get("cdn_origin_url", "")
                 origin_url = json_str.get("origin_url", "")
-                # if cdn_origin_url:
-                #     response = StreamingHttpResponse(url2yield(cdn_origin_url, referer=cdn_referer), content_type="image/jpeg")
-                #     if response.status_code == 200:
-                #         return response
-                #     else:
-                #         # failed to stream from CDN
-                #         cdn_origin_url = None
-                # # Stream origin image if not found from CDN
-                # if not cdn_origin_url:
-                #     return StreamingHttpResponse(url2yield(origin_url, referer=referer_url), content_type="image/jpeg")
+                if cdn_origin_url:
+                    response = StreamingHttpResponse(streaming_content=url2yield(cdn_origin_url, referer=cdn_referer),
+                                                     content_type="image/jpeg")
 
-                return StreamingHttpResponse(url2yield(origin_url, referer=referer_url), content_type="image/jpeg")
+                    is_stream_cdn = False
+                    stream_content = list(response.streaming_content)
+                    for item in stream_content:
+                        print(item)
+                        json_obj = is_json(item)
+                        if json_obj and json_obj.get('status') != 200:
+                            # failed to stream from CDN
+                            is_stream_cdn = False
+                            break
+                        if isinstance(item, (bytes, bytearray)):
+                            is_stream_cdn = True
+                            break
+
+                    if response.status_code == 200 and is_stream_cdn:
+                        response.streaming_content = stream_content
+                        return response
+                    else:
+                        # failed to stream from CDN
+                        cdn_origin_url = None
+
+                # Stream origin image if not found from CDN
+                if not cdn_origin_url:
+                    return StreamingHttpResponse(streaming_content=url2yield(origin_url, referer=referer_url),
+                                                 content_type="image/jpeg")
 
             except Exception as e:
                 print("[stream_image] Error when parse image %s : %s" % (img_hash, e))

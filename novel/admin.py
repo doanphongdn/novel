@@ -34,6 +34,13 @@ class NovelAdmin(admin.ModelAdmin):
     search_fields = ("name", "slug")
     list_filter = ("status",)
     filter_horizontal = ("authors", "genres")
+    actions = ["update_flat_info"]
+
+    def update_flat_info(self, request, queryset):
+        for obj in queryset:
+            obj.update_flat_info()
+
+    update_flat_info.short_description = "Update flat info"
 
 
 class NovelChapterForm(forms.ModelForm):
@@ -91,4 +98,3 @@ class NovelSettingAdmin(admin.ModelAdmin):
 class CDNNovelFileAdmin(admin.ModelAdmin):
     list_display = ("id", "cdn", "chapter", "type", "hash_origin_url", "retry", "full")
     search_fields = ("cdn", "chapter", "hash_origin_url", "url")
-

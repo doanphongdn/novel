@@ -53,16 +53,21 @@ class CrawlerRunning:
 
 
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        parser.add_argument('-d', '--debug', action='store_true', help='DEBUG active campaign', )
 
     def handle(self, *args, **kwargs):
-        ### Cach 1
-        campaigns = CrawlCampaign.objects.filter(active=True, status='stopped').all()
+        # ###Cach 1
+        if kwargs['debug']:
+            campaigns = CrawlCampaign.objects.filter(active=True).all()
+        else:
+            campaigns = CrawlCampaign.objects.filter(active=True, status='stopped').all()
 
         process = CrawlerProcess(get_project_settings())
         campaigns_update = []
         for cam in campaigns:
             run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time
-            if run_able:
+            if kwargs['debug'] or run_able:
                 print("[%s] Starting campaign... " % cam.name)
                 cam.status = 'running'
                 cam.save()
@@ -77,7 +82,7 @@ class Command(BaseCommand):
             cam.status = 'stopped'
             cam.save()
 
-        #### Cach 2
+        # ###Cach 2
         # max_thread = int(os.environ.get('CAMPAIGNS_THREAD_NUM', 2))
         # running_campaigns_number = sum(1 for c in campaigns if c.status == 'running')
         # if max_thread <= running_campaigns_number:

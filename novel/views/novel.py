@@ -52,7 +52,7 @@ class NovelDetailView(NovelBaseView):
 
         novel = NovelCache(Novel, **{"slug": slug}).get_from_cache()
         if novel:
-            referer = urlparse(novel.url)
+            referer = urlparse(novel.src_url)
             if novel.thumbnail_image.strip().startswith('//'):
                 referer_url = referer.scheme  # + referer.netloc
             else:

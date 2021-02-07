@@ -34,7 +34,7 @@ class ChapterView(NovelBaseView):
                     }
                 ]
 
-                referer = urlparse(chapter.url)
+                referer = urlparse(chapter.src_url)
                 if novel.thumbnail_image.strip().startswith('//'):
                     referer_url = referer.scheme
                 else:

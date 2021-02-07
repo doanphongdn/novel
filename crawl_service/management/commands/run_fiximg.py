@@ -97,7 +97,7 @@ class Command(BaseCommand):
             print('[Selenium Scraper] Update images content for Chapter ID: ', chapter.id, ' - Chapter Name: ',
                   chapter.name)
             # url = 'http://www.nettruyen.com/truyen-tranh/trai-tim-sat/chap-12/678622'
-            links = scraper.get_links(url=chapter.url, timeout=settings.SELENIUM_LAZY_LOADING_TIMEOUT,
+            links = scraper.get_links(url=chapter.src_url, timeout=settings.SELENIUM_LAZY_LOADING_TIMEOUT,
                                       page_by_selector="div.page-chapter")
             chapter.images_content = '\n'.join(links)
             chapter.save()

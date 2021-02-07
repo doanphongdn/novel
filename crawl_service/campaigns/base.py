@@ -11,6 +11,7 @@ class BaseCrawlCampaignType(object):
     name = "base"
     model_class = None
     update_by_fields = []
+    mapping_fields = {}
 
     def __init__(self, campaign, prefetch_by_data=None):
         self.campaign = campaign
@@ -25,18 +26,19 @@ class BaseCrawlCampaignType(object):
                     if val:
                         value[val] = obj
 
-        pass
-
     def build_condition_or(self, item):
-        conditions = (Q(**{field + "__in": item.get(field) if isinstance(item.get(field), list) else [item.get(field)]})
-                      for field in self.update_by_fields)
-        return reduce(or_, conditions)
+        conditions = []
+        for field in self.update_by_fields:
+            item_value = item.get(self.mapping_fields.get(field, field))
+            conditions.append(Q(**{field + "__in": item_value if isinstance(item_value, list) else [item_value]}))
+
+        return reduce(or_, set(conditions))
 
     def full_schema_url(self, url):
         if url.strip().startswith('//'):
             url = "http:" + url
         elif url.strip().startswith('/'):
-            url = self.campaign.campaign_source.homepage.strip('/') + url
+            url = self.campaign.src_campaign.homepage.strip('/') + url
         else:
             url = url.rstrip('/')
 

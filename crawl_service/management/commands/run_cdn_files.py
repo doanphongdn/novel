@@ -121,7 +121,7 @@ class Command(BaseCommand):
         for file in files:
             start_time = time.time()
 
-            origin_domain = urlparse(file.chapter.url) if file.chapter.url else None
+            origin_domain = urlparse(file.chapter.src_url) if file.chapter.src_url else None
             referer = origin_domain.scheme + "://" + origin_domain.netloc if origin_domain else None
             local_path = "%s/%s" % (file.chapter.novel.slug, file.chapter.slug)
             urls = [self.cdn_process.full_schema_url(img_url) for img_url in file.chapter.images_content.split("\n")]
@@ -204,7 +204,7 @@ class Command(BaseCommand):
         for chapter in chapters:
             start_time = time.time()
 
-            origin_domain = urlparse(chapter.url) if chapter.url else None
+            origin_domain = urlparse(chapter.src_url) if chapter.src_url else None
             referer = origin_domain.scheme + "://" + origin_domain.netloc if origin_domain else None
             local_path = "%s/%s" % (chapter.novel.slug, chapter.slug)
             urls = [
@@ -246,7 +246,7 @@ class Command(BaseCommand):
                 full = False
                 # retry = 0
             new_file = CDNNovelFile(cdn=self.cdn_process.cdn, chapter=chapter, type='chapter',
-                                    hash_origin_url=hashlib.md5(chapter.url.encode()).hexdigest(),
+                                    hash_origin_url=hashlib.md5(chapter.src_url.encode()).hexdigest(),
                                     url=result_url, full=full)
             new_files.append(new_file)
 

@@ -27,7 +27,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
             if len(img_ignoring) and any(sub_str in image for sub_str in img_ignoring):
                 continue
 
-            referer = urlparse(chapter.url)
+            referer = urlparse(chapter.src_url)
             referer_url = referer.scheme + "://" + referer.netloc
 
             if 'blogspot.com' in image:

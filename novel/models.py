@@ -6,7 +6,6 @@ from urllib.parse import urlparse
 
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
-from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models import Q
@@ -17,7 +16,6 @@ from unidecode import unidecode
 
 from crawl_service import settings
 from crawl_service.models import CDNServer, CrawlCampaignSource
-from novel.cache_manager import NovelCache
 
 
 def datetime2string(value):
@@ -102,7 +100,7 @@ class Novel(models.Model):
     name = models.CharField(max_length=250, db_index=True, unique=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, db_index=True,
                          max_length=250, blank=True, unique=True, null=True)
-    url = models.TextField(unique=True)
+
     thumbnail_image = models.TextField(blank=True, null=True)
     descriptions = models.TextField(blank=True, null=True)
 
@@ -124,11 +122,11 @@ class Novel(models.Model):
     view_monthly = models.IntegerField(default=0)
     view_total = models.IntegerField(default=0)
 
-    latest_chapter_url = models.CharField(max_length=250, blank=True, null=True)
-    latest_updated_time = models.DateTimeField(auto_now_add=True)
+    src_url = models.TextField(unique=True)
+    src_latest_chapter_url = models.CharField(max_length=250, blank=True, null=True)
+    src_campaign = models.ForeignKey(CrawlCampaignSource, on_delete=models.CASCADE)
 
     attempt = models.SmallIntegerField(default=0)
-    campaign_source = models.ForeignKey(CrawlCampaignSource, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -155,7 +153,7 @@ class Novel(models.Model):
                 '@type': 'Person',
                 'name': author.name,
             } for author in self.authors.all()],
-            'dateModified': self.latest_updated_time.strftime('%Y-%m-%d'),
+            # 'dateModified': self.latest_updated_time.strftime('%Y-%m-%d'),
             'url': url,
             "aggregateRating": {
                 "@type": "AggregateRating",
@@ -230,6 +228,23 @@ class Novel(models.Model):
             "active": True
         }
 
+    def update_flat_info(self):
+        chapter_total = len(self.chapters)
+        if chapter_total == 0:
+            return False
+
+        if not self.novel_flat:
+            self.novel_flat = NovelFlat()
+
+        self.novel_flat.first_chapter = self.chapters[0].flat_info()
+        self.novel_flat.latest_chapter = self.chapters[chapter_total - 1].flat_info()
+        self.novel_flat.chapters = {
+            "total": chapter_total,
+            "list": [chap.flat_info() for chap in self.chapters]
+        }
+        self.novel_flat.save()
+
+
     @cached_property
     def chapter_total(self):
         return NovelChapter.objects.filter(**self.novel_chapter_condition).count()
@@ -258,9 +273,10 @@ class Novel(models.Model):
 
         return classes
 
-    @property
-    def latest_updated_at_str(self):
-        return datetime2string(self.latest_updated_time)
+    #
+    # @property
+    # def latest_updated_at_str(self):
+    #     return datetime2string(self.latest_updated_time)
 
     @cached_property
     def stream_thumbnail_image(self):
@@ -270,7 +286,7 @@ class Novel(models.Model):
         if self.thumbnail_image.startswith('/static'):
             return self.thumbnail_image
 
-        referer = urlparse(self.url)
+        referer = urlparse(self.src_url)
         referer_url = referer.scheme + "://" + referer.netloc
 
         if 'blogspot.com' in self.thumbnail_image:
@@ -290,12 +306,11 @@ class Novel(models.Model):
 class NovelChapter(models.Model):
     class Meta:
         db_table = "novel_chapters"
-        unique_together = [('name', 'novel'), ('slug', 'novel'), ('url', 'novel')]
+        unique_together = [('name', 'novel'), ('slug', 'novel'), ('src_url', 'novel')]
         ordering = ["-id"]
 
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, db_index=True)
-    url = models.TextField()
 
     novel_slug = models.CharField(max_length=250, blank=True, null=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, max_length=250, blank=True, null=True,
@@ -311,11 +326,21 @@ class NovelChapter(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    src_url = models.TextField()
+
     active = models.BooleanField(default=True)
     attempt = models.SmallIntegerField(default=0)
 
     def __str__(self):
         return self.name
+
+    def flat_info(self):
+        return {
+            "name": self.name,
+            "url": self.get_absolute_url(),
+            "source_url": self.src_url,
+            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+        }
 
     @classmethod
     def get_undownloaded_images_chapters(cls):

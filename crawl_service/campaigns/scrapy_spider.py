@@ -20,7 +20,7 @@ class NovelSpider(scrapy.Spider):
             if res.status_code == 200:
                 data = res.json()
                 if data:
-                    self.prefetch_by_data = {"url": [d for d in data]}
+                    self.prefetch_by_data = {"src_url": [d for d in data]}
                     if data and self.campaign.run_synchonize:
                         self.start_urls = data
                     elif data:
@@ -28,10 +28,12 @@ class NovelSpider(scrapy.Spider):
                         self.other_urls = data or []
         else:
             self.start_urls = [campaign.target_url]
-            self.prefetch_by_data = {"url": self.start_urls}
+            self.prefetch_by_data = {"src_url": self.start_urls}
 
+        self.campaign_type = None
         campaign_mapping = CampaignMapping.get_mapping(self.campaign.campaign_type)
-        self.campaign_type = campaign_mapping(self.campaign, self.prefetch_by_data)
+        if campaign_mapping:
+            self.campaign_type = campaign_mapping(self.campaign, self.prefetch_by_data)
 
         super().__init__(name=campaign.name, **kwargs)
 
@@ -50,7 +52,10 @@ class NovelSpider(scrapy.Spider):
                 params = json.loads(act.params)
                 res_data = action.handle(res_data, **params)
             except Exception as e:
-                print("[NovelSpider] parsing error ", e)
+                raise ValueError(" parsing error ")
+
+        if not self.campaign_type:
+            raise ValueError("No campaign type to handle")
 
         continue_paging = self.campaign_type.handle(res_data, self.campaign,
                                                     no_update_limit=self.campaign.no_update_limit)

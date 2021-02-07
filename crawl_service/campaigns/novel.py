@@ -1,13 +1,11 @@
-import os
 import zlib
-from datetime import datetime
 from time import sleep
 
 from rest_framework import serializers
 
 from crawl_service import utils
 from crawl_service.campaigns.base import BaseCrawlCampaignType
-from novel.models import Author, Genre, Status, NovelChapter, Novel
+from novel.models import Author, Genre, Status, NovelChapter, Novel, NovelFlat
 
 
 class NovelSerializer(serializers.Serializer):
@@ -26,7 +24,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
     name = 'NOVEL'
     model_class = Novel
     # List keys use to check value duplicate
-    update_by_fields = ['name', 'url']
+    update_by_fields = ['name', 'src_url']
 
     def handle(self, crawled_data, campaign, *args, **kwargs):
         continue_paging = super().handle(crawled_data, campaign, *args, **kwargs)
@@ -37,39 +35,33 @@ class NovelCampaignType(BaseCrawlCampaignType):
         no_update_limit = kwargs.get('no_update_limit') or 0
 
         for item in values:
-            sleep(0.01)
+            # replace field to storage in db
+            item['src_url'] = item.pop('url', '').rstrip("/")
+            item['src_latest_chapter_url'] = item.pop('latest_chapter_url', '').rstrip("/")
 
-            novel = self.model_class.objects.filter(self.build_condition_or(item)).first()
+            novel = self.model_class.objects.filter(self.build_condition_or(item)
+                                                    ).prefetch_related('novel_flat').first()
             if novel:
-                novel.name = item.get("name")
-                novel.url = self.full_schema_url(item.get("url") or "")
-
-                latest_chapter = self.full_schema_url(item.get('latest_chapter_url') or "")
-                if latest_chapter:
-                    print("[NovelCampaignType][handle] novel %s - latest_chapter %" % (novel.name, latest_chapter))
-                    if latest_chapter != novel.latest_chapter_url \
-                            or (novel.chapter_total and latest_chapter != novel.latest_chapter.url):
-                        # print("[NovelCampaignType][handle] Update latest_chapter ", latest_chapter)
-                        novel.latest_chapter_url = latest_chapter
+                src_latest_chap_url = self.full_schema_url(item.get('src_latest_chapter_url') or "")
+                if src_latest_chap_url:
+                    db_src_url = novel.novel_flat and novel.novel_flat.latest_chapter.get("source_url") or None
+                    need_updated = src_latest_chap_url not in (novel.src_latest_chapter_url, db_src_url)
+                    if need_updated and novel.novel_updated:
                         novel.novel_updated = False
-                        no_update_count = 0
-                    else:
-                        # print("[NovelCampaignType][handle] novel_updated with count:", no_update_count)
-                        novel.novel_updated = True
-                        no_update_count += 1
+                        novel.save()
 
-                novel.save()
+                    no_update_count = int(not need_updated)
             else:
-                item['campaign_source_id'] = campaign.id
-                for url in ['url', 'latest_chapter_url']:
-                    if item.get(url):
-                        item[url] = self.full_schema_url(item[url] or "")
+                item['src_campaign_id'] = campaign.id
+                for url in ['src_url', 'src_latest_chapter_url']:
+                    val = item.get(url, "")
+                    if val:
+                        item[url] = self.full_schema_url(val or "")
 
                 new_data.append(Novel(**item))
 
         if new_data:
             Novel.objects.bulk_create(new_data, ignore_conflicts=True)
-            print("[NovelCampaignType][handle] Updated %s new Novel " % len(new_data))
 
         if 0 < no_update_limit <= no_update_count:
             continue_paging = False
@@ -96,13 +88,13 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
     schema_class = NovelInfoCampaignSchema
     name = 'NOVEL_INFO'
     model_class = Novel
-    update_by_fields = ['url']
+    update_by_fields = ['src_url']
 
     def handle(self, crawled_data, campaign, *args, **kwargs):
         continue_paging = super().handle(crawled_data, campaign, *args, **kwargs)
         for field in self.update_by_fields:
             sleep(0.01)
-
+            crawled_data['src_url'] = crawled_data.pop('url', '').rstrip("/")
             novel = self.update_values.get(field, {}).get(crawled_data.get(field))
             if not novel:
                 continue
@@ -136,23 +128,24 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                         for chapter in crawled_data.get("list_chapter") or []}
 
             if chapters:
-                exist_chapters = NovelChapter.objects.filter(url__in=list(chapters.keys()))
+                exist_chapters = NovelChapter.objects.filter(src_url__in=list(chapters.keys()))
                 for ex_chap in exist_chapters:
-                    name = chapters.pop(ex_chap.url)
+                    name = chapters.pop(ex_chap.src_url)
                     if ex_chap.name != name:
                         ex_chap.name = name
                         ex_chap.chapter_updated = False
                         ex_chap.save()
 
-                new_chapters = [NovelChapter(novel=novel, name=name, url=url) for url, name in chapters.items()]
+                new_chapters = [NovelChapter(novel=novel, name=name, src_url=url, novel_slug=novel.slug)
+                                for url, name in chapters.items()]
                 if new_chapters:
                     NovelChapter.objects.bulk_create(new_chapters, ignore_conflicts=True)
-                    novel.latest_updated_time = datetime.now()
+                    novel.update_flat_info()
 
                 update = True
 
             status = crawled_data.get("status")
-            if status and status != novel.status.name:
+            if status and (not novel.status or status != novel.status.name):
                 status, _ = Status.objects.get_or_create(name=status.title().strip())
                 novel.status = status
                 update = True
@@ -187,14 +180,13 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
     schema_class = NovelChapterCampaignSchema
     name = 'NOVEL_CHAPTER'
     model_class = NovelChapter
-    update_by_fields = ['url']
+    update_by_fields = ['src_url']
 
     def handle(self, crawled_data, campaign, *args, **kwargs):
         continue_paging = super().handle(crawled_data, campaign, *args, **kwargs)
 
         for field in self.update_by_fields:
-            sleep(0.01)
-
+            crawled_data['src_'] = crawled_data.pop('url', '').rstrip("/")
             chapter = self.update_values.get(field, {}).get(crawled_data.get(field))
             if not chapter:
                 continue

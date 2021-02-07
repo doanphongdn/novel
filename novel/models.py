@@ -386,7 +386,8 @@ class NovelChapter(models.Model):
                 return decompresed
         except:
             pass
-        return None
+
+        return ""
 
     def get_absolute_url(self):
         return reverse("chapter", args=[self.novel_slug, self.slug])

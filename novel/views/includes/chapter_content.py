@@ -29,6 +29,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
 
             referer = urlparse(chapter.src_url)
             referer_url = referer.scheme + "://" + referer.netloc
+
             origin_url = (image or "").strip()
 
             if origin_url.strip().startswith('//'):
@@ -39,7 +40,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                 referer_url = None
 
             json_str = json.dumps({
-                "origin_url": origin_url,
+                "origin_url": image,
                 "referer": referer_url,
             })
             image_hash = hashlib.md5(json_str.encode()).hexdigest()
@@ -50,13 +51,21 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
 
         return stream_images
 
-    def __init__(self, include_data, extra_data=None):
-        super().__init__(include_data, extra_data)
+    def prepare_include_data(self):
         chapter = self.include_data.get("chapter")
-        novel = self.include_data.get("novel")
+        chapter_prev_url = None
+        if chapter.prev_chapter:
+            chapter_prev_url = chapter.prev_chapter.get_absolute_url()
 
-        self.include_data = {
-            "chapter": chapter,
-            "novel": novel,
+        chapter_next_name = None
+        chapter_next_url = None
+        if chapter.next_chapter:
+            chapter_next_url = chapter.next_chapter.get_absolute_url()
+            chapter_next_name = chapter.next_chapter.name
+
+        self.include_data.update({
+            "chapter_prev_url": chapter_prev_url,
+            "chapter_next_url": chapter_next_url,
+            "chapter_next_name": chapter_next_name,
             "stream_images": self.stream_images(chapter),
-        }
+        })

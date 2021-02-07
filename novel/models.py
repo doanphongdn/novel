@@ -287,12 +287,18 @@ class Novel(models.Model):
 
         referer = urlparse(self.src_url)
         referer_url = referer.scheme + "://" + referer.netloc
+        origin_url = (self.thumbnail_image or "").strip()
+
+        if origin_url.strip().startswith('//'):
+            origin_url = referer.scheme + ":" + origin_url
+        elif origin_url.strip().startswith('/'):
+            origin_url = referer_url.strip('/') + "/" + origin_url
 
         if 'blogspot.com' in self.thumbnail_image:
             referer_url = None
 
         json_str = json.dumps({
-            "origin_url": self.thumbnail_image,
+            "origin_url": origin_url,
             "referer": referer_url,
         })
         image_hash = hashlib.md5(json_str.encode()).hexdigest()

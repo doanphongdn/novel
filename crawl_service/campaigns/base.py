@@ -38,7 +38,7 @@ class BaseCrawlCampaignType(object):
         if url.strip().startswith('//'):
             url = "http:" + url
         elif url.strip().startswith('/'):
-            url = self.campaign.src_campaign.homepage.strip('/') + url
+            url = self.campaign.campaign_source.homepage.strip('/') + url
         else:
             url = url.rstrip('/')
 

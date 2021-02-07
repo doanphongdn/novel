@@ -7,7 +7,7 @@ class Command(BaseCommand):
     DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
     def handle(self, *args, **kwargs):
-        chunk_size = 1000
+        chunk_size = 100
         idx = 0
         while True:
             offset = idx * chunk_size

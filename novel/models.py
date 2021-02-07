@@ -154,7 +154,7 @@ class Novel(models.Model):
                 '@type': 'Person',
                 'name': author.name,
             } for author in self.authors.all()],
-            # 'dateModified': self.latest_updated_time.strftime('%Y-%m-%d'),
+            'dateModified': self.latest_updated_time.strftime('%Y-%m-%d'),
             'url': url,
             "aggregateRating": {
                 "@type": "AggregateRating",
@@ -245,7 +245,6 @@ class Novel(models.Model):
         }
         self.novel_flat.save()
 
-
     @cached_property
     def chapter_total(self):
         return NovelChapter.objects.filter(**self.novel_chapter_condition).count()
@@ -274,10 +273,9 @@ class Novel(models.Model):
 
         return classes
 
-    #
-    # @property
-    # def latest_updated_at_str(self):
-    #     return datetime2string(self.latest_updated_time)
+    @property
+    def latest_updated_at_str(self):
+        return datetime2string(self.latest_updated_time)
 
     @cached_property
     def stream_thumbnail_image(self):

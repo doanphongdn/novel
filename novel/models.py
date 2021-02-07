@@ -306,6 +306,7 @@ class NovelChapter(models.Model):
     class Meta:
         db_table = "novel_chapters"
         unique_together = [('name', 'novel'), ('slug', 'novel'), ('src_url', 'novel')]
+        ordering = ["id"]
 
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, db_index=True)

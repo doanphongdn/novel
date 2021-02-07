@@ -11,7 +11,7 @@ class ChapterPaginator(ModelPaginator):
         if not self.novel_flat:
             return 0
 
-        return self.novel_flat.novel_flat.chapters.get("total", 0)
+        return self.novel_flat.chapters.get("total", 0)
 
     def get_data(self, **kwargs):
         return self.novel_flat.chapters.get("list", [])[self.offset:self.offset + self.per_page]

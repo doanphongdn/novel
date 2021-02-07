@@ -121,7 +121,7 @@ def full_schema_url(url, origin_domain=None):
 
 def str_format_num_alpha_only(s):
     # Remove All Characters Except the Alphabets and the Numbers From a String
-    return re.sub("[^A-Za-z0-9]", "-", s)
+    return re.sub("[^A-Za-z0-9-]", "-", s)
 
 
 def get_short_url(url):

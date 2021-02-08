@@ -88,5 +88,5 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
             "chapter_next_name": chapter_next_name,
             "stream_images": self.stream_images(chapter),
             "cdn_images": cdn_images if cdn_images and cdn_domain else [],
-            "cdn_domain": cdn_domain if cdn_domain else None
+            "cdn_domain": cdn_domain.rstrip('/') if cdn_domain else None
         })

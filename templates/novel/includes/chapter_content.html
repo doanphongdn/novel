@@ -60,7 +60,7 @@
                 {% if forloop.counter <= 3 %}
                     <img src="{{ cdn_domain }}/{{ cdn_image }}" alt="">
                 {% else %}
-                    <img data-src="{{ cdn_domain }}{{ cdn_image }}" src="{% static "images/lazyload.gif" %}" alt=""
+                    <img data-src="{{ cdn_domain }}/{{ cdn_image }}" src="{% static "images/lazyload.gif" %}" alt=""
                          class="lazyload">
                 {% endif %}
               {% endfor %}

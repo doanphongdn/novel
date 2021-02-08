@@ -21,7 +21,7 @@ class ChapterView(NovelBaseView):
         novel = NovelCache(Novel, **{"slug": slug}).get_from_cache()
         if novel:
             # TODO: not yet apply cache
-            chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).first()
+            chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).prefetch_related('cdnnovelfile_set').first()
             if chapter:
                 breadcrumb_data = [
                     {

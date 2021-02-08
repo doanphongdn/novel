@@ -103,10 +103,12 @@ class CDNServer(models.Model):
         db_table = "cdn_server"
         ordering = ["name"]
 
+    campaign_source = models.ForeignKey(CrawlCampaignSource, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, unique=True)
     server_id = models.CharField(max_length=250, blank=True, null=True)
     endpoint = models.CharField(max_length=250)
     friendly_url = models.CharField(max_length=250, default='https://f000.backblazeb2.com/file/nettruyen/')
+    friendly_alias_url = models.CharField(max_length=250, default='https://cdn.nettruyen.vn/file/nettruyen/')
     s3_url = models.CharField(max_length=250, blank=True, null=True)
 
     active = models.BooleanField(default=True)
@@ -122,3 +124,7 @@ class CDNServer(models.Model):
     @classmethod
     def get_available_cdn(cls):
         return cls.objects.filter(active=True, status='stopped').all()
+
+    @classmethod
+    def get_active_cdn(cls):
+        return cls.objects.filter(active=True).all()

@@ -55,10 +55,20 @@
             {% autoescape off %}
                 {{ chapter.decompress_content }}
             {% endautoescape %}
-            {% for image_url in stream_images %}
-                {% if forloop.counter <= 2 %}
-                    <img src="{{ image_url }}" alt="">
+            {% if cdn_images %}
+              {% for cdn_image in cdn_images %}
+                {% if forloop.counter <= 3 %}
+                    <img src="{{ cdn_domain }}/{{ cdn_image }}" alt="">
                 {% else %}
+                    <img data-src="{{ cdn_domain }}{{ cdn_image }}" src="{% static "images/lazyload.gif" %}" alt=""
+                         class="lazyload">
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            {% for image_url in stream_images %}
+                {% if forloop.counter > cdn_images|length and forloop.counter <= cdn_images|length|add:"2" %}
+                    <img src="{{ image_url }}" alt="">
+                {% elif forloop.counter > cdn_images|length|add:"2" %}
                     <img data-src="{{ image_url }}" src="{% static "images/lazyload.gif" %}" alt=""
                          class="lazyload">
                 {% endif %}

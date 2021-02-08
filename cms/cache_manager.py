@@ -16,19 +16,25 @@ class CacheManager(object):
         return self.class_model.objects.filter(**kwargs).all()
 
     def get_from_cache(self, get_all=False):
-        kwargs_key = [str(val) for val in self.kwargs.values()]
+        try:
+            kwargs_key = [str(val) for val in self.kwargs.values()]
 
-        cache_key = "CacheManager_" + md5("_".join((self.class_model.__name__, *kwargs_key)).encode()).hexdigest()
-        cached = cache.get(cache_key)
-        if cached is None:
-            data = self._get_data(**self.kwargs)
-            if data and not get_all:
-                data = data[0]
+            cache_key = "CacheManager_" + md5("_".join((self.class_model.__name__, *kwargs_key)).encode()).hexdigest()
+            cached = cache.get(cache_key)
+            if cached is None:
+                data = self._get_data(**self.kwargs)
+                if data and not get_all:
+                    data = data[0]
 
-            cache.set(cache_key, data)
-            return data
+                cache.set(cache_key, data)
+                return data
 
-        return cached
+            return cached
+        except Exception as e:
+            print("[get_from_cache] Error when get data from cache %s" % e)
+            import traceback
+            traceback.print_exc()
+            return {}
 
 
 class IncludeHtmlCache(CacheManager):

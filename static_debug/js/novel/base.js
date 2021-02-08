@@ -64,5 +64,4 @@ $(document).ready(function (e) {
             $(this).find('a.tab-login').tab('show');
         }
     });
-    console.log($(".comment .cke_toolgroup").html());
 });

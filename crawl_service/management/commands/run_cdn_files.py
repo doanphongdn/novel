@@ -22,10 +22,10 @@ class CDNProcess:
             print('[CDN Processing Files] Not found CDN server configuration!')
             raise ValueError("Not found CDN server configuration!")
         else:
-            self.cdn = available_cdn[0]
+            self.cdn = available_cdn
             self.b2 = BackblazeB2Storage(opts={'bucket': self.cdn.name, 'allowFileOverwrites': True})
 
-        self.origin_domain = None
+        self.origin_domain = self.cdn.campaign_source.homepage
         self.local_path = None
 
     def update_status(self, status):
@@ -123,13 +123,11 @@ class CDNProcess:
         return url
 
     def get_referer(self, chapter):
-        origin_domain = urlparse(chapter.source_url) if chapter.source_url else None
+        origin_domain = urlparse(chapter.src_url) if chapter.src_url else None
         referer = origin_domain.scheme + "://" + origin_domain.netloc if origin_domain else None
         return referer
 
-
-# For the files has been processed before but not get any images
-class CDNProcessMissingFile(CDNProcess):
+    # For the files has been processed before but not get any images
     def process_missing_files(self):
         print('[process_missing_files] Starting...')
         if not self.cdn:
@@ -228,9 +226,7 @@ class CDNProcessMissingFile(CDNProcess):
         finish_time = time.time() - init_time
         print('[process_missing_files] Finish in ', finish_time, 's')
 
-
-# For the files never running before
-class CDNProcessNotRunningFile(CDNProcess):
+    # For the files never running before
     def process_not_running_files(self):
         print('[process_rest_files] Starting...')
         if not self.cdn:
@@ -245,7 +241,7 @@ class CDNProcessNotRunningFile(CDNProcess):
         inserted_files = None
         with transaction.atomic():
             new_files = [CDNNovelFile(cdn=self.cdn, chapter=chapter, type='chapter',
-                                      hash_origin_url=hashlib.md5(chapter.source_url.encode()).hexdigest(),
+                                      hash_origin_url=hashlib.md5(chapter.src_url.encode()).hexdigest(),
                                       url=None, full=False) for chapter in chapters]
 
             if new_files:
@@ -359,6 +355,9 @@ class Command(BaseCommand):
                 print('[CDN Processing Files] Exceed %s CDN Server for processing... Stopped!' % max_thread)
             available_cdn = [cdn for idx, cdn in enumerate(active_cdn) if
                              cdn.status == 'stopped' and idx + len(running_cdn) < max_thread]
+            if not available_cdn:
+                print('[CDN Processing Files] Not Found available CDN Server for processing... Stopped!')
+
             threads = []
             for cdn in available_cdn:
                 cdn_process = CDNProcess(cdn)

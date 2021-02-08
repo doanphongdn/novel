@@ -11,11 +11,13 @@ from novel.views.includes.base_top_menu import TopMenuTemplateInclude
 from novel.views.includes.breadcrumb import BreadCrumbTemplateInclude
 from novel.views.includes.chapter_content import ChapterContentTemplateInclude
 from novel.views.includes.chapter_list import ChapterListTemplateInclude
+from novel.views.includes.comment import CommentTemplateInclude
 from novel.views.includes.link import LinkTemplateInclude
 from novel.views.includes.novel_cat import NovelCatTemplateInclude
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
 from novel.views.includes.pagination import PaginationTemplateInclude
+from novel.views.includes.user_profile import UserProfileTemplateInclude
 
 TEMPLATE_INCLUDE_MAPPING = {
     "chapter_content": ChapterContentTemplateInclude,
@@ -30,6 +32,8 @@ TEMPLATE_INCLUDE_MAPPING = {
     "base_top_menu": TopMenuTemplateInclude,
     "base_navbar_menu": BaseNavbarTemplateInclude,
     "base_auth_modal": BaseAuthModalTemplateInclude,
+    "user_profile": UserProfileTemplateInclude,
+    "comment": CommentTemplateInclude,
 }
 
 

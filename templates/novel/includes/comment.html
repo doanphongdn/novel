@@ -1,0 +1,55 @@
+{% load static %}
+<div class="comment" id="comment">
+    <div class="row">
+        <div class="col-12">
+            <div class="widget-title">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#custom-comment" role="tab" data-toggle="tab">
+                            {% if icon %}
+                                <i class="{{ icon }}"></i>
+                            {% endif %}
+                            {{ title }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#fb-comment" role="tab" data-toggle="tab">
+                            {% if fb_icon %}
+                                <i class="{{ fb_icon }}"></i>
+                            {% endif %}
+                            {{ fb_title }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane fade in show active" id="custom-comment">
+            <form>
+                <div class="row">
+                    {{ comment_form.media }}
+                    <div class="col-12">
+                        {{ comment_form.content }}
+                    </div>
+                    <div class="col-8 col-md-4 mt-2">
+                        <div class="input-group input-group-alternative">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-address-card"></i></span>
+                            </div>
+                            {{ comment_form.name }}
+                        </div>
+                    </div>
+                    <div class="col-4 col-md-8 mt-2 comment-action">
+                        <button class="btn btn-warning"><i class="fa fa-send"></i> {{ button_label }}</button>
+                    </div>
+
+                </div>
+                {{ comment_html }}
+            </form>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="fb-comment">
+            <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-width="100%" data-numposts="5"></div>
+        </div>
+    </div>
+</div>

@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['*']
 
 APP_NAME = os.environ.get('APP_NAME', 'novel')
 NOVEL_ALL_URL = os.environ.get('NOVEL_ALL_URL', 'all')
+NOVEL_ACCOUNT_URL = os.environ.get('NOVEL_ACCOUNT_URL', 'user')
 NOVEL_GENRE_URL = os.environ.get('NOVEL_GENRE_URL', 'genre')
 NOVEL_PAGE_URL = os.environ.get('NOVEL_PAGE_URL', 'page')
 SELENIUM_LAZY_LOADING_TIMEOUT = int(os.environ.get('SELENIUM_LAZY_LOADING_TIMEOUT', 3))
@@ -257,6 +258,17 @@ CKEDITOR_CONFIGS = {
         'height': 500,
         'width': 1000,
     },
+    'comment': {
+        'toolbar': [
+            ['HKemoji'],
+        ],
+        'removePlugins': 'elementspath',
+        'enterMode': 2,
+        'resize_enabled': False,
+        'extraPlugins': ','.join([
+            'hkemoji',
+        ]),
+    }
 }
 
 CRAWL_TYPE_MAPPING = {

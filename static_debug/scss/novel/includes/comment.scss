@@ -1,0 +1,82 @@
+@import "../../common/colors";
+
+.cke_dialog_ui_html {
+  height: 300px !important;
+}
+
+.cke_dialog {
+  max-width: 95%;
+}
+
+a.cke_dialog_tab {
+  padding: 4px 0 !important;
+}
+
+.comment {
+  .comment-action {
+    margin-left: -15px;
+  }
+
+  .input-group-alternative {
+    box-shadow: none;
+    border: thin solid #{$border_color};
+
+    input, .input-group-text {
+      color: #{$text_color};
+    }
+  }
+
+  .django-ckeditor-widget {
+    display: block !important;
+    position: relative;
+
+    #cke_id_content {
+      width: 100% !important;
+
+      .cke_inner {
+        .cke_top {
+          padding: 0 !important;
+          border-bottom: none !important;
+
+          .cke_toolbar {
+            .cke_toolgroup {
+              margin: 0 !important;
+
+              a.cke_button_off {
+                &:hover {
+                  background: none !important;
+                  padding: 0 !important;
+                  border: none !important;
+                  cursor: pointer;
+                }
+              }
+
+              a.cke_button {
+                position: absolute;
+                right: 15px;
+                top: calc(50% - 13px);
+                height: auto;
+                padding: 0;
+
+                .cke_button_icon {
+                  background-size: 35px !important;
+                  width: 35px;
+                  height: 35px;
+                }
+              }
+            }
+          }
+        }
+
+        .cke_contents {
+          height: 100px !important;
+
+          .cke_editable {
+            margin: 10px !important;
+          }
+        }
+      }
+    }
+  }
+
+}

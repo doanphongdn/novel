@@ -1,0 +1,267 @@
+{% load static %}
+<form method="POST" action="/tai-khoan/overview" enctype="multipart/form-data" class="user-profile">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="profile-sidebar pt-3">
+                {% if user.is_authenticated == True %}
+                    <div class="profile-usertitle">
+                        <div class="profile-userpic">
+                            {% if social_user %}
+                                <img src="{{ profile_image }}"
+                                     class="img-responsive" alt="" id="img_avatar">
+                            {% else %}
+                                <img src="{% static "profile_images/" %}{{ profile_image }}"
+                                     class="img-responsive" alt="" id="img_avatar">
+                            {% endif %}
+                        </div>
+                        <div class="profile-userbuttons">
+                            <label for="{{ setting_form.avatar.id_for_label }}"
+                                   class="btn btn-success btn-sm">Upload</label>
+                            {{ setting_form.avatar }}
+                        </div>
+                        <div class="profile-usertitle-name">
+                            {{ user.first_name }}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="profile-usermenu">
+                    <ul class="nav nav-tabs">
+                        {% if user.is_authenticated == True %}
+                            <li>
+                                <a href="#overview" data-toggle="tab" class="nav-link {{ menu_overview }}">
+                                    <i class="fa fa-address-card"></i>
+                                    Thông tin chung
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#message" data-toggle="tab" class="nav-link {{ menu_message }}">
+                                    <i class="fa fa-envelope-o"></i>
+                                    Tin nhắn
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#comments" data-toggle="tab" class="nav-link {{ menu_comment }}">
+                                    <i class="fa fa-comments"></i>
+                                    Bình luận
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <a href="#history" data-toggle="tab" class="nav-link {{ menu_history }}">
+                                <i class="fa fa-history"></i>
+                                Truyện đã xem
+                            </a>
+                        </li>
+                        {% if user.is_authenticated == True %}
+                            <li>
+                                <a href="#follow" data-toggle="tab" class="nav-link {{ menu_follow }}">
+                                    <i class="fa fa-bookmark"></i>
+                                    Truyện đang theo dõi
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-sign-out"></i>
+                                    Đăng xuất
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <!-- END MENU -->
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="tab-content profile-content">
+                {% if user.is_authenticated == True %}
+                    <div class="tab-pane container {{ menu_overview }}" id="overview">
+                        {% csrf_token %}
+                        <div class="col-md-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="{{ setting_form.first_name.id_for_label }}">
+                                    Họ:</label>
+                                <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend"><span class="input-group-text">
+                                        <i class="fa fa-address-card"></i></span></div>
+                                    {{ setting_form.first_name }}
+                                    {{ setting_form.first_name.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ setting_form.first_name.id_for_label }}">
+                                    Tên:</label>
+                                <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend"><span class="input-group-text">
+                                        <i class="fa fa-address-card"></i></span></div>
+                                    {{ setting_form.last_name }}
+                                    {{ setting_form.last_name.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ setting_form.email.id_for_label }}">Email:</label>
+                                <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend"><span class="input-group-text">
+                                        <i class="fa fa-envelope"></i></span></div>
+                                    {{ setting_form.email }}
+                                    {{ setting_form.email.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ setting_form.password.id_for_label }}">Mật
+                                    khẩu:</label>
+                                <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend"><span class="input-group-text">
+                                        <i class="fa fa-key"></i></span></div>
+                                    {{ setting_form.password }}
+                                    {{ setting_form.password.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ setting_form.re_password.id_for_label }}">Xác
+                                    nhận:</label>
+                                <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend"><span class="input-group-text">
+                                        <i class="fa fa-refresh"></i></span></div>
+                                    {{ setting_form.re_password }}
+                                    {{ setting_form.re_password.errors }}
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success d-block mx-auto">Lưu thông tin
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tab-pane container {{ menu_message }}" id="message">Coming soon</div>
+                    <div class="tab-pane container {{ menu_comment }}" id="comments">Coming soon</div>
+                    <div class="tab-pane container {{ menu_follow }}" id="follow">
+                        <div class="c-blog-listing c-page__content manga_content">
+                            <div id="loop-content" class="page-content-listing item-default">
+                                {% for comics in follow_comics %}
+                                    <div class="page-listing-item">
+                                        <div class="row row-eq-height">
+                                            {% for comic in comics %}
+                                                <div class="col-6 col-lg-3 badge-pos-2">
+                                                    <div class="page-item-detail text">
+                                                        {% if comic.latest_chapters.0 != None %}
+                                                            <div
+                                                                    class="ribbon-right post-on font-meta">{{ comic.latest_chapters.0.updated_time }}</div>
+                                                        {% endif %}
+                                                        <div class="item-thumb hover-details c-image-hover">
+                                                            <a href="{{ comic.url }}"
+                                                               title="{{ comic.name }}">
+                                                                <img src="{{ comic.image_url }}"
+                                                                     alt="{{ comic.name }}"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="item-summary">
+                                                            <div class="post-title font-title">
+                                                                <h3 class="h5">
+                                                                    <a href="{{ comic.url }}">{{ comic.name }}</a>
+                                                                </h3>
+                                                            </div>
+                                                            <div class="meta-item rating">
+                                                                <div class="post-total-rating">
+                                                                    {% for i in comic.rating_current %}
+                                                                        <i class="rating_current fa fa-star"></i>
+                                                                    {% endfor %}
+                                                                    {% for i in comic.rating_none %}
+                                                                        <i class="rating_none fa fa-star"></i>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                            <div class="list-chapter">
+                                                                <div class="chapter-item free-chap user-bookmark">
+                                                                    {% if comic.latest_chapters.0 != None %}
+                                                                        <span class="chapter font-meta">
+                                                                                    <a href="{{ comic.latest_chapters.0.url }}"
+                                                                                       class="btn-link">{{ comic.latest_chapters.0.name }}
+                                                                                    </a>
+                                                                                    </span>
+                                                                    {% else %}
+                                                                        <span class="chapter font-meta">
+                                                                                    <a href="#" class="btn-link">Đang cập nhật</a>
+                                                                                </span>
+                                                                    {% endif %}
+                                                                    <a href="#"
+                                                                       data-comic_id="{{ comic.id }}"
+                                                                       data-action="remove"
+                                                                       class="wp-manga-action-button bookmark user-bookmark">
+                                                                        <i class="fas fa-trash-alt"></i> Xóa
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="tab-pane container {{ menu_history }}" id="history">
+                    <div class="c-blog-listing c-page__content manga_content">
+                        <div id="loop-content" class="page-content-listing item-default">
+                            {% for comics in history_comics %}
+                                <div class="page-listing-item">
+                                    <div class="row row-eq-height">
+                                        {% for comic in comics %}
+                                            <div class="col-6 col-lg-3 badge-pos-2">
+                                                <div class="page-item-detail text">
+                                                    <div class="ribbon-right post-on font-meta">{{ comic.chapter_updated_time }}</div>
+                                                    <div class="item-thumb hover-details c-image-hover">
+                                                        <a href="{{ comic.comic_url }}"
+                                                           title="{{ comic.comic_name }}">
+                                                            <img src="{{ comic.comic_image_url }}"
+                                                                 alt="{{ comic.comic_name }}"/>
+                                                        </a>
+                                                    </div>
+                                                    <div class="item-summary">
+                                                        <div class="post-title font-title">
+                                                            <h3 class="h5">
+                                                                <a href="{{ comic.comic_url }}">{{ comic.comic_name }}</a>
+                                                            </h3>
+                                                        </div>
+                                                        <div class="meta-item rating">
+                                                            <div class="post-total-rating">
+                                                                {% for i in comic.comic_rating_current %}
+                                                                    <i class="rating_current fa fa-star"></i>
+                                                                {% endfor %}
+                                                                {% for i in comic.comic_rating_none %}
+                                                                    <i class="rating_none fa fa-star"></i>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                        <div class="list-chapter">
+                                                            <div class="chapter-item free-chap user-bookmark">
+                                                                            <span class="chapter font-meta">
+                                                                                <a href="{{ comic.chapter_url }}"
+                                                                                   class="btn-link">{{ comic.chapter_name }}
+                                                                                </a>
+                                                                                </span>
+                                                                <a href="#" class="btn-history-clear"
+                                                                   data-logged="{{ comic.is_logged }}"
+                                                                   data-chapter="{{ comic.chapter_id }}"
+                                                                   data-comic="{{ comic.comic_id }}">
+                                                                    <i class="fas fa-trash-alt"></i> Xóa
+                                                                </a>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

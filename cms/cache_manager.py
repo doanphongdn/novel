@@ -33,12 +33,13 @@ class CacheManager(object):
 
 class IncludeHtmlCache(CacheManager):
 
-    def __init__(self, include_obj, inc_params, extra_data, wrap_class_name):
+    def __init__(self, include_obj, inc_params, extra_data, wrap_class_name, request=None):
         super().__init__(None)
         self.include_obj = include_obj
         self.inc_params = inc_params
         self.extra_data = extra_data
         self.wrap_class_name = wrap_class_name
+        self.request = request
 
     def get_from_cache(self, get_all=True, **kwargs):
         kwargs_key = [str(val) for val in kwargs.values()]
@@ -60,6 +61,7 @@ class IncludeHtmlCache(CacheManager):
     def _get_data(self, **kwargs):
         if self.include_obj:
             inc_obj = self.include_obj(self.inc_params, self.extra_data)
-            return format_html_join("", "<div class='{}'>{}</div>", [(self.wrap_class_name, inc_obj.render_html())])
+            return format_html_join("", "<div class='{}'>{}</div>",
+                                    [(self.wrap_class_name, inc_obj.render_html(request=self.request))])
 
         return format_html_join("", "<div class='include-error'>Nothing to include</div>", [])

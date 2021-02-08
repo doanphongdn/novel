@@ -1,0 +1,146 @@
+@import "../../common/colors";
+
+.user-profile {
+  .input-group-alternative {
+    box-shadow: none;
+    border: thin solid #{$border_color};
+    input, .input-group-text{
+      color: #{$text_color};
+    }
+  }
+
+  .profile-content {
+    background: #fff;
+    min-height: 460px;
+    margin: 0 -30px
+  }
+
+  .profile-sidebar {
+    border: thin solid #{$border_color};
+    background: #fff;
+    margin: 0;
+
+    .profile-usermenu {
+      ul {
+        display: block;
+
+        li {
+          &:last-child a {
+            border-bottom: none !important;
+          }
+
+          a {
+            color: #{$text_color};
+            font-size: .8rem;
+            position: relative;
+            display: block;
+            padding: 10px 7px 10px 15px;
+            border-radius: 0 !important;
+            overflow: hidden;
+
+            &::after {
+              background: #999;
+              content: "";
+              height: 150px;
+              left: 110%;
+              opacity: .2;
+              position: absolute;
+              top: -50px;
+              transform: rotate(35deg);
+              transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+              width: 50px;
+              z-index: 10;
+            }
+
+            i {
+              margin-right: 8px;
+              font-size: 14px
+            }
+
+            &:hover {
+              &::after {
+                left: -80px;
+                transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
+              }
+
+              background-color: #{$background_hover};
+              border-color: transparent;
+            }
+
+            &.active {
+              color: #{$text_color} !important;
+              background-color: #{$background_hover} !important;
+              border-color: transparent;
+              border-left: 3px solid #{$text_color_hover} !important;
+              margin-left: -2px;
+            }
+          }
+        }
+
+        border: none;
+      }
+    }
+
+    .profile-usertitle {
+      .profile-userpic {
+        width: 150px;
+        height: 150px;
+        overflow: hidden;
+        border: thin solid #f0f0f0;
+        border-radius: 50%;
+        position: relative;
+        margin: 0 auto;
+
+        img {
+          float: none;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          margin: auto;
+          width: 100%;
+          position: absolute
+        }
+      }
+
+      .profile-usertitle {
+        text-align: center;
+        margin-bottom: 30px
+      }
+
+      .profile-usertitle-name {
+        color: #5a7391;
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 7px
+      }
+
+      .profile-usertitle-job {
+        text-transform: uppercase;
+        color: #5b9bd1;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 15px
+      }
+
+      .profile-userbuttons {
+        text-align: center;
+        margin-top: 10px;
+
+        .btn {
+          text-transform: uppercase;
+          font-size: 11px;
+          font-weight: 600;
+          padding: 6px 15px;
+          margin-right: 5px;
+
+          &:last-child {
+            margin-right: 0
+          }
+        }
+
+      }
+    }
+
+  }
+}

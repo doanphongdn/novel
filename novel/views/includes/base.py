@@ -19,5 +19,5 @@ class BaseTemplateInclude(object):
     def prepare_include_data(self):
         pass
 
-    def render_html(self):
-        return loader.render_to_string(self.template, self.include_data)
+    def render_html(self, request=None):
+        return loader.render_to_string(self.template, self.include_data, request=request)

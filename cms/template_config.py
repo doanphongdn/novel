@@ -1,9 +1,10 @@
 TEMPLATE_PAGE_CHOISES = {
     'novel': [
         ("index", "Index - Homepage"),
-        ("chapter", "chapter"),
         ("novel", "Novel (Comic) Infomation"),
+        ("chapter", "Chapter"),
         ("novel_all", "Novel (Comic) view all"),
+        ("user", "User"),
         ("base_footer", "Base footer"),
         ("base_navbar", "Base navbar"),
         ("base_top_menu", "Base top menu"),
@@ -24,5 +25,7 @@ TEMPLATE_INCLUDE_CHOISES = {
         ("base_top_menu", "Base top menu"),
         ("base_navbar_menu", "Base navbar menu"),
         ("base_auth_modal", "Base auth modal"),
+        ("user_profile", "User profile"),
+        ("comment", "Comment"),
     ],
 }

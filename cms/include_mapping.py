@@ -20,7 +20,7 @@ class IncludeManager(object):
         """
         self.request_hash = md5(request.build_absolute_uri().encode("utf-8")).hexdigest()
 
-    def render_include_html(self, tmpl_code, extra_data=None, default='default'):
+    def render_include_html(self, tmpl_code, extra_data=None, default='default', request=None):
         if not extra_data:
             extra_data = {}
 
@@ -44,10 +44,10 @@ class IncludeManager(object):
             # Get include object from mapping
             inc_func = self.TEMPLATE_INCLUDE_MAPPING.get(inc.include_file)
             # Get render html from cache
-            incl_html_cache = IncludeHtmlCache(inc_func, inc_params, extra_data, inc.class_name)
+            incl_html_cache = IncludeHtmlCache(inc_func, inc_params, extra_data, inc.class_name, request=request)
             if inc_func and inc_func.cache:
                 html = incl_html_cache.get_from_cache(request_hash=self.request_hash, page_tmpl_code=tmpl_code,
-                                                      include_code=inc.code)
+                                                      include_code=inc.code, request=request)
             else:
                 html = incl_html_cache.get_from_data() if incl_html_cache else 'Missing incl_html_cache'
 

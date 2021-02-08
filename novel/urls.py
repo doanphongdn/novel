@@ -25,6 +25,7 @@ from crawl_service import settings
 from crawl_service.views.base import view_dmca_validation, view_google_site_verification
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
 from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap, NovelChapterSitemap
+from novel.views.user import UserProfileView
 from novel.views.chapter import ChapterView
 from novel.views.index import NovelIndexView
 from novel.views.novel import NovelDetailView
@@ -59,10 +60,12 @@ urlpatterns = [
     path(settings.NOVEL_ALL_URL + '/<str:novel_type>', NovelAllView.as_view(), name="novel_all"),
     path(settings.NOVEL_GENRE_URL + '/<str:genre>', NovelAllView.as_view(), name="novel_genre"),
     path(settings.NOVEL_PAGE_URL + '/<str:slug>', PageView.as_view(), name="page_view"),
+    path(settings.NOVEL_ACCOUNT_URL, UserProfileView.as_view(), name="user"),
 
     path('images/<str:img>', stream.stream_image, name="stream_image"),
     path('images/thumbnail/<str:img>', stream.stream_image, name="stream_thumbnail_image"),
 
+    # must end of list
     path('<str:slug>', NovelDetailView.as_view(), name="novel"),
     path('<str:slug>/<str:chapter_slug>', ChapterView.as_view(), name="chapter"),
 ]

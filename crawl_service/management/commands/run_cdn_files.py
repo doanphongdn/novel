@@ -7,6 +7,7 @@ from threading import Thread
 from urllib.parse import urlparse
 
 from django.core.management.base import BaseCommand
+from django.db import transaction
 from django_backblaze_b2 import BackblazeB2Storage
 
 from crawl_service import settings, utils
@@ -16,16 +17,15 @@ from novel.models import CDNNovelFile, NovelChapter
 
 class CDNProcess:
 
-    def __init__(self):
-        available_cdn = CDNServer.get_available_cdn()
-        if available_cdn:
-            self.cdn = available_cdn[0]
-            self.b2 = BackblazeB2Storage(opts={'bucket': self.cdn.name, 'allowFileOverwrites': True})
-        else:
+    def __init__(self, available_cdn):
+        if not available_cdn:
             print('[CDN Processing Files] Not found CDN server configuration!')
             raise ValueError("Not found CDN server configuration!")
+        else:
+            self.cdn = available_cdn
+            self.b2 = BackblazeB2Storage(opts={'bucket': self.cdn.name, 'allowFileOverwrites': True})
 
-        self.origin_domain = None
+        self.origin_domain = self.cdn.campaign_source.homepage
         self.local_path = None
 
     def update_status(self, status):
@@ -122,15 +122,15 @@ class CDNProcess:
 
         return url
 
+    def get_referer(self, chapter):
+        origin_domain = urlparse(chapter.src_url) if chapter.src_url else None
+        referer = origin_domain.scheme + "://" + origin_domain.netloc if origin_domain else None
+        return referer
 
-class Command(BaseCommand):
-
-    def __init__(self, cdn_process=None):
-        self.cdn_process = cdn_process
-
+    # For the files has been processed before but not get any images
     def process_missing_files(self):
         print('[process_missing_files] Starting...')
-        if not self.cdn_process:
+        if not self.cdn:
             print('[process_missing_files] Missing cdn object...')
             print('[process_missing_files] Finish')
             return
@@ -148,7 +148,7 @@ class Command(BaseCommand):
             novel_slug = utils.str_format_num_alpha_only(file.chapter.novel.slug)
             chapter_slug = utils.str_format_num_alpha_only(file.chapter.slug)
             local_path = "%s/%s" % (novel_slug, chapter_slug)
-            urls = [self.cdn_process.full_schema_url(img_url) for img_url in file.chapter.images_content.split("\n")]
+            urls = [self.full_schema_url(img_url) for img_url in file.chapter.images_content.split("\n")]
 
             # validate images are missing
             missing_files = []
@@ -167,10 +167,10 @@ class Command(BaseCommand):
             #       % (local_path, file.chapter.id, get_img_time, len(missing_files)))
 
             # Download Files to local server
-            success_files = self.cdn_process.download_file_to_local(origin_file_urls=missing_files,
-                                                                    local_path=local_path,
-                                                                    referer=referer, limit_image=limit_image,
-                                                                    num_downloaded_url=num_downloaded_url)
+            success_files = self.download_file_to_local(origin_file_urls=missing_files,
+                                                        local_path=local_path,
+                                                        referer=referer, limit_image=limit_image,
+                                                        num_downloaded_url=num_downloaded_url)
             # downloaded_time = time.time() - get_img_time - start_time
             # print('[process_missing_files][%s-%s] spent %s to download %s missing images'
             #       % (local_path, file.chapter.id, downloaded_time, len(missing_files)))
@@ -180,7 +180,7 @@ class Command(BaseCommand):
                 continue
 
             # Upload Files to CDN
-            url_hashed = self.cdn_process.upload_file_to_cdn(local_files=success_files)
+            url_hashed = self.upload_file_to_cdn(local_files=success_files)
 
             # uploaded_time = time.time() - downloaded_time - get_img_time - start_time
             uploaded_time = time.time() - start_time
@@ -218,7 +218,7 @@ class Command(BaseCommand):
             # file.save()
 
             # Remove Files from local
-            self.cdn_process.remove_path_files(novel_slug)
+            self.remove_path_files(novel_slug)
 
         if processed_files:
             CDNNovelFile.objects.bulk_update(processed_files, ['url', 'url_hash', 'full', 'retry'])
@@ -226,11 +226,12 @@ class Command(BaseCommand):
         finish_time = time.time() - init_time
         print('[process_missing_files] Finish in ', finish_time, 's')
 
-    def process_rest_files(self):
+    # For the files never running before
+    def process_not_running_files(self):
         print('[process_rest_files] Starting...')
-        if not self.cdn_process:
-            print('[process_rest_files] Missing cdn object...')
-            print('[process_rest_files] Finish')
+        if not self.cdn:
+            print('[process_not_running_files] Missing cdn object...')
+            print('[process_not_running_files] Finish')
             return
 
         init_time = time.time()
@@ -239,16 +240,16 @@ class Command(BaseCommand):
 
         inserted_files = None
         with transaction.atomic():
-            new_files = [CDNNovelFile(cdn=self.cdn_process.cdn, chapter=chapter, type='chapter',
-                                      hash_origin_url=hashlib.md5(chapter.source_url.encode()).hexdigest(),
+            new_files = [CDNNovelFile(cdn=self.cdn, chapter=chapter, type='chapter',
+                                      hash_origin_url=hashlib.md5(chapter.src_url.encode()).hexdigest(),
                                       url=None, full=False) for chapter in chapters]
 
             if new_files:
                 inserted_files = CDNNovelFile.objects.bulk_create(new_files, ignore_conflicts=False)
 
         if not inserted_files:
-            print('[process_rest_files] Unable to create inserted_files...')
-            print('[process_rest_files] Finish')
+            print('[process_not_running_files] Unable to create inserted_files...')
+            print('[process_not_running_files] Finish')
             return
 
         limit_image = int(os.environ.get('BACKBLAZE_LIMIT_IMG', 150))
@@ -265,7 +266,7 @@ class Command(BaseCommand):
             local_path = "%s/%s" % (novel_slug, chapter_slug)
             urls = []
             for idx, img_url in enumerate(chapter.images_content.split("\n")):
-                full_img_url = self.cdn_process.full_schema_url(img_url)
+                full_img_url = self.full_schema_url(img_url)
                 origin_img = hashlib.md5(full_img_url.encode()).hexdigest()
                 url = {'index': idx, 'url': full_img_url, 'url_hash': origin_img}
                 urls.append(url)
@@ -273,11 +274,11 @@ class Command(BaseCommand):
             number_urls = len(urls)
 
             # Download Files to local server
-            success_files = self.cdn_process.download_file_to_local(origin_file_urls=urls, local_path=local_path,
-                                                                    referer=referer, limit_image=limit_image)
+            success_files = self.download_file_to_local(origin_file_urls=urls, local_path=local_path,
+                                                        referer=referer, limit_image=limit_image)
 
             # downloaded_time = time.time() - start_time
-            # print('[process_rest_files][%s-%s] spent %s to get %s images'
+            # print('[process_not_running_files][%s-%s] spent %s to get %s images'
             #       % (local_path, chapter.id, downloaded_time, len(urls)))
 
             if not len(success_files):
@@ -285,11 +286,11 @@ class Command(BaseCommand):
                 continue
 
             # Upload Files to CDN
-            url_hashed = self.cdn_process.upload_file_to_cdn(local_files=success_files)
+            url_hashed = self.upload_file_to_cdn(local_files=success_files)
 
             # uploaded_time = time.time() - downloaded_time - start_time
             uploaded_time = time.time() - start_time
-            print('[process_rest_files][%s-%s] spent %s to upload %s images'
+            print('[process_not_running_files][%s-%s] spent %s to upload %s images'
                   % (local_path, chapter.id, uploaded_time, len(success_files)))
 
             # Update status and url to CDNNovelFile
@@ -300,7 +301,7 @@ class Command(BaseCommand):
                     continue
                 valid_urls.append(sub.get('url').replace(settings.CDN_FILE_FOLDER, '').lstrip('/'))
             if not len(valid_urls):
-                print('[process_rest_files] Unable to get files for %s-%s/%s-%s'
+                print('[process_not_running_files] Unable to get files for %s-%s/%s-%s'
                       % (chapter.novel.id, novel_slug, chapter.id, chapter_slug))
                 continue
             valid_urls = list(set(valid_urls))  # Ensure have no duplication items
@@ -325,46 +326,65 @@ class Command(BaseCommand):
                     # inserted_file.save() ### => Do not save here
 
             # Remove Files from local
-            self.cdn_process.remove_path_files(chapter.novel.slug)
+            self.remove_path_files(chapter.novel.slug)
 
         if updated_files:
             CDNNovelFile.objects.bulk_update(updated_files, ['url', 'full', 'allow_limit', 'url_hash'])
 
         finish_time = time.time() - init_time
-        print('[process_rest_files] Finish in', finish_time, 's')
+        print('[process_not_running_files] Finish in', finish_time, 's')
 
-    def get_referer(self, chapter):
-        origin_domain = urlparse(chapter.source_url) if chapter.source_url else None
-        referer = origin_domain.scheme + "://" + origin_domain.netloc if origin_domain else None
-        return referer
+
+class Command(BaseCommand):
+
+    # def __init__(self, cdn_process=None):
+    #     self.cdn_process = cdn_process
 
     def handle(self, *args, **kwargs):
         print('[CDN Processing Files] Starting...')
-        if not self.cdn_process:
-            self.cdn_process = CDNProcess()
-
         ### Test code
         # self.cdn_process.upload_file2b2("/data/cdn/novel/goong-hoang-cung/chapter-24/0.jpg",
         #                                 "goong-hoang-cung/chapter-24/0.jpg")
         try:
-            # Set status to running CDN server
-            self.cdn_process.update_status('running')
+            active_cdn = CDNServer.get_active_cdn()
+            if not active_cdn:
+                print('[CDN Processing Files] Not Found any CDN Server for processing... Stopped!')
+            max_thread = int(os.environ.get('BACKBLAZE_THREAD_NUM', 2))
+            running_cdn = [cdn for cdn in active_cdn if cdn.status == 'running']
+            if max_thread <= len(running_cdn):
+                print('[CDN Processing Files] Exceed %s CDN Server for processing... Stopped!' % max_thread)
+            available_cdn = [cdn for idx, cdn in enumerate(active_cdn) if
+                             cdn.status == 'stopped' and idx + len(running_cdn) < max_thread]
+            if not available_cdn:
+                print('[CDN Processing Files] Not Found available CDN Server for processing... Stopped!')
 
-            # Create threads
-            t1 = Thread(target=self.process_missing_files)
-            t2 = Thread(target=self.process_rest_files)
+            threads = []
+            for cdn in available_cdn:
+                cdn_process = CDNProcess(cdn)
 
-            # Start all threads
-            t1.start()
-            t2.start()
+                # Set status to running CDN server
+                cdn_process.update_status('running')
 
-            # Wait for all of them to finish
-            t1.join()
-            t2.join()
+                # Create threads
+                t1 = Thread(target=cdn_process.process_missing_files)
+                t2 = Thread(target=cdn_process.process_not_running_files)
+
+                # Start all threads
+                t1.start()
+                t2.start()
+
+                # Append to list of threads before start them
+                threads.append({'cdn_process': cdn_process, 'thread1': t1, 'thread2': t2})
+
+            for t in threads:
+                # Wait for all of them to finish
+                t.get('thread1').join()
+                t.get('thread2').join()
+
+                # Set status to running CDN server
+                t.get('cdn_process').update_status('stopped')
 
         except Exception as e:
             print("[CDN Processing Files] Error: %s" % e)
 
-        # Set status to running CDN server
-        self.cdn_process.update_status('stopped')
         print('[CDN Processing Files] Finish')

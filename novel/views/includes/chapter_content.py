@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 
 from cms.cache_manager import CacheManager
 from novel import settings
+from crawl_service import settings as crawl_settings
 from novel.models import NovelSetting
 from novel.views.includes.base import BaseTemplateInclude
 
@@ -69,9 +70,23 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
             chapter_next_url = chapter.next_chapter.get_absolute_url()
             chapter_next_name = chapter.next_chapter.name
 
+        cdnnovelfile = chapter.cdnnovelfile_set.first()
+        cdn_images = None
+        cdn_domain = None
+        if cdnnovelfile:
+            cdn_images = cdnnovelfile.url.split('\n') if cdnnovelfile.url else None
+            if crawl_settings.BACKBLAZE_FRIENDLY_ALIAS_URL:
+                cdn_domain = crawl_settings.BACKBLAZE_FRIENDLY_ALIAS_URL
+            elif crawl_settings.BACKBLAZE_FRIENDLY_URL:
+                cdn_domain = crawl_settings.BACKBLAZE_FRIENDLY_URL
+            if not cdn_domain and cdnnovelfile.cdn:
+                cdn_domain = cdnnovelfile.cdn.friendly_alias_url or cdnnovelfile.cdn.friendly_url or cdnnovelfile.cdn.s3_url
+
         self.include_data.update({
             "chapter_prev_url": chapter_prev_url,
             "chapter_next_url": chapter_next_url,
             "chapter_next_name": chapter_next_name,
             "stream_images": self.stream_images(chapter),
+            "cdn_images": cdn_images if cdn_images and cdn_domain else [],
+            "cdn_domain": cdn_domain if cdn_domain else None
         })

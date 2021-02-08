@@ -14,40 +14,46 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
 
     @staticmethod
     def stream_images(chapter):
-        # Get novel setting from cache
-        novel_setting = CacheManager(NovelSetting).get_from_cache()
-        img_ignoring = []
-        if novel_setting and novel_setting.img_ignoring:
-            img_ignoring = novel_setting.img_ignoring.split(",")
-
         stream_images = []
-        images = chapter.images
-        for image in images:
-            # Not allow img url contains any sub-string from a list configuration's string
-            if len(img_ignoring) and any(sub_str in image for sub_str in img_ignoring):
-                continue
+        try:
+            # Get novel setting from cache
+            novel_setting = CacheManager(NovelSetting).get_from_cache()
+            img_ignoring = []
+            if novel_setting and novel_setting.img_ignoring:
+                img_ignoring = novel_setting.img_ignoring.split(",")
 
-            referer = urlparse(chapter.src_url)
-            referer_url = referer.scheme + "://" + referer.netloc
+            images = chapter.images
+            for image in images:
+                # Not allow img url contains any sub-string from a list configuration's string
+                if len(img_ignoring) and any(sub_str in image for sub_str in img_ignoring):
+                    continue
 
-            origin_url = (image or "").strip()
+                referer = urlparse(chapter.src_url)
+                referer_url = referer.scheme + "://" + referer.netloc
 
-            if origin_url.strip().startswith('//'):
-                origin_url = referer.scheme + ":" + origin_url
-            elif origin_url.strip().startswith('/'):
-                origin_url = referer_url.strip('/') + "/" + origin_url
-            if 'blogspot.com' in origin_url:
-                referer_url = None
+                origin_url = (image or "").strip()
 
-            json_str = json.dumps({
-                "origin_url": origin_url,
-                "referer": referer_url,
-            })
-            image_hash = hashlib.md5(json_str.encode()).hexdigest()
-            if not settings.redis_image.get(image_hash):
-                settings.redis_image.set(image_hash, json_str)
+                if origin_url.strip().startswith('//'):
+                    origin_url = referer.scheme + ":" + origin_url
+                elif origin_url.strip().startswith('/'):
+                    origin_url = referer_url.strip('/') + "/" + origin_url
+                if 'blogspot.com' in origin_url:
+                    referer_url = None
 
-            stream_images.append("/images/%s.jpg" % image_hash)
+                json_str = json.dumps({
+                    "origin_url": origin_url,
+                    "referer": referer_url,
+                })
+                image_hash = hashlib.md5(json_str.encode()).hexdigest()
+                if not settings.redis_image.get(image_hash):
+                    settings.redis_image.set(image_hash, json_str)
+
+                stream_images.append("/images/%s.jpg" % image_hash)
+
+        except Exception as e:
+            print("[stream_images] Error when parse image chapter content %s" % e)
+            import traceback
+            traceback.print_exc()
 
         return stream_images
 

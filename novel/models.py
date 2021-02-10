@@ -446,9 +446,9 @@ class NovelUserProfile(models.Model):
         return cls.objects.filter(user_id=user_id).first()
 
     @classmethod
-    def get_avatar(cls, user):
-        if user and not isinstance(user, AnonymousUser):
-            profile = cls.objects.filter(user=user).first()
+    def get_avatar(cls, user_id):
+        if user_id:
+            profile = cls.objects.filter(user_id=user_id).first()
             if profile:
                 return profile.avatar
 

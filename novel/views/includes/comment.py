@@ -82,10 +82,10 @@ class CommentTemplateInclude(BaseTemplateInclude):
                 reply = Comment.objects.prefetch_related('user').get(pk=cmt.parent_id)
                 if reply:
                     reply_to = reply.name
-
+            user_id = cmt.user.id if cmt.user else None
             comment_data.append({
                 "comment": cmt,
-                "avatar": NovelUserProfile.get_avatar(cmt.user),
+                "avatar": NovelUserProfile.get_avatar(user_id),
                 "child_class": "child" if cmt.parent_id else "",
                 "user_type": "Mem" if cmt.user else "Guest",
                 "user_type_color": "#3f9d87" if cmt.user else "#999",

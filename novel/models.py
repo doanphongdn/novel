@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models import Q
@@ -446,12 +446,14 @@ class NovelUserProfile(models.Model):
         return cls.objects.filter(user_id=user_id).first()
 
     @classmethod
-    def get_avatar(cls, user_id):
-        profile = cls.objects.filter(user_id=user_id).first()
-        if profile:
-            return profile.avatar
+    def get_avatar(cls, user):
+        if user and not isinstance(user, AnonymousUser):
+            profile = cls.objects.filter(user=user).first()
+            if profile:
+                return profile.avatar
 
         return static("image/user-default.png")
+
 
 class CDNNovelFile(models.Model):
     class Meta:

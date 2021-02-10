@@ -85,7 +85,7 @@ class CommentTemplateInclude(BaseTemplateInclude):
 
             comment_data.append({
                 "comment": cmt,
-                "avatar": NovelUserProfile.get_avatar(cmt.user.id),
+                "avatar": NovelUserProfile.get_avatar(cmt.user),
                 "child_class": "child" if cmt.parent_id else "",
                 "user_type": "Mem" if cmt.user else "Guest",
                 "user_type_color": "#3f9d87" if cmt.user else "#999",

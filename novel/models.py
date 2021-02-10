@@ -452,7 +452,7 @@ class NovelUserProfile(models.Model):
             if profile:
                 return profile.avatar
 
-        return static("image/user-default.png")
+        return static("images/user-default.png")
 
 
 class CDNNovelFile(models.Model):

@@ -1,10 +1,9 @@
 from django.contrib.sites.shortcuts import get_current_site
-from django.templatetags.static import static
 from django.views.generic import TemplateView
 
 from cms.cache_manager import CacheManager
 from cms.include_mapping import IncludeManager
-from novel import settings
+from crawl_service import settings
 from novel.models import NovelSetting, NovelUserProfile
 from novel.views.includes.base_auth_modal import BaseAuthModalTemplateInclude
 from novel.views.includes.base_footer_info import FooterInfotemplateInclude

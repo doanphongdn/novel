@@ -16,14 +16,16 @@ from django.templatetags.static import static
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from dotenv import load_dotenv
 
-from custom_allauth.settings import *
-from novel.settings import *
-from .pipeline_config import *
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 load_dotenv(os.path.join(BASE_DIR, '.env'), override=True, verbose=True)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
+
+if True:
+    from custom_allauth.settings import *
+    from novel.settings import *
+    from .pipeline_config import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '^6ezxsck574p4nub835ln78*x-gig1pjg-+$(o_82fo(h+#cu!'

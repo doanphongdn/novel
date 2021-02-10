@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 
+from crawl_service import settings
 from novel.cache_manager import NovelCache
 from novel.models import Novel
 from novel.views.base import NovelBaseView
@@ -88,6 +89,6 @@ class NovelDetailView(NovelBaseView):
         response.context_data.update({
             'novel_html': self.incl_manager.render_include_html("novel", extra_data=extra_data, request=request),
             'novel': novel,
+            'recapcha_site_key': settings.GOOGLE_RECAPTCHA_SITE_KEY
         })
-
         return response

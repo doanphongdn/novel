@@ -64,4 +64,21 @@ $(document).ready(function (e) {
             $(this).find('a.tab-login').tab('show');
         }
     });
+
+    $('#comment-form').submit(function (e) {
+        for (instance in CKEDITOR.instances) {
+            CKEDITOR.instances[instance].updateElement();
+        }
+        form_data = $(this).serializeArray();
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "/comment",
+            dataType: 'json',
+            data: form_data,
+            success: function (json_data) {
+                console.log(json_data);
+            }
+        });
+    });
 });

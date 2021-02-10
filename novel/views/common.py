@@ -1,11 +1,12 @@
 import json
 import logging
+from urllib.parse import urlencode
 
 import requests
-from django.http import HttpResponse, StreamingHttpResponse
+from django.http import HttpResponse, StreamingHttpResponse, JsonResponse
 
 from novel import settings
-
+from novel.form.comment import CommentForm
 
 logger = logging.getLogger(__name__)
 
@@ -48,3 +49,23 @@ def stream_image(request, *args, **kwargs):
         import traceback
         traceback.print_exc()
     return HttpResponse({})
+
+
+def comment(request, *args, **kwargs):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            ''' Begin reCAPTCHA validation '''
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            url = 'https://www.google.com/recaptcha/api/siteverify'
+            values = {
+                'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+                'response': recaptcha_response
+            }
+            data = urlencode(values)
+            response = requests.get(url, data)
+            ''' End reCAPTCHA validation '''
+
+            return JsonResponse(response.json())
+
+    return JsonResponse({"data": []})

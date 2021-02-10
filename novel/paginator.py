@@ -1,5 +1,5 @@
 from cms.paginator import ModelPaginator
-from novel.models import Novel
+from novel.models import Novel, Comment
 
 
 class ChapterPaginator(ModelPaginator):
@@ -19,6 +19,30 @@ class ChapterPaginator(ModelPaginator):
         chap_list = self.novel_flat.chapters.get("list", [])
         chap_list.reverse()
         return chap_list[self.offset:self.offset + self.per_page]
+
+
+class CommentPaginator(ModelPaginator):
+    def __init__(self, novel, per_page, number, order_by='-id', **kwargs):
+        self.novel = novel
+        super().__init__(per_page, number, order_by, **kwargs)
+
+    def calc_total(self, **kwargs):
+        if not self.novel:
+            return 0
+
+        return Comment.objects.filter(novel=self.novel).count()
+
+    def get_data(self, **kwargs):
+        if not self.novel:
+            return []
+        comment_data = []
+        comment_list = Comment.objects.filter(novel=self.novel, **kwargs).prefetch_related('chapter', 'user').order_by(
+            self.order_by).all()[self.offset:self.offset + self.per_page]
+        for cmt in comment_list:
+            child_comments = Comment.objects.filter(parent_id=cmt.id)
+            comment_data.append(cmt)
+            comment_data.extend(list(child_comments))
+        return comment_data
 
 
 class NovelPaginator(ModelPaginator):

@@ -66,19 +66,22 @@ $(document).ready(function (e) {
     });
 
     $('#comment-form').submit(function (e) {
+        e.preventDefault();
         for (instance in CKEDITOR.instances) {
             CKEDITOR.instances[instance].updateElement();
         }
-        form_data = $(this).serializeArray();
-        e.preventDefault();
-        $.ajax({
-            type: "POST",
-            url: "/comment",
-            dataType: 'json',
-            data: form_data,
-            success: function (json_data) {
-                console.log(json_data);
-            }
+        var form_data = $(this).serializeArray();
+        grecaptcha.execute(recapcha_site_key, {action: 'submit'}).then(function (token) {
+            form_data.push({name: 'g-recaptcha-response', value: $("*[name='g-recaptcha-response']").val()});
+            $.ajax({
+                type: "POST",
+                url: "/comment",
+                dataType: 'json',
+                data: form_data,
+                success: function (json_data) {
+                    console.log(json_data);
+                }
+            });
         });
     });
 });

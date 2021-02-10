@@ -30,7 +30,7 @@ a.cke_dialog_tab {
     display: block !important;
     position: relative;
 
-    #cke_id_content {
+    .cke {
       width: 100% !important;
 
       .cke_inner {
@@ -79,4 +79,94 @@ a.cke_dialog_tab {
     }
   }
 
+  .comment-list {
+    position: relative;
+
+    .comment-item {
+      display: inline-flex;
+      width: 100%;
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+
+        img {
+          width: 100%;
+          border-radius: 50%;
+        }
+
+        .comment-user-type {
+          color: #fff;
+          padding: 1px 5px;
+          font-size: .7rem;
+        }
+      }
+
+      .comment-content-wrap {
+        margin-left: 13px;
+        width: 100%;
+
+        .comment-content-reply {
+          a {
+            margin-right: 10px;
+            font-size: .9rem;
+          }
+        }
+
+        .comment-content {
+          border-radius: 5px;
+          background-color: #f9f9f9;
+          padding: 10px 15px 5px;
+          width: 100%;
+          margin-bottom: 10px;
+          border: 1px solid #d5d5d5;
+          position: relative;
+
+          div:not(:first-child) {
+            margin-top: 10px;
+          }
+
+          .comment-content-text {
+            padding: 5px 0;
+            margin-bottom: 0 !important;
+            color: #333;
+            font-size: .9rem;
+          }
+
+          .comment-content-title {
+            .comment-user-name {
+              font-weight: 600;
+              color: #555;
+            }
+
+            .comment-datetime {
+              font-size: .7rem;
+              float: right;
+            }
+
+
+            .comment-chapter {
+              color: #5a7391;
+              font-style: italic;
+            }
+          }
+
+          &:before, &:after {
+            content: "";
+            position: absolute;
+            top: 8px;
+            left: -10px;
+            border-bottom: 10px solid transparent;
+            border-top: 10px solid transparent;
+            border-right: 10px solid #f9f9f9;
+          }
+
+          &:before {
+            left: -11px;
+            border-right-color: #ddd;
+          }
+        }
+      }
+    }
+  }
 }

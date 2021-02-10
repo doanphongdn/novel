@@ -29,30 +29,71 @@
             <form id="comment-form">
                 {% csrf_token %}
                 <div class="row">
-                    <div class="g-recaptcha"
-                         data-sitekey="{{ recapcha_site_key }}"
-                         data-callback="onSubmit">
-                    </div>
                     {{ comment_form.media }}
+                    {{ comment_form.novel_id }}
+                    {{ comment_form.chapter_id }}
+                    {{ comment_form.parent_id }}
+                    {{ comment_form.reply_id }}
                     <div class="col-12">
                         {{ comment_form.content }}
                     </div>
                     <div class="col-8 col-md-4 mt-2">
-                        <div class="input-group input-group-alternative">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fa fa-address-card"></i></span>
-                            </div>
-                            {{ comment_form.name }}
-                        </div>
+                        {{ comment_form.name }}
                     </div>
                     <div class="col-4 col-md-8 mt-2 comment-action">
                         <button class="btn btn-warning" type="submit">
                             <i class="fa fa-send"></i> {{ button_label }}</button>
                     </div>
-
                 </div>
                 {{ comment_html }}
             </form>
+            <div class="row mt-5">
+                <div class="col-12 comment-list">
+                    {% for cmt_obj in comment_data %}
+                        <div class="comment-item {{ cmt_obj.child_class }}">
+                            <div class="user-avatar">
+                                <img src="{{ cmt_obj.avatar }}">
+                                <br>
+                                <span class="comment-user-type"
+                                      style="background-color: {{ cmt_obj.user_type_color }};">
+                                {{ cmt_obj.user_type }}
+                                </span>
+                            </div>
+                            <div class="comment-content-wrap">
+                                <div class="comment-content">
+                                    <div class="comment-content-title">
+                                        <span class="comment-user-name">{{ cmt_obj.comment.name }}</span>
+
+                                        <span class="comment-chapter">
+                                <a href="{{ cmt_obj.comment.chapter.get_absolute_url }}">{{ cmt_obj.comment.chapter.name }}</a>
+                            </span>
+                                        <span class="comment-datetime"><i
+                                                class="fa fa-clock"></i> {{ cmt_obj.comment.created_at_str }}</span>
+                                    </div>
+                                    <div class="comment-content-text">
+                                        {% autoescape off %}
+                                            {{ cmt_obj.comment.content }}
+                                        {% endautoescape %}
+                                    </div>
+                                    {% if cmt_obj.child_class != 'child' %}
+                                        <div class="comment-content-reply">
+                                            <a class="btn-reply-comment">
+                                                <i class="fa fa-comments"></i> 0
+                                            </a>
+                                            <a href="#" class="btn-reply-comment">
+                                                <i class="fa fa-reply"></i> Trả lời
+                                            </a>
+                                            <a href="#" class="btn-reply-comment">
+                                                <i class="fa fa-flag"></i> Báo cáo
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
         <div role="tabpanel" class="tab-pane fade" id="fb-comment">
             <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-width="100%"

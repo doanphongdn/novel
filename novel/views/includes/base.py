@@ -7,7 +7,8 @@ class BaseTemplateInclude(object):
     template = None
     default_values = {}
 
-    def __init__(self, include_data, extra_data=None):
+    def __init__(self, include_data, extra_data=None, request=None):
+        self.request = request
         self.include_data = include_data or {}
 
         # extra data must have key by code of include to support multi
@@ -19,5 +20,5 @@ class BaseTemplateInclude(object):
     def prepare_include_data(self):
         pass
 
-    def render_html(self, request=None):
-        return loader.render_to_string(self.template, self.include_data, request=request)
+    def render_html(self):
+        return loader.render_to_string(self.template, self.include_data, request=self.request)

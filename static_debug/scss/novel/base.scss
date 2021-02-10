@@ -8,6 +8,15 @@
   opacity: .5;
 }
 
+.navbar-header-menu {
+  .nav-link {
+    .user-avatar {
+      width: 22px;
+      border-radius: 50%;
+    }
+  }
+}
+
 body {
   margin: 0;
   font-family: 'Open Sans', sans-serif;
@@ -52,6 +61,13 @@ a {
   .navbar_menu {
     ul {
       margin-right: 30px;
+
+      li {
+        a {
+          font-size: .9rem;
+          font-weight: 600;
+        }
+      }
     }
   }
 }

@@ -1,9 +1,11 @@
 from django.contrib.sites.shortcuts import get_current_site
+from django.templatetags.static import static
 from django.views.generic import TemplateView
 
 from cms.cache_manager import CacheManager
 from cms.include_mapping import IncludeManager
-from novel.models import NovelSetting
+from novel import settings
+from novel.models import NovelSetting, NovelUserProfile
 from novel.views.includes.base_auth_modal import BaseAuthModalTemplateInclude
 from novel.views.includes.base_footer_info import FooterInfotemplateInclude
 from novel.views.includes.base_navbar_menu import BaseNavbarTemplateInclude
@@ -106,11 +108,13 @@ class NovelBaseView(TemplateView):
         extra_data = {
             "base_navbar_menu": {
                 "user": request.user,
+                "user_avatar": NovelUserProfile.get_avatar(request.user.id),
             }
         }
 
         base_navbar = self.incl_manager.render_include_html('base_navbar', extra_data=extra_data)
         kwargs["base_navbar"] = base_navbar
+        kwargs["recapcha_site_key"] = settings.GOOGLE_RECAPTCHA_SITE_KEY
 
         tmpl_codes = ['base_footer', 'base_other_html', 'base_top_menu']
         tmpl_htmls = self.incl_manager.get_include_htmls(tmpl_codes)

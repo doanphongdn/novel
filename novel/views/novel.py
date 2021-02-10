@@ -80,6 +80,9 @@ class NovelDetailView(NovelBaseView):
             "chapter_list": {
                 "novel": novel,
                 "chap_page": chapter_page,
+            },
+            "comment": {
+                "novel": novel
             }
         }
         response.context_data.update({

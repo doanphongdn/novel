@@ -25,13 +25,14 @@ from crawl_service import settings
 from crawl_service.views.base import view_dmca_validation, view_google_site_verification
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
 from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap, NovelChapterSitemap
+from novel.views.includes.comment import CommentManager
 from novel.views.user import UserProfileView
 from novel.views.chapter import ChapterView
 from novel.views.index import NovelIndexView
 from novel.views.novel import NovelDetailView
 from novel.views.novel_all import NovelAllView
 from novel.views.page import PageView
-from novel.views import common
+from novel.views import stream
 
 sitemaps = {
     'genre': GenreSitemap,
@@ -62,10 +63,10 @@ urlpatterns = [
     path(settings.NOVEL_PAGE_URL + '/<str:slug>', PageView.as_view(), name="page_view"),
     path(settings.NOVEL_ACCOUNT_URL, UserProfileView.as_view(), name="user"),
 
-    path('images/<str:img>', common.stream_image, name="stream_image"),
-    path('images/thumbnail/<str:img>', common.stream_image, name="stream_thumbnail_image"),
+    path('images/<str:img>', stream.stream_image, name="stream_image"),
+    path('images/thumbnail/<str:img>', stream.stream_image, name="stream_thumbnail_image"),
 
-    path('comment', common.comment, name="comment"),
+    path('comment', CommentManager.comment, name="comment"),
 
     # must end of list
     path('<str:slug>', NovelDetailView.as_view(), name="novel"),

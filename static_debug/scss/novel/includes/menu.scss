@@ -1,5 +1,5 @@
 
-.navbar-menu {
+.navbar-top-menu {
   padding-top: 5px;
   padding-bottom: 5px;
   box-shadow: 0 1px 10px rgba(50, 50, 93, .1), 0 1px 5px rgba(0, 0, 0, .07) !important;
@@ -21,18 +21,24 @@
       padding: 10px 20px;
     }
   }
-  li{
+
+  li {
     border-right: thin solid #F0F0F0;
   }
+
   li:first-child {
     .nav-link {
       padding-left: 0;
     }
+
   }
 
   .nav-link {
     padding: 10px !important;
     margin-right: 0;
+    font-size: .9rem;
+    font-weight: 600;
+
 
     i {
       margin-right: .2rem;

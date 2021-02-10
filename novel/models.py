@@ -6,9 +6,11 @@ from urllib.parse import urlparse
 
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
+from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models import Q
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
@@ -443,6 +445,13 @@ class NovelUserProfile(models.Model):
     def get_profiles(cls, user_id):
         return cls.objects.filter(user_id=user_id).first()
 
+    @classmethod
+    def get_avatar(cls, user_id):
+        profile = cls.objects.filter(user_id=user_id).first()
+        if profile:
+            return profile.avatar
+
+        return static("image/user-default.png")
 
 class CDNNovelFile(models.Model):
     class Meta:
@@ -470,3 +479,28 @@ class CDNNovelFile(models.Model):
                                   allow_limit=settings.BACKBLAZE_NOT_ALLOW_LIMIT,
                                   retry__lte=settings.BACKBLAZE_MAX_RETRY,
                                   updated_at__lte=limit_time).all()[0:50]
+
+
+class Comment(models.Model):
+    class Meta:
+        db_table = 'novel_comments'
+
+    novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
+    chapter = models.ForeignKey(NovelChapter, null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    parent_id = models.IntegerField(null=True)
+    reply_id = models.IntegerField(null=True)
+    name = models.CharField(max_length=250)
+    content = models.TextField()
+
+    # Datetime
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def updated_at_str(self):
+        return datetime2string(self.updated_at)
+
+    @property
+    def created_at_str(self):
+        return datetime2string(self.created_at)

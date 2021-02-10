@@ -47,7 +47,7 @@ class IncludeManager(object):
             incl_html_cache = IncludeHtmlCache(inc_func, inc_params, extra_data, inc.class_name, request=request)
             if inc_func and inc_func.cache:
                 html = incl_html_cache.get_from_cache(request_hash=self.request_hash, page_tmpl_code=tmpl_code,
-                                                      include_code=inc.code, request=request)
+                                                      include_code=inc.code)
             else:
                 html = incl_html_cache.get_from_data() if incl_html_cache else 'Missing incl_html_cache'
 

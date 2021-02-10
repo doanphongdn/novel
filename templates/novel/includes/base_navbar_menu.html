@@ -1,5 +1,5 @@
 {% load cache %}
-<ul class="navbar-nav ml-auto">
+<ul class="navbar-nav ml-auto navbar-header-menu">
     {% for menu in navbar_menus %}
         <li class="nav-item">
             <a class="nav-link nav-link-icon" href="{{ menu.url }}">
@@ -8,12 +8,12 @@
             </a>
         </li>
     {% endfor %}
-    {% if enable_auth_menu %}aaaaaaa
+    {% if enable_auth_menu %}
         {% if user.is_authenticated %}
             <li class="nav-item dropdown">
                 <a class="nav-link nav-link-icon" href="#" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    {{ user }}
+                    <img src="{{ user_avatar }}" class="user-avatar">
                     <span class="nav-link-inner--text">{{ user.first_name }} {{ user.last_name }}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-default_dropdown_1">

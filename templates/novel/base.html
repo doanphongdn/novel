@@ -138,9 +138,11 @@
 <script type="text/javascript" src="{% static 'js/common/autosize.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/particles.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/run_particlejs.js' %}"></script>
-<script async type="text/javascript" src='https://www.google.com/recaptcha/api.js'></script>
-{% block scripts %}{% endblock %}
-<script type="text/javascript" src="{% static 'js/novel/base.js' %}?v=0.3"></script>
+
+{% if recapcha_site_key %}
+    <script type="text/javascript"
+            src="https://www.google.com/recaptcha/api.js?render={{ recapcha_site_key }}"></script>
+{% endif %}
 
 {% if setting.google_analystics_id %}
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -158,5 +160,12 @@
 
     </script>
 {% endif %}
+
+<script type="text/javascript">
+    let recapcha_site_key = '{{ recapcha_site_key }}';
+</script>
+
+{% block scripts %}{% endblock %}
+<script type="text/javascript" src="{% static 'js/novel/base.js' %}?v=0.3"></script>
 </body>
 </html>

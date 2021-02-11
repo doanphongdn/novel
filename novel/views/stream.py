@@ -21,11 +21,13 @@ def url2yield(url, chunksize=1024, referer=None):
     # Note: here i enabled the streaming
     response = s.get(url, stream=True)
 
+    chunk = True
     if response.status_code != 200:
         logger.warning("[url2yield][Status = %s] Unable to get image for %s with referer %s",
                        response.status_code, url, referer)
+        yield {"status": response.status_code}
+        chunk = False
 
-    chunk = True
     if crawl_settings.IGNORE_CLOUDFLARE_RESTRICT in response.url:
         yield {"cloudflare_restricted": "true"}
         chunk = False

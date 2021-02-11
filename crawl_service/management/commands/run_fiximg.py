@@ -91,7 +91,7 @@ class Command(BaseCommand):
         query = reduce(operator.and_, (Q(images_content__icontains=item) for item in img_ignoring))
         chapters = NovelChapter.objects.filter(query)
         if not chapters:
-            print('No chapter is invalid')
+            print('[Selenium Scraper] No chapter is invalid')
             return
         for chapter in chapters:
             print('[Selenium Scraper] Update images content for Chapter ID: ', chapter.id, ' - Chapter Name: ',

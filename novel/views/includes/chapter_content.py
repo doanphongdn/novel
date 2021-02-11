@@ -3,9 +3,10 @@ import json
 from urllib.parse import urlparse
 
 from cms.cache_manager import CacheManager
-from novel import settings
 from crawl_service import settings as crawl_settings
+from novel import settings
 from novel.models import NovelSetting
+from novel.utils import sort_images
 from novel.views.includes.base import BaseTemplateInclude
 
 
@@ -14,7 +15,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
     template = "novel/includes/chapter_content.html"
 
     @staticmethod
-    def stream_images(chapter):
+    def stream_images(chapter, cdn_img_count=0):
         stream_images = []
         try:
             # Get novel setting from cache
@@ -24,7 +25,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                 img_ignoring = novel_setting.img_ignoring.split(",")
 
             images = chapter.images
-            for image in images:
+            for idx, image in enumerate(images):
                 # Not allow img url contains any sub-string from a list configuration's string
                 if len(img_ignoring) and any(sub_str in image for sub_str in img_ignoring):
                     continue
@@ -38,14 +39,17 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                     origin_url = referer.scheme + ":" + origin_url
                 elif origin_url.strip().startswith('/'):
                     origin_url = referer_url.strip('/') + "/" + origin_url
-                if 'blogspot.com' in origin_url:
+                if crawl_settings.IGNORE_REFERER_FOR in origin_url:
                     referer_url = None
-
-                json_str = json.dumps({
+                json_obj = {
                     "origin_url": origin_url,
                     "referer": referer_url,
-                })
-                image_hash = hashlib.md5(json_str.encode()).hexdigest()
+                    "chapter": chapter.id,
+                }
+                if idx == cdn_img_count:
+                    json_obj.update({"chapter_updated": chapter.chapter_updated, })
+                json_str = json.dumps(json_obj)
+                image_hash = hashlib.md5(origin_url.encode()).hexdigest()
                 if not settings.redis_image.get(image_hash):
                     settings.redis_image.set(image_hash, json_str)
 
@@ -75,6 +79,8 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
         cdn_domain = None
         if cdnnovelfile:
             cdn_images = cdnnovelfile.url.split('\n') if cdnnovelfile.url else None
+            if cdn_images:
+                cdn_images = sort_images(cdn_images)
             if crawl_settings.BACKBLAZE_FRIENDLY_ALIAS_URL:
                 cdn_domain = crawl_settings.BACKBLAZE_FRIENDLY_ALIAS_URL
             elif crawl_settings.BACKBLAZE_FRIENDLY_URL:
@@ -86,7 +92,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
             "chapter_prev_url": chapter_prev_url,
             "chapter_next_url": chapter_next_url,
             "chapter_next_name": chapter_next_name,
-            "stream_images": self.stream_images(chapter),
+            "stream_images": self.stream_images(chapter, cdn_images and len(cdn_images) or 0),
             "cdn_images": cdn_images if cdn_images and cdn_domain else [],
             "cdn_domain": cdn_domain.rstrip('/') if cdn_domain else None
         })

@@ -84,7 +84,8 @@ def stream_image(request, *args, **kwargs):
                         chapter.chapter_updated = False
                         chapter.save()
 
-                print("[stream_image] Error when stream image %s : %s" % (img_hash, origin_url))
+                print("[stream_image] Error when stream image %s : %s <chapter %s - updated %s>"
+                      % (img_hash, origin_url, chapter_id, chapter_updated))
                 return HttpResponse({})
 
     except Exception as e:

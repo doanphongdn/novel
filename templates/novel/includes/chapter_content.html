@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 <div class="chapter-content">
     <div class="row chapter-actions">
@@ -55,6 +56,11 @@
             {% autoescape off %}
                 {{ chapter.decompress_content }}
             {% endautoescape %}
+            {% if stream_images %}
+              {#    {% get_current_language as LANGUAGE_CODE %}#}
+              {#Current language: {{ LANGUAGE_CODE }} #}
+              <p class="bg-yellow text-center text-uppercase">{% translate "Please visit this chapter after 5 minutes if your browser cannot load these images now." %}</p>
+            {% endif %}
             {% if cdn_images %}
               {% for cdn_image in cdn_images %}
                 {% if forloop.counter <= 3 %}

@@ -52,9 +52,11 @@ def stream_image(request, *args, **kwargs):
             referer_url = json_str.get("referer")
             chapter_id = json_str.get("chapter")
             chapter_updated = json_str.get("chapter_updated")
+            is_stream_failed = False
             try:
                 response = StreamingHttpResponse(streaming_content=url2yield(origin_url, referer=referer_url),
                                                  content_type="image/jpeg")
+                stream_content = list(response.streaming_content)
             except Exception as ex:
                 if chapter_id and chapter_updated:
                     chapter = NovelChapter.objects.get(pk=chapter_id)
@@ -67,8 +69,6 @@ def stream_image(request, *args, **kwargs):
                 traceback.print_exc()
                 return HttpResponse({})
 
-            is_stream_failed = False
-            stream_content = list(response.streaming_content)
             for item in stream_content:
                 json_obj = utils.is_json(item)
                 if json_obj and json_obj.get('cloudflare_restricted'):

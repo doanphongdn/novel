@@ -6,9 +6,10 @@ from urllib.parse import urlparse
 
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import models
+from django.db import transaction
 from django.db.models import Q
 from django.templatetags.static import static
 from django.urls import reverse
@@ -506,3 +507,20 @@ class Comment(models.Model):
     @property
     def created_at_str(self):
         return datetime2string(self.created_at)
+
+
+class CrawlNovelRetry(models.Model):
+    class Meta:
+        db_table = "crawl_novel_retry"
+
+    novel = models.ForeignKey(Novel, unique=True, on_delete=models.CASCADE)
+    chapter = models.ForeignKey(NovelChapter, unique=True, on_delete=models.CASCADE)
+
+    # Datetime
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    @classmethod
+    def get_available_records(cls):
+        with transaction.atomic():
+            return cls.objects.select_for_update().filter().all()[0:10]

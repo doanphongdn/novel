@@ -65,16 +65,16 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
     def prepare_include_data(self):
         chapter = self.include_data.get("chapter")
         chapter_prev_url = None
-        if chapter.prev_chapter:
+        if chapter and chapter.prev_chapter:
             chapter_prev_url = chapter.prev_chapter.get_absolute_url()
 
         chapter_next_name = None
         chapter_next_url = None
-        if chapter.next_chapter:
+        if chapter and chapter.next_chapter:
             chapter_next_url = chapter.next_chapter.get_absolute_url()
             chapter_next_name = chapter.next_chapter.name
 
-        cdnnovelfile = chapter.cdnnovelfile_set.first()
+        cdnnovelfile = chapter.cdnnovelfile_set.first() if chapter else None
         cdn_images = None
         cdn_domain = None
         if cdnnovelfile:

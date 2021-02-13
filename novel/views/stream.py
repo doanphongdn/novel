@@ -6,7 +6,7 @@ from django.http import HttpResponse, StreamingHttpResponse
 
 from crawl_service import settings as crawl_settings
 from novel import settings, utils
-from novel.models import NovelChapter
+from novel.models import CrawlNovelRetry, NovelChapter
 
 
 logger = logging.getLogger(__name__)
@@ -41,6 +41,11 @@ def url2yield(url, chunksize=1024, referer=None):
         yield chunk
 
 
+def create_crawl_retry(chapter):
+    obj, created = CrawlNovelRetry.objects.get_or_create(novel=chapter.novel, chapter=chapter)
+    return obj, created
+
+
 def stream_image(request, *args, **kwargs):
     try:
         img_hash = (kwargs.get('img') or "").strip('.jpg')
@@ -63,6 +68,7 @@ def stream_image(request, *args, **kwargs):
                     if chapter and chapter.chapter_updated:
                         chapter.chapter_updated = False
                         chapter.save()
+                        create_crawl_retry(chapter)
                 print("[stream_image] Error when parse image %s : %s <chapter %s - updated %s>"
                       % (img_hash, ex, chapter_id, chapter_updated))
                 import traceback
@@ -95,6 +101,7 @@ def stream_image(request, *args, **kwargs):
                     if chapter and chapter.chapter_updated:
                         chapter.chapter_updated = False
                         chapter.save()
+                        create_crawl_retry(chapter)
 
                 print("[stream_image] Error when stream image %s : %s <chapter %s - updated %s>"
                       % (img_hash, origin_url, chapter_id, chapter_updated))

@@ -2,13 +2,13 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from crawl_service import utils
-from crawl_service.utils import query_debugger
+# from crawl_service.utils import query_debugger
 from novel.models import CrawlNovelRetry, NovelChapter
 
 
 class Command(BaseCommand):
 
-    @query_debugger
+    # @query_debugger
     def handle(self, *args, **kwargs):
         print('[Retry Crawl Novel] Starting...')
         try:

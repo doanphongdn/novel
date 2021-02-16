@@ -40,7 +40,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                 elif origin_url.strip().startswith('/'):
                     origin_url = referer_url.strip('/') + "/" + origin_url
 
-                for ignoring_referer in settings.IGNORE_REFERER_FOR.split(","):
+                for ignoring_referer in crawl_settings.IGNORE_REFERER_FOR.split(","):
                     if ignoring_referer in origin_url:
                         referer_url = None
                         break

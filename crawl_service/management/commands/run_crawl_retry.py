@@ -17,6 +17,8 @@ class Command(BaseCommand):
                 if not available_retrying:
                     print('[Retry Crawl Novel] Not Found any Records for processing... Stopped!')
 
+                print('[Retry Crawl Novel] Found %s records for processing...' % len(available_retrying))
+
                 chapter_updated_list = []
                 for retry in available_retrying:
                     for chapter in retry.novel.chapters:
@@ -33,6 +35,8 @@ class Command(BaseCommand):
 
                 if chapter_updated_list:
                     NovelChapter.objects.bulk_update(chapter_updated_list, ['chapter_updated'])
+                    print('[Retry Crawl Novel] Found %s records to change chapter_updated...'
+                          % len(chapter_updated_list))
 
         except Exception as e:
             print("[Retry Crawl Novel] Error: %s" % e)

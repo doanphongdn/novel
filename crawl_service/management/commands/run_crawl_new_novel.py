@@ -22,6 +22,8 @@ class Command(BaseCommand):
             if not available_chapters:
                 print('[Retry Crawl New Novel] Not Found any Records for processing... Stopped!')
 
+            print('[Retry Crawl New Novel] Found %s records for processing...' % len(available_chapters))
+
             chapter_updated_list = []
             for chapter in available_chapters:
                 urls = chapter.images
@@ -36,6 +38,8 @@ class Command(BaseCommand):
 
             if chapter_updated_list:
                 NovelChapter.objects.bulk_update(chapter_updated_list, ['chapter_updated'])
+                print('[Retry Crawl New Novel] Found %s records to change chapter_updated...'
+                      % len(chapter_updated_list))
 
         except Exception as e:
             print("[Retry Crawl New Novel] Error: %s" % e)

@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models import Q

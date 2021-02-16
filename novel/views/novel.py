@@ -83,7 +83,9 @@ class NovelDetailView(NovelBaseView):
                 "chap_page": chapter_page,
             },
             "comment": {
-                "novel": novel
+                "novel": novel,
+                # Dont change cke_id, it using in base.js
+                "cke_novel_id": "cke_novel_id",
             }
         }
         response.context_data.update({

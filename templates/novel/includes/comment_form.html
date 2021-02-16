@@ -1,0 +1,19 @@
+<form class="{{ comment_type_class }}">
+    {% csrf_token %}
+    <div class="row">
+        {{ comment_form.novel_id }}
+        {{ comment_form.chapter_id }}
+        {{ comment_form.parent_id }}
+        {{ comment_form.reply_id }}
+        <div class="col-12">
+            {{ comment_form.content }}
+        </div>
+        <div class="col-8 col-md-4 mt-2">
+            {{ comment_form.name }}
+        </div>
+        <div class="col-4 col-md-8 mt-2 comment-action">
+            <button class="btn btn-warning" type="submit">
+                <i class="fa fa-send"></i> {{ button_label }}</button>
+        </div>
+    </div>
+</form>

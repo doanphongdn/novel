@@ -17,7 +17,7 @@ import os
 
 from django.conf.urls import url
 from django.contrib.sitemaps import views as sitemaps_views
-from django.urls import path
+from django.urls import path, include
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 
@@ -67,6 +67,7 @@ urlpatterns = [
     path('images/thumbnail/<str:img>', stream.stream_image, name="stream_thumbnail_image"),
 
     path('comment', CommentManager.comment, name="comment"),
+    path('comment/form', CommentManager.comment_form, name="comment_form"),
 
     # must end of list
     path('<str:slug>', NovelDetailView.as_view(), name="novel"),

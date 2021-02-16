@@ -1,12 +1,12 @@
 import time
+from copy import deepcopy
+from http import HTTPStatus
 from urllib.parse import urlencode
 
 import requests
-from django import forms
 from django.contrib.auth.models import AnonymousUser
-from django.core.paginator import Paginator
-from django.http import JsonResponse
-from django.templatetags.static import static
+from django.http import JsonResponse, HttpResponse
+from django.template import loader
 
 from novel import settings
 from novel.form.comment import CommentForm
@@ -37,9 +37,12 @@ class CommentManager(object):
             if response['success']:
                 data = {key: value or None for key, value in request.POST.items() if hasattr(Comment, key)}
                 data["user"] = None if isinstance(request.user, AnonymousUser) else request.user
-                Comment(**data).save()
+                cmt = Comment.objects.create(**data)
 
-                return JsonResponse({"success": True})
+                comment_item = CommentTemplateInclude.comment_item(cmt)
+                comment_html = loader.render_to_string("novel/includes/comment_item.html", {"cmt_obj": comment_item})
+
+                return JsonResponse({"success": True, "html": comment_html})
 
         return JsonResponse({"success": False})
 
@@ -47,17 +50,67 @@ class CommentManager(object):
     def get_comments(novel, page=1, limit_item=10):
         return CommentPaginator(novel, limit_item, page, parent_id__isnull=True)
 
+    @staticmethod
+    def comment_form(request, *args, **kwargs):
+        init_data = {}
+        comment_form = CommentForm()
+        reply_id = request.POST.get("reply_id")
+        parent_id = request.POST.get("parent_id")
+        novel_id = request.POST.get("novel_id")
+        chapter_id = request.POST.get("chapter_id")
+        if request.user.is_authenticated:
+            init_data["name"] = "%s %s" % (request.user.first_name, request.user.last_name)
+            comment_form.fields['name'].widget.attrs.update({'readonly': True})
+
+        comment_form.fields['content'].widget.attrs.update({'id': 'id_content_%s' % int(time.time())})
+        comment_form.fields['name'].widget.attrs.update({'id': 'id_name_%s' % int(time.time())})
+        comment_form.fields['novel_id'].widget.attrs.update({'id': 'id_novel_id_%s' % int(time.time())})
+        comment_form.fields['parent_id'].widget.attrs.update({'id': 'id_parent_id_%s' % int(time.time())})
+        comment_form.fields['chapter_id'].widget.attrs.update({'id': 'id_chapter_id_%s' % int(time.time())})
+        comment_form.fields['reply_id'].widget.attrs.update({'id': 'id_reply_id_%s' % int(time.time())})
+
+        init_data["parent_id"] = parent_id
+        init_data["reply_id"] = reply_id
+        init_data["novel_id"] = novel_id
+        init_data["chapter_id"] = chapter_id
+        comment_form.initial = init_data
+
+        html = loader.render_to_string("novel/includes/comment_form.html",
+                                       {'comment_form': comment_form, "comment_type_class": "comment-reply-form"},
+                                       request=request)
+
+        return JsonResponse({'html': html}, status=HTTPStatus.OK)
+
 
 class CommentTemplateInclude(BaseTemplateInclude):
     cache = False
     name = "comment"
     template = "novel/includes/comment.html"
 
+    @classmethod
+    def comment_item(cls, comment):
+        reply_to = ""
+        if comment.reply_id:
+            reply = Comment.objects.prefetch_related('user').get(pk=comment.parent_id)
+            if reply:
+                reply_to = reply.name
+        user_id = comment.user.id if comment.user else None
+        return {
+            "comment": comment,
+            "avatar": NovelUserProfile.get_avatar(user_id),
+            "child_class": "child" if comment.parent_id else "",
+            "user_type": "Mem" if comment.user else "Guest",
+            "user_type_color": "#3f9d87" if comment.user else "#999",
+            "reply_to": reply_to,
+
+        }
+
     def prepare_include_data(self):
         super().prepare_include_data()
         comment_form = CommentForm()
         novel = self.include_data.get("novel")
         chapter = self.include_data.get("chapter")
+        cke_novel_id = self.include_data.get("cke_novel_id")
 
         init_data = {}
         comments = []
@@ -72,29 +125,19 @@ class CommentTemplateInclude(BaseTemplateInclude):
             init_data["name"] = "%s %s" % (self.request.user.first_name, self.request.user.last_name)
             comment_form.fields['name'].widget.attrs.update({'readonly': True})
 
-        comment_form.fields['content'].widget.attrs.update({'id': 'id_content_%s' % int(time.time())})
+        if cke_novel_id:
+            comment_form.fields['content'].widget.attrs.update({'id': cke_novel_id})
+
         comment_form.initial = init_data
 
         comment_data = []
         for cmt in comments:
-            reply_to = ""
-            if cmt.reply_id:
-                reply = Comment.objects.prefetch_related('user').get(pk=cmt.parent_id)
-                if reply:
-                    reply_to = reply.name
-            user_id = cmt.user.id if cmt.user else None
-            comment_data.append({
-                "comment": cmt,
-                "avatar": NovelUserProfile.get_avatar(user_id),
-                "child_class": "child" if cmt.parent_id else "",
-                "user_type": "Mem" if cmt.user else "Guest",
-                "user_type_color": "#3f9d87" if cmt.user else "#999",
-                "reply_to": reply_to,
-
-            })
+            comment_data.append(self.comment_item(cmt))
 
         self.include_data.update({
             "recapcha_site_key": settings.GOOGLE_RECAPTCHA_SITE_KEY,
             "comment_form": comment_form,
-            "comment_data": comment_data
+            "comment_form_media": comment_form.media,
+            "comment_data": comment_data,
+            "comment_type_class": "comment-form",
         })

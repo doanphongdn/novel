@@ -51,6 +51,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
                     db_src_url = novel.novel_flat and novel.novel_flat.latest_chapter.get("source_url") or None
                     need_updated = src_latest_chap_url not in (novel.src_latest_chapter_url, db_src_url)
                     if need_updated and novel.novel_updated:
+                        novel.src_latest_chapter_url = src_latest_chap_url
                         novel.novel_updated = False
                         update = True
 

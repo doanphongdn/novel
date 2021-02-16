@@ -25,18 +25,18 @@
             </div>
             {% if cmt_obj.child_class != 'child' %}
                 <div class="comment-content-reply">
-                    <a class="btn-total-comment">
+                    <span class="btn-total-comment">
                         <i class="fa fa-comments"></i> 0
-                    </a>
-                    <a href="#" class="btn-reply-comment"
+                    </span>
+                    <span href="#" class="btn-reply-comment"
                        {% if cmt_obj.comment.parent_id %}data-parent-id="{{ cmt_obj.comment.parent_id }}"{% else %}
                        data-parent-id="{{ cmt_obj.comment.id }}"{% endif %}
                        data-comment-id="{{ cmt_obj.comment.id }}">
                         <i class="fa fa-reply"></i> Trả lời
-                    </a>
-                    <a href="#" class="btn-report-comment">
+                    </span>
+                    <span href="#" class="btn-report-comment">
                         <i class="fa fa-flag"></i> Báo cáo
-                    </a>
+                    </span>
                 </div>
             {% endif %}
         </div>

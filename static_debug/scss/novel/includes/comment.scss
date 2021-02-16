@@ -38,6 +38,7 @@ a.cke_dialog_tab {
           .cke_top {
             padding: 0 !important;
             border-bottom: none !important;
+            height: 0 !important;
 
             .cke_toolbar {
               .cke_toolgroup {
@@ -115,9 +116,13 @@ a.cke_dialog_tab {
         width: calc(100% - 40px);
 
         .comment-content-reply {
-          a {
+          > span {
             margin-right: 10px;
             font-size: .8rem;
+            &:hover{
+              cursor: pointer;
+              color: #{$text_color_hover};
+            }
           }
         }
 

@@ -69,7 +69,7 @@ class GroupItem(BaseAction):
         if not name:
             return obj
 
-        group_values = [obj.pop(f) for f in fields]
+        group_values = [obj.pop(f) for f in fields if f in obj]
         res_data = []
         for val in zip(*group_values):
             dict_val = {}
@@ -93,7 +93,7 @@ class JoinItem(BaseAction):
         name = kwargs.get("name")
         sperator = kwargs.get("sperator") or ' '
 
-        group_values = [obj.pop(f) for f in fields]
+        group_values = [obj.pop(f) for f in fields if f in obj]
         res_data = []
         for val in zip(*group_values):
             str_arr = []

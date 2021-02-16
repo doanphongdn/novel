@@ -39,20 +39,31 @@ class NovelCampaignType(BaseCrawlCampaignType):
             sleep(0.01)
             # replace field to storage in db
             item['src_url'] = item.pop('url', '').rstrip("/")
+            item['name'] = item.get('name', '').lower().title()
             item['src_latest_chapter_url'] = item.pop('latest_chapter_url', '').rstrip("/")
 
             novel = self.model_class.objects.filter(self.build_condition_or(item)
                                                     ).prefetch_related('novel_flat').first()
             if novel:
+                update = False
                 src_latest_chap_url = self.full_schema_url(item.get('src_latest_chapter_url') or "")
                 if src_latest_chap_url:
                     db_src_url = novel.novel_flat and novel.novel_flat.latest_chapter.get("source_url") or None
                     need_updated = src_latest_chap_url not in (novel.src_latest_chapter_url, db_src_url)
                     if need_updated and novel.novel_updated:
                         novel.novel_updated = False
-                        novel.save()
+                        update = True
 
                     no_update_count = int(not need_updated)
+                if novel.src_url != item['src_url']:
+                    novel.src_url = item['src_url']
+                    update = True
+                if novel.name.lower() != item["name"].lower():
+                    novel.name = item["name"]
+                    update = True
+
+                if update:
+                    novel.save()
             else:
                 item['src_campaign_id'] = campaign.id
                 for url in ['src_url', 'src_latest_chapter_url']:
@@ -72,12 +83,13 @@ class NovelCampaignType(BaseCrawlCampaignType):
 
 
 class NovelChapterSerializer(serializers.Serializer):
-    name = serializers.CharField()
+    chapter_name = serializers.CharField()
     chapter_url = serializers.CharField()
 
 
 class NovelInfoCampaignSchema(serializers.Serializer):
     url = serializers.CharField()
+    name = serializers.CharField(required=False)
     thumbnail_image = serializers.CharField(required=False)
     status = serializers.CharField(required=False)
     authors = serializers.ListField(required=False)
@@ -97,6 +109,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
         for field in self.update_by_fields:
             sleep(0.01)
             crawled_data['src_url'] = crawled_data.pop('url', '').rstrip("/")
+            crawled_data['name'] = crawled_data.get('name', '').lower().title()
             novel = self.update_values.get(field, {}).get(crawled_data.get(field))
             if not novel:
                 continue
@@ -126,7 +139,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                     novel.genres.add(genre)
                     update = True
 
-            chapters = {self.full_schema_url(chapter.get("chapter_url")): chapter.get("name")
+            chapters = {self.full_schema_url(chapter.get("chapter_url")): chapter.get("chapter_name")
                         for chapter in crawled_data.get("list_chapter") or []}
 
             if chapters:

@@ -55,5 +55,5 @@ class IncludeManager(object):
 
         return format_html_join("", "{}", inc_htmls)
 
-    def get_include_htmls(self, tmpl_codes):
-        return {code: self.render_include_html(code) for code in tmpl_codes}
+    def get_include_htmls(self, tmpl_codes, request=None):
+        return {code: self.render_include_html(code, request=request) for code in tmpl_codes}

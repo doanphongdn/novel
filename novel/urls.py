@@ -32,7 +32,7 @@ from novel.views.index import NovelIndexView
 from novel.views.novel import NovelDetailView
 from novel.views.novel_all import NovelAllView
 from novel.views.page import PageView
-from novel.views import stream
+from novel.views import stream, user
 
 sitemaps = {
     'genre': GenreSitemap,
@@ -68,6 +68,11 @@ urlpatterns = [
 
     path('comment', CommentManager.comment, name="comment"),
     path('comment/form', CommentManager.comment_form, name="comment_form"),
+
+    # Ajax
+    path("user/signup", user.sign_up, name='user_sign_up'),
+    path("user/signin", user.sign_in, name='user_sign_in'),
+    path("user/logout", user.user_logout, name='user_logout'),
 
     # must end of list
     path('<str:slug>', NovelDetailView.as_view(), name="novel"),

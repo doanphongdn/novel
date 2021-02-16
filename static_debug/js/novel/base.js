@@ -89,7 +89,7 @@ $(document).ready(function (e) {
                 }
                 $(".comment-list form.comment-reply-form").remove();
                 $(json_data.html).appendTo(parent_obj);
-                $.each($("form.comment-reply-form textarea"), function(i, v){
+                $.each($("form.comment-reply-form textarea"), function (i, v) {
                     CKEDITOR.replace(v.id, JSON.parse(v.getAttribute("data-config")));
                 })
             }
@@ -116,15 +116,53 @@ $(document).ready(function (e) {
                         }
                         CKEDITOR.instances[instance].setData('');
                         grecaptcha.reset(recapcha_site_key);
-                        if (form.hasClass("comment-reply-form")){
+                        if (form.hasClass("comment-reply-form")) {
                             form.parents('.comment-item').after(json_data.html);
                             form.remove();
-                        }else{
+                        } else {
                             $('.comment-list').prepend(json_data.html);
                         }
                     }
                 }
             });
+        });
+    });
+    $(document).on('submit', '#register-form', function (e) {
+        e.preventDefault();
+        var form = $(this);
+        $.ajax({
+            type: 'post',
+            url: '/user/signup',
+            data: form.serializeArray(),
+            success: function (data) {
+                if (data.success == false) {
+                    $('.message.register').html("");
+                    $.each(data.errors, function (i, e) {
+                        $('.message.register').append(e + "</br>");
+                    })
+                } else {
+                    location.reload();
+                }
+            }
+        });
+    });
+    $(document).on('submit', '#login-form', function (e) {
+        e.preventDefault();
+        var form = $(this);
+        $.ajax({
+            type: 'post',
+            url: '/user/signin',
+            data: form.serializeArray(),
+            success: function (data) {
+                $('.message.login').html("");
+                if (data.success === true) {
+                    $(location).attr('href', data.redirect_to);
+                } else {
+                    $.each(data.errors, function (i, e) {
+                        $('.message.login').append(e + "</br>");
+                    })
+                }
+            }
         });
     });
 });

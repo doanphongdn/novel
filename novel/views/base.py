@@ -116,7 +116,7 @@ class NovelBaseView(TemplateView):
         kwargs["recapcha_site_key"] = ""
 
         tmpl_codes = ['base_footer', 'base_other_html', 'base_top_menu']
-        tmpl_htmls = self.incl_manager.get_include_htmls(tmpl_codes)
+        tmpl_htmls = self.incl_manager.get_include_htmls(tmpl_codes, request=request)
         for page_tmpl_code, html in tmpl_htmls.items():
             kwargs[page_tmpl_code] = html
 

@@ -1,11 +1,8 @@
+import json
 from os.path import basename, splitext
 
-import json
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 
-from novel.models import Novel
-n(json_str):
+def is_json(json_str):
     try:
         json_object = json.loads(json_str.decode("utf-8").replace("\'", "\""))
     except ValueError as e:

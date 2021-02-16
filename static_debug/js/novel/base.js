@@ -115,7 +115,7 @@ $(document).ready(function (e) {
                             CKEDITOR.instances[instance].updateElement();
                         }
                         CKEDITOR.instances[instance].setData('');
-                        grecaptcha.reset();
+                        grecaptcha.reset(recapcha_site_key);
                         if (form.hasClass("comment-reply-form")){
                             form.parents('.comment-item').after(json_data.html);
                             form.remove();

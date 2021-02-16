@@ -5,14 +5,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 from novel.models import Novel
-
-
-@receiver(pre_save, sender=Novel)
-def create_novel_flat(sender, **kwargs):
-    print(sender)
-
-
-def is_json(json_str):
+n(json_str):
     try:
         json_object = json.loads(json_str.decode("utf-8").replace("\'", "\""))
     except ValueError as e:

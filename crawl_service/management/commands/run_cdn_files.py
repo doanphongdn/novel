@@ -351,8 +351,8 @@ class Command(BaseCommand):
         ### Test code
         # self.cdn_process.upload_file2b2("/data/cdn/novel/goong-hoang-cung/chapter-24/0.jpg",
         #                                 "goong-hoang-cung/chapter-24/0.jpg")
+        active_cdn = CDNServer.get_active_cdn()
         try:
-            active_cdn = CDNServer.get_active_cdn()
             if not active_cdn:
                 print('[CDN Processing Files] Not Found any CDN Server for processing... Stopped!')
             max_thread = int(os.environ.get('BACKBLAZE_THREAD_NUM', 2))
@@ -368,7 +368,7 @@ class Command(BaseCommand):
             for cdn in available_cdn:
                 cdn_process = CDNProcess(cdn)
 
-                # Set status to running CDN server
+                # Set status to 'running' CDN server
                 cdn_process.update_status('running')
 
                 # Create threads
@@ -387,10 +387,14 @@ class Command(BaseCommand):
                 t.get('thread1').join()
                 t.get('thread2').join()
 
-                # Set status to running CDN server
+                # Set status to stop CDN server
                 t.get('cdn_process').update_status('stopped')
 
         except Exception as e:
+            for cdn in active_cdn:
+                if cdn.status == 'running':
+                    cdn.status = 'stopped'
+                    cdn.save()
             print("[CDN Processing Files] Error: %s" % e)
 
         print('[CDN Processing Files] Finish')

@@ -63,24 +63,31 @@ class Command(BaseCommand):
         else:
             campaigns = CrawlCampaign.objects.filter(active=True, status='stopped').all()
 
-        process = CrawlerProcess(get_project_settings())
-        campaigns_update = []
-        for cam in campaigns:
-            run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time
-            if kwargs['debug'] or run_able:
-                print("[%s] Starting campaign... " % cam.name)
-                cam.status = 'running'
+        try:
+            process = CrawlerProcess(get_project_settings())
+            campaigns_update = []
+            for cam in campaigns:
+                run_able = ((datetime.now() - cam.last_run).total_seconds() / 60) >= cam.repeat_time
+                if kwargs['debug'] or run_able:
+                    print("[%s] Starting campaign... " % cam.name)
+                    cam.status = 'running'
+                    cam.save()
+                    campaigns_update.append(cam)
+                    process.crawl(NovelSpider, campaign=cam)
+
+            process.start()  # the script will block here until all crawling jobs are finished
+
+            for cam in campaigns_update:
+                print("[%s] Finish campaign " % cam.name)
+                cam.last_run = datetime.now()
+                cam.status = 'stopped'
                 cam.save()
-                campaigns_update.append(cam)
-                process.crawl(NovelSpider, campaign=cam)
-
-        process.start()  # the script will block here until all crawling jobs are finished
-
-        for cam in campaigns_update:
-            print("[%s] Finish campaign " % cam.name)
-            cam.last_run = datetime.now()
-            cam.status = 'stopped'
-            cam.save()
+        except Exception as e:
+            for cam in campaigns:
+                if cam.status == 'running':
+                    cam.status = 'stopped'
+                    cam.save()
+            print("[Crawl Processing] Error: %s" % e)
 
         # ###Cach 2
         # max_thread = int(os.environ.get('CAMPAIGNS_THREAD_NUM', 2))

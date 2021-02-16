@@ -39,8 +39,12 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                     origin_url = referer.scheme + ":" + origin_url
                 elif origin_url.strip().startswith('/'):
                     origin_url = referer_url.strip('/') + "/" + origin_url
-                if crawl_settings.IGNORE_REFERER_FOR in origin_url:
-                    referer_url = None
+
+                for ignoring_referer in settings.IGNORE_REFERER_FOR.split(","):
+                    if ignoring_referer in origin_url:
+                        referer_url = None
+                        break
+
                 json_obj = {
                     "origin_url": origin_url,
                     "referer": referer_url,

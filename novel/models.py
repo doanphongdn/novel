@@ -297,8 +297,10 @@ class Novel(models.Model):
         elif origin_url.strip().startswith('/'):
             origin_url = referer_url.strip('/') + "/" + origin_url
 
-        if settings.IGNORE_REFERER_FOR in self.thumbnail_image:
-            referer_url = None
+        for ignoring_referer in settings.IGNORE_REFERER_FOR.split(","):
+            if ignoring_referer in self.thumbnail_image:
+                referer_url = None
+                break
 
         json_str = json.dumps({
             "origin_url": origin_url,

@@ -69,6 +69,10 @@ def download_cdn_file(source, target_file, ext=None, referer=None):
         target_file = "%s%s" % (target_file, ext or '.jpg')
         target_dir = "%s/%s" % (settings.CDN_FILE_FOLDER, target_file)
         file_request = requests.get(source, headers=headers, timeout=5)
+        if settings.IGNORE_CLOUDFLARE_RESTRICT in file_request.url:
+            print("[download_cdn_file] [%s] does not pass CLOUDFLARE_RESTRICT " % source)
+            return None
+
         if file_request.status_code == 200:
             # with open(target_dir, 'wb') as f:
             with safe_open_w(target_dir) as f:

@@ -83,11 +83,10 @@ class Command(BaseCommand):
                 cam.status = 'stopped'
                 cam.save()
         except Exception as e:
-            for cam in campaigns:
-                if cam.status == 'running':
-                    cam.status = 'stopped'
-                    cam.save()
             print("[Crawl Processing] Error: %s" % e)
+            for cam in campaigns:
+                cam.status = 'stopped'
+                cam.save()
 
         # ###Cach 2
         # max_thread = int(os.environ.get('CAMPAIGNS_THREAD_NUM', 2))

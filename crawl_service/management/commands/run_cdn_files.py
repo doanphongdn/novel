@@ -391,10 +391,9 @@ class Command(BaseCommand):
                 t.get('cdn_process').update_status('stopped')
 
         except Exception as e:
-            for cdn in active_cdn:
-                if cdn.status == 'running':
-                    cdn.status = 'stopped'
-                    cdn.save()
             print("[CDN Processing Files] Error: %s" % e)
+            for cdn in active_cdn:
+                cdn.status = 'stopped'
+                cdn.save()
 
         print('[CDN Processing Files] Finish')

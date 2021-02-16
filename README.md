@@ -78,3 +78,13 @@ CAMPAIGNS_THREAD_NUM = 2
 
 ### Setting in CDNServer and CDN novel files from Admin page
 ### Settings cron to run_cdn_files.py
+
+
+# TRANSLATION
+ sudo apt-get install gettext
+ 
+ mkdir locale
+ 
+ .venv/bin/django-admin makemessages -l vi
+ 
+ .venv/bin/django-admin compilemessages

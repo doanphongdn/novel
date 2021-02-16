@@ -9,6 +9,7 @@ from autoslug.utils import slugify
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import models
+from django.db import transaction
 from django.db.models import Q
 from django.templatetags.static import static
 from django.urls import reverse
@@ -296,8 +297,10 @@ class Novel(models.Model):
         elif origin_url.strip().startswith('/'):
             origin_url = referer_url.strip('/') + "/" + origin_url
 
-        if 'blogspot.com' in self.thumbnail_image:
-            referer_url = None
+        for ignoring_referer in settings.IGNORE_REFERER_FOR.split(","):
+            if ignoring_referer in self.thumbnail_image:
+                referer_url = None
+                break
 
         json_str = json.dumps({
             "origin_url": origin_url,
@@ -352,8 +355,8 @@ class NovelChapter(models.Model):
 
     @classmethod
     def get_undownloaded_images_chapters(cls):
-        return cls.objects.filter(active=True, cdnnovelfile=None) \
-                   .order_by('-updated_at', '-view_total', '-id').all()[0:20]
+        return cls.objects.filter(active=True, chapter_updated=True, cdnnovelfile=None) \
+                   .order_by('-view_total', '-updated_at', '-id').all()[0:20]
 
     @classmethod
     def get_available_chapter(cls):
@@ -506,3 +509,20 @@ class Comment(models.Model):
     @property
     def created_at_str(self):
         return datetime2string(self.created_at)
+
+
+class CrawlNovelRetry(models.Model):
+    class Meta:
+        db_table = "crawl_novel_retry"
+
+    novel = models.ForeignKey(Novel, unique=True, on_delete=models.CASCADE)
+    chapter = models.ForeignKey(NovelChapter, unique=True, on_delete=models.CASCADE)
+
+    # Datetime
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    @classmethod
+    def get_available_records(cls):
+        with transaction.atomic():
+            return cls.objects.select_for_update().filter().all()[0:10]

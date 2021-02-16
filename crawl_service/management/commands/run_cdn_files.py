@@ -254,6 +254,7 @@ class CDNProcess:
 
         limit_image = int(os.environ.get('BACKBLAZE_LIMIT_IMG', 150))
         updated_files = []
+        chapter_updated_list = []
 
         # batch_records = int(os.environ.get('BACKBLAZE_BATCH_RECORD_INSERT', 50))
         # Handle downloading & storing
@@ -303,6 +304,8 @@ class CDNProcess:
             if not len(valid_urls):
                 print('[process_not_running_files] Unable to get files for %s-%s/%s-%s'
                       % (chapter.novel.id, novel_slug, chapter.id, chapter_slug))
+                chapter.chapter_updated = False
+                chapter_updated_list.append(chapter)
                 continue
             valid_urls = list(set(valid_urls))  # Ensure have no duplication items
             result_url = "\n".join(valid_urls) if len(valid_urls) else None
@@ -330,6 +333,9 @@ class CDNProcess:
 
         if updated_files:
             CDNNovelFile.objects.bulk_update(updated_files, ['url', 'full', 'allow_limit', 'url_hash'])
+
+        if chapter_updated_list:
+            NovelChapter.objects.bulk_update(chapter_updated_list, ['chapter_updated'])
 
         finish_time = time.time() - init_time
         print('[process_not_running_files] Finish in', finish_time, 's')

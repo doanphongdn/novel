@@ -63,7 +63,11 @@ class NovelCampaignType(BaseCrawlCampaignType):
                     update = True
 
                 if update:
-                    novel.save()
+                    # bypass duplicate name
+                    try:
+                        novel.save()
+                    except:
+                        pass
             else:
                 item['src_campaign_id'] = campaign.id
                 for url in ['src_url', 'src_latest_chapter_url']:

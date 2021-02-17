@@ -524,7 +524,7 @@ class CrawlNovelRetry(models.Model):
 
     @classmethod
     def create_crawl_retry(cls, chapter):
-        obj = cls.objects.get(novel=chapter.novel)
+        obj = cls.objects.filter(novel=chapter.novel).first()
         created = None
         if not obj:
             obj, created = CrawlNovelRetry.objects.get_or_create(novel=chapter.novel, chapter=chapter)

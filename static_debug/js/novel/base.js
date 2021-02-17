@@ -64,7 +64,7 @@ $(document).ready(function (e) {
             $(this).find('a.tab-login').tab('show');
         }
     });
-    $(".btn-reply-comment").on('click', function (t) {
+    $(document).on('click', '.btn-reply-comment', function (t) {
         let parent_obj = $(this).parents(".comment-content-reply");
         let reply_id = $(this).data('comment-id');
         let parent_id = $(this).data('parent-id');

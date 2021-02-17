@@ -99,9 +99,9 @@
             </div>
             <div class="modal-body" id="chapter-list">
                 <ul>
-                    {% for chap in novel.chapters %}
+                    {% for chap in chapter_list %}
                         <li>
-                            <a href="{% if chapter == chap %}#current{% else %}{{ chap.get_absolute_url }}{% endif %}">{{ chap.name }}</a>
+                            <a href="{{ chap.url }}">{{ chap.name }}</a>
                         </li>
                     {% endfor %}
                 </ul>

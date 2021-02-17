@@ -70,6 +70,8 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
 
     def prepare_include_data(self):
         chapter = self.include_data.get("chapter")
+        novel = self.include_data.get("novel")
+
         chapter_prev_url = None
         if chapter and chapter.prev_chapter:
             chapter_prev_url = chapter.prev_chapter.get_absolute_url()
@@ -94,7 +96,12 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
             if not cdn_domain and cdnnovelfile.cdn:
                 cdn_domain = cdnnovelfile.cdn.friendly_alias_url or cdnnovelfile.cdn.friendly_url or cdnnovelfile.cdn.s3_url
 
+        chapter_list = []
+        if novel:
+            novel_flat = novel.novel_flat.chapters.get("list")
+
         self.include_data.update({
+            "chapter_list": chapter_list,
             "chapter_prev_url": chapter_prev_url,
             "chapter_next_url": chapter_next_url,
             "chapter_next_name": chapter_next_name,

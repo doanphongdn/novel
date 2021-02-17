@@ -35,6 +35,7 @@ class NovelAdmin(admin.ModelAdmin):
     list_filter = ("status",)
     filter_horizontal = ("authors", "genres")
     actions = ["update_flat_info"]
+    exclude = ["novel_flat"]
 
     def update_flat_info(self, request, queryset):
         for obj in queryset:

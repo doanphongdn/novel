@@ -1,5 +1,9 @@
 .chapter-list {
   .chapter-list-item {
+    height: 478px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
     .chapter-wrap {
       margin: 5px 5px 5px 0;
       border: thin solid #F0F0F0;

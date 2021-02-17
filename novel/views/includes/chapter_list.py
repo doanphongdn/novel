@@ -20,12 +20,12 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
         hashtags_link_type = self.include_data.get('hashtags_link_type')
         hashtags_link_label = self.include_data.get('hashtags_link_label')
 
-        chapter_conditions = {
-            "novel__id": novel.id,
-            "chapter_updated": True,
-            "active": True
-        }
-        chapter_paginated = ChapterPaginator(novel, limit, page, **chapter_conditions)
+        # chapter_conditions = {
+        #     "novel__id": novel.id,
+        #     "chapter_updated": True,
+        #     "active": True
+        # }
+        # chapter_paginated = ChapterPaginator(novel, limit, page, **chapter_conditions)
 
         link_conditions = {
             "type": hashtags_link_type,
@@ -56,15 +56,19 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
             'link_label': hashtags_link_label,
         })
 
-        paging_data = {
-            "paginated_data": chapter_paginated,
-            "page_label": page_label,
-            "page_target": "chap-list"
-        }
-        pagination = PaginationTemplateInclude(paging_data)
+        chapter_list = []
+        if novel.novel_flat:
+            chapter_list = novel.novel_flat.chapters.get("list")
+        #
+        # paging_data = {
+        #     "paginated_data": chapter_paginated,
+        #     "page_label": page_label,
+        #     "page_target": "chap-list"
+        # }
+        # pagination = PaginationTemplateInclude(paging_data)
 
         self.include_data.update({
-            "chapter_list": chapter_paginated,
-            "pagination_html": pagination.render_html(),
+            "chapter_list": chapter_list,
+            # "pagination_html": pagination.render_html(),
             "hashtags_html": hashtags.render_html(),
         })

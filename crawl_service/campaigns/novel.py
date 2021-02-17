@@ -70,7 +70,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
                     except:
                         pass
             else:
-                item['src_campaign_id'] = campaign.id
+                item['src_campaign_id'] = campaign.campaign_source.id
                 for url in ['src_url', 'src_latest_chapter_url']:
                     val = item.get(url, "")
                     if val:

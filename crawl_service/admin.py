@@ -66,4 +66,4 @@ class CrawlSourceAdmin(admin.ModelAdmin):
 
 @admin.register(CDNServer)
 class CDNServerAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "server_id", "endpoint", "status")
+    list_display = ("id", "name", "server_id", "endpoint", "last_run", "status")

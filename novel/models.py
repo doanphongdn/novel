@@ -518,6 +518,7 @@ class CrawlNovelRetry(models.Model):
 
     novel = models.OneToOneField(Novel, on_delete=models.CASCADE)
     chapter = models.OneToOneField(NovelChapter, on_delete=models.CASCADE)
+    is_processing = models.BooleanField(default=False)
 
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True)
@@ -528,7 +529,8 @@ class CrawlNovelRetry(models.Model):
         obj = cls.objects.filter(novel=chapter.novel).first()
         created = None
         if not obj:
-            obj, created = CrawlNovelRetry.objects.get_or_create(novel=chapter.novel, chapter=chapter)
+            obj, created = CrawlNovelRetry.objects.get_or_create(novel=chapter.novel, chapter=chapter,
+                                                                 is_processing=False)
         return obj, created
 
     @classmethod

@@ -2,6 +2,7 @@ import hashlib
 import os
 import shutil
 import time
+from datetime import datetime
 from os.path import basename, splitext
 from threading import Thread
 from urllib.parse import urlparse
@@ -32,6 +33,8 @@ class CDNProcess:
         """
         Update status as 'running' or 'stopped'
         """
+        if status == 'stopped':
+            self.cdn.last_run = datetime.now()
         self.cdn.status = status
         self.cdn.save()
 
@@ -240,9 +243,13 @@ class CDNProcess:
 
         inserted_files = None
         with transaction.atomic():
-            new_files = [CDNNovelFile(cdn=self.cdn, chapter=chapter, type='chapter',
-                                      hash_origin_url=hashlib.md5(chapter.src_url.encode()).hexdigest(),
-                                      url=None, full=False) for chapter in chapters]
+            new_files = []
+            for chapter in chapters:
+                hash_origin_url = hashlib.md5(chapter.src_url.encode()).hexdigest()
+                if not CDNNovelFile.objects.filter(hash_origin_url=hash_origin_url).first():
+                    new_files.append(CDNNovelFile(cdn=self.cdn, chapter=chapter, type='chapter',
+                                                  hash_origin_url=hash_origin_url,
+                                                  url=None, full=False))
 
             if new_files:
                 inserted_files = CDNNovelFile.objects.bulk_create(new_files, ignore_conflicts=False)
@@ -393,6 +400,7 @@ class Command(BaseCommand):
         except Exception as e:
             print("[CDN Processing Files] Error: %s" % e)
             for cdn in active_cdn:
+                cdn.last_run = datetime.now()
                 cdn.status = 'stopped'
                 cdn.save()
 

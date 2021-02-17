@@ -80,6 +80,11 @@ class ChapterView(NovelBaseView):
             "chapter_content": {
                 "chapter": chapter,
                 "novel": novel
+            },
+            "comment": {
+                "novel": novel,
+                # Dont change cke_id, it using in base.js
+                "cke_novel_id": "cke_novel_id",
             }
         }
 

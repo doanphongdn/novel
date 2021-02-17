@@ -97,7 +97,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                 cdn_domain = cdnnovelfile.cdn.friendly_alias_url or cdnnovelfile.cdn.friendly_url or cdnnovelfile.cdn.s3_url
 
         chapter_list = []
-        if novel:
+        if novel and novel.novel_flat:
             chapter_list = novel.novel_flat.chapters.get("list")
 
         self.include_data.update({

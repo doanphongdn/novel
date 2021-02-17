@@ -96,7 +96,7 @@ def stream_image(request, *args, **kwargs):
                     if chapter and chapter.chapter_updated:
                         chapter.chapter_updated = False
                         chapter.save()
-                        create_crawl_retry(chapter)
+                        CrawlNovelRetry.create_crawl_retry(chapter)
 
                 print("[stream_image] Error when stream image %s : %s <chapter %s - updated %s>"
                       % (img_hash, origin_url, chapter_id, chapter_updated))

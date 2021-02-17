@@ -17,6 +17,8 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
     @staticmethod
     def stream_images(chapter, cdn_img_count=0):
         stream_images = []
+        if not chapter:
+            return stream_images
         try:
             # Get novel setting from cache
             novel_setting = CacheManager(NovelSetting).get_from_cache()

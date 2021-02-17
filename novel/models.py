@@ -99,7 +99,7 @@ class Novel(models.Model):
     class Meta:
         db_table = "novel_novels"
 
-    novel_flat = models.ForeignKey(NovelFlat, on_delete=models.CASCADE, unique=True, null=True)
+    novel_flat = models.OneToOneField(NovelFlat, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=250, db_index=True, unique=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, db_index=True,
                          max_length=250, blank=True, unique=True, null=True)
@@ -515,8 +515,8 @@ class CrawlNovelRetry(models.Model):
     class Meta:
         db_table = "crawl_novel_retry"
 
-    novel = models.ForeignKey(Novel, unique=True, on_delete=models.CASCADE)
-    chapter = models.ForeignKey(NovelChapter, unique=True, on_delete=models.CASCADE)
+    novel = models.OneToOneField(Novel, on_delete=models.CASCADE)
+    chapter = models.OneToOneField(NovelChapter, on_delete=models.CASCADE)
 
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True)

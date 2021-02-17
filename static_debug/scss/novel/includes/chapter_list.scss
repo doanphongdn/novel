@@ -2,8 +2,8 @@
 
 .chapter-list {
   .chapter-list-item {
-    height: 478px;
-    overflow-y: scroll;
+    max-height: 478px;
+    overflow-y: auto;
     overflow-x: hidden;
 
     .chapter-wrap {

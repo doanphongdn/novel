@@ -81,18 +81,18 @@
         <div class="collapse navbar-collapse" id="navbar-danger">
             <div class="navbar-collapse-header">
                 <div class="row">
-                    <div class="col-6 collapse-brand">
+                    <div class="collapse-brand  d-none d-lg-block">
                         {% if setting.logo %}
                             <a href="/">
                                 <img src="{{ setting.logo }}" alt="{{ setting.title }}">
                             </a>
                         {% endif %}
                     </div>
-                    <div class="col-6 collapse-close">
-                        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-danger"
-                                aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation">
-                        </button>
-                    </div>
+                </div>
+                <div class="collapse-close">
+                    <i class="fa fa-times" aria-hidden="true" class="navbar-toggler" data-toggle="collapse"
+                       data-target="#navbar-danger"
+                       aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation"></i>
                 </div>
             </div>
             {{ base_navbar }}

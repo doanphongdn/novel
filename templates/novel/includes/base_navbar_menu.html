@@ -38,4 +38,21 @@
             </li>
         {% endif %}
     {% endif %}
+    {% if genre_menu %}
+        <li class="nav-item dropdown genre-menu d-md-none">
+            <a class="nav-link dropdown-toggle" href="#" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if genre_menu.icon %}
+                    <i class="{{ genre_menu.icon }}"></i>
+                {% endif %}
+                {{ genre_menu.name }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="nav-inner-primary_dropdown_1">
+                {% for genre in genre_menu.data %}
+                    <a class="dropdown-item"
+                       href="{{ genre.get_absolute_url }}">{{ genre.name }}</a>
+                {% endfor %}
+            </div>
+        </li>
+    {% endif %}
 </ul>

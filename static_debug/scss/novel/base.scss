@@ -9,6 +9,25 @@
 }
 
 .navbar-header-menu {
+  margin-right: 10px !important;
+
+  .genre-menu {
+    .dropdown-menu {
+      &.show {
+        animation: none !important;
+        -webkit-columns: 2;
+        columns: 2;
+        padding: 0;
+        margin: 0;
+      }
+
+      a.dropdown-item {
+        padding: 5px !important;
+        display: inline-block;
+      }
+    }
+  }
+
   .nav-link {
     .user-avatar {
       width: 22px;
@@ -61,6 +80,19 @@ a {
 
 #navbar-danger {
   justify-content: flex-end;
+
+  .navbar-collapse-header {
+    position: relative;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: 0;
+
+    .collapse-close {
+      position: absolute;
+      right: -12px;
+      top: -15px;
+    }
+  }
 
   .navbar_menu {
     ul {

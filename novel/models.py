@@ -518,6 +518,7 @@ class CrawlNovelRetry(models.Model):
 
     novel = models.OneToOneField(Novel, on_delete=models.CASCADE)
     chapter = models.OneToOneField(NovelChapter, on_delete=models.CASCADE)
+    is_processing = models.BooleanField(default=False)
 
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True)

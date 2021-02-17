@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 from django.db import transaction
 from django.shortcuts import redirect
 
+from crawl_service import settings
 from novel.cache_manager import NovelCache
 from novel.models import NovelChapter, Novel
 from novel.views.base import NovelBaseView

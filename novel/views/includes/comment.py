@@ -135,7 +135,6 @@ class CommentTemplateInclude(BaseTemplateInclude):
             comment_data.append(self.comment_item(cmt))
 
         self.include_data.update({
-            "recapcha_site_key": settings.GOOGLE_RECAPTCHA_SITE_KEY,
             "comment_form": comment_form,
             "comment_form_media": comment_form.media,
             "comment_data": comment_data,

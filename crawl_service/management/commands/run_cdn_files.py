@@ -240,9 +240,13 @@ class CDNProcess:
 
         inserted_files = None
         with transaction.atomic():
-            new_files = [CDNNovelFile(cdn=self.cdn, chapter=chapter, type='chapter',
-                                      hash_origin_url=hashlib.md5(chapter.src_url.encode()).hexdigest(),
-                                      url=None, full=False) for chapter in chapters]
+            new_files = []
+            for chapter in chapters:
+                hash_origin_url = hashlib.md5(chapter.src_url.encode()).hexdigest()
+                if not CDNNovelFile.objects.filter(hash_origin_url=hash_origin_url).first():
+                    new_files.append(CDNNovelFile(cdn=self.cdn, chapter=chapter, type='chapter',
+                                                  hash_origin_url=hash_origin_url,
+                                                  url=None, full=False))
 
             if new_files:
                 inserted_files = CDNNovelFile.objects.bulk_create(new_files, ignore_conflicts=False)

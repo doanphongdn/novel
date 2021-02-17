@@ -118,6 +118,7 @@ class Novel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    hot_novel = models.BooleanField(default=False)
     follow = models.IntegerField(default=0)
     vote = models.FloatField(default=5)
     vote_total = models.IntegerField(default=1)

@@ -2,6 +2,7 @@ import hashlib
 import os
 import shutil
 import time
+from datetime import datetime
 from os.path import basename, splitext
 from threading import Thread
 from urllib.parse import urlparse
@@ -32,6 +33,8 @@ class CDNProcess:
         """
         Update status as 'running' or 'stopped'
         """
+        if status == 'stopped':
+            self.cdn.last_run = datetime.now()
         self.cdn.status = status
         self.cdn.save()
 
@@ -397,6 +400,7 @@ class Command(BaseCommand):
         except Exception as e:
             print("[CDN Processing Files] Error: %s" % e)
             for cdn in active_cdn:
+                cdn.last_run = datetime.now()
                 cdn.status = 'stopped'
                 cdn.save()
 

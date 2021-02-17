@@ -111,6 +111,7 @@ class CDNServer(models.Model):
     friendly_alias_url = models.CharField(max_length=250, default='https://cdn.nettruyen.vn/file/nettruyen/')
     s3_url = models.CharField(max_length=250, blank=True, null=True)
 
+    last_run = models.DateTimeField(default=None, null=True, blank=True)
     active = models.BooleanField(default=True)
     status = models.CharField(max_length=10, choices=CAMPAIGN_STATUS, default='stopped')
 

@@ -5,11 +5,6 @@ from crawl_service import utils
 from novel.models import CrawlNovelRetry, NovelChapter
 
 
-def create_crawl_retry(chapter):
-    obj, created = CrawlNovelRetry.objects.get_or_create(novel=chapter.novel, chapter=chapter)
-    return obj, created
-
-
 class Command(BaseCommand):
 
     # @query_debugger
@@ -33,7 +28,7 @@ class Command(BaseCommand):
                 if chapter and chapter not in chapter_updated_list and not utils.check_url(
                         utils.full_schema_url(urls[0]), referer):
                     chapter.chapter_updated = False
-                    create_crawl_retry(chapter)
+                    CrawlNovelRetry.create_crawl_retry(chapter)
                     chapter_updated_list.append(chapter)
 
             if chapter_updated_list:

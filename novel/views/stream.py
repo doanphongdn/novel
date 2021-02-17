@@ -41,11 +41,6 @@ def url2yield(url, chunksize=1024, referer=None):
         yield chunk
 
 
-def create_crawl_retry(chapter):
-    obj, created = CrawlNovelRetry.objects.get_or_create(novel=chapter.novel, chapter=chapter)
-    return obj, created
-
-
 def stream_image(request, *args, **kwargs):
     try:
         img_hash = (kwargs.get('img') or "").strip('.jpg')
@@ -68,7 +63,7 @@ def stream_image(request, *args, **kwargs):
                     if chapter and chapter.chapter_updated:
                         chapter.chapter_updated = False
                         chapter.save()
-                        create_crawl_retry(chapter)
+                        CrawlNovelRetry.create_crawl_retry(chapter)
                 print("[stream_image] Error when parse image %s : %s <chapter %s - updated %s>"
                       % (img_hash, ex, chapter_id, chapter_updated))
                 import traceback

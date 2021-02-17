@@ -523,6 +523,14 @@ class CrawlNovelRetry(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     @classmethod
+    def create_crawl_retry(cls, chapter):
+        obj = cls.objects.get(novel=chapter.novel)
+        created = None
+        if not obj:
+            obj, created = CrawlNovelRetry.objects.get_or_create(novel=chapter.novel, chapter=chapter)
+        return obj, created
+
+    @classmethod
     def get_available_records(cls):
         with transaction.atomic():
             return cls.objects.select_for_update().filter().all()[0:10]

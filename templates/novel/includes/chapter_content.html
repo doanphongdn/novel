@@ -57,17 +57,17 @@
                 {{ chapter.decompress_content }}
             {% endautoescape %}
             {% if stream_images %}
-              <p class="bg-yellow text-center text-uppercase box-warning">{% translate "Please visit this chapter after 5 minutes if your browser cannot load these images now." %}</p>
+                <p class="bg-yellow text-center text-uppercase box-warning">{% translate "Please visit this chapter after 5 minutes if your browser cannot load these images now." %}</p>
             {% endif %}
             {% if cdn_images %}
-              {% for cdn_image in cdn_images %}
-                {% if forloop.counter <= 3 %}
-                    <img src="{{ cdn_domain }}/{{ cdn_image }}" alt="">
-                {% else %}
-                    <img data-src="{{ cdn_domain }}/{{ cdn_image }}" src="{% static "images/lazyload.gif" %}" alt=""
-                         class="lazyload">
-                {% endif %}
-              {% endfor %}
+                {% for cdn_image in cdn_images %}
+                    {% if forloop.counter <= 3 %}
+                        <img src="{{ cdn_domain }}/{{ cdn_image }}" alt="">
+                    {% else %}
+                        <img data-src="{{ cdn_domain }}/{{ cdn_image }}" src="{% static "images/lazyload.gif" %}" alt=""
+                             class="lazyload">
+                    {% endif %}
+                {% endfor %}
             {% endif %}
             {% for image_url in stream_images %}
                 {% if forloop.counter > cdn_images|length and forloop.counter <= cdn_images|length|add:"2" %}
@@ -99,11 +99,11 @@
             </div>
             <div class="modal-body" id="chapter-list">
                 <ul>
-{#                    {% for chap in novel.chapters %}#}
-{#                        <li>#}
-{#                            <a href="{% if chapter == chap %}#current{% else %}{{ chap.get_absolute_url }}{% endif %}">{{ chap.name }}</a>#}
-{#                        </li>#}
-{#                    {% endfor %}#}
+                    {% for chap in novel.chapters %}
+                        <li>
+                            <a href="{% if chapter == chap %}#current{% else %}{{ chap.get_absolute_url }}{% endif %}">{{ chap.name }}</a>
+                        </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>

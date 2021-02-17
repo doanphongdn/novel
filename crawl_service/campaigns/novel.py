@@ -155,6 +155,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                         ex_chap.name = name
                         ex_chap.chapter_updated = False
                         ex_chap.save()
+                        update = True
 
                 new_chapters = [NovelChapter(novel=novel, name=name, src_url=url, novel_slug=novel.slug)
                                 for url, name in chapters.items()]
@@ -162,8 +163,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                     NovelChapter.objects.bulk_create(new_chapters, ignore_conflicts=True)
                     novel.latest_updated_time = datetime.now()
                     novel.update_flat_info()
-
-                update = True
+                    update = True
 
             status = crawled_data.get("status")
             if status and (not novel.status or status != novel.status.name):
@@ -173,7 +173,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
 
             descriptions = crawled_data.get("descriptions")
             if not novel.descriptions and descriptions:
-                novel.descriptions = crawled_data.get("descriptions")
+                novel.descriptions = descriptions
                 update = True
 
             if update:
@@ -223,6 +223,8 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
             content_images = crawled_data.get("content_images")
             if content_images:
                 chapter.images_content = '\n'.join(content_images)
+                # chapter.novel.update_flat_info()
+                # chapter.novel.save()
                 updated = True
 
             if updated:

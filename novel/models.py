@@ -228,7 +228,7 @@ class Novel(models.Model):
     def novel_chapter_condition(self):
         return {
             "novel_id": self.id,
-            "chapter_updated": True,
+            # "chapter_updated": True,
             "active": True
         }
 

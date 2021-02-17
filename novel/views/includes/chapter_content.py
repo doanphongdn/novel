@@ -98,7 +98,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
 
         chapter_list = []
         if novel:
-            novel_flat = novel.novel_flat.chapters.get("list")
+            chapter_list = novel.novel_flat.chapters.get("list")
 
         self.include_data.update({
             "chapter_list": chapter_list,

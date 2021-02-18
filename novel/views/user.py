@@ -147,7 +147,8 @@ class UserAction(object):
     @staticmethod
     def user_logout(request):
         logout(request)
-        return HttpResponseRedirect('/')
+        redirect_url = request.COOKIES.get('_redirect_url') or "/"
+        return HttpResponseRedirect(redirect_url)
 
 
 class UserProfileView(NovelBaseView):

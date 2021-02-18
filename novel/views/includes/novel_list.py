@@ -25,6 +25,7 @@ class NovelListTemplateInclude(BaseTemplateInclude):
         novel_grid_col = self.include_data.get('novel_grid_col') or 4
         novel_grid_col_md = self.include_data.get('novel_grid_col_md') or 3
         novel_grid_col_lg = self.include_data.get('novel_grid_col_lg') or 2
+        custom_chapters = self.include_data.get('custom_chapters') or {}
 
         css_class = {
             "novel_list_col": novel_list_col,
@@ -59,6 +60,7 @@ class NovelListTemplateInclude(BaseTemplateInclude):
 
         self.include_data.update({
             "novels": novel_paginated,
+            "custom_chapters": custom_chapters,
             "view_type": view_type,
             "view_all_url": reverse("novel_all", kwargs={"novel_type": novel_type}) if show_button_view_all else "",
             "button_type_urls": button_type_urls,

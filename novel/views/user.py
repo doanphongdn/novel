@@ -50,13 +50,13 @@ class UserAction(object):
             return
 
         # Get chapter ids from cookie
-        chapter_ids = []
+        histories = {}
         try:
-            chapter_ids = json.loads(request.COOKIES.get('_histories'))
+            histories = json.loads(request.COOKIES.get('_histories'))
         except:
             pass
 
-        cls.storage_history(user, chapter_ids)
+        cls.storage_history(user, list(histories.values()))
 
     @staticmethod
     def bookmark(request):

@@ -74,13 +74,13 @@ class ChapterView(NovelBaseView):
 
                     # Update reading histories
                     if isinstance(request.user, AnonymousUser):
-                        chapter_ids = []
+                        chapter_ids = {}
                         try:
                             chapter_ids = json.loads(request.COOKIES.get('_histories'))
                         except:
                             pass
 
-                        chapter_ids.append(chapter_id)
+                        chapter_ids[str(novel.id)] = chapter_id
                         # Set cookies
                         response.set_cookie('_histories', chapter_ids)
                     else:

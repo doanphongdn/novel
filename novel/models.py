@@ -361,7 +361,7 @@ class NovelChapter(models.Model):
 
     @classmethod
     def get_available_chapter(cls):
-        return cls.objects.filter(active=True, chapter_updated=True).all()
+        return cls.objects.filter(active=True).all()
 
     @cached_property
     def images(self):
@@ -394,6 +394,10 @@ class NovelChapter(models.Model):
             pass
 
         return ""
+
+    @cached_property
+    def absolute_url(self):
+        return self.get_absolute_url()
 
     def get_absolute_url(self):
         return reverse("chapter", args=[self.novel_slug, self.slug])
@@ -546,6 +550,7 @@ class Bookmark(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE, db_index=True)
+
 
 class History(models.Model):
     class Meta:

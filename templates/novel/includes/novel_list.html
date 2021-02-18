@@ -1,6 +1,6 @@
 {% load static %}
 {% load i18n %}
-
+{% load custom_tags %}
 {% if view_type == 'list' %}
     <div class="novel-list">
 {% else %}
@@ -57,7 +57,16 @@
             </div>
         </div>
         <div class="novel-chapter">
-            <h6><a href="{{ novel.novel_flat.latest_chapter.url }}">{{ novel.novel_flat.latest_chapter.name }}</a></h6>
+            {% if custom_chapters %}
+                <h6>
+                    <a href="{{ custom_chapters|get_item:novel.id|get_attr:"absolute_url" }}">
+                        {{ custom_chapters|get_item:novel.id|get_attr:"name" }}</a>
+                </h6>
+            {% else %}
+                <h6><a href="{{ novel.novel_flat.latest_chapter.url }}">{{ novel.novel_flat.latest_chapter.name }}</a>
+                </h6>
+            {% endif %}
+
             {% if view_type == 'list' %}
                 <div class="updated-time">
                     <i class="far fa-clock"></i> {{ novel.novel_flat.latest_chapter.created_at }}

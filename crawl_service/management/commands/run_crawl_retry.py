@@ -36,6 +36,8 @@ class Command(BaseCommand):
                 for chapter in retry.novel.chapters:
                     if chapter == retry.chapter:
                         continue
+                    if not chapter.images_content:
+                        continue
                     urls = [utils.full_schema_url(img_url) for img_url in chapter.images_content.split("\n")]
                     if not len(urls):
                         continue

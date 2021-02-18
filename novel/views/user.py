@@ -25,15 +25,20 @@ class UserAction(object):
             chapter_ids = [chapter_ids]
 
         values = NovelChapter.objects.filter(id__in=chapter_ids).values_list("id", "novel_id")
-        history_objs = []
+        history_update_objs = []
+        history_create_objs = []
         for val in values:
             history = History.objects.filter(user=user, novel_id=val[1]).first()
             if history:
                 history.chapter_id = val[0]
-                history_objs.append(history)
-
-        if history_objs:
-            History.objects.bulk_update(history_objs, ['chapter_id'])
+                history_update_objs.append(history)
+            else:
+                history_create_objs.append(History(user=user, chapter_id=val[0], novel_id=val[1]))
+                
+        if history_create_objs:
+            History.objects.bulk_create(history_update_objs, ignore_conflicts=True)
+        if history_update_objs:
+            History.objects.bulk_update(history_update_objs, ['chapter_id'])
 
     @classmethod
     def sync_histories(cls, request, user=None):

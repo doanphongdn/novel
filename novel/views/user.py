@@ -28,8 +28,9 @@ class UserAction(object):
         history_objs = []
         for val in values:
             history = History.objects.filter(user=user, novel_id=val[1]).first()
-            history.chapter_id = val[0]
-            history_objs.append(history)
+            if history:
+                history.chapter_id = val[0]
+                history_objs.append(history)
 
         if history_objs:
             History.objects.bulk_update(history_objs, ['chapter_id'])

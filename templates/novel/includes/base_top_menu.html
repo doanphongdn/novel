@@ -3,16 +3,6 @@
         <div class="collapse navbar-collapse">
             <div class="row">
                 <ul class="navbar-nav">
-                    {% for menu in menu_data %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ menu.url }}">
-                                {% if menu.icon %}
-                                    <i class="{{ menu.icon }}"></i>
-                                {% endif %}
-                                {{ menu.name }}
-                            </a>
-                        </li>
-                    {% endfor %}
                     {% if genre_menu %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button"
@@ -30,6 +20,18 @@
                             </div>
                         </li>
                     {% endif %}
+                    {% for menu in menu_data %}
+                        {% if not menu.require_logged or menu.require_logged and user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ menu.url }}">
+                                    {% if menu.icon %}
+                                        <i class="{{ menu.icon }}"></i>
+                                    {% endif %}
+                                    {{ menu.name }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
                 </ul>
             </div>
         </div>

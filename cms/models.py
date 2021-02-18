@@ -59,6 +59,7 @@ class Menu(models.Model):
     url = models.CharField(max_length=255)
     icon = models.CharField(max_length=250, blank=True, null=True)
     type = models.CharField(max_length=30, blank=True, null=True)
+    require_logged = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
 
 

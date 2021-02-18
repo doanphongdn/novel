@@ -5,6 +5,7 @@ from novel.views.includes.base import BaseTemplateInclude
 
 
 class TopMenuTemplateInclude(BaseTemplateInclude):
+    cache = False
     name = "menu"
     template = "novel/includes/base_top_menu.html"
 

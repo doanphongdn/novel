@@ -47,6 +47,7 @@ class UserProfileTemplateInclude(BaseTemplateInclude):
                     self.include_data.update({"custom_chapters": history_chapters})
 
                 self.include_data.update({
+                    "novel_grid_col_lg": 3,
                     "filter_by": {"id__in": novel_ids},
                     "show_button_type": True,
                     "paginate_enable": True,

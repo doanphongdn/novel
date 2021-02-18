@@ -138,7 +138,6 @@
 <script type="text/javascript" src="{% static 'js/common/autosize.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/particles.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/run_particlejs.js' %}"></script>
-
 {% if recapcha_site_key %}
     <script type="text/javascript"
             src="https://www.google.com/recaptcha/api.js?render={{ recapcha_site_key }}"></script>
@@ -166,6 +165,6 @@
 </script>
 
 {% block scripts %}{% endblock %}
-<script type="text/javascript" src="{% static 'js/novel/base.min.js' %}?v=0.1"></script>
+{% javascript 'base' %}
 </body>
 </html>

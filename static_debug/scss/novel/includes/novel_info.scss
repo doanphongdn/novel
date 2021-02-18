@@ -1,3 +1,4 @@
+@import "../../common/colors";
 
 .novel-info {
   p {
@@ -56,6 +57,20 @@
       }
 
       .novel-summary {
+        .novel-action-bookmark {
+          cursor: pointer;
+
+          &:hover {
+            color: #{$text_color_hover};
+          }
+        }
+
+        .novel-action-comment {
+          &:hover {
+            color: #{$text_color_hover};
+          }
+        }
+
         .novel-summury-item:not(:last-child):not(:nth-child(3)) {
           border-right: thin solid #EEE;
         }

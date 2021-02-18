@@ -236,7 +236,8 @@ PIPELINE = {
     'SASS_BINARY': '/usr/local/bin/sass',
     'YUGLIFY_BINARY': '/usr/local/bin/yuglify',
 
-    'STYLESHEETS': PIPELINE_STYLESHEETS.get(APP_NAME)
+    'STYLESHEETS': PIPELINE_STYLESHEETS.get(APP_NAME),
+    'JAVASCRIPT': PIPELINE_JS.get(APP_NAME),
 }
 
 LOG_ENABLED = os.environ.get('LOG_ENABLED', 'false').lower() == 'true'

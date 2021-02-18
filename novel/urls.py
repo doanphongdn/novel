@@ -17,7 +17,7 @@ import os
 
 from django.conf.urls import url
 from django.contrib.sitemaps import views as sitemaps_views
-from django.urls import path, include
+from django.urls import path
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 
@@ -25,14 +25,14 @@ from crawl_service import settings
 from crawl_service.views.base import view_dmca_validation, view_google_site_verification
 from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
 from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap, NovelChapterSitemap
-from novel.views.includes.comment import CommentManager
-from novel.views.user import UserProfileView
+from novel.views import stream
 from novel.views.chapter import ChapterView
+from novel.views.includes.comment import CommentManager
 from novel.views.index import NovelIndexView
 from novel.views.novel import NovelDetailView
 from novel.views.novel_all import NovelAllView
 from novel.views.page import PageView
-from novel.views import stream, user
+from novel.views.user import UserProfileView, UserAction
 
 sitemaps = {
     'genre': GenreSitemap,
@@ -70,9 +70,11 @@ urlpatterns = [
     path('comment/form', CommentManager.comment_form, name="comment_form"),
 
     # Ajax
-    path("user/signup", user.sign_up, name='user_sign_up'),
-    path("user/signin", user.sign_in, name='user_sign_in'),
-    path("user/logout", user.user_logout, name='user_logout'),
+    path("user/signup", UserAction.sign_up, name='user_sign_up'),
+    path("user/signin", UserAction.sign_in, name='user_sign_in'),
+    path("user/logout", UserAction.user_logout, name='user_logout'),
+
+    path('user/bookmark', UserAction.bookmark, name='user_bookmark'),
 
     # must end of list
     path('<str:slug>', NovelDetailView.as_view(), name="novel"),

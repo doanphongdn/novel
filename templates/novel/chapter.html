@@ -1,5 +1,6 @@
 {% extends 'novel/base.html' %}
 {% load static %}
+{% load pipeline %}
 {% block stylesheet %}
 {% endblock %}
 {% block content %}
@@ -49,10 +50,5 @@
     </div>
 {% endblock %}
 {% block scripts %}
-    <script type="text/javascript" src="{% static 'argon/assets/js/plugins/nouislider.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/novel/chapter.js' %}"></script>
-    <script async defer crossorigin="anonymous"
-            src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v9.0&appId={{ setting.meta_fb_app_id }}&autoLogAppEvents=1"
-            nonce="fzz7rsRH">
-    </script>
+    {% javascript 'chapter' %}
 {% endblock %}

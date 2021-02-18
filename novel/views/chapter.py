@@ -1,5 +1,7 @@
+import json
 from urllib.parse import urlparse
 
+from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
 from django.shortcuts import redirect
 
@@ -7,6 +9,7 @@ from crawl_service import settings
 from novel.cache_manager import NovelCache
 from novel.models import NovelChapter, Novel
 from novel.views.base import NovelBaseView
+from novel.views.user import UserAction
 
 
 class ChapterView(NovelBaseView):
@@ -68,6 +71,21 @@ class ChapterView(NovelBaseView):
 
                     request.session["chapters_viewed"] = chapters_viewed
                     # request.session.set_expiry(3600)
+
+                    # Update reading histories
+                    if isinstance(request.user, AnonymousUser):
+                        chapter_ids = []
+                        try:
+                            chapter_ids = json.loads(request.COOKIES.get('_histories'))
+                        except:
+                            pass
+
+                        chapter_ids.append(chapter_id)
+                        # Set cookies
+                        response.set_cookie('_histories', chapter_ids)
+                    else:
+                        UserAction.storage_history(request.user, chapter_id)
+
         else:
             # TODO: define 404 page
             # direct to homepage

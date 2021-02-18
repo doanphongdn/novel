@@ -16,14 +16,32 @@ PIPELINE_STYLESHEETS = {
                 'scss/novel/includes/footer.scss',
                 'scss/novel/includes/link.scss',
                 'scss/novel/includes/novel_cat.scss',
-                'scss/novel/includes/authentication.scss',
+                'scss/novel/includes/base_auth_modal.scss',
                 'scss/novel/includes/user_profile.scss',
                 'scss/novel/includes/comment.scss',
             ),
-            'output_filename': 'css/novel/base.css',
-            'extra_context': {
-                'media': 'screen,projection',
-            },
+            'output_filename': 'css/novel/base.css'
+        },
+    },
+}
+
+PIPELINE_JS = {
+    'novel': {
+        'base': {
+            'source_filenames': (
+                'js/novel/base.js',
+                'js/novel/user.js',
+                'js/novel/includes/base_auth_modal.js',
+                'js/novel/includes/comment.js',
+            ),
+            'output_filename': 'js/novel/base.min.js'
+        },
+        'chapter': {
+            'source_filenames': (
+                'js/novel/chapter.js',
+                'argon/assets/js/plugins/nouislider.min.js',
+            ),
+            'output_filename': 'js/novel/chapter.min.js'
         },
     },
 }

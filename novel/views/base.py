@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.sites.shortcuts import get_current_site
 from django.views.generic import TemplateView
 
@@ -120,4 +121,9 @@ class NovelBaseView(TemplateView):
         for page_tmpl_code, html in tmpl_htmls.items():
             kwargs[page_tmpl_code] = html
 
-        return super().get(request, *args, **kwargs)
+        response = super().get(request, *args, **kwargs)
+        response.set_cookie('_redirect_url', request.build_absolute_uri())
+        if not isinstance(request.user, AnonymousUser) and request.COOKIES.get('_histories'):
+            response.delete_cookie('_histories')
+
+        return response

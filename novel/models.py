@@ -537,3 +537,41 @@ class CrawlNovelRetry(models.Model):
     def get_available_records(cls):
         with transaction.atomic():
             return cls.objects.select_for_update().filter().all()[0:10]
+
+
+class Bookmark(models.Model):
+    class Meta:
+        db_table = 'novel_bookmarks'
+        unique_together = ('user', 'novel',)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    novel = models.ForeignKey(Novel, on_delete=models.CASCADE, db_index=True)
+
+    @classmethod
+    def get_comic_bookmark_by_user(cls, user):
+        return Novel.objects.filter(id__in=cls.objects.filter(user=user).values_list('novel', flat=True)).all()
+
+
+class History(models.Model):
+    class Meta:
+        db_table = 'novel_histories'
+        unique_together = ('user', 'novel',)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    novel = models.ForeignKey(Novel, on_delete=models.CASCADE, db_index=True)
+    chapter = models.ForeignKey(NovelChapter, on_delete=models.CASCADE, db_index=True)
+
+    @classmethod
+    def get_chapter_history_by_user(cls, user):
+        return NovelChapter.objects.filter(
+            id__in=cls.objects.filter(user=user).values_list('chapter', flat=True).distinct()).all()
+
+
+class Rating(models.Model):
+    class Meta:
+        db_table = 'novel_ratings'
+        unique_together = ('user', 'comic',)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    comic = models.ForeignKey(Novel, on_delete=models.CASCADE, db_index=True)
+    rating_point = models.SmallIntegerField(default=0)

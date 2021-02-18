@@ -37,7 +37,7 @@ class UserAction(object):
 
         if history_create_objs:
             History.objects.bulk_create(history_create_objs, ignore_conflicts=True)
-            
+
         if history_update_objs:
             History.objects.bulk_update(history_update_objs, ['chapter_id'])
 

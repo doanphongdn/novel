@@ -80,7 +80,7 @@ class PageTemplate(models.Model):
 
     page_file = models.CharField(max_length=250, choices=TEMPLATE_PAGE_CHOISES.get(settings.APP_NAME),
                                  unique=True)
-    includes_default = models.JSONField(blank=True, null=True, default=json_template_default)
+    params = models.JSONField(blank=True, null=True, default=json_template_default)
 
     @property
     def include_template(self):

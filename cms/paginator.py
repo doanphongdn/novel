@@ -9,7 +9,7 @@ class ModelPaginator:
     def __init__(self, per_page, number, order_by='-id', **kwargs):
         self.per_page = per_page
         self.order_by = order_by
-        self.total = self.calc_total()
+        self.total = self.calc_total(**kwargs)
         self.number = self.validate_number(number)
         self.offset = per_page * (self.number - 1)
         self.data = self.get_data(**kwargs)

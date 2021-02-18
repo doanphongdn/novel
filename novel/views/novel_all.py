@@ -24,7 +24,7 @@ class NovelAllView(NovelBaseView):
         }
 
         if genre:
-            genre_pre_title = tmpl.includes_default.get("genre_pre_title") or ""
+            genre_pre_title = tmpl.params.get("genre_pre_title") or ""
             genre_obj = CacheManager(Genre, **{"slug": genre}).get_from_cache(get_all=True)[0]
             extra_data['novel_list'].update({
                 "filter_by": {"genres__slug": genre},
@@ -34,7 +34,7 @@ class NovelAllView(NovelBaseView):
 
         response.context_data.update({
             'include_html': self.incl_manager.render_include_html('novel_all', extra_data=extra_data,
-                                                                  default=default_config),
+                                                                  request_param_code=default_config),
         })
 
         return response

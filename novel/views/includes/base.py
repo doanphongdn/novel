@@ -7,7 +7,7 @@ class BaseTemplateInclude(object):
     template = None
     default_values = {}
 
-    def __init__(self, include_data, extra_data=None, request=None):
+    def __init__(self, include_data, extra_data=None, request=None, cache=True):
         self.request = request
         self.include_data = include_data or {}
 
@@ -16,6 +16,7 @@ class BaseTemplateInclude(object):
             self.include_data.update(extra_data.get(self.name))
 
         self.prepare_include_data()
+        self.cache = cache
 
     def prepare_include_data(self):
         pass

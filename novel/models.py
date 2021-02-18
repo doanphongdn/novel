@@ -547,11 +547,6 @@ class Bookmark(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE, db_index=True)
 
-    @classmethod
-    def get_comic_bookmark_by_user(cls, user):
-        return Novel.objects.filter(id__in=cls.objects.filter(user=user).values_list('novel', flat=True)).all()
-
-
 class History(models.Model):
     class Meta:
         db_table = 'novel_histories'

@@ -85,8 +85,8 @@ class InludeTemplateAdmin(ActionAdmin):
 class TemplateManagerForm(forms.ModelForm):
     class Meta:
         model = PageTemplate
-        fields = ("page_file", "includes_default")
-        widgets = {'includes_default': JSONEditorWidget}
+        fields = ("page_file", "params")
+        widgets = {'params': JSONEditorWidget}
 
 
 @admin.register(PageTemplate)

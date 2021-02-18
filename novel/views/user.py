@@ -155,6 +155,11 @@ class UserProfileView(NovelBaseView):
     template_name = "novel/user.html"
 
     def get(self, request, *args, **kwargs):
+        tab_name = kwargs.get("tab_name")
+        tab_enabled = ["overview", "message", "comment", "history", "bookmark"]
+        if isinstance(request.user, AnonymousUser) or tab_name not in tab_enabled:
+            return HttpResponseRedirect("/")
+
         response = super().get(request, *args, **kwargs)
 
         user_info = {
@@ -168,13 +173,18 @@ class UserProfileView(NovelBaseView):
 
         extra_data = {
             'user_profile': {
+                "page": request.GET.get('page') or 1,
                 'setting_form': setting_form,
-                'user': request.user
+                'user': request.user,
+                'view_type': request.GET.get('view') or 'grid',
+                'tab_name': tab_name,
+                'tab_enabled': tab_enabled
             }
         }
-        user_profile = self.incl_manager.render_include_html('user', extra_data=extra_data, request=request)
+        user_profile = self.incl_manager.render_include_html('user', extra_data=extra_data, request=request,
+                                                             request_param_code=tab_name)
         response.context_data.update({
-            "user_profile_html": user_profile
+            "user_profile_html": user_profile,
         })
 
         return response

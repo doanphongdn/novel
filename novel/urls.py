@@ -58,13 +58,6 @@ urlpatterns = [
     path('', NovelIndexView.as_view(), name="home"),
     path('search', NovelDetailView.as_view()),
     path(settings.NOVEL_ALL_URL, NovelAllView.as_view(), name="novel_view"),
-    path(settings.NOVEL_ALL_URL + '/<str:novel_type>', NovelAllView.as_view(), name="novel_all"),
-    path(settings.NOVEL_GENRE_URL + '/<str:genre>', NovelAllView.as_view(), name="novel_genre"),
-    path(settings.NOVEL_PAGE_URL + '/<str:slug>', PageView.as_view(), name="page_view"),
-    path(settings.NOVEL_ACCOUNT_URL, UserProfileView.as_view(), name="user"),
-
-    path('images/<str:img>', stream.stream_image, name="stream_image"),
-    path('images/thumbnail/<str:img>', stream.stream_image, name="stream_thumbnail_image"),
 
     path('comment', CommentManager.comment, name="comment"),
     path('comment/form', CommentManager.comment_form, name="comment_form"),
@@ -73,10 +66,17 @@ urlpatterns = [
     path("user/signup", UserAction.sign_up, name='user_sign_up'),
     path("user/signin", UserAction.sign_in, name='user_sign_in'),
     path("user/logout", UserAction.user_logout, name='user_logout'),
-
     path('user/bookmark', UserAction.bookmark, name='user_bookmark'),
 
     # must end of list
+    path(settings.NOVEL_ALL_URL + '/<str:novel_type>', NovelAllView.as_view(), name="novel_all"),
+    path(settings.NOVEL_GENRE_URL + '/<str:genre>', NovelAllView.as_view(), name="novel_genre"),
+    path(settings.NOVEL_PAGE_URL + '/<str:slug>', PageView.as_view(), name="page_view"),
+    path(settings.NOVEL_ACCOUNT_URL + '/<str:tab_name>', UserProfileView.as_view(), name="user_profile"),
+
+    path('images/<str:img>', stream.stream_image, name="stream_image"),
+    path('images/thumbnail/<str:img>', stream.stream_image, name="stream_thumbnail_image"),
+
     path('<str:slug>', NovelDetailView.as_view(), name="novel"),
     path('<str:slug>/<str:chapter_slug>', ChapterView.as_view(), name="chapter"),
 ]

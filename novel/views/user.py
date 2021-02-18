@@ -34,9 +34,10 @@ class UserAction(object):
                 history_update_objs.append(history)
             else:
                 history_create_objs.append(History(user=user, chapter_id=val[0], novel_id=val[1]))
-                
+
         if history_create_objs:
-            History.objects.bulk_create(history_update_objs, ignore_conflicts=True)
+            History.objects.bulk_create(history_create_objs, ignore_conflicts=True)
+            
         if history_update_objs:
             History.objects.bulk_update(history_update_objs, ['chapter_id'])
 

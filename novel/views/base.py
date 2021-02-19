@@ -44,10 +44,12 @@ class NovelBaseView(TemplateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.incl_manager = IncludeManager(TEMPLATE_INCLUDE_MAPPING)
+        self.is_logged = False
 
     def get(self, request, *args, **kwargs):
         # Set hash for each request to use cache
         self.incl_manager.set_request_hash(request)
+        self.is_logged = not isinstance(request.user, AnonymousUser)
 
         # Get novel setting from cache
         novel_setting = CacheManager(NovelSetting).get_from_cache()
@@ -123,7 +125,7 @@ class NovelBaseView(TemplateView):
 
         response = super().get(request, *args, **kwargs)
         response.set_cookie('_redirect_url', request.build_absolute_uri())
-        if not isinstance(request.user, AnonymousUser) and request.COOKIES.get('_histories'):
+        if self.is_logged and request.COOKIES.get('_histories'):
             response.delete_cookie('_histories')
 
         return response

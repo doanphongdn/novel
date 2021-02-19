@@ -3,6 +3,7 @@ import zlib
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
+from django.contrib.admin.views.main import ChangeList
 
 from novel.models import CDNNovelFile, Novel, NovelChapter, NovelSetting, Genre
 
@@ -57,11 +58,21 @@ class NovelChapterForm(forms.ModelForm):
         fields = '__all__'
 
 
+class CustomChangeList(ChangeList):
+    def get_queryset(self, request):
+        queryset = super(CustomChangeList, self).get_queryset(request)
+
+        return queryset[:10000]
+
+
 @admin.register(NovelChapter)
 class NovelChapterAdmin(admin.ModelAdmin):
     form = NovelChapterForm
     list_display = ("id", "name", "novel", "chapter_updated", "created_at", "updated_at")
     search_fields = ("name", "slug")
+
+    def get_changelist(self, request, **kwargs):
+        return CustomChangeList
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)

@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 from crawl_service import settings
 from novel.cache_manager import NovelCache
 from novel.models import NovelChapter, Novel
+from novel.utils import get_history_cookies
 from novel.views.base import NovelBaseView
 from novel.views.user import UserAction
 
@@ -56,6 +57,21 @@ class ChapterView(NovelBaseView):
 
                 # Update view count
                 chapter_id = chapter.id
+
+                # Update reading histories
+                if isinstance(request.user, AnonymousUser):
+                    histories = get_history_cookies(request)
+
+                    # Set cookies
+                    if isinstance(histories, dict):
+                        histories[str(novel.id)] = chapter_id
+                        response.set_cookie('_histories', json.dumps(histories))
+                    else:
+                        response.set_cookie('_histories', "{}")
+
+                else:
+                    UserAction.storage_history(request.user, chapter_id)
+
                 chapters_viewed = request.session.get("chapters_viewed") or []
                 if chapter_id not in chapters_viewed:
                     with transaction.atomic():
@@ -72,23 +88,6 @@ class ChapterView(NovelBaseView):
                     request.session["chapters_viewed"] = chapters_viewed
                     # request.session.set_expiry(3600)
 
-                    # Update reading histories
-                    if isinstance(request.user, AnonymousUser):
-                        chapter_ids = {}
-                        try:
-                            chapter_ids = json.loads(request.COOKIES.get('_histories'))
-                        except:
-                            pass
-
-                        if isinstance(chapter_ids, dict):
-                            # Set cookies
-                            chapter_ids[str(novel.id)] = chapter_id
-                            response.set_cookie('_histories', chapter_ids)
-                        else:
-                            response.set_cookie('_histories', {})
-
-                    else:
-                        UserAction.storage_history(request.user, chapter_id)
 
         else:
             # TODO: define 404 page

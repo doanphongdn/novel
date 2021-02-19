@@ -18,3 +18,13 @@ def sort_images(existed_urls):
     fin_list = list(zip(existed_urls, new_list))
     fin_list = [x[0] for x in sorted(fin_list, key=lambda x: int(x[1]))]
     return fin_list
+
+
+def get_history_cookies(request):
+    # Get chapter ids from cookie
+    try:
+        histories = json.loads(request.COOKIES.get('_histories'))
+    except:
+        histories = {}
+
+    return histories if isinstance(histories, dict) else {}

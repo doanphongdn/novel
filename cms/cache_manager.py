@@ -26,7 +26,7 @@ class CacheManager(object):
                 if data and not get_all:
                     data = data[0]
 
-                cache.set(cache_key, data)
+                cache.set(cache_key, data or None)
                 return data
 
             return cached

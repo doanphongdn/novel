@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from novel.form.auth import RegisterForm, LoginForm
 from novel.form.user import UserProfileForm
 from novel.models import Novel, Bookmark, History, NovelChapter
+from novel.utils import get_history_cookies
 from novel.views.base import NovelBaseView
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
 
@@ -49,13 +50,7 @@ class UserAction(object):
         if isinstance(user, AnonymousUser):
             return
 
-        # Get chapter ids from cookie
-        histories = {}
-        try:
-            histories = json.loads(request.COOKIES.get('_histories'))
-        except:
-            pass
-
+        histories = get_history_cookies(request)
         cls.storage_history(user, list(histories.values()))
 
     @staticmethod
@@ -154,35 +149,43 @@ class UserAction(object):
 class UserProfileView(NovelBaseView):
     template_name = "novel/user.html"
 
-    def get(self, request, *args, **kwargs):
-        tab_name = kwargs.get("tab_name")
-        tab_enabled = ["overview", "message", "comment", "history", "bookmark"]
-        if isinstance(request.user, AnonymousUser) or tab_name not in tab_enabled:
-            return HttpResponseRedirect("/")
+    __no_require_logged = ("history",)
+    __require_logged = ("overview", "message", "comment", "bookmark")
 
+    def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 
-        user_info = {
-            "first_name": request.user.first_name,
-            "last_name": request.user.last_name,
-            "email": request.user.email,
-            "user": request.user.username,
-        }
-        setting_form = UserProfileForm(initial=user_info)
-        kwargs["setting_form"] = setting_form
+        tab_name = kwargs.get("tab_name")
+        full_tab = self.__no_require_logged + self.__require_logged
+
+        if (self.is_logged and tab_name not in full_tab) or (
+                not self.is_logged and tab_name not in self.__no_require_logged):
+            return HttpResponseRedirect("/")
 
         extra_data = {
             'user_profile': {
                 "page": request.GET.get('page') or 1,
-                'setting_form': setting_form,
                 'user': request.user,
                 'view_type': request.GET.get('view') or 'grid',
                 'tab_name': tab_name,
-                'tab_enabled': tab_enabled
+                'is_logged': self.is_logged
             }
         }
-        user_profile = self.incl_manager.render_include_html('user', extra_data=extra_data, request=request,
-                                                             request_param_code=tab_name)
+
+        if self.is_logged:
+            extra_data['user_profile'].update({
+                'setting_form': UserProfileForm(
+                    initial={
+                        "first_name": request.user.first_name,
+                        "last_name": request.user.last_name,
+                        "email": request.user.email,
+                        "user": request.user.username,
+                    }),
+                'tab_enabled': full_tab,
+            })
+
+        user_profile = self.incl_manager.render_include_html('user', extra_data=extra_data,
+                                                             request=request, request_param_code=tab_name)
         response.context_data.update({
             "user_profile_html": user_profile,
         })

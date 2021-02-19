@@ -2,9 +2,9 @@
 <form method="POST" action="/tai-khoan/overview" enctype="multipart/form-data" class="user-profile">
     {% csrf_token %}
     <div class="row">
-        <div class="col-md-3">
-            <div class="profile-sidebar pt-3">
-                {% if user.is_authenticated == True %}
+        {% if is_logged %}
+            <div class="col-md-3">
+                <div class="profile-sidebar pt-3">
                     <div class="profile-usertitle">
                         <div class="profile-userpic">
                             {% if social_user %}
@@ -24,29 +24,32 @@
                             {{ user.first_name }}
                         </div>
                     </div>
-                {% endif %}
-                <div class="profile-usermenu">
-                    <ul class="nav nav-tabs">
-                        {% for menu in profile_menus %}
-                            <li>
-                                <a href="{{ menu.url }}" rel="nofollow" class="nav-link {{ menu.active_class }}">
-                                    <i class="{{ menu.icon }}"></i>
-                                    {{ menu.name }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                        <li>
-                            <a href="{% url "user_logout" %}" rel="nofollow">
-                                <i class="fa fa-sign-out"></i>
-                                {{ logout_label }}
-                            </a>
-                        </li>
-                    </ul>
+                    {% if profile_menus %}
+                        <div class="profile-usermenu">
+                            <ul class="nav nav-tabs">
+                                {% for menu in profile_menus %}
+                                    <li>
+                                        <a href="{{ menu.url }}" rel="nofollow"
+                                           class="nav-link {{ menu.active_class }}">
+                                            <i class="{{ menu.icon }}"></i>
+                                            {{ menu.name }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                <li>
+                                    <a href="{% url "user_logout" %}" rel="nofollow">
+                                        <i class="fa fa-sign-out"></i>
+                                        {{ logout_label }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                    <!-- END MENU -->
                 </div>
-                <!-- END MENU -->
             </div>
-        </div>
-        <div class="col-md-9">
+        {% endif %}
+        <div class="{% if is_logged %}col-md-9{% else %}col-md-12{% endif %}">
             <div class="row">
                 <div class="col-12">
                     {{ profile_html }}

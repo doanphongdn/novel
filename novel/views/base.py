@@ -108,7 +108,7 @@ class NovelBaseView(TemplateView):
         extra_data = {
             "base_navbar_menu": {
                 "user": request.user,
-                "user_avatar": NovelUserProfile.get_avatar(request.user.id),
+                "user_avatar": NovelUserProfile.get_avatar(request.user),
             }
         }
 

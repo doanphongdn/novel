@@ -40,7 +40,9 @@
                     class="col-{{ css_class.novel_grid_col }} col-md-{{ css_class.novel_grid_col_md }} col-lg-{{ css_class.novel_grid_col_lg }} novel-item form-group">
         {% endif %}
     <div class="novel-wrap">
-        <div class="ribbon-right">{{ novel.latest_updated_at_str }}</div>
+        {% if show_ribbon %}
+            <div class="ribbon-right">{{ novel.latest_updated_at_str }}</div>
+        {% endif %}
         <div class="novel-thumbnail-image">
             <a href="{{ novel.get_absolute_url }}">
                 <img class="lazyload" data-src="{{ novel.stream_thumbnail_image }}"
@@ -66,13 +68,15 @@
                 <h6><a href="{{ novel.novel_flat.latest_chapter.url }}">{{ novel.novel_flat.latest_chapter.name }}</a>
                 </h6>
             {% endif %}
-
             {% if view_type == 'list' %}
                 <div class="updated-time">
                     <i class="far fa-clock"></i> {{ novel.novel_flat.latest_chapter.created_at }}
                 </div>
             {% endif %}
         </div>
+        {% if show_button_remove and view_type == 'grid' %}
+            <span class="btn-remove" data-action="{{ button_remove_type }}"><i class="fa fa-times-circle"></i></span>
+        {% endif %}
         <div class="novel-genres">
             {% for genre in novel.genre_all %}
                 <a href="{{ genre.get_absolute_url }}">{{ genre.name }}</a>

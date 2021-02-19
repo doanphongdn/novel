@@ -30,6 +30,15 @@
       padding: 2px;
       position: relative;
 
+      .btn-remove {
+        display: block;
+        font-size: 1.5rem;
+        position: absolute;
+        top: -6px;
+        right: 0;
+        opacity: .8;
+      }
+
       .ribbon-right {
         position: absolute;
         top: 5px;
@@ -110,6 +119,7 @@
       .novel-chapter {
         -webkit-line-clamp: 1;
 
+
         h6 {
           max-height: 36px;
           line-height: 18px;
@@ -128,6 +138,7 @@
       overflow: hidden;
       border-bottom: thin solid #F0F0F0;
       padding: 10px 0;
+
 
       .ribbon-right {
         display: none;

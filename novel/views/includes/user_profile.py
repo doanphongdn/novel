@@ -64,7 +64,9 @@ class UserProfileTemplateInclude(BaseTemplateInclude):
                 "show_button_type": True,
                 "paginate_enable": True,
                 "view_type": view_type,
-                "page": page
+                "page": page,
+                "show_button_remove": True,
+                "button_remove_type": tab_name,
             })
             novel_list_incl = NovelListTemplateInclude(self.include_data, request=self.request)
             profile_html = novel_list_incl.render_html()

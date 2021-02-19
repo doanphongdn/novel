@@ -75,7 +75,8 @@
             {% endif %}
         </div>
         {% if show_button_remove and view_type == 'grid' %}
-            <span class="btn-remove" data-action="{{ button_remove_type }}"><i class="fa fa-times-circle"></i></span>
+            <span class="btn-remove" data-action="{{ button_remove_type }}">
+                <i class="fa fa-times-circle text-danger"></i></span>
         {% endif %}
         <div class="novel-genres">
             {% for genre in novel.genre_all %}

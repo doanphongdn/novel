@@ -80,9 +80,13 @@ class ChapterView(NovelBaseView):
                         except:
                             pass
 
-                        chapter_ids[str(novel.id)] = chapter_id
-                        # Set cookies
-                        response.set_cookie('_histories', chapter_ids)
+                        if isinstance(chapter_ids, dict):
+                            # Set cookies
+                            chapter_ids[str(novel.id)] = chapter_id
+                            response.set_cookie('_histories', chapter_ids)
+                        else:
+                            response.set_cookie('_histories', {})
+
                     else:
                         UserAction.storage_history(request.user, chapter_id)
 

@@ -21,7 +21,7 @@
                         </li>
                     {% endif %}
                     {% for menu in menu_data %}
-                        {% if not menu.require_logged or menu.require_logged and user.is_authenticated %}
+                        {% if not menu.require_logged or user.is_authenticated %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ menu.url }}">
                                     {% if menu.icon %}

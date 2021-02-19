@@ -154,12 +154,11 @@ class UserProfileView(NovelBaseView):
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
-
         tab_name = kwargs.get("tab_name")
         full_tab = self.__no_require_logged + self.__require_logged
 
-        if (self.is_logged and tab_name not in full_tab) or (
-                not self.is_logged and tab_name not in self.__no_require_logged):
+        if (request.user.is_authenticated and tab_name not in full_tab) or (
+                not request.user.is_authenticated and tab_name not in self.__no_require_logged):
             return HttpResponseRedirect("/")
 
         extra_data = {
@@ -168,11 +167,10 @@ class UserProfileView(NovelBaseView):
                 'user': request.user,
                 'view_type': request.GET.get('view') or 'grid',
                 'tab_name': tab_name,
-                'is_logged': self.is_logged
             }
         }
 
-        if self.is_logged:
+        if request.user.is_authenticated:
             extra_data['user_profile'].update({
                 'setting_form': UserProfileForm(
                     initial={

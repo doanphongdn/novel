@@ -17,7 +17,6 @@ class UserProfileTemplateInclude(BaseTemplateInclude):
         user = self.include_data.get("user")
         page = self.include_data.get("page")
         view_type = self.include_data.get("view_type")
-        is_logged = self.include_data.get("is_logged", False)
 
         setting_form = self.include_data.get("setting_form", None)
         tab_name = self.include_data.pop("tab_name", "")
@@ -40,7 +39,7 @@ class UserProfileTemplateInclude(BaseTemplateInclude):
             # end is history
             else:
                 # get data from logger
-                if is_logged:
+                if user.is_authenticated:
                     values = History.objects.filter(user=user).values_list("novel", "chapter")
                     chapter_ids = []
                     novel_ids = []

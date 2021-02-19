@@ -25,7 +25,8 @@ class NovelAllView(NovelBaseView):
 
         if genre:
             genre_pre_title = tmpl.params.get("genre_pre_title") or ""
-            genre_obj = CacheManager(Genre, **{"slug": genre}).get_from_cache(get_all=True)[0]
+            genre_cache = CacheManager(Genre, **{"slug": genre}).get_from_cache(get_all=True)
+            genre_obj = genre_cache[0] if genre_cache else None
             extra_data['novel_list'].update({
                 "filter_by": {"genres__slug": genre},
                 "title": genre_pre_title + " - " + genre_obj.name if genre_obj else settings.NOVEL_GENRE_URL.upper(),

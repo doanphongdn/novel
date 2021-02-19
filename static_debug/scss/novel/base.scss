@@ -40,6 +40,12 @@
   opacity: 0;
 }
 
+@font-face {
+  font-family: 'fontawesome';
+  font-display: auto;
+  src: url("/static/argon/assets/fonts/fontawesome-webfont.woff2?v=4.7.0") format('woff2');
+}
+
 body {
   margin: 0;
   font-family: 'Open Sans', sans-serif;

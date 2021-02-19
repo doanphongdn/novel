@@ -1,60 +1,60 @@
 {% load static %}
-<form method="POST" action="/tai-khoan/overview" enctype="multipart/form-data" class="user-profile">
-    {% csrf_token %}
-    <div class="row">
-        {% if is_logged %}
-            <div class="col-md-3">
-                <div class="profile-sidebar pt-3">
-                    <div class="profile-usertitle">
-                        <div class="profile-userpic">
-                            {% if social_user %}
-                                <img src="{{ profile_image }}"
-                                     class="img-responsive" alt="" id="img_avatar">
-                            {% else %}
-                                <img src="{% static "profile_images/" %}{{ profile_image }}"
-                                     class="img-responsive" alt="" id="img_avatar">
-                            {% endif %}
-                        </div>
-                        <div class="profile-userbuttons">
-                            <label for="{{ setting_form.avatar.id_for_label }}"
-                                   class="btn btn-success btn-sm">Upload</label>
-                            {{ setting_form.avatar }}
-                        </div>
-                        <div class="profile-usertitle-name">
-                            {{ user.first_name }}
-                        </div>
+{% csrf_token %}
+<div class="row">
+    {% if user.is_authenticated %}
+        <div class="col-md-3">
+            <div class="profile-sidebar pt-3">
+                <div class="profile-usertitle">
+                    <div class="profile-userpic">
+                        {% if social_user %}
+                            <img src="{{ profile_image }}"
+                                 class="img-responsive" alt="" id="img_avatar">
+                        {% else %}
+                            <img src="{% static "profile_images/" %}{{ profile_image }}"
+                                 class="img-responsive" alt="" id="img_avatar">
+                        {% endif %}
                     </div>
-                    {% if profile_menus %}
-                        <div class="profile-usermenu">
-                            <ul class="nav nav-tabs">
-                                {% for menu in profile_menus %}
-                                    <li>
-                                        <a href="{{ menu.url }}" rel="nofollow"
-                                           class="nav-link {{ menu.active_class }}">
-                                            <i class="{{ menu.icon }}"></i>
-                                            {{ menu.name }}
-                                        </a>
-                                    </li>
-                                {% endfor %}
+                    <div class="profile-userbuttons">
+                        <label for="{{ setting_form.avatar.id_for_label }}"
+                               class="btn btn-success btn-sm">Upload</label>
+                        {{ setting_form.avatar }}
+                    </div>
+                    <div class="profile-usertitle-name">
+                        {{ user.first_name }}
+                    </div>
+                </div>
+                {% if profile_menus %}
+                    <div class="profile-usermenu">
+                        <ul class="nav nav-tabs">
+                            {% for menu in profile_menus %}
                                 <li>
-                                    <a href="{% url "user_logout" %}" rel="nofollow">
-                                        <i class="fa fa-sign-out"></i>
-                                        {{ logout_label }}
+                                    <a href="{{ menu.url }}" rel="nofollow"
+                                       class="nav-link {{ menu.active_class }}">
+                                        <i class="{{ menu.icon }}"></i>
+                                        {{ menu.name }}
                                     </a>
                                 </li>
-                            </ul>
-                        </div>
-                    {% endif %}
-                    <!-- END MENU -->
-                </div>
+                            {% endfor %}
+                            <li>
+                                <a href="{% url "user_logout" %}" rel="nofollow">
+                                    <i class="fa fa-sign-out"></i>
+                                    {{ logout_label }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+                <!-- END MENU -->
             </div>
-        {% endif %}
-        <div class="{% if is_logged %}col-md-9{% else %}col-md-12{% endif %}">
-            <div class="row">
-                <div class="col-12">
+        </div>
+    {% endif %}
+    <div class="{% if user.is_authenticated %}col-md-9{% else %}col-md-12{% endif %}">
+        <div class="row">
+            <div class="col-12">
+                <form method="POST" action="/tai-khoan/overview" enctype="multipart/form-data" class="user-profile">
                     {{ profile_html }}
-                </div>
+                </form>
             </div>
         </div>
     </div>
-</form>
+</div>

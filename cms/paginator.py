@@ -48,12 +48,14 @@ class ModelPaginator:
         except (TypeError, ValueError):
             raise PageNotAnInteger('That page number is not an integer')
         if number < 1:
-            raise EmptyPage('That page number is less than 1')
+            # raise EmptyPage('That page number is less than 1')
+            number = 1
         if number > self.num_pages:
-            if number == 1:
-                pass
-            else:
-                raise EmptyPage('That page contains no results')
+            # if number == 1:
+            #     pass
+            # else:
+            #     raise EmptyPage('That page contains no results')
+            number = self.num_pages
         return number
 
     @property

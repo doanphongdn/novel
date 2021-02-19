@@ -41,21 +41,26 @@ class ModelPaginator:
 
     def validate_number(self, number):
         """Validate the given 1-based page number."""
+        is_valid = True
         try:
             if isinstance(number, float) and not number.is_integer():
-                raise ValueError
-            number = int(number)
+                is_valid = False
+            else:
+                number = int(number)
         except (TypeError, ValueError):
-            raise PageNotAnInteger('That page number is not an integer')
-        if number < 1:
-            # raise EmptyPage('That page number is less than 1')
+            is_valid = False
+
+        if self.num_pages < 1:
+            is_valid = False
+
+        if is_valid:
+            if number < 1:
+                number = 1
+            if number > self.num_pages > 0:
+                number = self.num_pages
+        else:
             number = 1
-        if number > self.num_pages:
-            # if number == 1:
-            #     pass
-            # else:
-            #     raise EmptyPage('That page contains no results')
-            number = self.num_pages
+
         return number
 
     @property

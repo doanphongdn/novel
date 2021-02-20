@@ -77,9 +77,6 @@ class UserProfileTemplateInclude(BaseTemplateInclude):
 
         elif tab_name == "overview":
             if user.is_authenticated:
-                avatar = NovelUserProfile.get_avatar(user)
-                self.include_data["user_avatar"] = avatar
-
                 profile_input_item = """
                     <div class="form-group">
                         <label for="{input_id}">{input_label}:</label>

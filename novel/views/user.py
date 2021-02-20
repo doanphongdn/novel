@@ -241,6 +241,7 @@ class UserProfileView(NovelBaseView):
                         "user": request.user.username,
                     }),
                 'tab_enabled': full_tab,
+                'user_avatar': NovelUserProfile.get_avatar(request.user)
             })
 
         user_profile = self.incl_manager.render_include_html('user', extra_data=extra_data,

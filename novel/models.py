@@ -451,7 +451,7 @@ class NovelUserProfile(models.Model):
 
     @classmethod
     def get_profiles(cls, user_id):
-        return cls.objects.filter(user_id=user_id).first()
+        return cls.objects.get_or_create(user_id=user_id)
 
     @classmethod
     def get_avatar(cls, user):

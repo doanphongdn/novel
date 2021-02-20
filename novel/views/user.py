@@ -203,7 +203,7 @@ class UserProfileView(NovelBaseView):
                     if avatar:
                         fs = FileSystemStorage()
                         filename = fs.save(avatar.name, avatar)
-                        profile = NovelUserProfile.get_profiles(request.user.id)
+                        profile, _ = NovelUserProfile.get_profiles(request.user.id)
                         profile.avatar = fs.url(filename)
                         profile.save()
 

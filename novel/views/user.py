@@ -70,12 +70,12 @@ class UserAction(object):
                 if not novel_id or action not in class_model:
                     return res
 
+                res = JsonResponse({"success": True, })
                 if request.user and request.user.is_authenticated:
                     class_model.get(action).objects.filter(user=request.user, novel_id=novel_id).delete()
                 elif action == "history":
                     cookies = utils.get_history_cookies(request)
                     cookies.pop(novel_id, None)
-                    res = JsonResponse({"success": True, })
                     res.set_cookie("_histories", json.dumps(cookies))
             except:
                 return res

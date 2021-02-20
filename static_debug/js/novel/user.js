@@ -37,6 +37,25 @@ $(document).ready(function (e) {
             }
         });
     });
+    $(document).on('click', '.novel-wrap > .btn-remove ', function () {
+        novel_id = $(this).data("id");
+        action = $(this).data("action");
+        $.ajax({
+            type: 'post',
+            url: '/user/novel-remove',
+            data: {
+                'action': action,
+                'novel_id': novel_id,
+                'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+            },
+            success: function (data) {
+                if (data.success === true) {
+                    location.reload();
+                }
+            }
+        });
+    });
+
     $(document).on('click', 'span.novel-action-bookmark', function () {
         const link = $(this);
         if (link.data("logged").toLowerCase() === 'false') {
@@ -52,12 +71,11 @@ $(document).ready(function (e) {
                 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
             },
             success: function (data) {
-                console.log(data);
                 if (data.success === true) {
                     let status = data.bookmark_info.status
                     link.data("status", status);
                     link.children("p").text(data.bookmark_info.text);
-                    link.children("i").class(status === "followed" ? "fa fa-check": "fa fa-bookmark");
+                    link.children("i").class(status === "followed" ? "fa fa-check" : "fa fa-bookmark");
                 }
             }
         });

@@ -36,8 +36,10 @@
         {% if view_type == 'list' %}
             <div class="col-{{ css_class.novel_list_col }} novel-item">
         {% else %}
-            <div
-                    class="col-{{ css_class.novel_grid_col }} col-md-{{ css_class.novel_grid_col_md }} col-lg-{{ css_class.novel_grid_col_lg }} novel-item form-group">
+            <div class="col-{{ css_class.novel_grid_col }}
+            col-md-{{ css_class.novel_grid_col_md }}
+            col-lg-{{ css_class.novel_grid_col_lg }}
+            novel-item form-group">
         {% endif %}
     <div class="novel-wrap">
         {% if show_ribbon %}
@@ -75,7 +77,7 @@
             {% endif %}
         </div>
         {% if show_button_remove and view_type == 'grid' %}
-            <span class="btn-remove" data-action="{{ button_remove_type }}">
+            <span class="btn-remove " data-action="{{ button_remove_type }}" data-id="{{ novel.id }}">
                 <i class="fa fa-times-circle text-danger"></i></span>
         {% endif %}
         <div class="novel-genres">

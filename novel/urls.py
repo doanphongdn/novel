@@ -67,6 +67,7 @@ urlpatterns = [
     path("user/signin", UserAction.sign_in, name='user_sign_in'),
     path("user/logout", UserAction.user_logout, name='user_logout'),
     path('user/bookmark', UserAction.bookmark, name='user_bookmark'),
+    path('user/novel-remove', UserAction.novel_remove, name='novel_remove'),
 
     # must end of list
     path(settings.NOVEL_ALL_URL + '/<str:novel_type>', NovelAllView.as_view(), name="novel_all"),

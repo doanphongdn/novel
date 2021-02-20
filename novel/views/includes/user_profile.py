@@ -1,8 +1,10 @@
 import json
 
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 
-from novel.models import Novel, Bookmark, History, NovelChapter
+from novel.form.user import UserProfileForm
+from novel.models import Novel, Bookmark, History, NovelChapter, NovelUserProfile
 from novel.utils import get_history_cookies
 from novel.views.includes.base import BaseTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
@@ -18,10 +20,12 @@ class UserProfileTemplateInclude(BaseTemplateInclude):
         page = self.include_data.get("page")
         view_type = self.include_data.get("view_type")
 
-        setting_form = self.include_data.get("setting_form", None)
+        profile_form = self.include_data.get("profile_form", None)
         tab_name = self.include_data.pop("tab_name", "")
         tab_enabled = self.include_data.pop("tab_enabled", ())
         tab_config = self.include_data.pop("tab_config", {})
+        input_labels = self.include_data.pop("input_labels", {})
+        input_icons = self.include_data.pop("input_icons", {})
 
         profile_menus = [{
             "url": reverse("user_profile", kwargs={'tab_name': tab}),
@@ -71,8 +75,50 @@ class UserProfileTemplateInclude(BaseTemplateInclude):
             novel_list_incl = NovelListTemplateInclude(self.include_data, request=self.request)
             profile_html = novel_list_incl.render_html()
 
+        elif tab_name == "overview":
+            if user.is_authenticated:
+                avatar = NovelUserProfile.get_avatar(user)
+                self.include_data["user_avatar"] = avatar
+
+                profile_input_item = """
+                    <div class="form-group">
+                        <label for="{input_id}">{input_label}:</label>
+                        <div class="input-group input-group-alternative">
+                            <div class="input-group-prepend"><span class="input-group-text">
+                                <i class="{input_icon}"></i></span></div>
+                            {input}
+                        </div>
+                        {input_errors}
+                    </div>
+                """
+                html_groups = ["""<div class="col-md-12 col-lg-8">"""]
+                profile_form = profile_form or UserProfileForm(initial={
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "email": user.email,
+                })
+                for field in profile_form.visible_fields():
+                    if field.name != 'avatar':
+                        html_groups.append(profile_input_item.format(
+                            input_id=field.auto_id,
+                            input_label=input_labels.get(field.name) or field.label,
+                            input_icon=input_icons.get(field.name) or '',
+                            input=field,
+                            input_errors=field.errors,
+                        ))
+                    else:
+                        html_groups.append("""<div class="profile-userbuttons">
+                            <label for="{input_id}" class="btn btn-secondary btn-sm" style="cursor:pointer;">
+                            <i class="fa fa-image"></i> Change Avatar</label>{input}</div>"""
+                                           .format(input=field, input_id=field.auto_id))
+
+                html_groups.append("<hr style='margin:5px 0 10px 0 !important;'>")
+                html_groups.append("""<button type="submit" class="btn btn-warning d-block ml-auto">
+                    <i class="fa fa-save"></i> {submit_label}
+                    </button></div>""".format(submit_label=input_labels.get("submit_label") or "Save"))
+                profile_html = mark_safe("".join(html_groups))
+
         self.include_data.update({
             "profile_html": profile_html,
             "profile_menus": profile_menus,
-            "setting_form": setting_form
         })

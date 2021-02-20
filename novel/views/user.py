@@ -3,13 +3,16 @@ from http import HTTPStatus
 
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import User, AnonymousUser
+from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 
+from novel import utils
 from novel.form.auth import RegisterForm, LoginForm
 from novel.form.user import UserProfileForm
-from novel.models import Novel, Bookmark, History, NovelChapter
+from novel.models import Novel, Bookmark, History, NovelChapter, NovelUserProfile
 from novel.utils import get_history_cookies
 from novel.views.base import NovelBaseView
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
@@ -52,6 +55,32 @@ class UserAction(object):
 
         histories = get_history_cookies(request)
         cls.storage_history(user, list(histories.values()))
+
+    @staticmethod
+    def novel_remove(request):
+        res = JsonResponse({"success": False, })
+        if request.method == 'POST':
+            try:
+                novel_id = request.POST.get('novel_id')
+                action = request.POST.get('action')
+                class_model = {
+                    "history": History,
+                    "bookmark": Bookmark,
+                }
+                if not novel_id or action not in class_model:
+                    return res
+
+                if request.user and request.user.is_authenticated:
+                    class_model.get(action).objects.filter(user=request.user, novel_id=novel_id).delete()
+                elif action == "history":
+                    cookies = utils.get_history_cookies(request)
+                    cookies.pop(novel_id, None)
+                    res = JsonResponse({"success": True, })
+                    res.set_cookie("_histories", json.dumps(cookies))
+            except:
+                return res
+
+        return res
 
     @staticmethod
     def bookmark(request):
@@ -104,7 +133,7 @@ class UserAction(object):
         try:
             data = {key: value or None for key, value in request.POST.items() if hasattr(User, key)}
             data["username"] = data.get("email", '')
-            data["first_name"] = request.POST.get("name", '')
+            data["last_name"] = request.POST.get("name", '')
             User.objects.create_user(**data)
             user = authenticate(username=data.get("email", ''),
                                 password=data.get("password", ''))
@@ -152,10 +181,42 @@ class UserProfileView(NovelBaseView):
     __no_require_logged = ("history",)
     __require_logged = ("overview", "message", "comment", "bookmark")
 
+    def post(self, request, *args, **kwargs):
+        allow_url = reverse("user_profile", kwargs={"tab_name": "overview"})
+        if request.path == allow_url and request.method == "POST" and request.user:
+            form = UserProfileForm(request.POST)
+            if form.is_valid():
+                with transaction.atomic():
+                    request.user.first_name = request.POST.get("first_name")
+                    request.user.last_name = request.POST.get("last_name")
+                    request.user.email = request.POST.get("email")
+
+                    if request.POST.get("password"):
+                        if request.POST.get("password") == request.POST.get("re_password"):
+                            request.user.set_password(request.POST.get("password"))
+                        else:
+                            form.add_error("re_password", "Re password doesn't match.")
+                            kwargs["profile_form"] = form
+                            return self.get(request, *args, **kwargs)
+
+                    avatar = request.FILES.get("avatar")
+                    if avatar:
+                        fs = FileSystemStorage()
+                        filename = fs.save(avatar.name, avatar)
+                        profile = NovelUserProfile.get_profiles(request.user.id)
+                        profile.avatar = fs.url(filename)
+                        profile.save()
+
+                    request.user.save()
+
+        return HttpResponseRedirect(request.path)
+
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
         tab_name = kwargs.get("tab_name")
-        full_tab = self.__no_require_logged + self.__require_logged
+        profile_form = kwargs.get("profile_form")
+
+        full_tab = self.__require_logged + self.__no_require_logged
 
         if (request.user.is_authenticated and tab_name not in full_tab) or (
                 not request.user.is_authenticated and tab_name not in self.__no_require_logged):
@@ -172,7 +233,7 @@ class UserProfileView(NovelBaseView):
 
         if request.user.is_authenticated:
             extra_data['user_profile'].update({
-                'setting_form': UserProfileForm(
+                'profile_form': profile_form or UserProfileForm(
                     initial={
                         "first_name": request.user.first_name,
                         "last_name": request.user.last_name,

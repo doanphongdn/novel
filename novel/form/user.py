@@ -4,13 +4,13 @@ from django import forms
 class UserProfileForm(forms.Form):
     first_name = forms.CharField(widget=forms.TextInput(
         attrs={"class": "form-control"}
-    ), max_length=30)
+    ), max_length=30, required=False)
     last_name = forms.CharField(widget=forms.TextInput(
         attrs={"class": "form-control"}
     ), max_length=30)
     email = forms.CharField(widget=forms.TextInput(
         attrs={"class": "form-control"}
-    ), required=False)
+    ), required=True)
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={
             "autocomplete": "off",
@@ -23,7 +23,7 @@ class UserProfileForm(forms.Form):
             "class": "form-control",
         }
     ), required=False, min_length=6)
-    avatar = forms.FileField(widget=forms.FileInput(attrs={
+    avatar = forms.ImageField(widget=forms.FileInput(attrs={
         'onchange': 'upload_img(this);',
         'class': 'btn btn-success btn-sm',
         'hidden': 'true',

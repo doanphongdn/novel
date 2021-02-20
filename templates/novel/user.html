@@ -4,6 +4,20 @@
 {% endblock %}
 {% block content %}
     <div class="row">
+
         {{ user_profile_html }}
     </div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+        function upload_img(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#img_avatar').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 {% endblock %}

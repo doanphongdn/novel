@@ -1,10 +1,22 @@
 @import "../../common/colors";
 
 .user-profile {
+  ul.errorlist {
+    list-style: none; /* Remove list bullets */
+    padding: 0;
+    margin: 0;
+
+    li {
+      margin-left: 15px;
+      color: red;
+    }
+  }
+
   .input-group-alternative {
     box-shadow: none;
     border: thin solid #{$border_color};
-    input, .input-group-text{
+
+    input, .input-group-text {
       color: #{$text_color};
     }
   }

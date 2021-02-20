@@ -1,9 +1,9 @@
 {% load cache %}
 <ul class="navbar-nav ml-auto navbar-header-menu">
     {% for menu in navbar_menus %}
-        <li class="nav-item">
+        <li class="nav-item {{ menu.extra_class }}">
             <a class="nav-link nav-link-icon" href="{{ menu.url }}">
-                <i class="{{ menu.fa_icon }}"></i>
+                <i class="{{ menu.icon }}"></i>
                 <span class="nav-link-inner--text">{{ menu.name }}</span>
             </a>
         </li>

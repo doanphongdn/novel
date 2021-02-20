@@ -2,6 +2,8 @@ import zlib
 from datetime import datetime
 from time import sleep
 
+import os
+
 from rest_framework import serializers
 
 from crawl_service import utils
@@ -179,7 +181,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
             if update:
                 novel.publish = True
                 novel.novel_updated = True
-            elif novel.attempt >= 10:
+            elif novel.attempt >= int(os.environ.get('CRAWL_ATTEMPT', 5)):
                 novel.publish = False
                 novel.novel_updated = False
                 novel.active = False
@@ -229,11 +231,12 @@ class NovelChapterCampaignType(BaseCrawlCampaignType):
 
             if updated:
                 chapter.chapter_updated = True
-                chapter.save()
-            elif chapter.attempt >= 10:
+            elif chapter.attempt >= int(os.environ.get('CRAWL_ATTEMPT', 5)):
                 chapter.chapter_updated = False
                 chapter.active = False
             else:
                 chapter.attempt += 1
+
+            chapter.save()
 
         return continue_paging

@@ -28,7 +28,7 @@ msgid ""
 "images now."
 msgstr ""
 "Nếu bạn chờ hình hiển thị quá lâu, có thể chúng tôi đang sửa lỗi các hình "
-"này, <br /> bạn Vui Lòng Quay Trở lại đây sau 5 phút 15 giây! <br /> Xin Cảm ơn bạn!"
+"này, <br /> bạn Vui Lòng Quay Lại sau 5 phút 55 giây! <br /> Xin Chân Thành Cảm Ơn Bạn!"
 
 #: templates/novel/includes/novel_list.html:20
 msgid "View all"

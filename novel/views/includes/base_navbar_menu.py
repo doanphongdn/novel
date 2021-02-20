@@ -28,7 +28,7 @@ class BaseNavbarTemplateInclude(BaseTemplateInclude):
             for gen in genres:
                 genre_menu["data"].append(gen)
 
-        user_menus = CacheManager(Menu, **{"type": "user_profile"}).get_from_cache(get_all=True)
+        user_menus = CacheManager(Menu, "priority", **{"type": "user_profile"}).get_from_cache(get_all=True)
 
         if "logout_label" not in self.include_data:
             self.include_data["logout_label"] = "Logout"

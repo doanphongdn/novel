@@ -54,6 +54,7 @@ class Menu(models.Model):
     class Meta:
         db_table = "cms_menus"
         unique_together = [("name", "type")]
+        ordering = ["type", "priority"]
 
     priority = models.SmallIntegerField(default=0)
     name = models.CharField(max_length=250)

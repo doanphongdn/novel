@@ -30,7 +30,9 @@ class NovelInfoTemplateInclude(BaseTemplateInclude):
 
     def prepare_include_data(self):
         novel = self.include_data.get('novel')
+        meaning_emoji = self.include_data.get('meaning_emoji') or "❤️✅"
 
         self.include_data.update({
             "bookmark": self.get_bookmark_info(novel.id, self.request.user),
+            "meaning_emoji": meaning_emoji,
         })

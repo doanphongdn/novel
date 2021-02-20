@@ -11,41 +11,33 @@
     <meta name="author" content="{{ setting.meta_author }}">
     <meta name="copyright" content="{{ setting.meta_copyright }}">
     {% block meta %}{% endblock %}
-
     {% if setting.meta_og_url %}
         <meta property="og:url" content="{{ setting.meta_og_url }}">
     {% endif %}
-
     {% if setting.meta_og_type %}
         <meta property="og:type" content="{{ setting.meta_og_type }}">
     {% endif %}
-
     {% if setting.meta_og_title %}
         <meta property="og:title" content="{{ setting.meta_og_title }}">
     {% else %}
         <meta property="og:title" content="{{ setting.title }}">
     {% endif %}
-
     {% if setting.meta_img %}
         <meta property="og:image" content="{{ setting.meta_img }}">
     {% endif %}
-
     {% if setting.meta_og_title %}
         <meta property="og:image:alt" content="{{ setting.meta_og_title }}">
     {% else %}
         <meta property="og:image:alt" content="{{ setting.title }}">
     {% endif %}
-
     {% if setting.meta_og_description %}
         <meta property="og:description" content="{{ setting.meta_og_description }}">
     {% else %}
         <meta property="og:description" content="{{ setting.meta_description }}">
     {% endif %}
-
     {% if setting.meta_fb_app_id %}
         <meta property="fb:app_id" content="{{ setting.meta_fb_app_id }}">
     {% endif %}
-
     {% if setting.no_image_index %}
         <meta name="robots" content="noimageindex">
     {% endif %}
@@ -54,7 +46,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel=preload href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
     <link rel=preload href="{% static "argon/assets/fonts/fontawesome-webfont.woff2" %}?v=4.7.0">
-
     {% stylesheet 'base' %}
     {% block stylesheet %}{% endblock %}
 </head>

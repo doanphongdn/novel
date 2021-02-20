@@ -1,7 +1,26 @@
 {% extends 'novel/base.html' %}
 {% load static %}
+{% block stylesheet %}
+<!--
+  <PageMap>
+    <DataObject type="publication">
+      <Attribute name="author" value="{{ novel.authors_name }}"/>
+      <Attribute name="date" value="{{ novel.latest_updated_time }}"/>
+      <Attribute name="category" value="{{ novel.genres_name }}"/>
+    </DataObject>
+    <DataObject type="thumbnail">
+      <Attribute name="src" value="{{ thumbnail_image }}"/>
+    </DataObject>
+     <DataObject type="document">
+        <Attribute name="title">{{ novel.name }}</Attribute>
+        <Attribute name="author">{{ novel.authors_name }}</Attribute>
+        <Attribute name="review">{{ novel.vote }}</Attribute>
+     </DataObject>
+  </PageMap>
+-->
+{% endblock %}
 {% block meta %}
-    <meta name="thumbnail" content="{{ thumbnail_image }}" />
+    <meta name="thumbnail" content="{{ thumbnail_image }}"/>
 {% endblock %}
 {% block content %}
     {% load cache %}

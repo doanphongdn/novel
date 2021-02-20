@@ -10,6 +10,7 @@
     <meta name="keywords" content="{{ setting.meta_keywords }}">
     <meta name="author" content="{{ setting.meta_author }}">
     <meta name="copyright" content="{{ setting.meta_copyright }}">
+    {% block meta %}{% endblock %}
 
     {% if setting.meta_og_url %}
         <meta property="og:url" content="{{ setting.meta_og_url }}">
@@ -48,8 +49,6 @@
     {% if setting.no_image_index %}
         <meta name="robots" content="noimageindex">
     {% endif %}
-
-    {% block meta %}{% endblock %}
 
     <link rel="shortcut icon" href="{{ setting.favicon }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">

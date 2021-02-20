@@ -1,7 +1,8 @@
 {% extends 'novel/base.html' %}
 {% load static %}
 {% load pipeline %}
-{% block stylesheet %}
+{% block meta %}
+    <meta name="thumbnail" content="{{ novel.stream_thumbnail_image }}" />
 {% endblock %}
 {% block content %}
     <div class="row">

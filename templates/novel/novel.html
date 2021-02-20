@@ -1,6 +1,7 @@
 {% extends 'novel/base.html' %}
 {% load static %}
-{% block stylesheet %}
+{% block meta %}
+    <meta name="thumbnail" content="{{ thumbnail_image }}" />
 {% endblock %}
 {% block content %}
     {% load cache %}

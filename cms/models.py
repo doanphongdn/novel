@@ -56,7 +56,7 @@ class Menu(models.Model):
         unique_together = [("name", "type")]
 
     priority = models.SmallIntegerField(default=0)
-    name = models.CharField(max_length=250, unique=True)
+    name = models.CharField(max_length=250)
     url = models.CharField(max_length=255)
     icon = models.CharField(max_length=250, blank=True, null=True)
     type = models.CharField(max_length=30, blank=True, null=True)

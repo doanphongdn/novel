@@ -16,7 +16,18 @@ class HtmlPageForm(forms.ModelForm):
         fields = '__all__'
 
 
-class ActionAdmin(admin.ModelAdmin):
+class BaseActionAdmin(admin.ModelAdmin):
+    actions = ["duplicate"]
+
+    def duplicate(self, request, queryset):
+        for obj in queryset:
+            obj.id = None
+            obj.save()
+
+    duplicate.short_description = "Duplicate selected record"
+
+
+class ActionAdmin(BaseActionAdmin):
     actions = ["active", "deactive"]
 
     def active(self, request, queryset):
@@ -29,8 +40,8 @@ class ActionAdmin(admin.ModelAdmin):
             obj.active = False
             obj.save()
 
-    active.short_description = ">>>> V Active"
-    deactive.short_description = "<<<< X Deactive"
+    active.short_description = "Active selected record"
+    deactive.short_description = "Deactive selected record"
 
 
 @admin.register(HtmlPage)
@@ -42,14 +53,14 @@ class HtmlPageAdmin(ActionAdmin):
 
 
 @admin.register(FooterInfo)
-class FooterAdmin(admin.ModelAdmin):
+class FooterAdmin(BaseActionAdmin):
     list_display = ("id", "active", "content")
     search_fields = ("content",)
     list_filter = ("active",)
 
 
 @admin.register(Menu)
-class MenuAdmin(admin.ModelAdmin):
+class MenuAdmin(BaseActionAdmin):
     list_display = ("id", "priority", "name", "url", "type")
     search_fields = ("name", "url", "type")
     list_filter = ("active", "type")
@@ -90,6 +101,6 @@ class TemplateManagerForm(forms.ModelForm):
 
 
 @admin.register(PageTemplate)
-class TemplateManagerAdmin(admin.ModelAdmin):
+class TemplateManagerAdmin(BaseActionAdmin):
     list_display = ("id", "page_file")
     form = TemplateManagerForm

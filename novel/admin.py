@@ -5,6 +5,7 @@ from django import forms
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
 
+from cms.admin import BaseActionAdmin
 from novel.models import CDNNovelFile, Novel, NovelChapter, NovelSetting, Genre
 
 
@@ -24,12 +25,12 @@ class NovelForm(forms.ModelForm):
 
 
 @admin.register(Genre)
-class GenreAdmin(admin.ModelAdmin):
+class GenreAdmin(BaseActionAdmin):
     list_display = ("id", "name", "slug", "active")
 
 
 @admin.register(Novel)
-class NovelAdmin(admin.ModelAdmin):
+class NovelAdmin(BaseActionAdmin):
     form = NovelForm
     list_display = ("id", "name", "novel_updated", "status", "active", "created_at", "updated_at")
     search_fields = ("name", "slug")
@@ -66,7 +67,7 @@ class CustomChangeList(ChangeList):
 
 
 @admin.register(NovelChapter)
-class NovelChapterAdmin(admin.ModelAdmin):
+class NovelChapterAdmin(BaseActionAdmin):
     form = NovelChapterForm
     list_display = ("id", "name", "novel", "chapter_updated", "created_at", "updated_at")
     search_fields = ("name", "slug")
@@ -93,7 +94,7 @@ class NovelChapterAdmin(admin.ModelAdmin):
 
 
 @admin.register(NovelSetting)
-class NovelSettingAdmin(admin.ModelAdmin):
+class NovelSettingAdmin(BaseActionAdmin):
     list_display = (
         "id", "title", "favicon", "logo", "novel_type", "meta_keywords", "meta_description", "meta_copyright",
         "meta_author", "img_ignoring",
@@ -108,6 +109,6 @@ class NovelSettingAdmin(admin.ModelAdmin):
 
 
 @admin.register(CDNNovelFile)
-class CDNNovelFileAdmin(admin.ModelAdmin):
+class CDNNovelFileAdmin(BaseActionAdmin):
     list_display = ("id", "cdn", "chapter", "type", "hash_origin_url", "retry", "full")
     search_fields = ("cdn", "chapter", "hash_origin_url", "url")

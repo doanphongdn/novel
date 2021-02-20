@@ -65,10 +65,11 @@ class NovelSpider(scrapy.Spider):
 
         if self.campaign.next_page_xpath and res_data and continue_paging:
             next_page = response.xpath(self.campaign.next_page_xpath).get() or ""
-            next_page = self.campaign_type.full_schema_url(next_page)
+            next_page = self.campaign_type.full_schema_url(next_page) if next_page else None
 
-            yield scrapy.Request(next_page, cb_kwargs={'origin_url': origin_url, 'paging': True},
-                                 callback=self.parse)
+            if next_page:
+                yield scrapy.Request(next_page, cb_kwargs={'origin_url': origin_url, 'paging': True},
+                                     callback=self.parse)
         elif self.other_urls:
             url = self.other_urls.pop(0)
             yield scrapy.Request(url, cb_kwargs={'origin_url': url, 'paging': False}, callback=self.parse)

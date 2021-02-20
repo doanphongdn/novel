@@ -1,10 +1,10 @@
 {% extends 'novel/base.html' %}
 {% load static %}
 {% block meta %}
-    <meta name="thumbnail" content="{{ setting..meta_img }}" />
+    <meta name="thumbnail" content="{{ setting.meta_img }}"/>
 {% endblock %}
 {% block content %}
-  <div class="row">
-      {{ index_include_html }}
-  </div>
+    <div class="row">
+        {{ index_include_html }}
+    </div>
 {% endblock %}

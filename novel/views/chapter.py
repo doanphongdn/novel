@@ -110,8 +110,9 @@ class ChapterView(NovelBaseView):
         }
 
         include_html = self.incl_manager.render_include_html('chapter', extra_data=extra_data, request=request)
+        domain = response.context_data.get("setting", {}).get("domain", "")
         response.context_data.update({
-            "thumbnail_image": novel.stream_thumbnail_image,
+            "thumbnail_image": domain + novel.stream_thumbnail_image,
             'novel_url': novel.get_absolute_url(),
             'include_html': include_html,
             'request_url': request.build_absolute_uri(),

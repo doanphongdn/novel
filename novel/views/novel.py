@@ -88,9 +88,10 @@ class NovelDetailView(NovelBaseView):
                 "cke_novel_id": "cke_novel_id",
             }
         }
+        domain = response.context_data.get("setting", {}).get("domain", "")
         response.context_data.update({
             'novel_html': self.incl_manager.render_include_html("novel", extra_data=extra_data, request=request),
             'novel': novel,
-            "thumbnail_image": novel.stream_thumbnail_image,
+            "thumbnail_image": domain + novel.stream_thumbnail_image,
         })
         return response

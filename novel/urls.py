@@ -56,7 +56,7 @@ urlpatterns = [
     path('api/novel/chapter/update_list', APIViewNovelChapterUpdateList.as_view()),
 
     path('', NovelIndexView.as_view(), name="home"),
-    path('search', NovelDetailView.as_view()),
+    path('search', NovelDetailView.as_view(), name="novel_search"),
     path(settings.NOVEL_ALL_URL, NovelAllView.as_view(), name="novel_view"),
 
     path('comment', CommentManager.comment, name="comment"),

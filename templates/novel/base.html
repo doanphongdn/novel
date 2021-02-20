@@ -79,6 +79,18 @@
                 <i class="fa fa-search"></i>
             </span>
         </button>
+        <div class="search-wrap d-lg-flex">
+            <div class="input-group input-group-alternative">
+                <form action="/search" class="form-search">
+                    <input class="form-control search" placeholder="Search..." type="text">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn-search input-group-text"><i class="fa fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+            <div id="search-area"></div>
+        </div>
+
         <div class="collapse navbar-collapse" id="navbar-danger">
             <div class="navbar-collapse-header">
                 <div class="row">
@@ -98,15 +110,7 @@
             </div>
             {{ base_navbar }}
         </div>
-        <div class="search-wrap d-lg-flex">
-            <div class="input-group input-group-alternative">
-                <input class="form-control search" placeholder="Search..." type="text">
-                <div class="input-group-append">
-                    <span class="input-group-text"><i class="fa fa-search"></i></span>
-                </div>
-            </div>
-        </div>
-        <div id="search-area"></div>
+
     </div>
 </nav>
 {{ base_top_menu }}

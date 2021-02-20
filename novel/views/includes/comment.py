@@ -59,7 +59,7 @@ class CommentManager(object):
         novel_id = request.POST.get("novel_id")
         chapter_id = request.POST.get("chapter_id")
         if request.user.is_authenticated:
-            init_data["name"] = "%s %s" % (request.user.first_name, request.user.last_name).strip()
+            init_data["name"] = ("%s %s" % (request.user.first_name, request.user.last_name)).strip()
             comment_form.fields['name'].widget.attrs.update({'readonly': True})
 
         comment_form.fields['content'].widget.attrs.update({'id': 'id_content_%s' % int(time.time())})
@@ -122,7 +122,7 @@ class CommentTemplateInclude(BaseTemplateInclude):
             init_data["chapter_id"] = chapter.id
 
         if self.request.user.is_authenticated:
-            init_data["name"] = "%s %s" % (self.request.user.first_name, self.request.user.last_name).strip()
+            init_data["name"] = ("%s %s" % (self.request.user.first_name, self.request.user.last_name)).strip()
             comment_form.fields['name'].widget.attrs.update({'readonly': True})
 
         if cke_novel_id:

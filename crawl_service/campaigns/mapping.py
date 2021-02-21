@@ -25,4 +25,5 @@ class ActionMapping(BaseMapping):
         FormatChapterContent,
         GroupItem,
         JoinItem,
+        ReplaceString,
     ]

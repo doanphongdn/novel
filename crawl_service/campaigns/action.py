@@ -19,6 +19,25 @@ class ReverseAction(BaseAction):
         return obj
 
 
+class ReplaceString(BaseAction):
+    name = "Replace String"
+
+    @classmethod
+    def handle(cls, obj, *args, **kwargs):
+        super().handle(obj, *args, **kwargs)
+        fields = kwargs.get("fields") or []
+        replaces = kwargs.get("replaces") or []
+        for f in fields:
+            txt = obj.get(f)
+            for rep in replaces:
+                if isinstance(rep, list) and len(rep) >= 2:
+                    txt = txt.replace(rep[0], rep[1])
+
+            obj[f] = txt
+
+        return obj
+
+
 class FormatChapterContent(BaseAction):
     name = "Format Chapter Content"
 

@@ -6,6 +6,7 @@ import scrapy
 
 from crawl_service.campaigns.mapping import CampaignMapping, ActionMapping
 from crawl_service.models import CrawlCampaign
+from crawl_service.utils import full_schema_url
 
 
 class NovelSpider(scrapy.Spider):
@@ -14,11 +15,6 @@ class NovelSpider(scrapy.Spider):
         self.start_urls = []
         self.other_urls = []
         self.prefetch_by_data = None
-
-        self.campaign_type = None
-        if self.campaign and self.campaign.campaign_type:
-            campaign_mapping = CampaignMapping.get_mapping(self.campaign.campaign_type)
-            self.campaign_type = campaign_mapping(self.campaign, self.prefetch_by_data) if campaign_mapping else None
 
         if not campaign.target_direct:
             res = requests.get(campaign.target_url, timeout=30)
@@ -29,8 +25,8 @@ class NovelSpider(scrapy.Spider):
                         "src_url": []
                     }
                     for idx, d in enumerate(data):
-                        if '://' not in d and self.campaign_type:
-                            d = self.campaign_type.full_schema_url(d)
+                        if '://' not in d and campaign.campaign_source:
+                            d = full_schema_url(d, campaign.campaign_source.homepage)
                             data[idx] = d
                         self.prefetch_by_data["src_url"].append(d)
                     if data and self.campaign.run_synchonize:
@@ -41,6 +37,11 @@ class NovelSpider(scrapy.Spider):
         else:
             self.start_urls = [campaign.target_url]
             self.prefetch_by_data = {"src_url": self.start_urls}
+
+        self.campaign_type = None
+        campaign_mapping = CampaignMapping.get_mapping(self.campaign.campaign_type)
+        if campaign_mapping:
+            self.campaign_type = campaign_mapping(self.campaign, self.prefetch_by_data)
 
         super().__init__(name=campaign.name, **kwargs)
 

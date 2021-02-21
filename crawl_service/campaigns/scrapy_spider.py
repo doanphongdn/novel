@@ -95,8 +95,8 @@ class NovelSpider(scrapy.Spider):
             item_value = p_object.getall() if item.multi else p_object.get()
 
         if item_value:
-            item_value = [str(val).replace("\x00", "").strip() for val in item_value] \
-                if isinstance(item_value, list) else str(item_value).replace("\x00", "").strip()
+            item_value = [str(val).replace("\x00", "").strip("\n\t ") for val in item_value] \
+                if isinstance(item_value, list) else str(item_value).replace("\x00", "").strip("\n\t ")
             return {item.code: item_value}
 
         return {}

@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'custom_allauth.socialaccount.providers.zalo',
     # other app
     'django_redis',
+    'import_export',
     'pipeline',
     'cms',
     'crawl_service',

@@ -2,6 +2,7 @@ from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 from django_json_widget.widgets import JSONEditorWidget
+from import_export.admin import ImportExportModelAdmin
 
 from cms.models import FooterInfo, Link, HtmlPage, PageTemplate, InludeTemplate, Menu
 
@@ -60,14 +61,14 @@ class FooterAdmin(BaseActionAdmin):
 
 
 @admin.register(Menu)
-class MenuAdmin(BaseActionAdmin):
+class MenuAdmin(BaseActionAdmin, ImportExportModelAdmin):
     list_display = ("id", "priority", "name", "url", "type")
     search_fields = ("name", "url", "type")
     list_filter = ("active", "type")
 
 
 @admin.register(Link)
-class LinkAdmin(ActionAdmin):
+class LinkAdmin(ActionAdmin, ImportExportModelAdmin):
     list_display = ("id", "active", "name", "url", "type")
     search_fields = ("name", "url", "type")
     list_filter = ("active", "type")
@@ -88,7 +89,7 @@ class IncludeTemplateForm(forms.ModelForm):
 
 
 @admin.register(InludeTemplate)
-class InludeTemplateAdmin(ActionAdmin):
+class InludeTemplateAdmin(ActionAdmin, ImportExportModelAdmin):
     list_display = ("template", "code", "include_file", "priority", "class_name", "full_width", "active")
     form = IncludeTemplateForm
 
@@ -101,6 +102,6 @@ class TemplateManagerForm(forms.ModelForm):
 
 
 @admin.register(PageTemplate)
-class TemplateManagerAdmin(BaseActionAdmin):
+class TemplateManagerAdmin(BaseActionAdmin, ImportExportModelAdmin):
     list_display = ("id", "page_file")
     form = TemplateManagerForm

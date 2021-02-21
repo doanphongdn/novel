@@ -153,7 +153,7 @@ class NovelInfoCampaignType(BaseCrawlCampaignType):
                 exist_chapters = NovelChapter.objects.filter(src_url__in=list(chapters.keys()))
                 for ex_chap in exist_chapters:
                     name = chapters.pop(ex_chap.src_url)
-                    if ex_chap.name != name:
+                    if name and ex_chap.name != name:
                         ex_chap.name = name
                         ex_chap.chapter_updated = False
                         ex_chap.save()

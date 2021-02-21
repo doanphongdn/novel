@@ -1,4 +1,4 @@
-from crawl_service.campaigns.action import ReverseAction, FormatChapterContent, GroupItem, JoinItem
+from crawl_service.campaigns.action import ReverseAction, FormatChapterContent, GroupItem, JoinItem, ReplaceString
 from crawl_service.campaigns.novel import NovelCampaignType, NovelInfoCampaignType, NovelChapterCampaignType
 
 

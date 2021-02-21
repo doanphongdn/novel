@@ -1,3 +1,5 @@
+from werkzeug.utils import cached_property
+
 from django.db import models
 
 # from crawl_service.campaigns.mapping import CampaignMapping, ActionMapping
@@ -46,14 +48,14 @@ class CrawlCampaign(models.Model):
     status = models.CharField(max_length=10, choices=CAMPAIGN_STATUS)
     active = models.BooleanField(default=True)
 
-    @property
+    @cached_property
     def items(self):
         return CrawlItem.objects.filter(campaign=self).all()
 
     def full_clean(self, exclude=None, validate_unique=True):
         pass
 
-    @property
+    @cached_property
     def actions(self):
         return CrawlItemAction.objects.filter(campaign=self).all()
 

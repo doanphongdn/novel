@@ -40,7 +40,7 @@ class NovelCampaignType(BaseCrawlCampaignType):
         for item in values:
             sleep(0.01)
             # replace field to storage in db
-            item['src_url'] = item.pop('url', '').rstrip("/")
+            item['src_url'] = self.full_schema_url(item.pop('url', '').rstrip("/"))
             item['name'] = item.get('name', '').lower().title()
             item['src_latest_chapter_url'] = item.pop('latest_chapter_url', '').rstrip("/")
 

@@ -15,12 +15,24 @@ class NovelSpider(scrapy.Spider):
         self.other_urls = []
         self.prefetch_by_data = None
 
+        self.campaign_type = None
+        if self.campaign and self.campaign.campaign_type:
+            campaign_mapping = CampaignMapping.get_mapping(self.campaign.campaign_type)
+            self.campaign_type = campaign_mapping(self.campaign, self.prefetch_by_data) if campaign_mapping else None
+
         if not campaign.target_direct:
             res = requests.get(campaign.target_url, timeout=30)
             if res.status_code == 200:
                 data = res.json()
                 if data:
-                    self.prefetch_by_data = {"src_url": [d for d in data]}
+                    self.prefetch_by_data = {
+                        "src_url": []
+                    }
+                    for idx, d in enumerate(data):
+                        if '://' not in d and self.campaign_type:
+                            d = self.campaign_type.full_schema_url(d)
+                            data[idx] = d
+                        self.prefetch_by_data["src_url"].append(d)
                     if data and self.campaign.run_synchonize:
                         self.start_urls = data
                     elif data:
@@ -29,11 +41,6 @@ class NovelSpider(scrapy.Spider):
         else:
             self.start_urls = [campaign.target_url]
             self.prefetch_by_data = {"src_url": self.start_urls}
-
-        self.campaign_type = None
-        campaign_mapping = CampaignMapping.get_mapping(self.campaign.campaign_type)
-        if campaign_mapping:
-            self.campaign_type = campaign_mapping(self.campaign, self.prefetch_by_data)
 
         super().__init__(name=campaign.name, **kwargs)
 

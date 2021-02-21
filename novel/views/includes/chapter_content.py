@@ -87,7 +87,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
         cdn_domain = None
         # Sometime CDN unable to download all img, and missing some of them
         # we hav eto fit these position by streaming img url
-        missing_img_pos = None
+        missing_img_pos = []
         if cdnnovelfile:
             cdn_images = cdnnovelfile.url.split('\n') if cdnnovelfile.url else None
             if cdn_images:

@@ -85,10 +85,13 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
         cdnnovelfile = chapter.cdnnovelfile_set.first() if chapter else None
         cdn_images = None
         cdn_domain = None
+        # Sometime CDN unable to download all img, and missing some of them
+        # we hav eto fit these position by streaming img url
+        missing_img_pos = None
         if cdnnovelfile:
             cdn_images = cdnnovelfile.url.split('\n') if cdnnovelfile.url else None
             if cdn_images:
-                cdn_images = sort_images(cdn_images)
+                cdn_images, missing_img_pos = sort_images(cdn_images)
             if crawl_settings.BACKBLAZE_FRIENDLY_ALIAS_URL:
                 cdn_domain = crawl_settings.BACKBLAZE_FRIENDLY_ALIAS_URL
             elif crawl_settings.BACKBLAZE_FRIENDLY_URL:
@@ -100,12 +103,28 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
         if novel and novel.novel_flat:
             chapter_list = novel.novel_flat.chapters.get("list")
 
+        pos_of_stream = 0
+        if cdn_images and cdn_domain:
+            pos_of_stream = len(cdn_images)
+            if missing_img_pos:
+                pos_of_stream = missing_img_pos[0]
+        stream_images = self.stream_images(chapter, pos_of_stream)
+
+        mix_images = []
+        if missing_img_pos:
+            # use list(a) or a[:] to copy values only
+            mix_images = cdn_images[:]
+
+        for idx in missing_img_pos:
+            mix_images.insert(idx, stream_images[idx])
+
         self.include_data.update({
             "chapter_list": chapter_list,
             "chapter_prev_url": chapter_prev_url,
             "chapter_next_url": chapter_next_url,
             "chapter_next_name": chapter_next_name,
-            "stream_images": self.stream_images(chapter, cdn_images and len(cdn_images) or 0),
+            "mix_images": mix_images,
+            "stream_images": stream_images,
             "cdn_images": cdn_images if cdn_images and cdn_domain else [],
             "cdn_domain": cdn_domain.rstrip('/') if cdn_domain else None
         })

@@ -59,7 +59,25 @@
             {% if stream_images %}
                 <p class="bg-yellow text-center text-uppercase box-warning">{% translate "Please visit this chapter after 5 minutes if your browser cannot load these images now." %}</p>
             {% endif %}
-            {% if cdn_images %}
+            {% if mix_images %}
+                {% for mix_image in mix_images %}
+                    {% if forloop.counter <= 3 %}
+                        {% if "/images/" not in mix_image %}
+                            <img src="{{ cdn_domain }}/{{ mix_image }}" alt="">
+                        {% else %}
+                            <img src="{{ mix_image }}" alt="">
+                        {% endif %}
+                    {% else %}
+                        {% if "/images/" not in mix_image %}
+                            <img data-src="{{ cdn_domain }}/{{ mix_image }}" src="{% static "images/lazyload.gif" %}" alt=""
+                                 class="lazyload">
+                        {% else %}
+                             <img data-src="{{ mix_image }}" src="{% static "images/lazyload.gif" %}" alt=""
+                             class="lazyload">
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% elif cdn_images %}
                 {% for cdn_image in cdn_images %}
                     {% if forloop.counter <= 3 %}
                         <img src="{{ cdn_domain }}/{{ cdn_image }}" alt="">
@@ -69,14 +87,16 @@
                     {% endif %}
                 {% endfor %}
             {% endif %}
-            {% for image_url in stream_images %}
-                {% if forloop.counter > cdn_images|length and forloop.counter <= cdn_images|length|add:"2" %}
-                    <img src="{{ image_url }}" alt="">
-                {% elif forloop.counter > cdn_images|length|add:"2" %}
-                    <img data-src="{{ image_url }}" src="{% static "images/lazyload.gif" %}" alt=""
-                         class="lazyload">
-                {% endif %}
-            {% endfor %}
+            {% if not mix_images %}
+                {% for image_url in stream_images %}
+                    {% if forloop.counter > cdn_images|length and forloop.counter <= cdn_images|length|add:"2" %}
+                        <img src="{{ image_url }}" alt="">
+                    {% elif forloop.counter > cdn_images|length|add:"2" %}
+                        <img data-src="{{ image_url }}" src="{% static "images/lazyload.gif" %}" alt=""
+                             class="lazyload">
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
     <hr class="hr-text" data-content="END CHAPTER">

@@ -11,7 +11,6 @@ from novel.models import CDNNovelFile, Novel, NovelChapter, NovelSetting, Genre
 
 class NovelForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'vLargeTextField', 'maxlength': 250}))
-    url = forms.CharField(widget=forms.TextInput(attrs={'class': 'vLargeTextField', 'maxlength': 250}))
     thumbnail_image = forms.CharField(widget=forms.TextInput(attrs={'class': 'vLargeTextField', 'maxlength': 250}))
     follow = forms.IntegerField(widget=forms.NumberInput(attrs={'class': ''}))
     vote_total = forms.IntegerField(widget=forms.NumberInput(attrs={'class': ''}))
@@ -49,7 +48,6 @@ class NovelAdmin(BaseActionAdmin):
 
 class NovelChapterForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'vLargeTextField', 'maxlength': 250}))
-    url = forms.CharField(widget=forms.TextInput(attrs={'class': 'vLargeTextField', 'maxlength': 250}))
     content = forms.CharField(
         widget=CKEditorWidget(attrs={'style': 'width:100%;', 'cols': 80, 'rows': 10, 'class': ""}),
         required=False)

@@ -78,7 +78,8 @@ def download_cdn_file(source, target_file, ext=None, referer=None):
             with safe_open_w(target_dir) as f:
                 f.write(file_request.content)
                 output = "%s/%s" % (settings.CDN_FILE_FOLDER, target_file)
-                optimize_image(output)
+                if settings.BACKBLAZE_COMPRESS_QUALITY_IMG:
+                    optimize_image(output, settings.BACKBLAZE_QUALITY_IMG)
                 return output
     except Exception as e:
         print("[download_cdn_file] Error: %s : %s" % (source, e))

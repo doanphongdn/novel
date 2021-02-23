@@ -1,5 +1,5 @@
 """
-ASGI config for crawl_service project.
+ASGI config for django_cms project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 

@@ -4,8 +4,8 @@ from django.db import models
 from unidecode import unidecode
 
 from django_cms import settings
-from django_cms.template_config import TEMPLATE_PAGE_CHOISES, TEMPLATE_INCLUDE_CHOISES
-from django_cms.utils import code_validate
+from django_cms.utils.template_config import TEMPLATE_PAGE_CHOISES, TEMPLATE_INCLUDE_CHOISES
+from django_cms.utils.helpers import code_validate
 
 
 def unicode_slugify(name):
@@ -113,3 +113,43 @@ class InludeTemplate(models.Model):
     class_name = models.CharField(max_length=250)
     full_width = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
+
+
+CAMPAIGN_STATUS = [
+    ('running', 'RUNNING'),
+    ('stopped', 'STOPPED'),
+]
+
+
+class CDNServer(models.Model):
+    class Meta:
+        db_table = "cdn_server"
+        ordering = ["name"]
+
+    # campaign_source = models.ForeignKey(CrawlCampaignSource, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250, unique=True)
+    server_id = models.CharField(max_length=250, blank=True, null=True)
+    endpoint = models.CharField(max_length=250)
+    friendly_url = models.CharField(max_length=250, default='https://f000.backblazeb2.com/file/nettruyen/')
+    friendly_alias_url = models.CharField(max_length=250, default='https://cdn.nettruyen.vn/file/nettruyen/')
+    s3_url = models.CharField(max_length=250, blank=True, null=True)
+
+    last_run = models.DateTimeField(default=None, null=True, blank=True)
+    active = models.BooleanField(default=True)
+    status = models.CharField(max_length=10, choices=CAMPAIGN_STATUS, default='stopped')
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def get_cdn(cls):
+        return cls.objects.first()
+
+    @classmethod
+    def get_available_cdn(cls):
+        return cls.objects.filter(active=True, status='stopped').all()
+
+    @classmethod
+    def get_active_cdn(cls):
+        return cls.objects.filter(active=True).all()
+

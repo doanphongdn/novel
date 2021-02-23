@@ -11,7 +11,7 @@ from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from crawl_service.utils import full_schema_url
+from django_cms.utils.helpers import full_schema_url
 from novel import utils
 from novel.api.schema import NovelChapterCampaignSchema, NovelInfoCampaignSchema, NovelListCampaignSchema
 from novel.models import Novel, NovelChapter, Author, Genre, Status

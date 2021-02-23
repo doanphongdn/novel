@@ -1,5 +1,5 @@
 """
-WSGI config for crawl_service project.
+WSGI config for django_cms project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

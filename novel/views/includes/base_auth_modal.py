@@ -1,4 +1,4 @@
-from crawl_service import settings
+from django_cms import settings
 from novel.form.auth import LoginForm, RegisterForm, LostPassForm
 from novel.views.includes.base import BaseTemplateInclude
 

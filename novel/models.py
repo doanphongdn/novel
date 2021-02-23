@@ -18,6 +18,7 @@ from django.utils.safestring import mark_safe
 from unidecode import unidecode
 
 from django_cms import settings
+from django_cms.models import CDNServer
 
 
 def datetime2string(value):

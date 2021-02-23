@@ -5,7 +5,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
 from django.shortcuts import redirect
 
-from crawl_service import settings
+from django_cms import settings
 from novel.cache_manager import NovelCache
 from novel.models import NovelChapter, Novel
 from novel.utils import get_history_cookies

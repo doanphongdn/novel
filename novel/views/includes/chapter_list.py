@@ -1,11 +1,9 @@
 from unidecode import unidecode
 
-from django_cms.cache_manager import CacheManager
+from django_cms.utils.cache_manager import CacheManager
 from django_cms.models import Link
-from novel.paginator import ChapterPaginator
 from novel.views.includes.base import BaseTemplateInclude
 from novel.views.includes.link import LinkTemplateInclude
-from novel.views.includes.pagination import PaginationTemplateInclude
 
 
 class ChapterListTemplateInclude(BaseTemplateInclude):

@@ -4,7 +4,7 @@ import logging
 import requests
 from django.http import HttpResponse, StreamingHttpResponse
 
-from crawl_service import settings as crawl_settings
+from django_cms import settings as crawl_settings
 from novel import settings, utils
 from novel.models import CrawlNovelRetry, NovelChapter
 

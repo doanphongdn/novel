@@ -5,7 +5,7 @@ from os.path import basename, splitext
 import requests
 from django.templatetags.static import static
 
-from crawl_service import settings
+from django_cms import settings
 
 
 def is_json(json_str):

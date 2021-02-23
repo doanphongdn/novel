@@ -1,6 +1,6 @@
-from django_cms.cache_manager import CacheManager
+from django_cms.utils.cache_manager import CacheManager
 from django_cms.models import PageTemplate
-from crawl_service import settings
+from django_cms import settings
 from novel.models import Genre
 from novel.views.base import NovelBaseView
 

@@ -1,4 +1,4 @@
-"""crawl_service URL Configuration
+"""django_cms URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -18,7 +18,7 @@ from django.urls import path, include
 
 # NOTE: not working
 # from django.conf.urls import handler404, handler500
-# from crawl_service.views.base import view_404
+# from django_cms.views.base import view_404
 
 urlpatterns = [
     path('accounts/', include('custom_allauth.urls')),
@@ -27,4 +27,4 @@ urlpatterns = [
     path('', include('django_backblaze_b2.urls')),
 ]
 
-handler404 = 'crawl_service.views.base.view_404'
+handler404 = 'django_cms.utils.view_base.view_404'

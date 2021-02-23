@@ -1,4 +1,4 @@
-from django_cms.cache_manager import CacheManager
+from django_cms.utils.cache_manager import CacheManager
 from django_cms.models import FooterInfo
 from novel.views.includes.base import BaseTemplateInclude
 

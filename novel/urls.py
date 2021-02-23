@@ -1,4 +1,4 @@
-"""crawl_service URL Configuration
+"""django_cms URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -21,8 +21,8 @@ from django.urls import path
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 
-from crawl_service import settings
-from crawl_service.views.base import view_dmca_validation, view_google_site_verification
+from django_cms import settings
+from django_cms.utils.view_base import view_dmca_validation, view_google_site_verification
 from novel.api.novel import NovelAPIView, ChapterAPIView
 from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap, NovelChapterSitemap
 from novel.views import stream

@@ -4,7 +4,7 @@ from django.contrib import admin
 from django_json_widget.widgets import JSONEditorWidget
 from import_export.admin import ImportExportModelAdmin
 
-from cms.models import FooterInfo, Link, HtmlPage, PageTemplate, InludeTemplate, Menu
+from django_cms.models import FooterInfo, Link, HtmlPage, PageTemplate, InludeTemplate, Menu
 
 
 class HtmlPageForm(forms.ModelForm):

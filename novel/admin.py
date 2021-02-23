@@ -5,7 +5,7 @@ from django import forms
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
 
-from cms.admin import BaseActionAdmin
+from django_cms.admin import BaseActionAdmin
 from novel.models import CDNNovelFile, Novel, NovelChapter, NovelSetting, Genre
 
 

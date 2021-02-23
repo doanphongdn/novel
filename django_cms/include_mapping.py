@@ -2,8 +2,8 @@ from hashlib import md5
 
 from django.utils.html import format_html_join
 
-from cms.cache_manager import CacheManager, IncludeHtmlCache
-from cms.models import PageTemplate, InludeTemplate
+from django_cms.cache_manager import CacheManager, IncludeHtmlCache
+from django_cms.models import PageTemplate, InludeTemplate
 
 
 class IncludeManager(object):

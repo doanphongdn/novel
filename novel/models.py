@@ -17,8 +17,7 @@ from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from unidecode import unidecode
 
-from crawl_service import settings
-from crawl_service.models import CDNServer, CrawlCampaignSource
+from django_cms import settings
 
 
 def datetime2string(value):
@@ -129,7 +128,7 @@ class Novel(models.Model):
     latest_updated_time = models.DateTimeField(auto_now_add=True)
     src_url = models.TextField(unique=True)
     src_latest_chapter_url = models.CharField(max_length=250, blank=True, null=True)
-    src_campaign = models.ForeignKey(CrawlCampaignSource, on_delete=models.CASCADE)
+    src_campaign = models.CharField(max_length=50)
 
     attempt = models.SmallIntegerField(default=0)
 

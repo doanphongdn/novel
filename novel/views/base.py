@@ -2,9 +2,9 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.sites.shortcuts import get_current_site
 from django.views.generic import TemplateView
 
-from cms.cache_manager import CacheManager
-from cms.include_mapping import IncludeManager
-from cms.models import Menu
+from django_cms.cache_manager import CacheManager
+from django_cms.include_mapping import IncludeManager
+from django_cms.models import Menu
 from crawl_service import settings
 from novel.models import NovelSetting, NovelUserProfile
 from novel.views.includes.base_auth_modal import BaseAuthModalTemplateInclude

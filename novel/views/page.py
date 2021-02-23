@@ -1,4 +1,4 @@
-from cms.models import HtmlPage
+from django_cms.models import HtmlPage
 from novel.views.base import NovelBaseView
 
 

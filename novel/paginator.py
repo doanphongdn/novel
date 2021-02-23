@@ -1,4 +1,4 @@
-from cms.paginator import ModelPaginator
+from django_cms.paginator import ModelPaginator
 from novel.models import Novel, Comment
 
 

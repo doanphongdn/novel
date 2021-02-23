@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 from django.db import connection, reset_queries
 from django.templatetags.static import static
 
-from crawl_service import settings
+from django_cms import settings
 
 
 def code_validate(value):
@@ -120,7 +120,7 @@ def full_schema_url(url, origin_domain=None):
         url = "http:" + url
     elif url.strip().startswith('/'):
         if origin_domain:
-            url = origin_domain.strip('/') + url
+            url = "%s/%s" % (origin_domain.strip('/ '), url.strip('/ '))
     else:
         url = url.rstrip('/')
 

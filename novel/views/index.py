@@ -1,4 +1,4 @@
-from cms.models import PageTemplate
+from django_cms.models import PageTemplate
 from novel.views.base import NovelBaseView
 
 

@@ -1,5 +1,5 @@
-from cms.cache_manager import CacheManager
-from cms.models import Menu
+from django_cms.cache_manager import CacheManager
+from django_cms.models import Menu
 from novel.models import Genre
 from novel.views.includes.base import BaseTemplateInclude
 

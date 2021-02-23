@@ -23,7 +23,7 @@ from django.views.generic import TemplateView
 
 from crawl_service import settings
 from crawl_service.views.base import view_dmca_validation, view_google_site_verification
-from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
+from novel.api.novel import NovelAPIView, ChapterAPIView
 from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap, NovelChapterSitemap
 from novel.views import stream
 from novel.views.chapter import ChapterView
@@ -52,8 +52,10 @@ urlpatterns = [
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
 
-    path('api/novel/update_list', APIViewNovelUpdateList.as_view()),
-    path('api/novel/chapter/update_list', APIViewNovelChapterUpdateList.as_view()),
+    # API URL
+    path('api/novels', NovelAPIView.as_view()),
+    path('api/novels/<str:src_campaign_code>', NovelAPIView.as_view()),
+    path('api/chapters', ChapterAPIView.as_view()),
 
     path('', NovelIndexView.as_view(), name="home"),
     path('search', NovelDetailView.as_view(), name="novel_search"),

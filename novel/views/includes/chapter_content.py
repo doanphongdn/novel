@@ -2,7 +2,7 @@ import hashlib
 import json
 from urllib.parse import urlparse
 
-from cms.cache_manager import CacheManager
+from django_cms.cache_manager import CacheManager
 from crawl_service import settings as crawl_settings
 from novel import settings
 from novel.models import NovelSetting

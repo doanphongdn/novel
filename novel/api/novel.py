@@ -37,7 +37,7 @@ class BaseAPIView(APIView):
         if errors:
             return False, dict(errors)
 
-        return True, "OK"
+        return True, "Data is valid"
 
     @classmethod
     def parse_response(cls, is_success, continue_paging=True, message=None, extra_data=None, ):

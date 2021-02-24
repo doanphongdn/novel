@@ -18,6 +18,18 @@ $(document).ready(function (e) {
         appendTo: "#search-area",
         minLength: 3,
         select: function (event, ui) {
+            $.ajax({
+                type: "POST",
+                url: "/update_point",
+                dataType: 'json',
+                data: {
+                    q: ui.item,
+                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+                },
+                success: function (json_data) {
+                    console.log(json_data.data);
+                }
+            });
             $(location).attr('href', ui.item.url);
         }
     }).data('ui-autocomplete')._renderItem = function (ul, v) {

@@ -14,26 +14,43 @@ from novel.views.base import NovelBaseView
 class NovelDetailView(NovelBaseView):
     template_name = "novel/novel.html"
 
+    @staticmethod
+    def update_hot_point(request):
+        try:
+            novel_id = request.POST.get('q[nid]', "")
+            if novel_id:
+                novel = Novel.objects.filter(pk=novel_id, active=True).first()
+                if novel:
+                    novel.hot_point += 1
+                    novel.save()
+                return JsonResponse({"success": True, })
+        except Exception as e:
+            return JsonResponse({"success": False, "err": e})
+
     @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         search = request.POST.get('q', "")
-        if len(search) >= 3:
+        min_length = 2
+        max_result_records = 10
+        if len(search) > min_length:
             novels = NovelCache(Novel, **{"name__unaccent__icontains": search.strip()}) \
-                         .get_from_cache(get_all=True)[:15]
+                         .get_from_cache(get_all=True)[:max_result_records]
             if not novels:
                 # split to multiple keywords
                 unique_sub_keywords = set(re.split(r'\W+', search))
                 conditions = {
-                    "name__unaccent__iregex": r'(' + '|'.join([k for k in unique_sub_keywords if len(k) > 2]) + ')'
+                    "name__unaccent__iregex": r'(' + '|'.join(
+                        [k for k in unique_sub_keywords if len(k) > min_length]) + ')'
                 }
-                novels = NovelCache(Novel, **conditions).get_from_cache(get_all=True)[:10]
+                novels = NovelCache(Novel, **conditions).get_from_cache(get_all=True)[:max_result_records]
 
             res_data = []
             for novel in novels:
                 res_data.append({
                     "thumbnail_image": novel.thumbnail_image,
                     "name": novel.name,
-                    "url": novel.get_absolute_url(),
+                    "url": novel.get_absolute_url() + "?from_search=1",
+                    "nid": novel.id
                 })
 
             return JsonResponse({"data": res_data})

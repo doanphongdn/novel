@@ -20,11 +20,12 @@ from django.contrib.sitemaps import views as sitemaps_views
 from django.urls import path
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
+from django.views.generic.base import RedirectView
 
 from crawl_service import settings
 from crawl_service.views.base import view_dmca_validation, view_google_site_verification
-from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
-from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap, NovelChapterSitemap
+from novel.api.novel import APIViewNovelChapterUpdateList, APIViewNovelUpdateList
+from novel.sitemap import GenreSitemap, NovelChapterSitemap, NovelSitemap, StaticViewSitemap
 from novel.views import stream
 from novel.views.chapter import ChapterView
 from novel.views.includes.comment import CommentManager
@@ -32,7 +33,8 @@ from novel.views.index import NovelIndexView
 from novel.views.novel import NovelDetailView
 from novel.views.novel_all import NovelAllView
 from novel.views.page import PageView
-from novel.views.user import UserProfileView, UserAction
+from novel.views.user import UserAction, UserProfileView
+
 
 sitemaps = {
     'genre': GenreSitemap,
@@ -48,6 +50,8 @@ urlpatterns = [
         name="dmca_verification"),
     url(r'^robots\.txt$', TemplateView.as_view(template_name="novel/robots.txt", content_type='text/plain')),
 
+    url('^favicon\.ico$', RedirectView.as_view(url=settings.MEDIA_URL + 'images/favicon.ico')),
+
     path('web/sitemap.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemaps}),
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
@@ -57,6 +61,7 @@ urlpatterns = [
 
     path('', NovelIndexView.as_view(), name="home"),
     path('search', NovelDetailView.as_view(), name="novel_search"),
+    path('update_point', NovelDetailView.update_hot_point, name="novel_hot_point"),
     path(settings.NOVEL_ALL_URL, NovelAllView.as_view(), name="novel_view"),
 
     path('comment', CommentManager.comment, name="comment"),

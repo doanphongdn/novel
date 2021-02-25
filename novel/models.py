@@ -575,3 +575,12 @@ class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     comic = models.ForeignKey(Novel, on_delete=models.CASCADE, db_index=True)
     rating_point = models.SmallIntegerField(default=0)
+
+
+class AllowIP(models.Model):
+    class Meta:
+        db_table = 'novel_allow_ips'
+
+    path_regex = models.CharField(max_length=250)
+    method = models.CharField(max_length=10)
+    ip = models.JSONField(blank=True, null=True)

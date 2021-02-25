@@ -23,9 +23,9 @@ from django.views.generic import TemplateView
 
 from django_cms import settings
 from django_cms.utils.view_base import view_dmca_validation, view_google_site_verification
-from novel.api.novel import NovelAPIView, ChapterAPIView
 from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap, NovelChapterSitemap
 from novel.views import stream
+from novel.views.api.novel import NovelAPIView, ChapterAPIView
 from novel.views.chapter import ChapterView
 from novel.views.includes.comment import CommentManager
 from novel.views.index import NovelIndexView

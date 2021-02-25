@@ -8,7 +8,6 @@ from django_cms import settings as crawl_settings
 from novel import settings, utils
 from novel.models import CrawlNovelRetry, NovelChapter
 
-
 logger = logging.getLogger(__name__)
 
 

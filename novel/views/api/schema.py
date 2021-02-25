@@ -29,7 +29,7 @@ class NovelInfoCampaignSchema(serializers.Serializer):
     authors = serializers.ListField(required=False, allow_empty=True, allow_null=True)
     genres = serializers.ListField(required=False, allow_empty=True, allow_null=True)
     descriptions = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-    list_chapter = NovelInfoChapterListSerializer(many=True, required=False, allow_null=True)
+    list_chapter = NovelInfoChapterListSerializer(many=True, required=True, allow_null=True)
 
 
 # Novel Chapter Schema

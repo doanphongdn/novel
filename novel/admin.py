@@ -32,7 +32,7 @@ class GenreAdmin(BaseActionAdmin):
 class NovelAdmin(BaseActionAdmin):
     form = NovelForm
     list_display = ("id", "name", "novel_updated", "status", "active", "created_at", "updated_at")
-    search_fields = ("name", "slug")
+    search_fields = ("name", "slug", "src_url")
     list_filter = ("status",)
     filter_horizontal = ("authors", "genres")
     actions = ["update_flat_info"]

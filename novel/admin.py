@@ -11,10 +11,11 @@ from novel.models import CDNNovelFile, Novel, NovelChapter, NovelSetting, Genre
 
 class NovelForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'vLargeTextField', 'maxlength': 250}))
-    thumbnail_image = forms.CharField(widget=forms.TextInput(attrs={'class': 'vLargeTextField', 'maxlength': 250}))
+    thumbnail_image = forms.CharField(required=False,
+                                      widget=forms.TextInput(attrs={'class': 'vLargeTextField', 'maxlength': 250}))
     follow = forms.IntegerField(widget=forms.NumberInput(attrs={'class': ''}))
-    vote_total = forms.IntegerField(widget=forms.NumberInput(attrs={'class': ''}))
-    view_total = forms.IntegerField(widget=forms.NumberInput(attrs={'class': ''}))
+    vote_total = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'class': ''}))
+    view_total = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'class': ''}))
     view_daily = forms.IntegerField(widget=forms.NumberInput(attrs={'class': ''}))
     view_monthly = forms.IntegerField(widget=forms.NumberInput(attrs={'class': ''}))
 

@@ -11,8 +11,9 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django_backblaze_b2 import BackblazeB2Storage
 
-from crawl_service import settings, utils
-from crawl_service.models import CDNServer
+from django_cms import settings
+from django_cms.models import CDNServer
+from django_cms.utils.helpers import download_cdn_file, get_short_url, str_format_num_alpha_only
 from novel.models import CDNNovelFile, NovelChapter
 
 
@@ -54,7 +55,7 @@ class CDNProcess:
                 continue
             # Check local is exist the file, just return to upload it without download it again
             source = origin_file.get('url')
-            short_path = utils.get_short_url(source)
+            short_path = get_short_url(source)
             _, ext = os.path.splitext(short_path)
             ext = ext or '.jpg'
             output_file = "%s/%s/%s" % (settings.CDN_FILE_FOLDER, local_path, str(origin_file.get('index')))
@@ -70,7 +71,7 @@ class CDNProcess:
             if not local_path and self.local_path:
                 local_path = self.local_path
             target_file = "%s/%s" % (local_path, str(origin_file.get('index')))
-            local_image = utils.download_cdn_file(source=source, target_file=target_file, ext=ext, referer=referer)
+            local_image = download_cdn_file(source=source, target_file=target_file, ext=ext, referer=referer)
             success_files.append({
                 'index': origin_file.get('index'),
                 'url': local_image,
@@ -148,8 +149,8 @@ class CDNProcess:
             start_time = time.time()
 
             referer = self.get_referer(file.chapter)
-            novel_slug = utils.str_format_num_alpha_only(file.chapter.novel.slug)
-            chapter_slug = utils.str_format_num_alpha_only(file.chapter.slug)
+            novel_slug = str_format_num_alpha_only(file.chapter.novel.slug)
+            chapter_slug = str_format_num_alpha_only(file.chapter.slug)
             local_path = "%s/%s" % (novel_slug, chapter_slug)
             urls = [self.full_schema_url(img_url) for img_url in file.chapter.images_content.split("\n")]
 
@@ -269,8 +270,8 @@ class CDNProcess:
             start_time = time.time()
 
             referer = self.get_referer(chapter)
-            novel_slug = utils.str_format_num_alpha_only(chapter.novel.slug)
-            chapter_slug = utils.str_format_num_alpha_only(chapter.slug)
+            novel_slug = str_format_num_alpha_only(chapter.novel.slug)
+            chapter_slug = str_format_num_alpha_only(chapter.slug)
             local_path = "%s/%s" % (novel_slug, chapter_slug)
             urls = []
             for idx, img_url in enumerate(chapter.images_content.split("\n")):

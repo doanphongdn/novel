@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 
-from crawl_service import utils
 # from crawl_service.utils import query_debugger
+from django_cms.utils.helpers import check_url, full_schema_url, get_referer
 from novel.models import CrawlNovelRetry, NovelChapter
 
 
@@ -38,11 +38,11 @@ class Command(BaseCommand):
                         continue
                     if not chapter.images_content:
                         continue
-                    urls = [utils.full_schema_url(img_url) for img_url in chapter.images_content.split("\n")]
+                    urls = [full_schema_url(img_url) for img_url in chapter.images_content.split("\n")]
                     if not len(urls):
                         continue
-                    referer = utils.get_referer(chapter)
-                    if chapter and not utils.check_url(urls[0], referer):
+                    referer = get_referer(chapter)
+                    if chapter and not check_url(urls[0], referer):
                         chapter.chapter_updated = False
                         chapter_updated_list.append(chapter)
                 retry.delete()

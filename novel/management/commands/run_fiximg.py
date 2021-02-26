@@ -2,6 +2,7 @@ import operator
 import time
 from functools import reduce
 
+# from webdriver_manager.chrome import ChromeDriverManager
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 from selenium import webdriver
@@ -10,9 +11,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-# from webdriver_manager.chrome import ChromeDriverManager
-from cms.cache_manager import CacheManager
-from crawl_service import settings
+from django_cms import settings
+from django_cms.utils.cache_manager import CacheManager
 from novel.models import NovelChapter, NovelSetting
 
 

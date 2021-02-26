@@ -159,11 +159,10 @@ class NovelAPIView(BaseAPIView):
 
     def patch(self, request, *args, **kwargs):
         crawled_data = request.data
-        src_url = crawled_data.pop('src_url', '').rstrip("/")
+        src_url = crawled_data.get('src_url', '').rstrip("/")
         url_parse = urlparse(src_url)
         referer_url = "%s://%s" % (url_parse.scheme, url_parse.netloc)
 
-        crawled_data['src_url'] = src_url
         crawled_data['name'] = crawled_data.get('name', '').lower().title()
 
         novel = self.temp_novels.get(src_url) or Novel.objects.filter(src_url=src_url).first()
@@ -210,12 +209,12 @@ class NovelAPIView(BaseAPIView):
             for ex_chap in exist_chapters:
                 name = chapters.pop(ex_chap.src_url)
                 if name and ex_chap.name != name:
-                    ex_chap.name = name
+                    ex_chap.name = name.title()
                     ex_chap.chapter_updated = False
                     ex_chap.save()
                     update = True
 
-            new_chapters = [NovelChapter(novel=novel, name=name, src_url=url, novel_slug=novel.slug)
+            new_chapters = [NovelChapter(novel=novel, name=name.title(), src_url=url, novel_slug=novel.slug)
                             for url, name in chapters.items()]
             if new_chapters:
                 NovelChapter.objects.bulk_create(new_chapters, ignore_conflicts=True)
@@ -272,7 +271,7 @@ class ChapterAPIView(BaseAPIView):
 
     def patch(self, request, *args, **kwargs):
         crawled_data = request.data
-        src_url = crawled_data.pop('src_url', '').rstrip("/")
+        src_url = crawled_data.get('src_url', '').rstrip("/")
         url_parse = urlparse(src_url)
         referer_url = "%s://%s" % (url_parse.scheme, url_parse.netloc)
 

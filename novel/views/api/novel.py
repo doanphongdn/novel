@@ -291,7 +291,6 @@ class ChapterAPIView(BaseAPIView):
                                        message="Chapter schema invalid",
                                        extra_data=errors)
 
-        updated = False
         content_text = crawled_data.get("content_text")
         content_images = [full_schema_url(url, referer_url) for url in crawled_data.get("content_images") or []]
         if content_text:
@@ -304,18 +303,15 @@ class ChapterAPIView(BaseAPIView):
             # chapter.novel.save()
             updated = True
         else:
+            chapter.crawl_errors = "No content to update, deactived chapter"
+            chapter.active = False
+            chapter.save()
             return self.parse_response(is_success=False, continue_paging=False, log_enable=True,
-                                       message="Chapter schema invalid",
+                                       message="No content to update, deactived chapter",
                                        extra_data=errors)
 
         if updated:
             chapter.chapter_updated = True
-        elif chapter.attempt >= int(os.environ.get('CRAWL_ATTEMPT', 5)):
-            chapter.chapter_updated = False
-            chapter.active = False
-        else:
-            chapter.attempt += 1
-
-        chapter.save()
+            chapter.save()
 
         return self.parse_response(is_success=True)

@@ -11,8 +11,9 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django_backblaze_b2 import BackblazeB2Storage
 
-from crawl_service import settings, utils
-from crawl_service.models import CDNServer
+from django_cms import settings
+from django_cms.models import CDNServer
+from novel import utils
 from novel.models import CDNNovelFile, NovelChapter
 
 

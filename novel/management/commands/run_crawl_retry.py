@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 
-from crawl_service import utils
 # from crawl_service.utils import query_debugger
+from novel import utils
 from novel.models import CrawlNovelRetry, NovelChapter
 
 

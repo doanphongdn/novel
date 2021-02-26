@@ -9,7 +9,8 @@ from django.template.response import TemplateResponse
 from django.views.decorators.cache import never_cache
 
 from django_cms.admin import BaseActionAdmin
-from novel.models import CDNNovelFile, Novel, NovelChapter, NovelSetting, Genre
+from django_cms.models import CDNServer
+from novel.models import CDNNovelFile, Genre, Novel, NovelChapter, NovelSetting
 
 
 class NovelForm(forms.ModelForm):
@@ -116,6 +117,11 @@ class CDNNovelFileAdmin(BaseActionAdmin):
     search_fields = ("cdn", "chapter", "hash_origin_url", "url")
 
 
+@admin.register(CDNServer)
+class CDNServerAdmin(BaseActionAdmin):
+    list_display = ("id", "name", "server_id", "endpoint", "last_run", "status")
+
+    
 class AdminSiteExt(admin.AdminSite):
     @never_cache
     def index(self, request, extra_context=None):

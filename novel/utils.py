@@ -69,6 +69,13 @@ def str_format_num_alpha_only(s):
     return re.sub("[^A-Za-z0-9-]", "-", s)
 
 
+def get_short_url(url):
+    # urlparse('http://www.cwi.nl:80/%7Eguido/Python.html')
+    # Get scheme='http', netloc='www.cwi.nl:80', path='/%7Eguido/Python.html'
+    parsed_url = urlparse(url)
+    return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
+
+
 def get_referer(chapter):
     origin_domain = urlparse(chapter.src_url) if chapter.src_url else None
     referer = origin_domain.scheme + "://" + origin_domain.netloc if origin_domain else None

@@ -13,7 +13,7 @@ from django_backblaze_b2 import BackblazeB2Storage
 
 from django_cms import settings
 from django_cms.models import CDNServer
-from django_cms.utils.helpers import download_cdn_file, str_format_num_alpha_only
+from django_cms.utils.helpers import download_cdn_file, get_short_url, str_format_num_alpha_only
 from novel.models import CDNNovelFile, NovelChapter
 
 
@@ -55,7 +55,7 @@ class CDNProcess:
                 continue
             # Check local is exist the file, just return to upload it without download it again
             source = origin_file.get('url')
-            short_path = utils.get_short_url(source)
+            short_path = get_short_url(source)
             _, ext = os.path.splitext(short_path)
             ext = ext or '.jpg'
             output_file = "%s/%s/%s" % (settings.CDN_FILE_FOLDER, local_path, str(origin_file.get('index')))

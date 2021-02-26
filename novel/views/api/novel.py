@@ -293,17 +293,20 @@ class ChapterAPIView(BaseAPIView):
 
         updated = False
         content_text = crawled_data.get("content_text")
+        content_images = [full_schema_url(url, referer_url) for url in crawled_data.get("content_images") or []]
         if content_text:
             compressed = zlib.compress(content_text.encode())
             chapter.binary_content = compressed
             updated = True
-
-        content_images = [full_schema_url(url, referer_url) for url in crawled_data.get("content_images") or []]
-        if content_images:
+        elif content_images:
             chapter.images_content = '\n'.join(content_images)
             # chapter.novel.update_flat_info()
             # chapter.novel.save()
             updated = True
+        else:
+            return self.parse_response(is_success=False, continue_paging=False, log_enable=True,
+                                       message="Chapter schema invalid",
+                                       extra_data=errors)
 
         if updated:
             chapter.chapter_updated = True

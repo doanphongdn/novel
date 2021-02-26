@@ -238,6 +238,8 @@ PIPELINE = {
     'JAVASCRIPT': PIPELINE_JS.get(APP_NAME),
 }
 
+CSS_STYLE = os.environ.get('CSS_STYLE')
+
 LOG_ENABLED = os.environ.get('LOG_ENABLED', 'false').lower() == 'true'
 LOG_LEVEL = os.environ.get('LOG_LEVEL', 'WARNING')
 LOG_FILE = os.environ.get('LOG_FILE')

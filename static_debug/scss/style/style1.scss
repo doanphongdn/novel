@@ -1,0 +1,15 @@
+body {
+  background: url("/static/images/bg-style1.jpg") no-repeat fixed bottom;
+}
+
+.navbar-base {
+  background: #f17272 !important;
+  padding: 0 !important;
+}
+
+/* Small Devices, Tablets */
+@media (max-width: 768px) {
+  .navbar-base {
+    padding: 1rem !important;
+  }
+}

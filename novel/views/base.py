@@ -88,6 +88,17 @@ class NovelBaseView(TemplateView):
                 meta_og_description = novel_setting.meta_description or ""
             meta_fb_app_id = novel_setting.meta_fb_app_id or None
 
+        extra_data = {
+            "base_navbar_menu": {
+                "user": request.user,
+                "user_avatar": NovelUserProfile.get_avatar(request.user),
+            }
+        }
+
+        base_navbar = self.incl_manager.render_include_html('base_navbar', extra_data=extra_data, request=request)
+        kwargs["base_navbar"] = base_navbar
+        kwargs["recapcha_site_key"] = settings.GOOGLE_RECAPTCHA_SITE_KEY
+        kwargs["css_style"] = settings.CSS_STYLE
         kwargs["setting"] = {
             "title": title,
             "domain": domain,
@@ -105,17 +116,6 @@ class NovelBaseView(TemplateView):
             "meta_img": img_view,
             "google_analystics_id": novel_setting and novel_setting.google_analystics_id or "",
         }
-
-        extra_data = {
-            "base_navbar_menu": {
-                "user": request.user,
-                "user_avatar": NovelUserProfile.get_avatar(request.user),
-            }
-        }
-
-        base_navbar = self.incl_manager.render_include_html('base_navbar', extra_data=extra_data, request=request)
-        kwargs["base_navbar"] = base_navbar
-        kwargs["recapcha_site_key"] = settings.GOOGLE_RECAPTCHA_SITE_KEY
 
         tmpl_codes = ['base_footer', 'base_other_html', 'base_top_menu']
         tmpl_htmls = self.incl_manager.get_include_htmls(tmpl_codes, request=request)

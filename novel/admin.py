@@ -3,7 +3,10 @@ import zlib
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
+from django.contrib.admin import AdminSite
 from django.contrib.admin.views.main import ChangeList
+from django.template.response import TemplateResponse
+from django.views.decorators.cache import never_cache
 
 from django_cms.admin import BaseActionAdmin
 from novel.models import CDNNovelFile, Novel, NovelChapter, NovelSetting, Genre
@@ -111,3 +114,24 @@ class NovelSettingAdmin(BaseActionAdmin):
 class CDNNovelFileAdmin(BaseActionAdmin):
     list_display = ("id", "cdn", "chapter", "type", "hash_origin_url", "retry", "full")
     search_fields = ("cdn", "chapter", "hash_origin_url", "url")
+
+
+class AdminSiteExt(admin.AdminSite):
+    @never_cache
+    def index(self, request, extra_context=None):
+        """
+        Add extra content and response
+        """
+        app_list = self.get_app_list(request)
+
+        context = {
+            **self.each_context(request),
+            'title': self.index_title,
+            'app_list': app_list,
+            'teko_version': 111,
+            **(extra_context or {}),
+        }
+
+        request.current_app = self.name
+
+        return TemplateResponse(request, self.index_template or 'admin/index.html', context)

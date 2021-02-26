@@ -106,6 +106,9 @@ class ChapterView(NovelBaseView):
                 "novel": novel,
                 # Dont change cke_id, it using in base.js
                 "cke_novel_id": "cke_novel_id",
+            },
+            "report_modal": {
+                "novel": chapter
             }
         }
 

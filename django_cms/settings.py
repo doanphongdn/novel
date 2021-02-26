@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from dotenv import load_dotenv
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(os.path.join(BASE_DIR, '.env'), override=True, verbose=True)
@@ -62,6 +61,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
     'custom_allauth.socialaccount.providers.zalo',
+
     # other app
     'django_redis',
     'import_export',
@@ -276,23 +276,6 @@ CKEDITOR_CONFIGS = {
             'hkemoji',
         ]),
     }
-}
-
-CRAWL_TYPE_MAPPING = {
-    APP_NAME: [
-        ('NovelCampaignType', 'NOVEL'),
-        ('NovelInfoCampaignType', 'NOVEL_INFO'),
-        ('NovelChapterCampaignType', 'NOVEL_CHAPTER'),
-    ]
-}
-
-CRAWL_ACTION_MAPPING = {
-    APP_NAME: [
-        ('ReverseAction', 'Reverse Chapter List'),
-        ('FormatChapterContent', "Format Chapter Content"),
-        ('GroupItem', "Group Items"),
-        ('JoinItem', "Join Items"),
-    ]
 }
 
 BACKBLAZE_CONFIG = {

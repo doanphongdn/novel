@@ -30,7 +30,8 @@ class BaseAPIView(APIView):
 
             temp_data[key] = value
 
-    def validate_data(self, schema, crawled_data):
+    @classmethod
+    def validate_data(cls, schema, crawled_data):
         schema = schema(data=crawled_data)
         schema.is_valid()
         errors = schema.errors
@@ -40,18 +41,26 @@ class BaseAPIView(APIView):
         return True, "Data is valid"
 
     @classmethod
-    def parse_response(cls, is_success, continue_paging=True, message=None, extra_data=None, ):
+    def parse_response(cls, is_success, continue_paging=True, log_enable=False, message=None, extra_data=None, ):
         if not extra_data:
             extra_data = {}
 
         if is_success:
-            return Response(
-                {"status": "SUCCESS", "message": "OK", "continue_paging": continue_paging, "extra": extra_data},
-                HTTPStatus.OK)
+            return Response({
+                "status": "SUCCESS",
+                "message": "OK",
+                "log_enable": False,
+                "continue_paging": continue_paging,
+                "extra": extra_data
+            }, HTTPStatus.OK)
         else:
-            return Response(
-                {"status": "FAILED", "message": message, "continue_paging": False, "extra": extra_data},
-                HTTPStatus.BAD_REQUEST)
+            return Response({
+                "status": "FAILED",
+                "message": message,
+                "log_enable": log_enable,
+                "continue_paging": False,
+                "extra": extra_data
+            }, HTTPStatus.BAD_REQUEST)
 
 
 class NovelAPIView(BaseAPIView):
@@ -79,7 +88,7 @@ class NovelAPIView(BaseAPIView):
         crawled_data = request.data
         is_valid, errors = self.validate_data(NovelListCampaignSchema, crawled_data)
         if not is_valid:
-            return self.parse_response(is_success=False, message="Schema invalid", extra_data=errors)
+            return self.parse_response(is_success=True, message="Schema invalid", extra_data=errors)
 
         try:
             no_update_limit = int(request.query_params.get("noupdate_limited"))
@@ -150,10 +159,6 @@ class NovelAPIView(BaseAPIView):
 
     def patch(self, request, *args, **kwargs):
         crawled_data = request.data
-        is_valid, errors = self.validate_data(NovelInfoCampaignSchema, crawled_data)
-        if not is_valid:
-            return self.parse_response(is_success=False, message="Schema invalid", extra_data=errors)
-
         src_url = crawled_data.pop('src_url', '').rstrip("/")
         url_parse = urlparse(src_url)
         referer_url = "%s://%s" % (url_parse.scheme, url_parse.netloc)
@@ -163,10 +168,18 @@ class NovelAPIView(BaseAPIView):
 
         novel = self.temp_novels.get(src_url) or Novel.objects.filter(src_url=src_url).first()
         if not novel:
-            return self.parse_response(is_success=True)
+            return self.parse_response(is_success=True, continue_paging=False, log_enable=True,
+                                       message="No novel found")
+
+        is_valid, errors = self.validate_data(NovelInfoCampaignSchema, crawled_data)
+        if not is_valid:
+            novel.crawl_errors = "Novel schema invalid"
+            novel.active = False
+            novel.save()
+            return self.parse_response(is_success=False, continue_paging=False, message="Novel schema invalid",
+                                       extra_data=errors)
 
         update = False
-
         thumbnail_image = crawled_data.get('thumbnail_image')
         if not novel.thumbnail_image and thumbnail_image:
             thumbnail_image = full_schema_url(thumbnail_image, src_url)
@@ -259,10 +272,6 @@ class ChapterAPIView(BaseAPIView):
 
     def patch(self, request, *args, **kwargs):
         crawled_data = request.data
-        is_valid, errors = self.validate_data(NovelChapterCampaignSchema, crawled_data)
-        if not is_valid:
-            return self.parse_response(is_success=False, message="Schema invalid", extra_data=errors)
-
         src_url = crawled_data.pop('src_url', '').rstrip("/")
         url_parse = urlparse(src_url)
         referer_url = "%s://%s" % (url_parse.scheme, url_parse.netloc)
@@ -270,7 +279,17 @@ class ChapterAPIView(BaseAPIView):
         chapter = self.temp_chapters.get(src_url) or NovelChapter.objects.filter(src_url=src_url).first()
         if not chapter:
             # Continue update
-            return self.parse_response(is_success=True)
+            return self.parse_response(is_success=True, continue_paging=False, log_enable=True,
+                                       message="No chapter found")
+
+        is_valid, errors = self.validate_data(NovelChapterCampaignSchema, crawled_data)
+        if not is_valid:
+            chapter.crawl_errors = "Chapter schema invalid"
+            chapter.active = False
+            chapter.save()
+            return self.parse_response(is_success=False, continue_paging=False, log_enable=True,
+                                       message="Chapter schema invalid",
+                                       extra_data=errors)
 
         updated = False
         content_text = crawled_data.get("content_text")

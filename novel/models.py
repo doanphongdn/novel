@@ -132,6 +132,7 @@ class Novel(models.Model):
     src_campaign = models.CharField(max_length=50)
 
     attempt = models.SmallIntegerField(default=0)
+    crawl_errors = models.TextField(default='', blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -341,6 +342,7 @@ class NovelChapter(models.Model):
 
     active = models.BooleanField(default=True)
     attempt = models.SmallIntegerField(default=0)
+    crawl_errors = models.TextField(default='', blank=True, null=True)
 
     def __str__(self):
         return self.name

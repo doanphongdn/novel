@@ -1,0 +1,32 @@
+{% load static %}
+<div class="modal fade modal-chapter" id="modal-report" tabindex="-1" role="dialog" aria-labelledby="modal-chapter"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="card bg-secondary border-0">
+                <div class="card-header bg-white pt-4 text-center">
+                    <div class="text-muted text-center mb-3">REPORT: {{ novel_name }}</div>
+                    <div class="text-muted text-center mb-3">{{ chapter_name }}</div>
+                </div>
+                <div class="card-body px-lg-4 container">
+                    <form role="form" id="login-form">
+                        {% csrf_token %}
+                        {{ report_form.novel_id }}
+                        {{ report_form.chapter_id }}
+                        <div class="message login text-danger" role="alert"></div>
+                        <div class="input-group input-group-alternative">
+                            {{ report_form.content }}
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary my-0">
+                            <i class="fa fa-sign-in"></i> Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

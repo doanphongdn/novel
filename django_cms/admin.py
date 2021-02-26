@@ -1,6 +1,8 @@
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
+from django.template.response import TemplateResponse
+from django.views.decorators.cache import never_cache
 from django_json_widget.widgets import JSONEditorWidget
 from import_export.admin import ImportExportModelAdmin
 
@@ -105,3 +107,4 @@ class TemplateManagerForm(forms.ModelForm):
 class TemplateManagerAdmin(BaseActionAdmin, ImportExportModelAdmin):
     list_display = ("id", "page_file")
     form = TemplateManagerForm
+

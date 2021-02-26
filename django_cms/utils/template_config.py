@@ -25,6 +25,7 @@ TEMPLATE_INCLUDE_CHOISES = {
         ("base_top_menu", "Base top menu"),
         ("base_navbar_menu", "Base navbar menu"),
         ("base_auth_modal", "Base auth modal"),
+        ("report_modal", "Report modal"),
         ("user_profile", "User profile"),
         ("comment", "Comment"),
     ],

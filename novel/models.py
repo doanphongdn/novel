@@ -391,9 +391,9 @@ class NovelChapter(models.Model):
     def decompress_content(self):
         try:
             if self.binary_content and len(self.binary_content) > 0:
-                decompresed = zlib.decompress(self.binary_content).decode()
-                return decompresed
-        except:
+                return zlib.decompress(self.binary_content).decode()
+        except Exception as e:
+            print("[decompress_content] Error %s " % e)
             pass
 
         return ""

@@ -36,16 +36,29 @@ PIPELINE_JS = {
         'base': {
             'source_filenames': (
                 'js/novel/base.js',
-                'js/novel/user.js',
+
                 'js/novel/includes/base_auth_modal.js',
-                'js/novel/includes/comment.js',
             ),
             'output_filename': 'js/novel/base.min.js'
         },
+        'user': {
+            'source_filenames': (
+                'js/novel/user.js',
+            ),
+            'output_filename': 'js/novel/user.min.js'
+        },
+        'novel': {
+            'source_filenames': (
+                'js/novel/includes/comment.js',
+                'js/novel/includes/report_modal.js',
+            ),
+            'output_filename': 'js/novel/novel.min.js'
+        },
         'chapter': {
             'source_filenames': (
+                'js/novel/includes/report_modal.js',
+                'js/novel/includes/comment.js',
                 'js/novel/chapter.js',
-                'argon/assets/js/plugins/nouislider.min.js',
             ),
             'output_filename': 'js/novel/chapter.min.js'
         },

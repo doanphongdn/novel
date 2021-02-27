@@ -586,3 +586,13 @@ class AllowIP(models.Model):
     path_regex = models.CharField(max_length=250)
     method = models.CharField(max_length=10)
     ip = models.JSONField(blank=True, null=True)
+
+
+class NovelReport(models.Model):
+    class Meta:
+        db_table = 'novel_reports'
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    novel = models.ForeignKey(Novel, on_delete=models.CASCADE, null=True, blank=True)
+    chapter = models.ForeignKey(NovelChapter, on_delete=models.CASCADE, null=True, blank=True)
+    content = models.TextField()

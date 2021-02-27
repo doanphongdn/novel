@@ -108,7 +108,7 @@ class ChapterView(NovelBaseView):
                 "cke_novel_id": "cke_novel_id",
             },
             "report_modal": {
-                "novel": chapter
+                "chapter": chapter
             }
         }
 

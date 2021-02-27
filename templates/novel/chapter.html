@@ -2,7 +2,7 @@
 {% load static %}
 {% load pipeline %}
 {% block meta %}
-    <meta name="thumbnail" content="{{ novel.stream_thumbnail_image }}" />
+    <meta name="thumbnail" content="{{ novel.stream_thumbnail_image }}"/>
 {% endblock %}
 {% block content %}
     <div class="row">
@@ -50,6 +50,11 @@
         </div>
     </div>
 {% endblock %}
+{% block stylesheet %}
+    <link rel=preload href="{% static "dist/sweetalert2/sweetalert2.min.css" %}">
+{% endblock %}
 {% block scripts %}
+    <script type="text/javascript" src="{% static 'dist/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script type="text/javascript" src="{% static "argon/assets/js/plugins/nouislider.min.js" %}"></script>
     {% javascript 'chapter' %}
 {% endblock %}

@@ -1,14 +1,39 @@
 import re
+from http import HTTPStatus
 from urllib.parse import urlparse
 
+from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext as _, activate
 from django.views.decorators.csrf import csrf_protect
 
+from django_cms import settings
 from novel.cache_manager import NovelCache
-from novel.models import Novel
+from novel.form.report import ReportForm
+from novel.models import Novel, NovelReport
 from novel.views.base import NovelBaseView
+
+
+class NovelAction(object):
+    @staticmethod
+    def report_form(request):
+        if request.method == 'POST':
+            report_form = ReportForm(request.POST)
+            if report_form.is_valid():
+                user = request.user if not isinstance(request.user, AnonymousUser) else None
+                novel_id = request.POST.get('novel_id')
+                chapter_id = request.POST.get('chapter_id')
+                content = request.POST.get('content')
+                NovelReport.objects.create(user=user, novel_id=novel_id, chapter_id=chapter_id, content=content)
+
+                activate(settings.LANGUAGE_CODE)
+                return JsonResponse({"status": True, "message": _(
+                    'Thank you for sending us errors, we will check and process as soon as possible.')},
+                                    status=HTTPStatus.OK)
+
+        return JsonResponse({"status": False}, status=HTTPStatus.OK)
 
 
 class NovelDetailView(NovelBaseView):

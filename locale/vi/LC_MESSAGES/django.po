@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-13 21:06+0700\n"
+"POT-Creation-Date: 2021-02-28 01:29+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,18 +18,56 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#: novel/views/novel.py:33
+msgid ""
+"Thank you for sending us errors, we will check and process as soon as "
+"possible."
+msgstr ""
+"Cảm ơn bạn đã gửi báo cáo lỗi cho chúng tôi, chúng tôi sẽ kiểm tra và xử lý "
+"trong thời gian sớm nhất."
+
 #: templates/admin/base_site.html:2
 msgid "Django site admin"
 msgstr "Trang Quản Trị"
 
-#: templates/novel/includes/chapter_content.html:62
+#: templates/admin/index.html:24
+msgid "Recent actions"
+msgstr ""
+
+#: templates/admin/index.html:25
+msgid "My actions"
+msgstr ""
+
+#: templates/admin/index.html:29
+msgid "None available"
+msgstr ""
+
+#: templates/admin/index.html:43
+msgid "Unknown content"
+msgstr ""
+
+#: templates/novel/includes/chapter_content.html:37
+#: templates/novel/includes/novel_info.html:83
+msgid "Error report"
+msgstr "Báo lỗi"
+
+#: templates/novel/includes/chapter_content.html:70
 msgid ""
 "Please visit this chapter after 5 minutes if your browser cannot load these "
 "images now."
 msgstr ""
 "Nếu bạn chờ hình hiển thị quá lâu, có thể chúng tôi đang sửa lỗi các hình "
-"này, <br /> bạn Vui Lòng Quay Lại sau 5 phút 55 giây! <br /> Xin Chân Thành Cảm Ơn Bạn!"
+"này, <br /> bạn Vui Lòng Quay Lại sau 5 phút 55 giây! <br /> Xin Chân Thành "
+"Cảm Ơn Bạn!"
 
 #: templates/novel/includes/novel_list.html:20
 msgid "View all"
 msgstr "Xem tất cả"
+
+#: templates/novel/includes/report_modal.html:10
+msgid "ERROR REPORT"
+msgstr "BÁO LỖI"
+
+#: templates/novel/includes/report_modal.html:28
+msgid "Send report"
+msgstr "Gửi báo cáo"

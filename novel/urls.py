@@ -29,7 +29,7 @@ from novel.views.api.novel import NovelAPIView, ChapterAPIView
 from novel.views.chapter import ChapterView
 from novel.views.includes.comment import CommentManager
 from novel.views.index import NovelIndexView
-from novel.views.novel import NovelDetailView
+from novel.views.novel import NovelDetailView, NovelAction
 from novel.views.novel_all import NovelAllView
 from novel.views.page import PageView
 from novel.views.user import UserProfileView, UserAction
@@ -59,7 +59,6 @@ urlpatterns = [
 
     path('', NovelIndexView.as_view(), name="home"),
     path('search', NovelDetailView.as_view(), name="novel_search"),
-    path(settings.NOVEL_ALL_URL, NovelAllView.as_view(), name="novel_view"),
 
     path('comment', CommentManager.comment, name="comment"),
     path('comment/form', CommentManager.comment_form, name="comment_form"),
@@ -70,12 +69,15 @@ urlpatterns = [
     path("user/logout", UserAction.user_logout, name='user_logout'),
     path('user/bookmark', UserAction.bookmark, name='user_bookmark'),
     path('user/novel-remove', UserAction.novel_remove, name='novel_remove'),
+    path('novel/report', NovelAction.report_form, name="novel_report"),
 
     # must end of list
+    path(settings.NOVEL_ALL_URL, NovelAllView.as_view(), name="novel_view"),
     path(settings.NOVEL_ALL_URL + '/<str:novel_type>', NovelAllView.as_view(), name="novel_all"),
     path(settings.NOVEL_GENRE_URL + '/<str:genre>', NovelAllView.as_view(), name="novel_genre"),
     path(settings.NOVEL_PAGE_URL + '/<str:slug>', PageView.as_view(), name="page_view"),
     path(settings.NOVEL_ACCOUNT_URL + '/<str:tab_name>', UserProfileView.as_view(), name="user_profile"),
+
 
     path('images/<str:img>', stream.stream_image, name="stream_image"),
     path('images/thumbnail/<str:img>', stream.stream_image, name="stream_thumbnail_image"),

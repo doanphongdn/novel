@@ -1,5 +1,5 @@
 from django_cms import settings
-from novel.form.report import ReportContentForm
+from novel.form.report import ReportForm
 from novel.views.includes.base import BaseTemplateInclude
 
 
@@ -12,8 +12,10 @@ class ReportModalTemplateInclude(BaseTemplateInclude):
 
         chapter = self.include_data.get('chapter', None)
         novel = self.include_data.get('novel', None)
+        if chapter:
+            novel = chapter.novel
 
-        report_form = ReportContentForm(initial={
+        report_form = ReportForm(initial={
             "novel_id": novel.id if novel else None,
             "chapter_id": chapter.id if chapter else None,
         })

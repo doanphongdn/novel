@@ -1,7 +1,25 @@
 {% extends 'novel/base.html' %}
 {% load static %}
+{% load pipeline %}
+{% block meta %}
+    <meta name="thumbnail" content="{{ thumbnail_image }}"/>
+{% endblock %}
+{% block content %}
+    {% load cache %}
+    {% cache 500 json_ld %}
+        {% load opengraph %}
+        {% og_for novel %}
+        {% load jsonld %}
+        {% json_ld_for novel %}
+    {% endcache %}
+
+    <div class="row">
+        {{ novel_html }}
+    </div>
+{% endblock %}
 {% block stylesheet %}
-<!--
+    <link rel=preload href="{% static "dist/sweetalert2/sweetalert2.min.css" %}">
+        <!--
   <PageMap>
     <DataObject type="publication">
       <Attribute name="author" value="{{ novel.authors_name }}"/>
@@ -19,19 +37,7 @@
   </PageMap>
 -->
 {% endblock %}
-{% block meta %}
-    <meta name="thumbnail" content="{{ thumbnail_image }}"/>
-{% endblock %}
-{% block content %}
-    {% load cache %}
-    {% cache 500 json_ld %}
-        {% load opengraph %}
-        {% og_for novel %}
-        {% load jsonld %}
-        {% json_ld_for novel %}
-    {% endcache %}
-
-    <div class="row">
-        {{ novel_html }}
-    </div>
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'dist/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    {% javascript 'novel' %}
 {% endblock %}

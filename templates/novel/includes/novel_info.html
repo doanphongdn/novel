@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load static %}
 {% block stylesheet %}
 {% endblock %}
@@ -79,7 +80,7 @@
                             </a>
                             <a href="#" data-toggle="modal" data-target="#modal-report" rel="nofollow">
                                 <button class="btn btn-sm btn-danger">
-                                    <i class="fa fa-bug"></i> {{ issue_label }}
+                                    <i class="fa fa-bug"></i> {% translate "Error report" %}
                                 </button>
                             </a>
                         </div>

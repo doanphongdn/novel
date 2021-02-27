@@ -125,6 +125,7 @@ class Novel(models.Model):
     view_daily = models.IntegerField(default=0)
     view_monthly = models.IntegerField(default=0)
     view_total = models.IntegerField(default=0)
+    hot_point = models.IntegerField(default=0)
 
     latest_updated_time = models.DateTimeField(auto_now_add=True)
     src_url = models.TextField(unique=True)
@@ -390,9 +391,9 @@ class NovelChapter(models.Model):
     def decompress_content(self):
         try:
             if self.binary_content and len(self.binary_content) > 0:
-                decompresed = zlib.decompress(self.binary_content).decode()
-                return decompresed
-        except:
+                return zlib.decompress(self.binary_content).decode()
+        except Exception as e:
+            print("[decompress_content] Error %s " % e)
             pass
 
         return ""

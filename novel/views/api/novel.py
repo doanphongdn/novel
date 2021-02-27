@@ -133,10 +133,10 @@ class NovelAPIView(BaseAPIView):
                         update = True
 
                     no_update_count += int(not need_updated)
-                if novel.src_url != item['src_url']:
+                if item.get('src_url') and novel.src_url != item['src_url']:
                     novel.src_url = item['src_url']
                     update = True
-                if novel.name.lower() != item["name"].lower():
+                if item.get("name") and novel.name.lower() != item["name"].lower():
                     novel.name = item["name"]
                     update = True
 
@@ -144,7 +144,8 @@ class NovelAPIView(BaseAPIView):
                     # bypass duplicate name
                     try:
                         novel.save()
-                    except:
+                    except Exception as e:
+                        print("[NovelAPIView post] Error %s " % e)
                         pass
             else:
                 new_data.append(Novel(**item))

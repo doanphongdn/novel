@@ -5,15 +5,17 @@ from django.utils.html import format_html_join
 
 
 class CacheManager(object):
-    def __init__(self, class_model, order_by: str = "pk", **kwargs):
+    def __init__(self, class_model, order_by: str = "pk", limit=None, **kwargs):
         self.class_model = class_model
         self.kwargs = kwargs
         self.order_by = order_by
+        self.limit = limit
 
     def _get_data(self, **kwargs):
         if hasattr(self.class_model, 'active'):
             kwargs["active"] = True
-
+        if self.limit and self.limit > 0:
+            return self.class_model.objects.filter(**kwargs).order_by(self.order_by).all()[:self.limit]
         return self.class_model.objects.filter(**kwargs).order_by(self.order_by).all()
 
     def get_from_cache(self, get_all=False):

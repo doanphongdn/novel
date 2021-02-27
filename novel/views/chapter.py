@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 
 from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
+from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 
 from django_cms import settings
@@ -25,6 +26,8 @@ class ChapterView(NovelBaseView):
 
         novel = NovelCache(Novel, **{"slug": slug}).get_from_cache()
         if novel:
+            if isinstance(novel, QuerySet):
+                novel = novel.first()
             # TODO: not yet apply cache
             chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).prefetch_related(
                 'cdnnovelfile_set').first()
@@ -52,7 +55,7 @@ class ChapterView(NovelBaseView):
                             chapter.slug.replace('-', ' '), chapter.name]
                 response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)
 
-                # hard code to ionore index img google bot
+                # hard code to ignore index img google bot
                 response.context_data["setting"]["no_image_index"] = True
 
                 # Update view count

@@ -2,6 +2,7 @@ import re
 from http import HTTPStatus
 from urllib.parse import urlparse
 
+from django.db.models.query import QuerySet
 from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -39,19 +40,33 @@ class NovelAction(object):
 class NovelDetailView(NovelBaseView):
     template_name = "novel/novel.html"
 
+    @staticmethod
+    def update_hot_point(request):
+        try:
+            novel_id = request.POST.get('q[nid]', "")
+            if novel_id:
+                novel = Novel.objects.filter(pk=novel_id, active=True).first()
+                if novel:
+                    novel.hot_point += 1
+                    novel.save()
+                return JsonResponse({"success": True, })
+        except Exception as e:
+            return JsonResponse({"success": False, "err": e})
+
     @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         search = request.POST.get('q', "")
-        if len(search) >= 3:
-            novels = NovelCache(Novel, **{"name__unaccent__icontains": search.strip()}) \
-                         .get_from_cache(get_all=True)[:15]
+        if len(search) > 2:
+            limit = 10
+            novels = NovelCache(Novel, limit=limit, **{"name__unaccent__icontains": search.strip()}) \
+                         .get_from_cache(get_all=True)
             if not novels:
                 # split to multiple keywords
                 unique_sub_keywords = set(re.split(r'\W+', search))
                 conditions = {
                     "name__unaccent__iregex": r'(' + '|'.join([k for k in unique_sub_keywords if len(k) > 2]) + ')'
                 }
-                novels = NovelCache(Novel, **conditions).get_from_cache(get_all=True)[:10]
+                novels = NovelCache(Novel, limit=limit, **conditions).get_from_cache(get_all=True)
 
             res_data = []
             for novel in novels:
@@ -59,6 +74,7 @@ class NovelDetailView(NovelBaseView):
                     "thumbnail_image": novel.thumbnail_image,
                     "name": novel.name,
                     "url": novel.get_absolute_url(),
+                    "nid": novel.id,
                 })
 
             return JsonResponse({"data": res_data})
@@ -77,6 +93,8 @@ class NovelDetailView(NovelBaseView):
 
         novel = NovelCache(Novel, **{"slug": slug}).get_from_cache()
         if novel:
+            if isinstance(novel, QuerySet):
+                novel = novel.first()
             referer = urlparse(novel.src_url)
             if novel.thumbnail_image.strip().startswith('//'):
                 referer_url = referer.scheme  # + referer.netloc

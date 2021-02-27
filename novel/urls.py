@@ -59,6 +59,8 @@ urlpatterns = [
 
     path('', NovelIndexView.as_view(), name="home"),
     path('search', NovelDetailView.as_view(), name="novel_search"),
+    path('update_point', NovelDetailView.update_hot_point, name="novel_hot_point"),
+    path(settings.NOVEL_ALL_URL, NovelAllView.as_view(), name="novel_view"),
 
     path('comment', CommentManager.comment, name="comment"),
     path('comment/form', CommentManager.comment_form, name="comment_form"),

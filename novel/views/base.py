@@ -115,6 +115,7 @@ class NovelBaseView(TemplateView):
             "meta_fb_app_id": meta_fb_app_id,
             "meta_img": img_view,
             "google_analystics_id": novel_setting and novel_setting.google_analystics_id or "",
+            "no_image_index": False,
         }
 
         tmpl_codes = ['base_footer', 'base_other_html', 'base_top_menu']

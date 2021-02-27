@@ -27,7 +27,7 @@ class ChapterView(NovelBaseView):
         novel = NovelCache(Novel, **{"slug": slug}).get_from_cache()
         if novel:
             if isinstance(novel, QuerySet):
-                novel = novel.first()
+                novel = novel[:1].get()
             # TODO: not yet apply cache
             chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).prefetch_related(
                 'cdnnovelfile_set').first()

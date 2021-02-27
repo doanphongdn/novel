@@ -94,7 +94,7 @@ class NovelDetailView(NovelBaseView):
         novel = NovelCache(Novel, **{"slug": slug}).get_from_cache()
         if novel:
             if isinstance(novel, QuerySet):
-                novel = novel.first()
+                novel = novel[:1].get()
             referer = urlparse(novel.src_url)
             if novel.thumbnail_image.strip().startswith('//'):
                 referer_url = referer.scheme  # + referer.netloc

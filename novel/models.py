@@ -125,6 +125,7 @@ class Novel(models.Model):
     view_daily = models.IntegerField(default=0)
     view_monthly = models.IntegerField(default=0)
     view_total = models.IntegerField(default=0)
+    hot_point = models.IntegerField(default=0)
 
     latest_updated_time = models.DateTimeField(auto_now_add=True)
     src_url = models.TextField(unique=True)

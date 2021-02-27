@@ -14,6 +14,19 @@ from novel.views.base import NovelBaseView
 class NovelDetailView(NovelBaseView):
     template_name = "novel/novel.html"
 
+    @staticmethod
+    def update_hot_point(request):
+        try:
+            novel_id = request.POST.get('q[nid]', "")
+            if novel_id:
+                novel = Novel.objects.filter(pk=novel_id, active=True).first()
+                if novel:
+                    novel.hot_point += 1
+                    novel.save()
+                return JsonResponse({"success": True, })
+        except Exception as e:
+            return JsonResponse({"success": False, "err": e})
+
     @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         search = request.POST.get('q', "")

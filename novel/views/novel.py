@@ -47,6 +47,7 @@ class NovelDetailView(NovelBaseView):
                     "thumbnail_image": novel.thumbnail_image,
                     "name": novel.name,
                     "url": novel.get_absolute_url(),
+                    "nid": novel.id,
                 })
 
             return JsonResponse({"data": res_data})

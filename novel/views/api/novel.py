@@ -48,7 +48,7 @@ class BaseAPIView(APIView):
         if is_success:
             return Response({
                 "status": "SUCCESS",
-                "message": "OK",
+                "message": message or "OK",
                 "log_enable": False,
                 "continue_paging": continue_paging,
                 "extra": extra_data

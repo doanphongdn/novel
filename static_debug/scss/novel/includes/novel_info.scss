@@ -33,62 +33,43 @@
     }
 
     .novel-detail-wrap {
-      .cate-item {
-        color: #FFF;
-        background: #5b707b;
-        border: thin solid #576675;
-        padding: 2px 7px;
-        margin-right: 5px;
-        font-size: 0.9rem;
-        border-radius: 4px;
-      }
+      .novel-action {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
 
-      .novel-mobile-action {
-        margin-top: 30px;
+        a {
+          &:hover {
+            color: #444;
+          }
 
-        .action-item {
           text-align: center;
+          font-size: 45px;
 
-          i {
-            font-size: 2rem;
-            color: #5b707b;
+          p {
+            font-size: .9rem;
           }
         }
       }
 
-      .novel-summary {
-        .novel-action-bookmark {
-          cursor: pointer;
-
-          &:hover {
-            color: #{$text_color_hover};
-          }
-        }
-
-        .novel-action-comment {
-          &:hover {
-            color: #{$text_color_hover};
-          }
-        }
-
-        .novel-summury-item:not(:last-child):not(:nth-child(3)) {
-          border-right: thin solid #EEE;
-        }
-
-        .novel-summury-item.action-item {
-          text-align: center;
-
-          i {
-            font-size: 2rem;
-            color: #5b707b;
+      .novel-categories {
+        a {
+          .cate-item {
+            color: #FFF;
+            background: #5b707b;
+            border: thin solid #576675;
+            padding: 2px 7px;
+            margin: 0 5px 5px 0;
+            font-size: 0.9rem;
+            border-radius: 10px;
           }
         }
 
       }
 
       label {
-        font-size: 1rem;
-        min-width: 120px;
+        font-size: .9rem;
+        min-width: 130px;
       }
 
       .rating {
@@ -115,6 +96,7 @@
       .novel-button {
         button {
           margin: 10px 5px 0 0;
+          font-weight: 400;
         }
       }
     }
@@ -146,6 +128,13 @@
       .novel-detail-wrap {
         margin-left: -15px;
         margin-right: -15px;
+
+        .novel-categories {
+          text-align: center;
+        }
+        .novel-button{
+          text-align: center;
+        }
       }
     }
   }

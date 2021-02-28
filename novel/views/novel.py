@@ -83,7 +83,6 @@ class NovelDetailView(NovelBaseView):
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
-
         chapter_page = request.GET.get('chap-page') or 1
         slug = kwargs.get('slug')
         if not slug:

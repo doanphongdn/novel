@@ -51,6 +51,7 @@ PIPELINE_JS = {
             'source_filenames': (
                 'js/novel/includes/comment.js',
                 'js/novel/includes/report_modal.js',
+                'js/novel/novel.js',
             ),
             'output_filename': 'js/novel/novel.min.js'
         },

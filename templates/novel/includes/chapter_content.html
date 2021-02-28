@@ -1,74 +1,40 @@
 {% load i18n %}
 {% load static %}
-
-<div class="chapter-content">
-    <div class="row chapter-actions">
-        <div class="col-4">
-            <div class="row">
-                {% if chapter_prev_url %}
-                    <a href="{{ chapter_prev_url }}">
-                        <button type="button" class="btn btn-sm btn-default d-lg-none">
-                            <i class="fa fa-chevron-left"></i> {% translate "Prev" %}
-                        </button>
-                        <button type="button" class="btn btn-default d-none d-lg-block">
-                            <i class="fa fa-chevron-left"></i> {% translate "Prev" %}
-                        </button>
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="row justify-content-center">
-                <button type="button" class="btn btn-sm btn-default d-lg-none mr-1" data-toggle="modal"
-                        data-target="#modal-chapter">
-                    <i class="fa fa-list"></i>
-                </button>
-                <button type="button" class="btn btn-default d-none d-lg-block mr-1" data-toggle="modal"
-                        data-target="#modal-chapter">
-                    <i class="fa fa-list"></i> {% translate "Chapter List" %}
-                </button>
-                <a href="#" data-toggle="modal" data-target="#modal-report" rel="nofollow">
-                    <button class="btn btn-sm btn-warning text-center d-lg-none ml-1" >
-                        <i class="fa fa-bug"></i>
-                    </button>
-                </a>
-                <a href="#" data-toggle="modal" data-target="#modal-report" rel="nofollow">
-                    <button class="btn btn-warning text-center d-none d-lg-block ml-1" >
-                        <i class="fa fa-bug"></i> {% translate "Error report" %}
-                    </button>
-                </a>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="row justify-content-end">
-                {% if chapter_next_url %}
-                    <a href="{{ chapter_next_url }}">
-                        <button type="button" class="btn btn-sm btn-default d-lg-none">
-                            {% translate "Next" %} <i class="fa fa-chevron-right"></i>
-                        </button>
-                        <button type="button" class="btn btn-default d-none d-lg-block">
-                            {% translate "Next" %} <i class="fa fa-chevron-right"></i>
-                        </button>
-                    </a>
-                {% endif %}
-            </div>
+<div class="row chapter-content">
+    <div class="col-12 chapter-actions">
+        <div class="action-wrap">
+            <a href="/" rel="nofollow"><i class="fa fa-home"></i></a>
+            <a href="{{ novel.get_absolute_url }}" rel="nofollow"><i
+                    class="fa fa-newspaper-o"></i></a>
+            <a href="#" class="text-warning" data-toggle="modal" data-target="#modal-report" rel="nofollow">
+                <i class="fa fa-bug"></i></a>
+            {% if chapter_next_url %}
+                <a href="{{ chapter_next_url }}" class="btn btn-secondary btn-sm float-right mr-0" rel="nofollow">
+                    {% translate "Next" %} <i class="fa fa-chevron-right"></i></a>
+            {% endif %}
+            <a href="#" class="btn btn-secondary btn-sm float-right mr-1" data-toggle="modal"
+               data-target="#modal-chapter" rel="nofollow"><i class="fa fa-list"></i></a>
+            {% if chapter_prev_url %}
+                <a href="{{ chapter_prev_url }}" class="btn btn-secondary btn-sm float-right mr-1" rel="nofollow">
+                    <i class="fa fa-chevron-left"></i> {% translate "Prev" %}</a>
+            {% endif %}
         </div>
     </div>
-    <div class="row chapter-header">
+    <div class="col-12 chapter-header">
         <div class="col-12 chapter-title">
-            <h3>{{ novel.name }}</h3>
+            <h4>{{ novel.name }}</h4>
             <h5>{{ chapter.name }}</h5>
         </div>
     </div>
     <hr class="hr-light">
-    <div class="row chapter-detail">
-        <div class="col-12">
-            {% autoescape off %}
-                {{ chapter.decompress_content }}
-            {% endautoescape %}
-            {% if stream_images %}
-                <p class="bg-yellow text-center text-uppercase box-warning">{% translate "Please visit this chapter after 5 minutes if your browser cannot load these images now." %}</p>
-            {% endif %}
+    <div class="col-12 chapter-detail">
+        {% autoescape off %}
+            {{ chapter.decompress_content }}
+        {% endautoescape %}
+        {% if stream_images %}
+            <p class="bg-yellow text-center text-uppercase box-warning">{% translate "Please visit this chapter after 5 minutes if your browser cannot load these images now." %}</p>
+        {% endif %}
+        <div class="row">
             {% if mix_images %}
                 {% for mix_image in mix_images %}
                     {% if forloop.counter <= 3 %}

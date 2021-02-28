@@ -25,8 +25,8 @@ cp .env.example .env
 # Install static files
 .venv/bin/python3 manage.py collectstatic
 
-# Install memcached
-sudo apt-get install memcached
+# Install memcached (deprecated)
+~~sudo apt-get install memcached~~
 
 # Install Redis Server (using default)
 sudo apt-get install redis-server
@@ -88,3 +88,7 @@ CAMPAIGNS_THREAD_NUM = 2
  .venv/bin/django-admin makemessages -l vi
  
  .venv/bin/django-admin compilemessages
+ 
+ # RECAPTCHA key in .env
+GOOGLE_RECAPTCHA_SITE_KEY = ''
+GOOGLE_RECAPTCHA_SECRET_KEY = ''

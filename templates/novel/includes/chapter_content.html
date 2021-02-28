@@ -8,10 +8,10 @@
                 {% if chapter_prev_url %}
                     <a href="{{ chapter_prev_url }}">
                         <button type="button" class="btn btn-sm btn-default d-lg-none">
-                            <i class="fa fa-chevron-left"></i> Prev
+                            <i class="fa fa-chevron-left"></i> {% translate "Prev" %}
                         </button>
                         <button type="button" class="btn btn-default d-none d-lg-block">
-                            <i class="fa fa-chevron-left"></i> Prev
+                            <i class="fa fa-chevron-left"></i> {% translate "Prev" %}
                         </button>
                     </a>
                 {% endif %}
@@ -25,7 +25,7 @@
                 </button>
                 <button type="button" class="btn btn-default d-none d-lg-block mr-1" data-toggle="modal"
                         data-target="#modal-chapter">
-                    <i class="fa fa-list"></i> Chapter List
+                    <i class="fa fa-list"></i> {% translate "Chapter List" %}
                 </button>
                 <a href="#" data-toggle="modal" data-target="#modal-report" rel="nofollow">
                     <button class="btn btn-sm btn-warning text-center d-lg-none ml-1" >
@@ -44,10 +44,10 @@
                 {% if chapter_next_url %}
                     <a href="{{ chapter_next_url }}">
                         <button type="button" class="btn btn-sm btn-default d-lg-none">
-                            Next <i class="fa fa-chevron-right"></i>
+                            {% translate "Next" %} <i class="fa fa-chevron-right"></i>
                         </button>
                         <button type="button" class="btn btn-default d-none d-lg-block">
-                            Next <i class="fa fa-chevron-right"></i>
+                            {% translate "Next" %} <i class="fa fa-chevron-right"></i>
                         </button>
                     </a>
                 {% endif %}

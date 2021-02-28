@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-28 01:29+0700\n"
+"POT-Creation-Date: 2021-02-28 23:35+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: novel/views/novel.py:33
+#: novel/views/novel.py:34
 msgid ""
 "Thank you for sending us errors, we will check and process as soon as "
 "possible."
@@ -32,24 +32,38 @@ msgstr "Trang Quản Trị"
 
 #: templates/admin/index.html:24
 msgid "Recent actions"
-msgstr ""
+msgstr "Hoạt động gần đây"
 
 #: templates/admin/index.html:25
 msgid "My actions"
-msgstr ""
+msgstr "Hoạt động của tôi"
 
 #: templates/admin/index.html:29
 msgid "None available"
-msgstr ""
+msgstr "Không tồn tại"
 
 #: templates/admin/index.html:43
 msgid "Unknown content"
-msgstr ""
+msgstr "Nội dung không xác định"
+
+#: templates/novel/includes/chapter_content.html:11
+#: templates/novel/includes/chapter_content.html:14
+msgid "Prev"
+msgstr "Trước"
+
+#: templates/novel/includes/chapter_content.html:28
+msgid "Chapter List"
+msgstr "Chương"
 
 #: templates/novel/includes/chapter_content.html:37
-#: templates/novel/includes/novel_info.html:83
+#: templates/novel/includes/novel_info.html:86
 msgid "Error report"
 msgstr "Báo lỗi"
+
+#: templates/novel/includes/chapter_content.html:47
+#: templates/novel/includes/chapter_content.html:50
+msgid "Next"
+msgstr "Sau"
 
 #: templates/novel/includes/chapter_content.html:70
 msgid ""

@@ -34,7 +34,7 @@
         {% if stream_images %}
             <p class="bg-yellow text-center text-uppercase box-warning">{% translate "Please visit this chapter after 5 minutes if your browser cannot load these images now." %}</p>
         {% endif %}
-        <div class="row">
+        <div class="chapter-images">
             {% if mix_images %}
                 {% for mix_image in mix_images %}
                     {% if forloop.counter <= 3 %}

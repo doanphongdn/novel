@@ -30,9 +30,11 @@ class NovelAction(object):
                 NovelReport.objects.create(user=user, novel_id=novel_id, chapter_id=chapter_id, content=content)
 
                 activate(settings.LANGUAGE_CODE)
-                return JsonResponse({"status": True, "message": _(
-                    'Thank you for sending us errors, we will check and process as soon as possible.')},
-                                    status=HTTPStatus.OK)
+                return JsonResponse({
+                    "status": True, "message": _(
+                        'Thank you for sending us errors, we will check and process as soon as possible.')
+                },
+                    status=HTTPStatus.OK)
 
         return JsonResponse({"status": False}, status=HTTPStatus.OK)
 
@@ -59,7 +61,7 @@ class NovelDetailView(NovelBaseView):
         if len(search) > 2:
             limit = 10
             novels = NovelCache(Novel, limit=limit, **{"name__unaccent__icontains": search.strip()}) \
-                         .get_from_cache(get_all=True)
+                .get_from_cache(get_all=True)
             if not novels:
                 # split to multiple keywords
                 unique_sub_keywords = set(re.split(r'\W+', search))
@@ -69,6 +71,9 @@ class NovelDetailView(NovelBaseView):
                 novels = NovelCache(Novel, limit=limit, **conditions).get_from_cache(get_all=True)
 
             res_data = []
+            # cache get an object Novel
+            if isinstance(novels, Novel):
+                novels = [novels]
             for novel in novels:
                 res_data.append({
                     "thumbnail_image": novel.thumbnail_image,

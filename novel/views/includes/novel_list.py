@@ -26,6 +26,7 @@ class NovelListTemplateInclude(BaseTemplateInclude):
         novel_grid_col_md = self.include_data.get('novel_grid_col_md') or 3
         novel_grid_col_lg = self.include_data.get('novel_grid_col_lg') or 2
         custom_chapters = self.include_data.get('custom_chapters') or {}
+        novels = self.include_data.get('novels') or []
 
         css_class = {
             "novel_list_col": novel_list_col,
@@ -53,7 +54,7 @@ class NovelListTemplateInclude(BaseTemplateInclude):
                 button_type_urls['list'] = "?" + urlencode(params)
 
         pagination = None
-        novel_paginated = NovelPaginator(limit, page, order_by, **filter_by)
+        novel_paginated = NovelPaginator(limit, page, order_by, custom_data=novels, **filter_by)
         if paginate_enable is True:
             paging_data = {"paginated_data": novel_paginated, "page_label": "page"}
             pagination = PaginationTemplateInclude(paging_data)

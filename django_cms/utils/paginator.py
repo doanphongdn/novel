@@ -6,20 +6,24 @@ from django.core.paginator import PageNotAnInteger, EmptyPage
 class ModelPaginator:
     model = None
 
-    def __init__(self, per_page, number, order_by='-id', **kwargs):
+    def __init__(self, per_page, number, order_by='-id', custom_data=None, **kwargs):
+        if custom_data is None:
+            custom_data = []
+
         self.per_page = per_page
         self.order_by = order_by
         self.total = self.calc_total(**kwargs)
         self.number = self.validate_number(number)
         self.offset = per_page * (self.number - 1)
         self.data = self.get_data(**kwargs)
+        self.custom_data = custom_data
 
     def calc_total(self, **kwargs):
-        return self.model.objects.filter(**kwargs).count()
+        return len(self.custom_data) or self.model.objects.filter(**kwargs).count()
 
     def get_data(self, **kwargs):
         limit = self.offset + self.per_page
-        return self.model.objects.filter(**kwargs).order_by(self.order_by).all()[self.offset:limit]
+        return self.custom_data or self.model.objects.filter(**kwargs).order_by(self.order_by).all()[self.offset:limit]
 
     def __repr__(self):
         return '<Page %s of %s>' % (self.number, self.num_pages)

@@ -117,6 +117,10 @@ class NovelDetailView(NovelBaseView):
         else:
             return redirect('home')
 
+        novels = Novel.get_available_novel().filter(
+            genres__in=novel.genres.filter(active=True).all()
+        ).distinct().order_by("-view_total").exclude(id=novel.id).all()
+
         extra_data = {
             "breadcrumb": {
                 "breadcrumb_data": breadcrumb_data,
@@ -135,6 +139,9 @@ class NovelDetailView(NovelBaseView):
             },
             "report_modal": {
                 "novel": novel
+            },
+            "related_novels": {
+                "novels": novels
             }
         }
         domain = response.context_data.get("setting", {}).get("domain", "")

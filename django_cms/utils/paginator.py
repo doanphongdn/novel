@@ -10,13 +10,14 @@ class ModelPaginator:
         if custom_data is None:
             custom_data = []
 
+        self.custom_data = custom_data
         self.per_page = per_page
         self.order_by = order_by
         self.total = self.calc_total(**kwargs)
         self.number = self.validate_number(number)
         self.offset = per_page * (self.number - 1)
         self.data = self.get_data(**kwargs)
-        self.custom_data = custom_data
+
 
     def calc_total(self, **kwargs):
         return len(self.custom_data) or self.model.objects.filter(**kwargs).count()

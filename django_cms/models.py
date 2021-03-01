@@ -114,6 +114,8 @@ class InludeTemplate(models.Model):
     full_width = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.code
 
 CAMPAIGN_STATUS = [
     ('running', 'RUNNING'),

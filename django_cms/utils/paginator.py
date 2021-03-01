@@ -18,7 +18,6 @@ class ModelPaginator:
         self.offset = per_page * (self.number - 1)
         self.data = self.get_data(**kwargs)
 
-
     def calc_total(self, **kwargs):
         return len(self.custom_data) or self.model.objects.filter(**kwargs).count()
 

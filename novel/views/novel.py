@@ -140,8 +140,8 @@ class NovelDetailView(NovelBaseView):
             "report_modal": {
                 "novel": novel
             },
-            "related_novels": {
-                "novels": novels
+            "novel_list": {
+                "related_novels": novels
             }
         }
         domain = response.context_data.get("setting", {}).get("domain", "")

@@ -10,12 +10,13 @@ class ModelPaginator:
         if custom_data is None:
             custom_data = []
 
+        self.offset = per_page * (self.number - 1)
         self.custom_data = custom_data
         self.per_page = per_page
         self.order_by = order_by
         self.total = self.calc_total(**kwargs)
         self.number = self.validate_number(number)
-        self.offset = per_page * (self.number - 1)
+
         self.data = self.get_data(**kwargs)
 
     def calc_total(self, **kwargs):
@@ -23,7 +24,7 @@ class ModelPaginator:
 
     def get_data(self, **kwargs):
         limit = self.offset + self.per_page
-        return self.custom_data or self.model.objects.filter(**kwargs).order_by(self.order_by).all()[self.offset:limit]
+        return self.custom_data[self.offset:limit] or self.model.objects.filter(**kwargs).order_by(self.order_by).all()[self.offset:limit]
 
     def __repr__(self):
         return '<Page %s of %s>' % (self.number, self.num_pages)

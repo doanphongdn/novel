@@ -52,5 +52,6 @@ class NovelPaginator(ModelPaginator):
         return len(self.custom_data) or self.model.get_available_novel().filter(**kwargs).count()
 
     def get_data(self, **kwargs):
-        return self.custom_data or self.model.get_available_novel().filter(**kwargs).prefetch_related("novel_flat") \
-                                       .order_by(self.order_by).all()[self.offset:self.offset + self.per_page]
+        return self.custom_data[self.offset:self.offset + self.per_page] or self.model.get_available_novel().filter(
+            **kwargs).prefetch_related("novel_flat").order_by(self.order_by).all()[
+                                                                            self.offset:self.offset + self.per_page]

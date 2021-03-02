@@ -24,6 +24,7 @@ load_dotenv(os.path.join(BASE_DIR, '.env'), override=True, verbose=True)
 
 if True:
     from novel.settings import *
+    from custom_allauth.settings import *
     from django_cms.utils.pipeline_config import *
 
 # SECURITY WARNING: keep the secret key used in production secret!

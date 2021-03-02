@@ -151,12 +151,14 @@ class GenreAdmin(BaseActionAdmin):
 
 @admin.register(NovelReport)
 class ReportAdmin(BaseActionAdmin):
-    list_display = ("id", "user", "novel", "chapter", "content")
+    exclude = ("chapter",)
+    list_display = ("id", "user", "novel", "content")
 
 
 @admin.register(Comment)
 class CommentAdmin(BaseActionAdmin):
     ordering = ("novel", "-id")
+    exclude = ("chapter",)
     list_display = ("id", "novel", "name", "content_html", "created_at")
 
     def content_html(self, obj):

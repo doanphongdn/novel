@@ -159,6 +159,7 @@ class ReportAdmin(BaseActionAdmin):
 class CommentAdmin(BaseActionAdmin):
     ordering = ("novel", "-id")
     readonly_fields = ("novel", "chapter", "name", "content_html", "created_at")
+    exclude = ("user", "parent_id", "reply_id", "content")
     list_display = ("id", "novel", "name", "content_html", "created_at")
 
     def content_html(self, obj):

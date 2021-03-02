@@ -157,7 +157,7 @@ class ReportAdmin(BaseActionAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(BaseActionAdmin):
-    ordering = ("novel", "-id")
+    ordering = ("-id", )
     readonly_fields = ("novel", "chapter", "name", "content_html", "created_at")
     exclude = ("user", "parent_id", "reply_id", "content")
     list_display = ("id", "novel", "name", "content_html", "created_at")

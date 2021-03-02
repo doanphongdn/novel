@@ -111,6 +111,7 @@ class NovelSettingAdmin(BaseActionAdmin):
 class CDNNovelFileAdmin(BaseActionAdmin):
     list_display = ("id", "cdn", "chapter", "type", "hash_origin_url", "retry", "full")
     search_fields = ("cdn", "chapter", "hash_origin_url", "url")
+    readonly_fields = ("chapter",)
 
 
 @admin.register(CDNServer)

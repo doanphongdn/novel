@@ -1,7 +1,7 @@
 LOGIN_REDIRECT_URL = '/'
 SOCIALACCOUNT_ADAPTER = 'custom_allauth.socialaccount.adapter.CustomSocialAccountAdapter'
 ACCOUNT_ADAPTER = 'custom_allauth.account.adapter.CustomAccountAdapter'
-
+SOCIALACCOUNT_QUERY_EMAIL = True
 AUTHENTICATION_BACKENDS = [
     # # Needed to login by username in Django admin, regardless of `allauth`
     # 'django.contrib.auth.backends.ModelBackend',

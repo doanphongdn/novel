@@ -23,4 +23,8 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         UserAction.sync_histories(request, sociallogin.user)
         super().pre_social_login(request, sociallogin)
 
+    def is_open_for_signup(self, request, sociallogin):
+        return False
+
+
 

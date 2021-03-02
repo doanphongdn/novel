@@ -10,7 +10,7 @@ from django.views.decorators.cache import never_cache
 
 from django_cms.admin import BaseActionAdmin
 from django_cms.models import CDNServer
-from novel.models import CDNNovelFile, Genre, Novel, NovelChapter, NovelSetting
+from novel.models import CDNNovelFile, Genre, Novel, NovelChapter, NovelSetting, Status, NovelReport, Comment
 
 
 class NovelForm(forms.ModelForm):
@@ -26,11 +26,6 @@ class NovelForm(forms.ModelForm):
     class Meta:
         model = Novel
         fields = '__all__'
-
-
-@admin.register(Genre)
-class GenreAdmin(BaseActionAdmin):
-    list_display = ("id", "name", "slug", "active")
 
 
 @admin.register(Novel)
@@ -121,7 +116,7 @@ class CDNNovelFileAdmin(BaseActionAdmin):
 class CDNServerAdmin(BaseActionAdmin):
     list_display = ("id", "name", "server_id", "endpoint", "last_run", "status")
 
-    
+
 class AdminSiteExt(admin.AdminSite):
     @never_cache
     def index(self, request, extra_context=None):
@@ -141,3 +136,24 @@ class AdminSiteExt(admin.AdminSite):
         request.current_app = self.name
 
         return TemplateResponse(request, self.index_template or 'admin/index.html', context)
+
+
+@admin.register(Status)
+class StatusAdmin(BaseActionAdmin):
+    list_display = ("id", "name", "active")
+
+
+@admin.register(Genre)
+class GenreAdmin(BaseActionAdmin):
+    list_display = ("id", "name", "style_color", "slug", "active")
+
+
+@admin.register(NovelReport)
+class ReportAdmin(BaseActionAdmin):
+    list_display = ("id", "user", "novel", "chapter", "content")
+
+
+@admin.register(Comment)
+class CommentAdmin(BaseActionAdmin):
+    ordering = ("novel", "-id")
+    list_display = ("id", "novel", "name", "content", "created_at")

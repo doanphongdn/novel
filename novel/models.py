@@ -73,6 +73,7 @@ class Genre(models.Model):
     name = models.CharField(max_length=250, unique=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify,
                          max_length=250, blank=True, unique=True, null=True)
+    style_color = models.CharField(max_length=50, default='', blank=True, null=True)
     active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -597,3 +598,6 @@ class NovelReport(models.Model):
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE, null=True, blank=True)
     chapter = models.ForeignKey(NovelChapter, on_delete=models.CASCADE, null=True, blank=True)
     content = models.TextField()
+
+    # Datetime
+    created_at = models.DateTimeField(auto_now_add=True, null=True)

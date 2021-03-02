@@ -6,6 +6,7 @@ from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.admin.views.main import ChangeList
 from django.template.response import TemplateResponse
+from django.utils.html import format_html
 from django.views.decorators.cache import never_cache
 
 from django_cms.admin import BaseActionAdmin
@@ -156,4 +157,7 @@ class ReportAdmin(BaseActionAdmin):
 @admin.register(Comment)
 class CommentAdmin(BaseActionAdmin):
     ordering = ("novel", "-id")
-    list_display = ("id", "novel", "name", "content", "created_at")
+    list_display = ("id", "novel", "name", "content_html", "created_at")
+
+    def content_html(self, obj):
+        return format_html(obj.content)

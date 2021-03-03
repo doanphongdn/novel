@@ -55,10 +55,6 @@ urlpatterns = [
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
 
-    path('web/sitemap-chapter.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemap_chapters}),
-    path('web/sitemap-chapter-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemap_chapters},
-         name='django.contrib.sitemaps.views.sitemap'),
-
     # API URL
     path('api/novels', NovelAPIView.as_view()),
     path('api/novels/<str:src_campaign_code>', NovelAPIView.as_view()),

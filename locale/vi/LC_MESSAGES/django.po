@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-28 23:35+0700\n"
+"POT-Creation-Date: 2021-03-03 22:14+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: novel/views/novel.py:34
+#: novel/views/novel.py:35
 msgid ""
 "Thank you for sending us errors, we will check and process as soon as "
 "possible."
@@ -46,26 +46,42 @@ msgstr "Không tồn tại"
 msgid "Unknown content"
 msgstr "Nội dung không xác định"
 
-#: templates/novel/includes/chapter_content.html:11
-#: templates/novel/includes/chapter_content.html:14
+#: templates/novel/includes/base_navbar_menu.html:28
+#: templates/novel/includes/base_navbar_menu.html:71
+msgid "Login"
+msgstr "Đăng nhập"
+
+#: templates/novel/includes/base_navbar_menu.html:34
+#: templates/novel/includes/base_navbar_menu.html:77
+msgid "Register"
+msgstr "Đăng ký"
+
+#: templates/novel/includes/breadcrumb.html:4
+msgid "Home"
+msgstr "Trang chủ"
+
+#: templates/novel/includes/chapter_content.html:12
+#: templates/novel/includes/chapter_content.html:97
+msgid "Next"
+msgstr "Sau"
+
+#: templates/novel/includes/chapter_content.html:17
+#, fuzzy
+#| msgid "Chapter List"
+msgid "Chapter list"
+msgstr "Chương"
+
+#: templates/novel/includes/chapter_content.html:20
+#: templates/novel/includes/chapter_content.html:103
 msgid "Prev"
 msgstr "Trước"
 
-#: templates/novel/includes/chapter_content.html:28
-msgid "Chapter List"
-msgstr "Chương"
-
-#: templates/novel/includes/chapter_content.html:37
+#: templates/novel/includes/chapter_content.html:29
 #: templates/novel/includes/novel_info.html:86
 msgid "Error report"
 msgstr "Báo lỗi"
 
-#: templates/novel/includes/chapter_content.html:47
-#: templates/novel/includes/chapter_content.html:50
-msgid "Next"
-msgstr "Sau"
-
-#: templates/novel/includes/chapter_content.html:70
+#: templates/novel/includes/chapter_content.html:42
 msgid ""
 "Please visit this chapter after 5 minutes if your browser cannot load these "
 "images now."

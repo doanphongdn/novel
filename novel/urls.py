@@ -56,6 +56,7 @@ urlpatterns = [
     path('api/novels', NovelAPIView.as_view()),
     path('api/novels/<str:src_campaign_code>', NovelAPIView.as_view()),
     path('api/chapters', ChapterAPIView.as_view()),
+    path('api/chapters/<str:src_campaign_code>', ChapterAPIView.as_view()),
 
     path('', NovelIndexView.as_view(), name="home"),
     path('search', NovelDetailView.as_view(), name="novel_search"),
@@ -79,7 +80,6 @@ urlpatterns = [
     path(settings.NOVEL_GENRE_URL + '/<str:genre>', NovelAllView.as_view(), name="novel_genre"),
     path(settings.NOVEL_PAGE_URL + '/<str:slug>', PageView.as_view(), name="page_view"),
     path(settings.NOVEL_ACCOUNT_URL + '/<str:tab_name>', UserProfileView.as_view(), name="user_profile"),
-
 
     path('images/<str:img>', stream.stream_image, name="stream_image"),
     path('images/thumbnail/<str:img>', stream.stream_image, name="stream_thumbnail_image"),

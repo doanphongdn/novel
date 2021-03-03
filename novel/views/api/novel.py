@@ -253,8 +253,9 @@ class NovelAPIView(BaseAPIView):
 
 class ChapterAPIView(BaseAPIView):
     def get(self, request, *args, **kwargs):
+        src_campaign_code = kwargs.get("src_campaign_code")
         state = request.query_params.get("state")
-        if state != "noupdated":
+        if not src_campaign_code or state != "noupdated":
             return Response({}, status=200)
 
         try:
@@ -262,7 +263,8 @@ class ChapterAPIView(BaseAPIView):
         except:
             limit = self.api_limit
 
-        chapter_list = NovelChapter.objects.filter(chapter_updated=False, active=True).all()[0:limit]
+        chapter_list = NovelChapter.objects.filter(novel__src_campaign=src_campaign_code, chapter_updated=False,
+                                                   active=True).all()[0:limit]
         chapter_urls = []
         for chapter in chapter_list:
             chapter_urls.append(chapter.src_url)

@@ -88,7 +88,7 @@ class Command(BaseCommand):
         if not img_ignoring:
             return
         print('[Selenium Scraper] Query chapters...')
-        query = reduce(operator.and_, (Q(images_content__icontains=item) for item in img_ignoring))
+        query = reduce(operator.or_, (Q(images_content__icontains=item) for item in img_ignoring))
         chapters = NovelChapter.objects.filter(query)
         if not chapters:
             print('[Selenium Scraper] No chapter is invalid')

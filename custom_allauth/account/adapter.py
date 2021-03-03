@@ -8,6 +8,3 @@ class CustomAccountAdapter(DefaultAccountAdapter):
     def get_login_redirect_url(self, request):
         return request.COOKIES.get('_redirect_url') or settings.LOGIN_REDIRECT_URL or "/"
 
-    def is_open_for_signup(self, request):
-        return False
-

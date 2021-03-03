@@ -91,7 +91,6 @@ class ChapterView(NovelBaseView):
                     request.session["chapters_viewed"] = chapters_viewed
                     # request.session.set_expiry(3600)
 
-
         else:
             # TODO: define 404 page
             # direct to homepage

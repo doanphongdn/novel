@@ -38,9 +38,6 @@ sitemaps = {
     'genre': GenreSitemap,
     'static': StaticViewSitemap,
     'novels': NovelSitemap,
-}
-
-sitemap_chapters = {
     'chapters': NovelChapterSitemap,
 }
 

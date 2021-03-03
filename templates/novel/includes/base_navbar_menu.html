@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load cache %}
 <ul class="navbar-nav ml-auto navbar-header-menu">
     {% if enable_auth_menu %}
@@ -24,13 +25,13 @@
             <li class="nav-item d-lg-none">
                 <a class="nav-link nav-link-icon btn-login" href="#" data-toggle="modal" data-target="#modal-login">
                     <i class="fa fa-sign-in"></i>
-                    <span class="nav-link-inner--text">Login</span>
+                    <span class="nav-link-inner--text">{% translate "Login" %}</span>
                 </a>
             </li>
             <li class="nav-item d-lg-none">
                 <a class="nav-link nav-link-icon btn-register" href="#" data-toggle="modal" data-target="#modal-login">
                     <i class="fa fa-user-plus"></i>
-                    <span class="nav-link-inner--text">Register</span>
+                    <span class="nav-link-inner--text">{% translate "Register" %}</span>
                 </a>
             </li>
         {% endif %}
@@ -67,13 +68,13 @@
             <li class="nav-item d-none d-lg-block">
                 <a class="nav-link nav-link-icon btn-login" href="#" data-toggle="modal" data-target="#modal-login">
                     <i class="fa fa-sign-in"></i>
-                    <span class="nav-link-inner--text">Login</span>
+                    <span class="nav-link-inner--text">{% translate "Login" %}</span>
                 </a>
             </li>
             <li class="nav-item d-none d-lg-block">
                 <a class="nav-link nav-link-icon btn-register" href="#" data-toggle="modal" data-target="#modal-login">
                     <i class="fa fa-user-plus"></i>
-                    <span class="nav-link-inner--text">Register</span>
+                    <span class="nav-link-inner--text">{% translate "Register" %}</span>
                 </a>
             </li>
         {% endif %}

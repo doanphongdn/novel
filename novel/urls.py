@@ -38,6 +38,9 @@ sitemaps = {
     'genre': GenreSitemap,
     'static': StaticViewSitemap,
     'novels': NovelSitemap,
+}
+
+sitemap_chapters = {
     'chapters': NovelChapterSitemap,
 }
 
@@ -50,6 +53,10 @@ urlpatterns = [
 
     path('web/sitemap.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemaps}),
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},
+         name='django.contrib.sitemaps.views.sitemap'),
+
+    path('web/sitemap-chapter.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemap_chapters}),
+    path('web/sitemap-chapter-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemap_chapters},
          name='django.contrib.sitemaps.views.sitemap'),
 
     # API URL

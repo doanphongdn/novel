@@ -368,7 +368,7 @@ class Command(BaseCommand):
             if max_thread <= len(running_cdn):
                 print('[CDN Processing Files] Exceed %s CDN Server for processing... Stopped!' % max_thread)
             available_cdn = [cdn for idx, cdn in enumerate(active_cdn) if
-                             cdn.status == 'stopped' and idx + len(running_cdn) < max_thread]
+                             cdn.status == 'stopped' or idx + len(running_cdn) < max_thread]
             if not available_cdn:
                 print('[CDN Processing Files] Not Found available CDN Server for processing... Stopped!')
 

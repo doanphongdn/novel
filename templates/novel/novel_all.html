@@ -4,6 +4,25 @@
     <meta name="thumbnail" content="{{ setting.meta_img }}"/>
 {% endblock %}
 {% block content %}
+    <div class="row mb-3 filter-advanced">
+        <div class="col-12">
+            <div class="widget-title">
+                <label><i class="fa fa-sort-alpha-asc"></i>SẮP XẾP</label>
+            </div>
+        </div>
+        <div class="col-12 mb-3">
+            {% for id, status in status_groups.items %}
+                <a class="btn btn-sm {% if current_status == id %}btn-primary{% else %}btn-outline-primary{% endif %}"
+                   href="{{ current_path }}?status={{ id }}">{{ status.status_name }}</a>
+            {% endfor %}
+        </div>
+        <div class="col-12 mb-3">
+            {% for link in links %}
+                <a class="btn btn-sm {% if current_path == link.url %}btn-warning{% else %}btn-outline-warning{% endif %}"
+                   href="{{ link.url }}?status={{ current_status }}">{{ link.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
     <div class="row">
         {{ include_html }}
     </div>

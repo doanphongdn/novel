@@ -1,7 +1,8 @@
 from django_cms.utils.cache_manager import CacheManager
-from django_cms.models import PageTemplate
+from django_cms.models import PageTemplate, Link
 from django_cms import settings
-from novel.models import Genre
+from django_cms.utils.include_mapping import IncludeManager
+from novel.models import Genre, Status
 from novel.views.base import NovelBaseView
 
 
@@ -10,12 +11,12 @@ class NovelAllView(NovelBaseView):
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
-
+        status = request.GET.get("status", 0)
         genre = kwargs.get('genre')
         novel_type = kwargs.get('novel_type')
         default_config = genre or novel_type
 
-        tmpl = CacheManager(PageTemplate, **{"page_file": "novel_all"}).get_from_cache()
+        page_template = IncludeManager.get_page_template('novel_all')
         extra_data = {
             "novel_list": {
                 "page": request.GET.get('page') or 1,
@@ -24,7 +25,7 @@ class NovelAllView(NovelBaseView):
         }
 
         if genre:
-            genre_pre_title = tmpl.params.get("genre_pre_title") or ""
+            genre_pre_title = page_template.params.get("genre_pre_title") or ""
             genre_cache = CacheManager(Genre, **{"slug": genre}).get_from_cache(get_all=True)
             genre_obj = genre_cache[0] if genre_cache else None
             extra_data['novel_list'].update({
@@ -33,7 +34,20 @@ class NovelAllView(NovelBaseView):
                 "icon": "fa fa-cubes",
             })
 
+        status_groups = page_template.params.get("filter_status_groups") or {}
+        link_objs = CacheManager(Link, **{"type": 'novel_filters'}).get_from_cache(get_all=True)
+        status_ids = status_groups.get(str(status), {}).get("status_group", [])
+        status_active_btn = {status: 'btn-' for status in status_groups}
+        if status_ids:
+            extra_data['novel_list'].update({
+                "filter_by": {'status_id__in': status_ids},
+            })
+
         response.context_data.update({
+            'current_status': status,
+            'current_path': request.path,
+            'status_groups': status_groups,
+            'links': link_objs,
             'include_html': self.incl_manager.render_include_html('novel_all', extra_data=extra_data,
                                                                   request_param_code=default_config),
         })

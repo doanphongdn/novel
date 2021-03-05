@@ -13,6 +13,12 @@ class IncludeManager(object):
         self.TEMPLATE_INCLUDE_MAPPING = mapping
         self.request_hash = None
 
+    @classmethod
+    def get_page_template(cls, tmpl_code):
+        # Get template from cache
+        template = CacheManager(PageTemplate, **{"page_file": tmpl_code}).get_from_cache()
+        return template
+
     def set_request_hash(self, request):
         """
         Set unique hash for each request from client to caching

@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.views.decorators.cache import never_cache
 
-from django_cms.admin import BaseActionAdmin
+from django_cms.admin import BaseActionAdmin, ActionAdmin
 from django_cms.models import CDNServer
 from novel.models import CDNNovelFile, Genre, Novel, NovelChapter, NovelSetting, Status, NovelReport, Comment
 
@@ -67,9 +67,9 @@ class CustomChangeList(ChangeList):
 
 
 @admin.register(NovelChapter)
-class NovelChapterAdmin(BaseActionAdmin):
+class NovelChapterAdmin(ActionAdmin):
     form = NovelChapterForm
-    list_display = ("id", "name", "novel", "chapter_updated", "created_at", "updated_at")
+    list_display = ("id", "name", "novel", "chapter_updated", "created_at", "updated_at", "active")
     search_fields = ("novel__id", "novel__name", "novel_slug", "name", "slug")
 
     actions = ("chapter_updated_true", "chapter_updated_false")

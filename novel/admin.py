@@ -72,7 +72,7 @@ class NovelChapterAdmin(ActionAdmin):
     list_display = ("id", "name", "novel", "chapter_updated", "created_at", "updated_at", "active")
     search_fields = ("novel__id", "novel__name", "novel_slug", "name", "slug")
 
-    actions = ("chapter_updated_true", "chapter_updated_false")
+    actions = ("active", "deactive", "chapter_updated_true", "chapter_updated_false")
 
     def get_changelist(self, request, **kwargs):
         return CustomChangeList

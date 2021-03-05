@@ -59,13 +59,6 @@ class NovelChapterForm(forms.ModelForm):
         fields = '__all__'
 
 
-class CustomChangeList(ChangeList):
-    def get_queryset(self, request):
-        queryset = super(CustomChangeList, self).get_queryset(request)
-
-        return queryset[:10000]
-
-
 @admin.register(NovelChapter)
 class NovelChapterAdmin(ActionAdmin):
     form = NovelChapterForm
@@ -73,9 +66,6 @@ class NovelChapterAdmin(ActionAdmin):
     search_fields = ("novel__id", "novel__name", "novel_slug", "name", "slug")
 
     actions = ("active", "deactive", "chapter_updated_true", "chapter_updated_false")
-
-    def get_changelist(self, request, **kwargs):
-        return CustomChangeList
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)

@@ -12,6 +12,12 @@ def unicode_slugify(name):
     return slugify(unidecode(name).replace(".", "-")).strip("-")
 
 
+PAGE_TYPE = [
+    ('text/plain', 'text/plain'),
+    ('html', 'HTML'),
+]
+
+
 class HtmlPage(models.Model):
     class Meta:
         db_table = 'cms_pages'
@@ -20,7 +26,7 @@ class HtmlPage(models.Model):
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify,
                          max_length=250, unique=True)
     content = models.TextField(blank=True, null=True)
-    type = models.CharField(max_length=30, blank=True, default='novel')
+    type = models.CharField(max_length=30, blank=True, default='html', choices=PAGE_TYPE)
     active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -117,6 +123,7 @@ class InludeTemplate(models.Model):
     def __str__(self):
         return self.code
 
+
 CAMPAIGN_STATUS = [
     ('running', 'RUNNING'),
     ('stopped', 'STOPPED'),
@@ -155,4 +162,3 @@ class CDNServer(models.Model):
     @classmethod
     def get_active_cdn(cls):
         return cls.objects.filter(active=True).all()
-

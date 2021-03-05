@@ -72,6 +72,8 @@ class NovelChapterAdmin(BaseActionAdmin):
     list_display = ("id", "name", "novel", "chapter_updated", "created_at", "updated_at")
     search_fields = ("novel__id", "novel__name", "novel_slug", "name", "slug")
 
+    actions = ("chapter_updated_true", "chapter_updated_false")
+
     def get_changelist(self, request, **kwargs):
         return CustomChangeList
 
@@ -91,6 +93,19 @@ class NovelChapterAdmin(BaseActionAdmin):
             content = zlib.compress(content.encode())
         obj.binary_content = content or None
         super().save_model(request, obj, form, change)
+
+    def chapter_updated_true(self, request, queryset):
+        for obj in queryset:
+            obj.chapter_updated = True
+            obj.save()
+
+    def chapter_updated_false(self, request, queryset):
+        for obj in queryset:
+            obj.chapter_updated = False
+            obj.save()
+
+    chapter_updated_true.short_description = "Chapter updated ->> TRUE"
+    chapter_updated_false.short_description = "Chapter updated ->> FALSE"
 
 
 @admin.register(NovelSetting)

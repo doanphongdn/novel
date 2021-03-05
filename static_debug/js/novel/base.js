@@ -65,5 +65,12 @@ $(document).ready(function (e) {
     };
     $('.lazyload').Lazy(lazy_param);
 
-
+    $('#navbar-danger').on('hidden.bs.collapse', function () {
+        $("body").css({"position": ""});
+        $("#backdrop").hide();
+    });
+    $('#navbar-danger').on('show.bs.collapse', function () {
+        $("body").css({"position": "fixed"});
+        $("#backdrop").show();
+    });
 });

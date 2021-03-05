@@ -6,6 +6,7 @@ from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.admin.views.main import ChangeList
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils.html import format_html
 from django.views.decorators.cache import never_cache
 
@@ -69,7 +70,7 @@ class CustomChangeList(ChangeList):
 class NovelChapterAdmin(BaseActionAdmin):
     form = NovelChapterForm
     list_display = ("id", "name", "novel", "chapter_updated", "created_at", "updated_at")
-    search_fields = ("name", "slug")
+    search_fields = ("novel__id", "novel__name", "novel_slug", "name", "slug")
 
     def get_changelist(self, request, **kwargs):
         return CustomChangeList
@@ -153,12 +154,24 @@ class GenreAdmin(BaseActionAdmin):
 @admin.register(NovelReport)
 class ReportAdmin(BaseActionAdmin):
     readonly_fields = ("user", "novel", "chapter", "content")
-    list_display = ("id", "user", "novel", "content")
+    list_display = ("id", "user", "novel_link", "chapter_link", "content")
+
+    @staticmethod
+    def novel_link(instance):
+        url = reverse('admin:%s_%s_change' % (instance.novel._meta.app_label,
+                                              instance.novel._meta.model_name), args=(instance.novel.id,))
+        return format_html(u'<a href="{}">{}</a>', url, instance.novel)
+
+    @staticmethod
+    def chapter_link(instance):
+        url = reverse('admin:%s_%s_change' % (instance.chapter._meta.app_label,
+                                              instance.chapter._meta.model_name), args=(instance.chapter.id,))
+        return format_html(u'<a href="{}">{}</a>', url, instance.chapter)
 
 
 @admin.register(Comment)
 class CommentAdmin(BaseActionAdmin):
-    ordering = ("-id", )
+    ordering = ("-id",)
     readonly_fields = ("novel", "chapter", "name", "content_html", "created_at")
     exclude = ("user", "parent_id", "reply_id", "content")
     list_display = ("id", "novel", "name", "content_html", "created_at")

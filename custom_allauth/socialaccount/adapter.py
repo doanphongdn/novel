@@ -11,6 +11,7 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
     def save_user(self, request, sociallogin, form=None):
         user = super().save_user(request, sociallogin, form)
         NovelUserProfile(user_id=user.id, avatar=sociallogin.account.get_avatar_url()).save()
+        UserAction.sync_histories(request, user)
         return user
 
     def pre_social_login(self, request, sociallogin):
@@ -23,7 +24,9 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
             sociallogin.user = social_account.user
 
         # Sync history to user after login success
-        UserAction.sync_histories(request, sociallogin.user)
+        if sociallogin.user:
+            UserAction.sync_histories(request, sociallogin.user)
+
         super().pre_social_login(request, sociallogin)
 
 

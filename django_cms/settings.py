@@ -266,9 +266,13 @@ CKEDITOR_CONFIGS = {
              'Find',
              'Replace', '-', 'Outdent', 'Indent', '-', 'Print'],
             ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Source'],
         ],
         'height': 500,
         'width': 1000,
+        'extraPlugins': ','.join([
+            'sourcearea',
+        ]),
     },
     'comment': {
         'toolbar': [

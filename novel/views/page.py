@@ -1,3 +1,5 @@
+from django.http import HttpResponse
+
 from django_cms.models import HtmlPage
 from novel.views.base import NovelBaseView
 
@@ -9,7 +11,7 @@ class PageView(NovelBaseView):
         slug = kwargs.get('slug')
         page = HtmlPage.objects.filter(slug=slug, active=True).first()
         if page.type != 'html':
-            self.content_type = page.type
+            return HttpResponse(page.content if page else '', content_type=page.type)
 
         response = super().get(request, *args, **kwargs)
         response.context_data.update({

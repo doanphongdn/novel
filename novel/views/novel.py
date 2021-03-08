@@ -93,7 +93,7 @@ class NovelDetailView(NovelBaseView):
         if not slug:
             # TODO: define 404 page
             # direct to homepage
-            return redirect('home')
+            return redirect('home', permanent=True)
 
         novel = NovelCache(Novel, **{"slug": slug}).get_from_cache()
         if novel:

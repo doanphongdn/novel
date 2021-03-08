@@ -145,7 +145,9 @@ class NovelDetailView(NovelBaseView):
                 "related_novels": novels
             }
         }
+        latest_chap = novel.novel_flat.latest_chapter.get("name") or ""
         domain = response.context_data.get("setting", {}).get("domain", "")
+        response.context_data["setting"]["title"] = "%s [%s]" % (response.context_data["setting"]["title"], latest_chap)
         response.context_data.update({
             'novel_html': self.incl_manager.render_include_html("novel", extra_data=extra_data, request=request),
             'novel': novel,

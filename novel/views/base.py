@@ -45,6 +45,7 @@ class NovelBaseView(TemplateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.incl_manager = IncludeManager(TEMPLATE_INCLUDE_MAPPING)
+        self.base_setting = {}
 
     def get(self, request, *args, **kwargs):
         # Set hash for each request to use cache
@@ -67,6 +68,7 @@ class NovelBaseView(TemplateView):
             title = novel_setting.title
             current_site = get_current_site(request)
             domain = current_site.domain
+            self.base_setting["domain"] = domain
             if 'http' not in domain:
                 protocol = 'https' if request.is_secure() else 'http'
                 domain = protocol + "://" + domain

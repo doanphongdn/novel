@@ -28,11 +28,15 @@ class NovelAllView(NovelBaseView):
             genre_pre_title = page_template.params.get("genre_pre_title") or ""
             genre_cache = CacheManager(Genre, **{"slug": genre}).get_from_cache(get_all=True)
             genre_obj = genre_cache[0] if genre_cache else None
+            title = genre_pre_title + " - " + genre_obj.name if genre_obj else settings.NOVEL_GENRE_URL.upper()
             extra_data['novel_list'].update({
                 "filter_by": {"genres__slug": genre},
-                "title": genre_pre_title + " - " + genre_obj.name if genre_obj else settings.NOVEL_GENRE_URL.upper(),
+                "title": title,
                 "icon": "fa fa-cubes",
             })
+            response.context_data["setting"]["title"] = \
+                (genre_pre_title.title() + " " + genre_obj.name if genre_obj else "") \
+                + " - " + self.base_setting.get("domain")
 
         status_groups = page_template.params.get("filter_status_groups") or {}
         link_objs = CacheManager(Link, **{"type": 'novel_filters'}).get_from_cache(get_all=True)

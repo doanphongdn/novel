@@ -24,7 +24,7 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
             sociallogin.user = social_account.user
 
         # Sync history to user after login success
-        if sociallogin.user:
+        if sociallogin.user.id:
             UserAction.sync_histories(request, sociallogin.user)
 
         super().pre_social_login(request, sociallogin)

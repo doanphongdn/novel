@@ -20,7 +20,7 @@ msgstr ""
 
 #: novel/models.py:182
 msgid "The fastest and most complete updated {} comics at {}."
-msgstr ""
+msgstr "Truyện tranh {} được cập nhật nhanh nhất và đầy đủ nhất tại {}."
 
 #: novel/views/novel.py:35
 msgid ""

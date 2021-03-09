@@ -41,8 +41,11 @@ class NovelListTemplateInclude(BaseTemplateInclude):
         button_type_urls = {}
         if show_button_type is True:
             params = {}
-            if int(page) > 1:
-                params = {'page': page}
+            try:
+                if int(page) > 1:
+                    params = {'page': page}
+            except:
+                params = {'page': 1}
 
             button_type_urls = {
                 'grid': '#',

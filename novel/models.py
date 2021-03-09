@@ -180,6 +180,10 @@ class Novel(models.Model):
             'dateModified': self.latest_updated_time.strftime('%Y-%m-%d'),
             "description": _("The fastest and most complete updated {} comics at {}.").format(self.name, domain),
             "aggregateRating": {
+                "itemReviewed": {
+                    "@type": "Book",
+                    "name": self.name,
+                },
                 "@type": "AggregateRating",
                 "ratingValue": self.vote,
                 "bestRating": 5,

@@ -20,7 +20,6 @@ from unidecode import unidecode
 
 from django_cms import settings
 from django_cms.models import CDNServer
-from django_cms.settings import SITE_URL
 from django_cms.utils.cache_manager import CacheManager
 
 

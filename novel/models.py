@@ -179,7 +179,7 @@ class Novel(models.Model):
             "datePublished": self.created_at.strftime('%Y-%m-%d'),
             "dateCreated": self.created_at.strftime('%Y-%m-%d'),
             'dateModified': self.latest_updated_time.strftime('%Y-%m-%d'),
-            "description": _("""The fastest and most complete updated %s comics at %s.""" % (self.name, domain)),
+            "description": _("The fastest and most complete updated {} comics at {}.").format(self.name, domain),
             "aggregateRating": {
                 "@type": "AggregateRating",
                 "ratingValue": self.vote,

@@ -164,5 +164,8 @@
 {% block scripts %}{% endblock %}
 {% javascript 'base' %}
 {% javascript 'user' %}
+{% if adsbygoogle %}
+  <script data-ad-client="{{ adsbygoogle }}" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+{% endif %}
 </body>
 </html>

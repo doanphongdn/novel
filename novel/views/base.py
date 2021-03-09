@@ -100,6 +100,7 @@ class NovelBaseView(TemplateView):
         base_navbar = self.incl_manager.render_include_html('base_navbar', extra_data=extra_data, request=request)
         kwargs["base_navbar"] = base_navbar
         kwargs["recapcha_site_key"] = settings.GOOGLE_RECAPTCHA_SITE_KEY
+        kwargs["adsbygoogle"] = settings.GOOGLE_ADS
         kwargs["css_style"] = settings.CSS_STYLE
         kwargs["setting"] = {
             "title": title,

@@ -17,22 +17,24 @@ import os
 
 from django.conf.urls import url
 from django.contrib.sitemaps import views as sitemaps_views
+from django.http import HttpResponse
 from django.urls import path
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 
 from django_cms import settings
 from django_cms.utils.view_base import view_dmca_validation, view_google_site_verification
-from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap, NovelChapterSitemap
+from novel.sitemap import GenreSitemap, NovelChapterSitemap, NovelSitemap, StaticViewSitemap
 from novel.views import stream
-from novel.views.api.novel import NovelAPIView, ChapterAPIView
+from novel.views.api.novel import ChapterAPIView, NovelAPIView
 from novel.views.chapter import ChapterView
 from novel.views.includes.comment import CommentManager
 from novel.views.index import NovelIndexView
-from novel.views.novel import NovelDetailView, NovelAction
+from novel.views.novel import NovelAction, NovelDetailView
 from novel.views.novel_all import NovelAllView
 from novel.views.page import PageView
-from novel.views.user import UserProfileView, UserAction
+from novel.views.user import UserAction, UserProfileView
+
 
 sitemaps = {
     'genre': GenreSitemap,
@@ -47,6 +49,7 @@ urlpatterns = [
     url(os.environ.get('DMCA_VALIDATION_URL', 'dmca-validation.html'), view_dmca_validation,
         name="dmca_verification"),
     url(r'^robots\.txt$', TemplateView.as_view(template_name="novel/robots.txt", content_type='text/plain')),
+    url(r'^ads\.txt$', TemplateView.as_view(template_name="novel/ads.txt", content_type='text/plain')),
 
     path('web/sitemap.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemaps}),
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},

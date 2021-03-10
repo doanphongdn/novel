@@ -3,39 +3,16 @@
 {% load pipeline %}
 {% block meta %}
     <meta name="thumbnail" content="{{ thumbnail_image }}"/>
+    {% load jsonld %}
+    {% json_ld_for novel %}
 {% endblock %}
 {% block content %}
-    {% load cache %}
-    {% cache 500 json_ld %}
-        {% load opengraph %}
-        {% og_for novel %}
-        {% load jsonld %}
-        {% json_ld_for novel %}
-    {% endcache %}
-
     <div class="row">
         {{ novel_html }}
     </div>
 {% endblock %}
 {% block stylesheet %}
     <link rel=preload href="{% static "dist/sweetalert2/sweetalert2.min.css" %}">
-        <!--
-  <PageMap>
-    <DataObject type="publication">
-      <Attribute name="author" value="{{ novel.authors_name }}"/>
-      <Attribute name="date" value="{{ novel.latest_updated_time }}"/>
-      <Attribute name="category" value="{{ novel.genres_name }}"/>
-    </DataObject>
-    <DataObject type="thumbnail">
-      <Attribute name="src" value="{{ thumbnail_image }}"/>
-    </DataObject>
-     <DataObject type="document">
-        <Attribute name="title">{{ novel.name }}</Attribute>
-        <Attribute name="author">{{ novel.authors_name }}</Attribute>
-        <Attribute name="review">{{ novel.vote }}</Attribute>
-     </DataObject>
-  </PageMap>
--->
 {% endblock %}
 {% block scripts %}
     <script type="text/javascript" src="{% static 'dist/sweetalert2/sweetalert2.all.min.js' %}"></script>

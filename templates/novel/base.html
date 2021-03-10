@@ -44,8 +44,8 @@
 
     <link rel="shortcut icon" href="{{ setting.favicon }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel=preload as="style" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
-    <link rel=preload as="style" href="{% static "argon/assets/fonts/fontawesome-webfont.woff2" %}?v=4.7.0">
+    <link rel=preload as="font" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
+    <link rel=preload as="font" href="{% static "argon/assets/fonts/fontawesome-webfont.woff2" %}?v=4.7.0">
     {% stylesheet 'base' %}
     {% if css_style %}{% stylesheet css_style %}{% endif %}
     {% block stylesheet %}{% endblock %}

@@ -15,10 +15,12 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 from unidecode import unidecode
 
 from django_cms import settings
 from django_cms.models import CDNServer
+from django_cms.utils.cache_manager import CacheManager
 
 
 def datetime2string(value):
@@ -139,69 +141,58 @@ class Novel(models.Model):
     def __str__(self):
         return self.name
 
-    @property
+    @cached_property
     def structured_data(self):
         """
         This property cached in html template
         :return:
         """
-        first_chapter = self.first_chapter
-        latest_chapter = self.latest_chapter
-        site_url = "https://" + Site.objects.get_current().domain
-        url = site_url + self.get_absolute_url()
+        novel_setting = CacheManager(NovelSetting).get_from_cache()
+        domain = Site.objects.get_current().domain
+        site_url = "https://" + domain
         data = {
             '@id': '#novel',
-            '@type': 'Book',
-            'name': self.name,
-            'genre': [
-                site_url + genre.get_absolute_url()
-                for genre in self.genres.all()
-            ],
+            "@type": "Article",
+            'headline': self.name,
             'author': [{
                 '@type': 'Person',
                 'name': author.name,
             } for author in self.authors.all()],
+            'genre': [
+                genre.name
+                for genre in self.genres.all()
+            ],
+            "publisher": {
+                "@type": "Organization",
+                "name": domain.title(),
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": site_url + novel_setting.logo.url
+                }
+            },
+            "url": site_url,
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": site_url + self.get_absolute_url()
+            },
+            "datePublished": self.created_at.strftime('%Y-%m-%d'),
+            "dateCreated": self.created_at.strftime('%Y-%m-%d'),
             'dateModified': self.latest_updated_time.strftime('%Y-%m-%d'),
-            'url': url,
+            "description": _("The fastest and most complete updated {} comics at {}.").format(self.name, domain),
             "aggregateRating": {
+                "itemReviewed": {
+                    "@type": "Book",
+                    "name": self.name,
+                },
                 "@type": "AggregateRating",
                 "ratingValue": self.vote,
+                "bestRating": 5,
                 "reviewCount": self.vote_total or 1,
             },
-            'hasPart': [
-            ]
-
         }
 
         if self.thumbnail_image:
-            data['image'] = self.thumbnail_image
-
-        if first_chapter:
-            data['hasPart'].append({
-                '@id': '#first',
-                "@type": [
-                    "Book",
-                    "PublicationVolume"
-                ],
-                "name": first_chapter.name,
-                "url": site_url + first_chapter.get_absolute_url(),
-                "isPartOf": "#novel",
-                "inLanguage": "vi",
-                "volumeNumber": "1",
-            })
-        if latest_chapter:
-            data['hasPart'].append({
-                '@id': '#latest',
-                "@type": [
-                    "Book",
-                    "PublicationVolume"
-                ],
-                "name": latest_chapter.name,
-                "url": site_url + latest_chapter.get_absolute_url(),
-                "isPartOf": "#novel",
-                "inLanguage": "vi",
-                "volumeNumber": self.chapter_total,
-            })
+            data['image'] = site_url + self.stream_thumbnail_image
 
         return data
 

@@ -12,7 +12,8 @@ from django.views.decorators.cache import never_cache
 
 from django_cms.admin import BaseActionAdmin, ActionAdmin
 from django_cms.models import CDNServer
-from novel.models import CDNNovelFile, Genre, Novel, NovelChapter, NovelSetting, Status, NovelReport, Comment
+from novel.models import CDNNovelFile, Genre, Novel, NovelChapter, NovelSetting, Status, NovelReport, Comment, \
+    NovelAdvertisementPlace, NovelAdvertisement
 
 
 class NovelForm(forms.ModelForm):
@@ -183,3 +184,14 @@ class CommentAdmin(BaseActionAdmin):
 
     def content_html(self, obj):
         return format_html(obj.content)
+
+
+@admin.register(NovelAdvertisementPlace)
+class NovelAdvertisementAdmin(BaseActionAdmin):
+    list_display = ("group", "code", "active")
+
+
+@admin.register(NovelAdvertisement)
+class NovelAdvertisementAdmin(BaseActionAdmin):
+    list_display = ("name", "ad_type", "active")
+    filter_horizontal = ("places",)

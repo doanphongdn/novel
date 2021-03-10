@@ -8,6 +8,7 @@ from novel.views.base import NovelBaseView
 
 class NovelAllView(NovelBaseView):
     template_name = "novel/novel_all.html"
+    ads_group_name = "novel_all"
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
@@ -41,11 +42,17 @@ class NovelAllView(NovelBaseView):
         status_groups = page_template.params.get("filter_status_groups") or {}
         link_objs = CacheManager(Link, **{"type": 'novel_filters'}).get_from_cache(get_all=True)
         status_ids = status_groups.get(str(status), {}).get("status_group", [])
-        status_active_btn = {status: 'btn-' for status in status_groups}
+
         if status_ids:
             extra_data['novel_list'].update({
                 "filter_by": {'status_id__in': status_ids},
             })
+
+        ads_data = response.context_data.get("ads_data", {})
+        extra_data['novel_list'].update({
+             "novel_all_top_ads": ads_data.get("novel_all_top"),
+             "novel_all_end_ads": ads_data.get("novel_all_end"),
+        })
 
         response.context_data.update({
             'current_status': status,

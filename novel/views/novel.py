@@ -41,6 +41,7 @@ class NovelAction(object):
 
 class NovelDetailView(NovelBaseView):
     template_name = "novel/novel.html"
+    ads_group_name = "novel_info"
 
     @staticmethod
     def update_hot_point(request):
@@ -122,19 +123,24 @@ class NovelDetailView(NovelBaseView):
             genres__in=novel.genres.filter(active=True).all()
         ).distinct().order_by("-view_total").exclude(id=novel.id).all()
 
+        ads_data = response.context_data.get("ads_data", {})
         extra_data = {
             "breadcrumb": {
                 "breadcrumb_data": breadcrumb_data,
             },
             "novel_info": {
                 "novel": novel,
+                "novel_info_ads": ads_data.get("novel_info_right"),
             },
             "chapter_list": {
                 "novel": novel,
                 "chap_page": chapter_page,
+                "chapter_list_before_ads": ads_data.get("novel_info_before_chap_list"),
+                "chapter_list_after_ads": ads_data.get("novel_info_after_chap_list"),
             },
             "comment": {
                 "novel": novel,
+                "comment_ads": ads_data.get("novel_info_before_comment"),
                 # Dont change cke_id, it using in base.js
                 "cke_novel_id": "cke_novel_id",
             },
@@ -145,7 +151,7 @@ class NovelDetailView(NovelBaseView):
                 "related_novels": novels
             }
         }
-        latest_chap = novel.novel_flat.latest_chapter.get("name") or ""
+        latest_chap = novel.novel_flat and novel.novel_flat.latest_chapter.get("name") or ""
         domain = response.context_data.get("setting", {}).get("domain", "")
         response.context_data["setting"]["title"] = "%s [%s]" % (response.context_data["setting"]["title"], latest_chap)
         response.context_data.update({

@@ -16,6 +16,7 @@ from novel.views.user import UserAction
 
 class ChapterView(NovelBaseView):
     template_name = "novel/chapter.html"
+    ads_group_name = "novel_chapter"
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
@@ -96,16 +97,20 @@ class ChapterView(NovelBaseView):
             # direct to homepage
             return redirect('/')  # or redirect('name-of-index-url')
 
+        ads_data = response.context_data.get("ads_data", {})
         extra_data = {
             "breadcrumb": {
                 "breadcrumb_data": breadcrumb_data,
             },
             "chapter_content": {
                 "chapter": chapter,
-                "novel": novel
+                "novel": novel,
+                "chapter_content_before_ads": ads_data.get("novel_chapter_before_content"),
+                "chapter_content_after_ads": ads_data.get("novel_chapter_after_content"),
             },
             "comment": {
                 "novel": novel,
+                "comment_ads": ads_data.get("novel_chapter_before_comment"),
                 # Dont change cke_id, it using in base.js
                 "cke_novel_id": "cke_novel_id",
             },

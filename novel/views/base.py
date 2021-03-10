@@ -1,10 +1,10 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.views.generic import TemplateView
 
+from django_cms import settings
 from django_cms.utils.cache_manager import CacheManager
 from django_cms.utils.include_mapping import IncludeManager
-from django_cms import settings
-from novel.models import NovelSetting, NovelUserProfile
+from novel.models import NovelSetting, NovelUserProfile, NovelAdvertisementPlace, NovelAdvertisement
 from novel.views.includes.base_auth_modal import BaseAuthModalTemplateInclude
 from novel.views.includes.base_footer_info import FooterInfotemplateInclude
 from novel.views.includes.base_navbar_menu import BaseNavbarTemplateInclude
@@ -41,6 +41,7 @@ TEMPLATE_INCLUDE_MAPPING = {
 
 
 class NovelBaseView(TemplateView):
+    ads_group_name = "base"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -125,6 +126,22 @@ class NovelBaseView(TemplateView):
         tmpl_htmls = self.incl_manager.get_include_htmls(tmpl_codes, request=request)
         for page_tmpl_code, html in tmpl_htmls.items():
             kwargs[page_tmpl_code] = html
+
+        device = 'pc' if request.user_agent.is_pc else 'mobile'
+        ads_places = CacheManager(NovelAdvertisementPlace,
+                                  **{'group__in': ['base', self.ads_group_name]}).get_from_cache(get_all=True)
+        ads_data = {}
+        for place in ads_places:
+            ads = CacheManager(NovelAdvertisement,
+                               **{'places__code': place.code,
+                                  'ad_type__in': ['all', device]}).get_from_cache(get_all=True)
+            for ad in ads:
+                if place.code not in ads_data:
+                    ads_data[place.code] = []
+
+                ads_data[place.code].append(ad)
+
+        kwargs["ads_data"] = ads_data
 
         response = super().get(request, *args, **kwargs)
         response.set_cookie('_redirect_url', request.build_absolute_uri())

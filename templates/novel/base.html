@@ -44,11 +44,17 @@
 
     <link rel="shortcut icon" href="{{ setting.favicon }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel=preload as="font" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
-    <link rel=preload as="font" href="{% static "argon/assets/fonts/fontawesome-webfont.woff2" %}?v=4.7.0">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
+    <link href="{% static "argon/assets/fonts/fontawesome-webfont.woff2" %}?v=4.7.0">
     {% stylesheet 'base' %}
     {% if css_style %}{% stylesheet css_style %}{% endif %}
     {% block stylesheet %}{% endblock %}
+    {% for ad in ads_data.base_header %}
+        {% autoescape off %}
+            {{ ad.ad_content }}
+        {% endautoescape %}
+    {% endfor %}
+    {% block ads_header %}{% endblock %}
 </head>
 <body>
 <div id="backdrop" style="display: none"></div>
@@ -95,7 +101,7 @@
                     </div>
                 </div>
                 <div class="collapse-close">
-                    <i class="fa fa-times navbar-toggler" aria-hidden="true"data-toggle="collapse"
+                    <i class="fa fa-times navbar-toggler" aria-hidden="true" data-toggle="collapse"
                        data-target="#navbar-danger"
                        aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation"></i>
                 </div>
@@ -112,8 +118,18 @@
     </div>
     <div class="row">
         <div class="container content-wrap">
-            {% block content %}
-            {% endblock %}
+            {% if ads_data.base_top %}
+                <div class="col-12">
+                    <div class="row">
+                        {% for ad in ads_data.base_top %}
+                            {% autoescape off %}
+                                {{ ad.ad_content }}
+                            {% endautoescape %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            {% block content %}{% endblock %}
         </div>
     </div>
 </div>
@@ -165,7 +181,8 @@
 {% javascript 'base' %}
 {% javascript 'user' %}
 {% if adsbygoogle %}
-  <script data-ad-client="{{ adsbygoogle }}" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script data-ad-client="{{ adsbygoogle }}" async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 {% endif %}
 </body>
 </html>

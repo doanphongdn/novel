@@ -1,9 +1,9 @@
-from django_cms.models import PageTemplate
 from novel.views.base import NovelBaseView
 
 
 class NovelIndexView(NovelBaseView):
     template_name = "novel/index.html"
+    ads_group_name = "index"
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)

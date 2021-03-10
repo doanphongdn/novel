@@ -21,6 +21,7 @@ from unidecode import unidecode
 from django_cms import settings
 from django_cms.models import CDNServer
 from django_cms.utils.cache_manager import CacheManager
+from django_cms.utils.helpers import code_validate
 
 
 def datetime2string(value):
@@ -592,3 +593,78 @@ class NovelReport(models.Model):
 
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+
+
+NOVEL_ADV_GROUPS = (
+    ('base', "BASE"),
+    ('index', "INDEX"),
+    ('novel_all', "NOVEL ALL"),
+    ('novel_info', "NOVEL INFO"),
+    ('novel_chapter', "NOVEL CHAPTER"),
+)
+NOVEL_ADV_PLACES = (
+    # Base, apply all page
+    ('base_header', _('BASE HEADER')),
+    ('base_top', _('BASE TOP')),
+
+    # Index page
+    ('index_header', _('INDEX HEADER')),
+    ('index_top', _('INDEX TOP')),
+    ('index_sidebar', _('INDEX SIDEBAR')),
+
+    # Novel all page
+    ('novel_all_header', _('NOVEL ALL HEADER')),
+    ('novel_all_top', _('NOVEL ALL TOP')),
+    ('novel_all_end', _('NOVEL ALL END')),
+
+    # Novel info page
+    ('novel_info_header', _('NOVEL INFO HEADER')),
+    ('novel_info_top', _('NOVEL INFO TOP')),
+    ('novel_info_right', _('NOVEL INFO RIGHT')),
+    ('novel_info_before_chap_list', _('NOVEL INFO BEFORE CHAP LIST')),
+    ('novel_info_after_chap_list', _('NOVEL INFO AFTER CHAP LIST')),
+    ('novel_info_before_comment', _('NOVEL INFO BEFORE COMMENT')),
+
+    # Novel chapter page
+    ('novel_chapter_header', _('NOVEL CHAPTER HEADER')),
+    ('novel_chapter_top', _('NOVEL CHAPTER TOP')),
+    ('novel_chapter_before_content', _('NOVEL CHPATER BEFORE IMAGE')),
+    ('novel_chapter_inside_content', _('NOVEL CHPATER INSIDE IMAGE')),
+    ('novel_chapter_after_content', _('NOVEL CHPATER AFTER IMAGE')),
+    ('novel_chapter_before_comment', _('NOVEL CHPATER BEFORE COMMENT')),
+)
+
+
+class NovelAdvertisementPlace(models.Model):
+    class Meta:
+        db_table = 'novel_advertisement_places'
+        ordering = ("group", "code")
+
+    group = models.CharField(max_length=50, choices=NOVEL_ADV_GROUPS)
+    code = models.CharField(max_length=50, choices=NOVEL_ADV_PLACES, unique=True)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        for val in NOVEL_ADV_PLACES:
+            if val[0] == self.code:
+                return val[1]
+
+        return self.code
+
+
+DEVICES = (('all', 'ALL'), ('mobile', 'MOBILE'), ('pc', 'DESKTOP'))
+
+
+class NovelAdvertisement(models.Model):
+    class Meta:
+        db_table = 'novel_advertisements'
+
+    name = models.CharField(max_length=250)
+    ad_type = models.CharField(max_length=50, choices=DEVICES, default='all')
+    ad_content = models.TextField()
+    places = models.ManyToManyField(NovelAdvertisementPlace, db_table="novel_adv_adv_place_rel")
+
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name

@@ -3,7 +3,23 @@
 {% block meta %}
     <meta name="thumbnail" content="{{ setting.meta_img }}"/>
 {% endblock %}
+{% block ads_header %}
+    {% for ad in ads_data.novel_all_header %}
+        {% autoescape off %}
+            {{ ad.ad_content }}
+        {% endautoescape %}
+    {% endfor %}
+{% endblock %}
 {% block content %}
+    {% if ads_data.novel_all_top %}
+        <div class="ads-area">
+            {% for ad in ads_data.novel_all_top %}
+                {% autoescape off %}
+                    {{ ad.ad_content }}
+                {% endautoescape %}
+            {% endfor %}
+        </div>
+    {% endif %}
     <div class="row mb-3 filter-advanced">
         <div class="col-12">
             <div class="widget-title">
@@ -26,4 +42,13 @@
     <div class="row">
         {{ include_html }}
     </div>
+    {% if ads_data.novel_all_end %}
+        <div class="ads-area">
+            {% for ad in ads_data.novel_all_end %}
+                {% autoescape off %}
+                    {{ ad.ad_content }}
+                {% endautoescape %}
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}

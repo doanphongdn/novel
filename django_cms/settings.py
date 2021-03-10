@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'django_json_widget',
     'structured_data',
     'django_backblaze_b2',
+    'django_user_agents',
     APP_NAME,
 ]
 
@@ -89,6 +90,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'pipeline.middleware.MinifyHTMLMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'django_cms.urls'
@@ -249,6 +251,8 @@ LOG_FILE = os.environ.get('LOG_FILE')
 
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
+
+USER_AGENTS_CACHE = 'default'
 
 CDN_FILE_FOLDER = os.environ.get('CDN_FILE_FOLDER', '/data/cdn/novel')
 

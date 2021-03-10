@@ -5,6 +5,7 @@ from os.path import basename, splitext
 from urllib.parse import urlparse
 
 import requests
+from django.db.models import QuerySet
 from django.templatetags.static import static
 
 from django_cms import settings

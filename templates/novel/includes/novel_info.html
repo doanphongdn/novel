@@ -14,10 +14,11 @@
                     <div class="novel-detail-wrap">
                         <div class="row">
                             <div class="col-12">
-
                                 <div class="novel-name">
                                     <h3 itemprop="name">{{ novel.name }} {{ meaning_emoji }}</h3>
                                 </div>
+                            </div>
+                            <div class="col-12 col-md-6">
                                 <div class="rating">
                                     {% for rating in novel.rating_classes %}
                                         <i class="{{ rating }} fa fa-star"></i>
@@ -31,8 +32,6 @@
                                         </a>
                                     {% endfor %}
                                 </div>
-                            </div>
-                            <div class="col-12 col-md-6">
                                 <div class="novel-authors">
                                     <label><i class="fa fa-user-circle"></i> {{ author_label }} </label>
                                     <span>{{ novel.authors_name }}</span>
@@ -56,31 +55,30 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
-                                <div class="novel-action d-none d-lg-flex">
-                                    <a href="#comment" rel="nofollow">
-                                        <i class="fa fa-comments"></i>
-                                        <p>Comments</p>
-                                    </a>
-                                    <a class="novel-action-bookmark" href="#" data-novel="{{ novel.id }}"
-                                       data-status="{{ bookmark.status }}" data-logged="{{ bookmark.is_logged }}"
-                                       rel="nofollow">
-                                        <i class=" fa fa-bookmark"></i>
-                                        <p> {{ bookmark.text }}</p>
-                                    </a>
-                                </div>
+                                {% if novel_info_ads %}
+                                    <div class="ads-area">
+                                        {% for ad in novel_info_ads %}
+                                            {% autoescape off %}
+                                                {{ ad.ad_content }}
+                                            {% endautoescape %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {#                                <div class="novel-action d-none d-lg-flex">#}
+                                {#                                    <a href="#comment" rel="nofollow">#}
+                                {#                                        <i class="fa fa-comments"></i>#}
+                                {#                                        <p>Comments</p>#}
+                                {#                                    </a>#}
+                                {#                                    <a class="novel-action-bookmark" href="#" data-novel="{{ novel.id }}"#}
+                                {#                                       data-status="{{ bookmark.status }}" data-logged="{{ bookmark.is_logged }}"#}
+                                {#                                       rel="nofollow">#}
+                                {#                                        <i class=" fa fa-bookmark"></i>#}
+                                {#                                        <p> {{ bookmark.text }}</p>#}
+                                {#                                    </a>#}
+                                {#                                </div>#}
                             </div>
                             <div class="col-12 novel-button">
-                                <a href="#comment" class="d-md-none" rel="nofollow">
-                                    <button class="btn btn-sm btn-secondary">
-                                        <i class="fa fa-comments"></i></i> Comments
-                                    </button>
-                                </a>
-                                <a data-novel="{{ novel.id }}" data-status="{{ bookmark.status }}" rel="nofollow"
-                                   data-logged="{{ bookmark.is_logged }}" class="d-md-none novel-action-bookmark">
-                                    <button class="btn btn-sm btn-secondary">
-                                        <i class=" fa fa-bookmark"></i> {{ bookmark.text }}
-                                    </button>
-                                </a>
+
                                 <a href="#" data-toggle="modal" data-target="#modal-report" rel="nofollow">
                                     <button class="btn btn-sm btn-warning">
                                         <i class="fa fa-bug"></i> {% translate "Error report" %}
@@ -94,6 +92,17 @@
                                 <a href="{{ novel.novel_flat.latest_chapter.url }}">
                                     <button class="btn btn-sm btn-info">
                                         <i class="fa fa-sort-numeric-desc"></i> {{ latest_chapter_label }}
+                                    </button>
+                                </a>
+                                <a href="#comment" rel="nofollow">
+                                    <button class="btn btn-sm btn-secondary">
+                                        <i class="fa fa-comments"></i></i> Comments
+                                    </button>
+                                </a>
+                                <a data-novel="{{ novel.id }}" data-status="{{ bookmark.status }}" rel="nofollow"
+                                   data-logged="{{ bookmark.is_logged }}" class="novel-action-bookmark">
+                                    <button class="btn btn-sm btn-secondary">
+                                        <i class=" fa fa-bookmark"></i> {{ bookmark.text }}
                                     </button>
                                 </a>
                             </div>

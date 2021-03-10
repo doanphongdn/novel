@@ -17,14 +17,15 @@
                     class="d-none d-lg-inline">{% translate "Chapter list" %}</span></a>
             {% if chapter_prev_url %}
                 <a href="{{ chapter_prev_url }}" class="btn btn-secondary btn-sm float-right mr-1" rel="nofollow">
-                    <i class="fa fa-chevron-left"></i> <span class="d-none d-lg-inline">{% translate "Prev" %}</span></a>
+                    <i class="fa fa-chevron-left"></i> <span
+                        class="d-none d-lg-inline">{% translate "Prev" %}</span></a>
             {% endif %}
         </div>
     </div>
     <div class="col-12 chapter-header">
         <div class="header-action my-4">
-{#            <a href="#" class="btn btn-default btn-sm dark-mode" rel="nofollow">#}
-{#                <i class="fa fa-adjust"></i> {% translate "Dark mode" %}</a>#}
+            {#            <a href="#" class="btn btn-default btn-sm dark-mode" rel="nofollow">#}
+            {#                <i class="fa fa-adjust"></i> {% translate "Dark mode" %}</a>#}
             <a href="#" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modal-report" rel="nofollow">
                 <i class="fa fa-bug"></i> {% translate "Error report" %}</a>
         </div>
@@ -34,6 +35,15 @@
         </div>
     </div>
     <hr class="hr-light">
+    {% if chapter_content_before_ads %}
+        <div class="ads-area">
+            {% for ad in chapter_content_before_ads %}
+                {% autoescape off %}
+                    {{ ad.ad_content }}
+                {% endautoescape %}
+            {% endfor %}
+        </div>
+    {% endif %}
     <div class="col-12 chapter-detail">
         {% autoescape off %}
             {{ chapter.decompress_content }}
@@ -100,12 +110,21 @@
 
             {% if chapter_prev_url %}
                 <a href="{{ chapter_prev_url }}" class="btn btn-success btn-sm float-right mr-1" rel="nofollow">
-                    <i class="fa fa-chevron-left"></i> <span class="d-none d-lg-inline">{% translate "Prev" %}</span></a>
+                    <i class="fa fa-chevron-left"></i> <span
+                        class="d-none d-lg-inline">{% translate "Prev" %}</span></a>
             {% endif %}
         </div>
     </div>
 </div>
-
+{% if chapter_content_after_ads %}
+    <div class="ads-area">
+        {% for ad in chapter_content_after_ads %}
+            {% autoescape off %}
+                {{ ad.ad_content }}
+            {% endautoescape %}
+        {% endfor %}
+    </div>
+{% endif %}
 <div class="modal fade modal-chapter" id="modal-chapter" tabindex="-1" role="dialog" aria-labelledby="modal-chapter"
      aria-hidden="true">
     <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">

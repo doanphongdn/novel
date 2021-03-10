@@ -4,14 +4,32 @@
 {% block meta %}
     <meta name="thumbnail" content="{{ novel.stream_thumbnail_image }}"/>
 {% endblock %}
+{% block ads_header %}
+    {% for ad in ads_data.novel_chapter_header %}
+        {% autoescape off %}
+            {{ ad.ad_content }}
+        {% endautoescape %}
+    {% endfor %}
+{% endblock %}
 {% block content %}
+    {% if ads_data.novel_chapter_top %}
+        <div class="col-12">
+            <div class="row">
+                {% for ad in ads_data.novel_chapter_top %}
+                    {% autoescape off %}
+                        {{ ad.ad_content }}
+                    {% endautoescape %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
     <div class="row">
         {{ include_html }}
         <div class="float-button">
             <ul>
                 <li><a href="#"><i class="fa fa-arrow-circle-o-up opacity-5"></i></a></li>
-{#                <li><a href="{{ novel_url }}"><i class="fa fa-book"></i></a></li>#}
-{#                <li><i class="fa fa-cog" data-toggle="modal" data-target="#modal-config"></i></li>#}
+                {#                <li><a href="{{ novel_url }}"><i class="fa fa-book"></i></a></li>#}
+                {#                <li><i class="fa fa-cog" data-toggle="modal" data-target="#modal-config"></i></li>#}
             </ul>
         </div>
         <div class="modal fade page-config" id="modal-config" tabindex="-1" role="dialog"

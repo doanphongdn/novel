@@ -1,4 +1,13 @@
 {% load static %}
+{% if chapter_list_before_ads %}
+    <div class="ads-area">
+        {% for ad in chapter_list_before_ads %}
+            {% autoescape off %}
+                {{ ad.ad_content }}
+            {% endautoescape %}
+        {% endfor %}
+    </div>
+{% endif %}
 <div class="chapter-list" id="chap-list">
     <div class="row">
         <div class="col-12">
@@ -31,7 +40,7 @@
                     {% for chapter in chapter_list %}
                         <div class="col-6 col-md-4 col-lg-3">
                             <div class="row">
-{#                                <div class="chapter-wrap {% cycle 'odd' 'even' %}">#}
+                                {#                                <div class="chapter-wrap {% cycle 'odd' 'even' %}">#}
                                 <div class="chapter-wrap">
                                     <div class="chapter-name">
                                         <h6>
@@ -58,4 +67,12 @@
         </div>
     </div>
 </div>
-
+{% if chapter_list_after_ads %}
+    <div class="ads-area">
+        {% for ad in chapter_list_after_ads %}
+            {% autoescape off %}
+                {{ ad.ad_content }}
+            {% endautoescape %}
+        {% endfor %}
+    </div>
+{% endif %}

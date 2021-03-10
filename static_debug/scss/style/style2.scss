@@ -1,0 +1,65 @@
+$main_color: #3c93a9;
+//body {
+//  background: url("/static/images/bg-style2.jpg") no-repeat fixed bottom;
+//}
+
+.navbar-base {
+  background: #{$main_color} !important;
+  padding: 0 !important;
+}
+
+.top-menu {
+  .navbar-nav {
+    .nav-link {
+      color: rgba(0, 0, 0, .9) !important;
+    }
+  }
+}
+
+.novel-info {
+  .novel-detail {
+    .novel-detail-wrap {
+      .novel-categories {
+        a {
+          .cate-item {
+            color: #{$main_color};
+            background: #FFF;
+            border: thin solid #{$main_color};
+            padding: 2px 7px;
+            font-size: 0.9rem;
+            border-radius: 22px;
+            box-shadow: 0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%);
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Small Devices, Tablets */
+@media (max-width: 768px) {
+  .navbar-base {
+    padding: 1rem !important;
+  }
+  .novel-info {
+    .novel-detail {
+      .novel-detail-wrap {
+        .novel-categories {
+          a {
+            margin: 0 5px 5px 0;
+
+            .cate-item {
+              color: #{$main_color};
+              background: #FFF;
+              border: thin solid #{$main_color};
+              padding: 2px 7px;
+              font-size: 0.9rem;
+              border-radius: 22px;
+              box-shadow: 0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%);
+            }
+          }
+        }
+      }
+    }
+  }
+}

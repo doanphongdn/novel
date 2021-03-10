@@ -41,6 +41,18 @@
         {% if stream_images %}
             <p class="bg-yellow text-center text-uppercase box-warning">{% translate "Please visit this chapter after 5 minutes if your browser cannot load these images now." %}</p>
         {% endif %}
+
+      {% if google_gpt_adm %}
+        <div id="protag-in_article_video"></div>
+        <script type="text/javascript">
+           window.googletag = window.googletag || { cmd: [] };
+           window.protag = window.protag || { cmd: [] };
+           window.protag.cmd.push(function () {
+             window.protag.display("protag-in_article_video");
+           });
+        </script>
+      {% endif %}
+
         <div class="chapter-images">
             {% if mix_images %}
                 {% for mix_image in mix_images %}

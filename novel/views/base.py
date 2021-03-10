@@ -102,6 +102,7 @@ class NovelBaseView(TemplateView):
         kwargs["base_navbar"] = base_navbar
         kwargs["recapcha_site_key"] = settings.GOOGLE_RECAPTCHA_SITE_KEY
         kwargs["adsbygoogle"] = settings.GOOGLE_ADS
+        kwargs["google_gpt_adm"] = settings.GOOGLE_GPT_ADM_CODE
         kwargs["css_style"] = settings.CSS_STYLE
         kwargs["setting"] = {
             "title": title,

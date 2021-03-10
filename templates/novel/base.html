@@ -184,5 +184,27 @@
     <script data-ad-client="{{ adsbygoogle }}" async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 {% endif %}
+
+{% if google_gpt_adm %}
+  <!--Google GPT/ADM code -->
+  <script type="text/javascript" async="async" src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+  <script type="text/javascript">
+     window.googletag = window.googletag || { cmd: [] };
+     window.googletag.cmd.push(function () {
+         window.googletag.pubads().enableSingleRequest();
+     });
+  </script>
+
+  <!--Site config -->
+  <script type="text/javascript" async="async" src="https://protagcdn.com/s/nettruyen.vn/site.js"></script>
+  <script type="text/javascript">
+     window.googletag = window.googletag || { cmd: [] };
+     window.protag = window.protag || { cmd: [] };
+     window.protag.cmd.push(function () {
+         window.protag.pageInit();
+     });
+  </script>
+{% endif %}
+
 </body>
 </html>

@@ -29,6 +29,12 @@ PIPELINE_STYLESHEETS = {
             ),
             'output_filename': 'css/novel/style1.css'
         },
+        'style2': {
+            'source_filenames': (
+                'scss/style/style2.scss',
+            ),
+            'output_filename': 'css/novel/style2.css'
+        },
     },
 }
 

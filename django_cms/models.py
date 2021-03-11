@@ -116,7 +116,7 @@ class InludeTemplate(models.Model):
     code = models.CharField(max_length=50, validators=[code_validate])
     include_file = models.CharField(max_length=250, choices=TEMPLATE_INCLUDE_CHOISES.get(settings.APP_NAME))
     params = models.JSONField(blank=True, null=True, default=json_template_default)
-    class_name = models.CharField(max_length=250)
+    class_name = models.CharField(max_length=250, blank=True, null=True)
     full_width = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
 

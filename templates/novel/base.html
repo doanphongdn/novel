@@ -60,58 +60,60 @@
 <div id="backdrop" style="display: none"></div>
 <div id="fb-root"></div>
 {% csrf_token %}
-<nav class="navbar navbar-expand-lg navbar-dark navbar-base">
-    <div class="container">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-danger"
-                aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        {% if setting.logo %}
-            <a class="navbar-brand" href="/">
-                <img src="{{ setting.logo }}" alt="{{ setting.title }}">
-            </a>
-        {% endif %}
-        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle Search">
+<header class="header">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-base">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-danger"
+                    aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            {% if setting.logo %}
+                <a class="navbar-brand" href="/">
+                    <img src="{{ setting.logo }}" alt="{{ setting.title }}">
+                </a>
+            {% endif %}
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle Search">
             <span class="mobile-search-toggle">
                 <i class="fa fa-search"></i>
             </span>
-        </button>
-        <div class="search-wrap d-lg-flex">
-            <div class="input-group input-group-alternative">
-                <form action="/search" class="form-search">
-                    <input class="form-control search" placeholder="Search..." type="text">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn-search input-group-text"><i class="fa fa-search"></i></button>
-                    </div>
-                </form>
+            </button>
+            <div class="search-wrap d-lg-flex">
+                <div class="input-group input-group-alternative">
+                    <form action="/search" class="form-search">
+                        <input class="form-control search" placeholder="Search..." type="text">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn-search input-group-text"><i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div id="search-area"></div>
             </div>
-            <div id="search-area"></div>
-        </div>
 
-        <div class="collapse navbar-collapse" id="navbar-danger">
-            <div class="navbar-collapse-header">
-                <div class="row">
-                    <div class="collapse-brand  d-none d-lg-block">
-                        {% if setting.logo %}
-                            <a href="/">
-                                <img src="{{ setting.logo }}" alt="{{ setting.title }}">
-                            </a>
-                        {% endif %}
+            <div class="collapse navbar-collapse" id="navbar-danger">
+                <div class="navbar-collapse-header">
+                    <div class="row">
+                        <div class="collapse-brand  d-none d-lg-block">
+                            {% if setting.logo %}
+                                <a href="/">
+                                    <img src="{{ setting.logo }}" alt="{{ setting.title }}">
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="collapse-close">
+                        <i class="fa fa-times navbar-toggler" aria-hidden="true" data-toggle="collapse"
+                           data-target="#navbar-danger"
+                           aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation"></i>
                     </div>
                 </div>
-                <div class="collapse-close">
-                    <i class="fa fa-times navbar-toggler" aria-hidden="true" data-toggle="collapse"
-                       data-target="#navbar-danger"
-                       aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation"></i>
-                </div>
+                {{ base_navbar }}
             </div>
-            {{ base_navbar }}
         </div>
-
-    </div>
-</nav>
-{{ base_top_menu }}
+    </nav>
+    {{ base_top_menu }}
+</header>
 <div class="container-fluid">
     <div class="d-none d-lg-block" id="particles-js">
         <canvas class="particles-js-canvas-el" style="width: 100%; height: 100%;"></canvas>
@@ -186,24 +188,24 @@
 {% endif %}
 
 {% if google_gpt_adm %}
-  <!--Google GPT/ADM code -->
-  <script type="text/javascript" async="async" src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-  <script type="text/javascript">
-     window.googletag = window.googletag || { cmd: [] };
-     window.googletag.cmd.push(function () {
-         window.googletag.pubads().enableSingleRequest();
-     });
-  </script>
+    <!--Google GPT/ADM code -->
+    <script type="text/javascript" async="async" src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <script type="text/javascript">
+        window.googletag = window.googletag || {cmd: []};
+        window.googletag.cmd.push(function () {
+            window.googletag.pubads().enableSingleRequest();
+        });
+    </script>
 
-  <!--Site config -->
-  <script type="text/javascript" async="async" src="https://protagcdn.com/s/nettruyen.vn/site.js"></script>
-  <script type="text/javascript">
-     window.googletag = window.googletag || { cmd: [] };
-     window.protag = window.protag || { cmd: [] };
-     window.protag.cmd.push(function () {
-         window.protag.pageInit();
-     });
-  </script>
+    <!--Site config -->
+    <script type="text/javascript" async="async" src="https://protagcdn.com/s/nettruyen.vn/site.js"></script>
+    <script type="text/javascript">
+        window.googletag = window.googletag || {cmd: []};
+        window.protag = window.protag || {cmd: []};
+        window.protag.cmd.push(function () {
+            window.protag.pageInit();
+        });
+    </script>
 {% endif %}
 
 </body>

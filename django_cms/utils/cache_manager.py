@@ -70,7 +70,10 @@ class IncludeHtmlCache(CacheManager):
     def _get_data(self, **kwargs):
         if self.include_obj:
             inc_obj = self.include_obj(self.inc_params, self.extra_data, request=self.request)
-            return format_html_join("", "<div class='{}'>{}</div>",
-                                    [(self.wrap_class_name, inc_obj.render_html())])
+            if self.wrap_class_name:
+                return format_html_join("", "<div class='{}'>{}</div>",
+                                        [(self.wrap_class_name, inc_obj.render_html())])
+            else:
+                return format_html_join("", "{}", [(inc_obj.render_html(),)])
 
         return format_html_join("", "<div class='include-error'>Nothing to include</div>", [])

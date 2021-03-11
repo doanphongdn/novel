@@ -79,7 +79,7 @@ class LinkAdmin(ActionAdmin, ImportExportModelAdmin):
 class IncludeTemplateForm(forms.ModelForm):
     class Meta:
         model = InludeTemplate
-        fields = ("template", "include_file", "priority", "code", "params", "class_name", "full_width", "active")
+        fields = ("template", "include_file", "priority", "code", "params", "class_name", "active")
         widgets = {'params': JSONEditorWidget(options={
             'modes': ['code', 'tree'],
             'mode': 'tree',
@@ -92,7 +92,7 @@ class IncludeTemplateForm(forms.ModelForm):
 
 @admin.register(InludeTemplate)
 class InludeTemplateAdmin(ActionAdmin, ImportExportModelAdmin):
-    list_display = ("template", "code", "include_file", "priority", "class_name", "full_width", "active")
+    list_display = ("template", "code", "include_file", "priority", "class_name", "active")
     form = IncludeTemplateForm
 
 

@@ -35,21 +35,22 @@
         </div>
     </div>
     <hr class="hr-light">
-    {% if chapter_content_before_ads %}
-        <div class="ads-area">
-            {% for ad in chapter_content_before_ads %}
-                {% autoescape off %}
-                    {{ ad.ad_content }}
-                {% endautoescape %}
-            {% endfor %}
-        </div>
-    {% endif %}
     <div class="col-12 chapter-detail">
         {% autoescape off %}
             {{ chapter.decompress_content }}
         {% endautoescape %}
         {% if stream_images %}
             <p class="bg-yellow text-center text-uppercase box-warning">{% translate "Please visit this chapter after 5 minutes if your browser cannot load these images now." %}</p>
+        {% endif %}
+
+        {% if chapter_content_before_ads %}
+            <div class="ads-area">
+                {% for ad in chapter_content_before_ads %}
+                    {% autoescape off %}
+                        {{ ad.ad_content }}
+                    {% endautoescape %}
+                {% endfor %}
+            </div>
         {% endif %}
 
       {% if google_gpt_adm %}

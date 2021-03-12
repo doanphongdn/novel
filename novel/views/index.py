@@ -8,7 +8,14 @@ class NovelIndexView(NovelBaseView):
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 
-        index_include_html = self.incl_manager.render_include_html('index', request=request)
+        ads_data = response.context_data.get("ads_data", {})
+        extra_data = {
+            "sidebar": {
+                "index_sidebar": ads_data.get("index_sidebar"),
+            },
+
+        }
+        index_include_html = self.incl_manager.render_include_html('index', request=request, extra_data=extra_data)
 
         response.context_data.update({
             'index_include_html': index_include_html,

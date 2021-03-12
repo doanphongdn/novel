@@ -20,6 +20,7 @@ PIPELINE_STYLESHEETS = {
                 'scss/novel/includes/base_auth_modal.scss',
                 'scss/novel/includes/user_profile.scss',
                 'scss/novel/includes/comment.scss',
+                'scss/novel/includes/sidebar.scss',
             ),
             'output_filename': 'css/novel/base.css'
         },

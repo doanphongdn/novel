@@ -19,6 +19,7 @@ from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
 from novel.views.includes.pagination import PaginationTemplateInclude
 from novel.views.includes.report_modal import ReportModalTemplateInclude
+from novel.views.includes.sidebar import SidebarTemplateInclude
 from novel.views.includes.user_profile import UserProfileTemplateInclude
 
 TEMPLATE_INCLUDE_MAPPING = {
@@ -37,6 +38,7 @@ TEMPLATE_INCLUDE_MAPPING = {
     "user_profile": UserProfileTemplateInclude,
     "comment": CommentTemplateInclude,
     "report_modal": ReportModalTemplateInclude,
+    "sidebar": SidebarTemplateInclude,
 }
 
 

@@ -23,10 +23,10 @@
 //  border-color: #2e6da4;
 //}
 #ads-scroll-left, #ads-scroll-right {
-  width: 160px;
+  width: 200px;
   height: 600px;
   position: fixed;
-  top: 200px;
+  top: 120px;
 
   img {
     width: 100%;
@@ -34,11 +34,11 @@
 }
 
 #ads-scroll-left {
-  left: calc(((100% - 1200px) / 2) - 200px);
+  left: calc(((100% - 1260px) / 2) - 210px);
 }
 
 #ads-scroll-right {
-  right: calc(((100% - 1200px) / 2) - 200px);
+  right: calc(((100% - 1260px) / 2) - 210px);
 }
 
 #backdrop {
@@ -349,9 +349,9 @@ span.navbar-toggler-icon {
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1260px) {
   .container {
-    max-width: 1200px;
+    max-width: 1260px;
   }
 }
 

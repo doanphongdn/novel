@@ -1,0 +1,15 @@
+{% load static %}
+{% load i18n %}
+<div class="novel-sidebar">
+    <div class="row">
+        <div class="col-12">
+            <div class="row ads-area mb-3">
+                {% for ad in index_sidebar %}
+                    {% autoescape off %}
+                        {{ ad.ad_content }}
+                    {% endautoescape %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

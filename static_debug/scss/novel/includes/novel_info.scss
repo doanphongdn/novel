@@ -28,12 +28,32 @@
     padding: 15px;
 
     .novel-name {
-      h3 {
+      h1 {
+        font-size: 1.5rem;
         font-weight: 600;
       }
     }
 
     .novel-detail-wrap {
+      .novel-info {
+        float: left;
+        max-width: calc(100% - 336px);
+        overflow: hidden;
+        display: block;
+      }
+
+      .ads-area {
+        float: right;
+        width: 336px;
+        margin-right: -15px;
+        display: block;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+        }
+      }
+
       .novel-action {
         display: flex;
         justify-content: space-around;
@@ -95,9 +115,18 @@
       }
 
       .novel-button {
-        button {
-          margin: 10px 5px 0 0;
-          font-weight: 400;
+        text-align: left;
+        overflow: hidden;
+        display: block;
+
+        a {
+          display: inline-block;
+          float: left;
+
+          button {
+            margin: 2px 5px 2px 0;
+            font-weight: 400;
+          }
         }
       }
     }
@@ -122,6 +151,31 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .novel-info {
+    .novel-detail {
+      .novel-detail-wrap {
+        .novel-info {
+          max-width: 100%;
+        }
+
+        .ads-area {
+          display: none;
+        }
+
+        .novel-button {
+          text-align: center;
+          a {
+            display: inline-block;
+            float: unset;
+          }
+        }
+      }
+    }
+  }
+
+}
+
 /* Small Devices, Tablets */
 @media (max-width: 768px) {
   .novel-info {
@@ -133,9 +187,7 @@
         .novel-categories {
           text-align: center;
         }
-        .novel-button{
-          text-align: center;
-        }
+
       }
     }
   }

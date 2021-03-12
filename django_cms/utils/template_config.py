@@ -28,5 +28,6 @@ TEMPLATE_INCLUDE_CHOISES = {
         ("report_modal", "Report modal"),
         ("user_profile", "User profile"),
         ("comment", "Comment"),
+        ("sidebar", "Sidebar"),
     ],
 }

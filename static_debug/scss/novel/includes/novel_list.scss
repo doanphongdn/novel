@@ -142,6 +142,15 @@
             line-height: 18px;
             font-size: .8rem;
             margin-bottom: 5px;
+
+            a.btn {
+              text-transform: capitalize;
+              font-weight: 400;
+            }
+
+            a.btn:hover {
+              box-shadow: none;
+            }
           }
         }
       }
@@ -241,6 +250,16 @@
         .novel-chapter {
           h6 {
             font-size: .9rem;
+
+            a.btn {
+              text-transform: capitalize;
+              font-weight: 400;
+            }
+
+            a.btn:hover {
+              box-shadow: none;
+            }
+
           }
 
           .updated-time {

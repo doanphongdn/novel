@@ -606,10 +606,14 @@ NOVEL_ADV_PLACES = (
     # Base, apply all page
     ('base_header', _('BASE HEADER')),
     ('base_top', _('BASE TOP')),
+    ('base_bottom', _('BASE BOTTOM')),
+    ('base_scroll_left', _('BASE SCROLL LEFT')),
+    ('base_scroll_right', _('BASE SCROLL RIGHT')),
 
     # Index page
     ('index_header', _('INDEX HEADER')),
     ('index_top', _('INDEX TOP')),
+    ('index_bottom', _('INDEX BOTTOM')),
     ('index_sidebar', _('INDEX SIDEBAR')),
 
     # Novel all page
@@ -630,7 +634,6 @@ NOVEL_ADV_PLACES = (
     ('novel_chapter_top', _('NOVEL CHAPTER TOP')),
     ('novel_chapter_before_content', _('NOVEL CHPATER BEFORE IMAGE')),
     ('novel_chapter_inside_content', _('NOVEL CHPATER INSIDE IMAGE')),
-    ('novel_chapter_after_content', _('NOVEL CHPATER AFTER IMAGE')),
     ('novel_chapter_before_comment', _('NOVEL CHPATER BEFORE COMMENT')),
 )
 

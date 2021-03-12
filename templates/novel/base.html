@@ -60,6 +60,25 @@
 <div id="backdrop" style="display: none"></div>
 <div id="fb-root"></div>
 {% csrf_token %}
+{% if ads_data.base_scroll_left %}
+    <div id="ads-scroll-left">
+        {% for ad in ads_data.base_scroll_left %}
+            {% autoescape off %}
+                {{ ad.ad_content }}
+            {% endautoescape %}
+        {% endfor %}
+    </div>
+{% endif %}
+{% if ads_data.base_scroll_right %}
+    <div id="ads-scroll-right">
+        {% for ad in ads_data.base_scroll_right %}
+            {% autoescape off %}
+                {{ ad.ad_content }}
+            {% endautoescape %}
+        {% endfor %}
+    </div>
+{% endif %}
+</div>
 <header class="header">
     <nav class="navbar navbar-expand-lg navbar-dark navbar-base">
         <div class="container">
@@ -121,7 +140,7 @@
     <div class="row">
         <div class="container content-wrap">
             {% if ads_data.base_top %}
-                <div class="col-12">
+                <div class="col-12 mb-3">
                     <div class="row">
                         {% for ad in ads_data.base_top %}
                             {% autoescape off %}
@@ -132,6 +151,17 @@
                 </div>
             {% endif %}
             {% block content %}{% endblock %}
+            {% if ads_data.base_bottom %}
+                <div class="col-12 mt-3">
+                    <div class="row">
+                        {% for ad in ads_data.base_bottom %}
+                            {% autoescape off %}
+                                {{ ad.ad_content }}
+                            {% endautoescape %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -185,27 +215,6 @@
 {% if adsbygoogle %}
     <script data-ad-client="{{ adsbygoogle }}" async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-{% endif %}
-
-{% if google_gpt_adm %}
-    <!--Google GPT/ADM code -->
-    <script type="text/javascript" async="async" src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-    <script type="text/javascript">
-        window.googletag = window.googletag || {cmd: []};
-        window.googletag.cmd.push(function () {
-            window.googletag.pubads().enableSingleRequest();
-        });
-    </script>
-
-    <!--Site config -->
-    <script type="text/javascript" async="async" src="https://protagcdn.com/s/nettruyen.vn/site.js"></script>
-    <script type="text/javascript">
-        window.googletag = window.googletag || {cmd: []};
-        window.protag = window.protag || {cmd: []};
-        window.protag.cmd.push(function () {
-            window.protag.pageInit();
-        });
-    </script>
 {% endif %}
 
 </body>

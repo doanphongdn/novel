@@ -106,7 +106,6 @@ class ChapterView(NovelBaseView):
                 "chapter": chapter,
                 "novel": novel,
                 "chapter_content_before_ads": ads_data.get("novel_chapter_before_content"),
-                "chapter_content_after_ads": ads_data.get("novel_chapter_after_content"),
             },
             "comment": {
                 "novel": novel,

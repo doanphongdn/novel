@@ -14,8 +14,8 @@
 
 {% block content %}
     {% if ads_data.index_top %}
-        <div class="col-12">
-            <div class="row">
+        <div class="col-12 mb-3">
+            <div class="row ads-area">
                 {% for ad in ads_data.index_top %}
                     {% autoescape off %}
                         {{ ad.ad_content }}
@@ -27,15 +27,17 @@
     <div class="row">
         {{ index_include_html }}
     </div>
+    {% if ads_data.index_bottom %}
+        <div class="col-12 mt-3">
+            <div class="row ads-area">
+                {% for ad in ads_data.index_top %}
+                    {% autoescape off %}
+                        {{ ad.ad_content }}
+                    {% endautoescape %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
 {% block scripts %}
-   {% if google_gpt_adm %}
-     <script type="text/javascript">
-       window.googletag = window.googletag || { cmd: [] };
-       window.protag = window.protag || { cmd: [] };
-       window.protag.cmd.push(function () {
-         window.protag.display("protag-sticky-bottom");
-       });
-    </script>
-   {% endif %}
 {% endblock %}

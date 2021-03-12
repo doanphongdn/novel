@@ -73,4 +73,9 @@ $(document).ready(function (e) {
         $("body").css({"position": "fixed"});
         $("#backdrop").show();
     });
+
+    $(document).on('resize', function (e){
+
+        alert(this.offset().width());
+    });
 });

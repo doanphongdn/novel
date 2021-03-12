@@ -1,6 +1,6 @@
 @import "../../common/novel_include_title";
 
-.novel-grid, .novel-list {
+.novel-grid, .novel-list, .novel-grid-detail {
   .widget-actions {
     padding-top: 5px;
 
@@ -18,7 +18,8 @@
   }
 }
 
-.novel-grid {
+
+.novel-grid, .novel-grid-detail {
   > div + div {
     padding-right: 15px !important;
   }
@@ -29,6 +30,8 @@
     .novel-wrap {
       padding: 2px;
       position: relative;
+      display: block;
+      overflow: hidden;
 
       .btn-remove {
         box-shadow: 0 5px 2px rgba(50, 50, 93, 0.2);
@@ -105,43 +108,66 @@
         }
       }
 
-      .novel-name, .novel-chapter {
-        display: -webkit-box;
-        overflow: hidden;
-        -webkit-box-orient: vertical;
-        margin: 5px;
-      }
+      .novel-detail-wrap {
+        .novel-name, .novel-chapter, .novel-rating {
+          display: -webkit-box;
+          overflow: hidden;
+          -webkit-box-orient: vertical;
+          margin: 5px;
+        }
 
-      .novel-name {
-        -webkit-line-clamp: 2;
-
-        h5 {
-
-          font-weight: 600;
-          font-size: .9rem;
-          margin-bottom: 0;
+        .novel-name {
+          h5 {
+            -webkit-line-clamp: 2;
+            font-weight: 600;
+            font-size: .9rem;
+            margin-bottom: 0;
+          }
         }
 
         .novel-rating {
+          i {
+            color: orange;
+          }
+        }
+
+        .novel-genres {
           display: none;
         }
-      }
 
-      .novel-genres {
-        display: none;
-      }
-
-      .novel-chapter {
-        -webkit-line-clamp: 1;
-
-
-        h6 {
-          max-height: 36px;
-          line-height: 18px;
-          font-size: .8rem;
-          margin-bottom: 0;
+        .novel-chapter {
+          h6 {
+            -webkit-line-clamp: 1;
+            max-height: 36px;
+            line-height: 18px;
+            font-size: .8rem;
+            margin-bottom: 5px;
+          }
         }
       }
+    }
+  }
+}
+
+.novel-grid-detail {
+  .novel-item {
+    .novel-wrap {
+      .novel-thumbnail-image {
+        width: calc(30% - 10px);
+        margin-right: 10px;
+        float: left;
+
+        img {
+          width: 100%;
+          height: auto;
+        }
+      }
+
+      .novel-detail-wrap {
+        width: 70%;
+        float: right;
+      }
+
     }
   }
 }
@@ -153,7 +179,6 @@
       overflow: hidden;
       border-bottom: thin solid #F0F0F0;
       padding: 10px 0;
-
 
       .ribbon-right {
         display: none;
@@ -173,20 +198,24 @@
         }
       }
 
-      .novel-name, .novel-chapter, .novel-genres {
-        display: -webkit-box;
-        overflow: hidden;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-      }
+      .novel-detail-wrap {
+        .novel-name, .novel-chapter, .novel-genres {
+          display: -webkit-box;
+          overflow: hidden;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+        }
 
-      .novel-name {
-        width: calc(40% - 70px);
-        float: left;
+        .novel-name {
+          width: calc(40% - 70px);
+          float: left;
 
-        h5 {
-          font-weight: 600;
-          font-size: .9rem;
+          h5 {
+            font-weight: 600;
+            font-size: .9rem;
+          }
+
+
         }
 
         .novel-rating {
@@ -197,26 +226,26 @@
             margin-right: 3px;
           }
         }
-      }
 
-      .novel-chapter, .novel-authors {
-        width: 30%;
-        float: left;
-        margin-bottom: 0;
-      }
-
-      .novel-genres a {
-        font-size: .9rem;
-        margin: 0 10px 5px 0;
-      }
-
-      .novel-chapter {
-        h6 {
-          font-size: .9rem;
+        .novel-chapter, .novel-authors {
+          width: 30%;
+          float: left;
+          margin-bottom: 0;
         }
 
-        .updated-time {
-          font-size: .8rem;
+        .novel-genres a {
+          font-size: .9rem;
+          margin: 0 10px 5px 0;
+        }
+
+        .novel-chapter {
+          h6 {
+            font-size: .9rem;
+          }
+
+          .updated-time {
+            font-size: .8rem;
+          }
         }
       }
     }

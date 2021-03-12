@@ -127,5 +127,4 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
             "stream_images": stream_images,
             "cdn_images": cdn_images if cdn_images and cdn_domain else [],
             "cdn_domain": cdn_domain.rstrip('/') if cdn_domain else None,
-            "google_gpt_adm": settings.GOOGLE_GPT_ADM_CODE,
         })

@@ -53,17 +53,6 @@
             </div>
         {% endif %}
 
-      {% if google_gpt_adm %}
-        <div id="protag-in_article_video"></div>
-        <script type="text/javascript">
-           window.googletag = window.googletag || { cmd: [] };
-           window.protag = window.protag || { cmd: [] };
-           window.protag.cmd.push(function () {
-             window.protag.display("protag-in_article_video");
-           });
-        </script>
-      {% endif %}
-
         <div class="chapter-images">
             {% if mix_images %}
                 {% for mix_image in mix_images %}
@@ -129,15 +118,6 @@
         </div>
     </div>
 </div>
-{% if chapter_content_after_ads %}
-    <div class="ads-area">
-        {% for ad in chapter_content_after_ads %}
-            {% autoescape off %}
-                {{ ad.ad_content }}
-            {% endautoescape %}
-        {% endfor %}
-    </div>
-{% endif %}
 <div class="modal fade modal-chapter" id="modal-chapter" tabindex="-1" role="dialog" aria-labelledby="modal-chapter"
      aria-hidden="true">
     <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">

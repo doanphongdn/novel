@@ -615,6 +615,7 @@ NOVEL_ADV_PLACES = (
     ('index_top', _('INDEX TOP')),
     ('index_bottom', _('INDEX BOTTOM')),
     ('index_sidebar', _('INDEX SIDEBAR')),
+    ('index_inside_content', _('INDEX INSIDE CONTENT')),
 
     # Novel all page
     ('novel_all_header', _('NOVEL ALL HEADER')),

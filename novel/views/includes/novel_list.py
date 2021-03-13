@@ -27,6 +27,10 @@ class NovelListTemplateInclude(BaseTemplateInclude):
         novel_grid_col_lg = self.include_data.get('novel_grid_col_lg') or 2
         custom_chapters = self.include_data.get('custom_chapters') or {}
         custom_data_field = self.include_data.get('custom_data_field')
+        inside_content_ads = self.include_data.get('inside_content_ads') or []
+        ads_inside_limit = self.include_data.get('ads_inside_limit') or 4
+        ads_inside_enable = self.include_data.get('ads_inside_enable') or False
+
         custom_data = []
         if custom_data_field:
             custom_data = self.include_data.get(custom_data_field)
@@ -73,4 +77,7 @@ class NovelListTemplateInclude(BaseTemplateInclude):
             "button_type_urls": button_type_urls,
             "pagination_html": pagination.render_html() if pagination else "",
             "css_class": css_class,
+            "inside_content_ads": inside_content_ads,
+            "ads_inside_limit": ads_inside_limit,
+            "ads_inside_enable": ads_inside_enable,
         })

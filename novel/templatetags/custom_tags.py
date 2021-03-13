@@ -13,6 +13,7 @@ def get_attr(obj, attr):
     return getattr(obj, attr, None)
 
 
-@register.tag(name="current_time")
-def do_current_time(parser, token):
-    return "aaaaaaaaaaaaaaaa"
+@register.filter(is_safe=False)
+def div_get_mod(number, limit):
+    d = divmod(number, limit)
+    return d[1] == 0

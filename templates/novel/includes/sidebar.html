@@ -2,6 +2,18 @@
 {% load i18n %}
 <div class="novel-sidebar">
     <div class="row">
+        <div class="col-12 fix-p-left">
+            <div class="widget-title">
+                <label>
+                    {% if icon %}
+                        <i class="{{ icon }}"></i>
+                    {% endif %}
+                    {{ title }}
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-12">
             <div class="row ads-area mb-3">
                 {% for ad in index_sidebar %}

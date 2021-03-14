@@ -33,6 +33,11 @@
   }
 }
 
+.ads-area {
+  display: block;
+  text-align: center;
+}
+
 #ads-scroll-left {
   left: calc(((100% - 1260px) / 2) - 210px);
 }

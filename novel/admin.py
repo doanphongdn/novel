@@ -170,9 +170,12 @@ class ReportAdmin(BaseActionAdmin):
 
     @staticmethod
     def chapter_link(instance):
-        url = reverse('admin:%s_%s_change' % (instance.chapter._meta.app_label,
-                                              instance.chapter._meta.model_name), args=(instance.chapter.id,))
-        return format_html(u'<a href="{}">{}</a>', url, instance.chapter)
+        if instance.chapter:
+            url = reverse('admin:%s_%s_change' % (instance.chapter._meta.app_label,
+                                                  instance.chapter._meta.model_name), args=(instance.chapter.id,))
+            return format_html(u'<a href="{}">{}</a>', url, instance.chapter)
+
+        return "-"
 
 
 @admin.register(Comment)

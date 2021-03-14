@@ -141,7 +141,7 @@
         <div class="container content-wrap">
             {% if ads_data.base_top %}
                 <div class="col-12 mb-3">
-                    <div class="row">
+                    <div class="row ads-area">
                         {% for ad in ads_data.base_top %}
                             {% autoescape off %}
                                 {{ ad.ad_content }}
@@ -153,7 +153,7 @@
             {% block content %}{% endblock %}
             {% if ads_data.base_bottom %}
                 <div class="col-12 mt-3">
-                    <div class="row">
+                    <div class="row ads-area">
                         {% for ad in ads_data.base_bottom %}
                             {% autoescape off %}
                                 {{ ad.ad_content }}

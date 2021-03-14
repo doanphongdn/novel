@@ -43,9 +43,14 @@
             {% endif %}
             <div class="novel-thumbnail-image">
                 <a href="{{ novel.get_absolute_url }}">
-                    <img class="lazyload" data-src="{{ novel.stream_thumbnail_image }}"
-                         src="{% static "images/lazyload.gif" %}"
-                         alt="{{ novel.name }}">
+                    {% if disable_lazyload %}
+                        <img src="{{ novel.stream_thumbnail_image }}"
+                             alt="{{ novel.name }}">
+                    {% else %}
+                        <img class="lazyload" data-src="{{ novel.stream_thumbnail_image }}"
+                             src="{% static "images/lazyload.gif" %}"
+                             alt="{{ novel.name }}">
+                    {% endif %}
                 </a>
             </div>
             <div class="novel-detail-wrap">

@@ -102,15 +102,13 @@ class NovelChapterAdmin(ActionAdmin):
 @admin.register(NovelSetting)
 class NovelSettingAdmin(BaseActionAdmin):
     list_display = (
-        "id", "title", "favicon", "logo", "novel_type", "meta_keywords", "meta_description", "meta_copyright",
-        "meta_author", "img_ignoring",
-        "meta_img", "meta_og_type", "meta_og_description", "meta_fb_app_id",
-        "google_analystics_id")
+        "id", "title", "favicon_tag", "logo_tag")
 
     fields = ["title", 'favicon_tag', "favicon", "novel_type", 'logo_tag', "logo", "meta_keywords", "meta_description",
               "meta_copyright", "meta_author", "meta_img", "meta_img_tag", "img_ignoring",
               "meta_og_type", "meta_og_description", "meta_fb_app_id",
-              "google_analystics_id", ]
+              "google_analystics_id", "ads_txt", "robot_txt"]
+
     readonly_fields = ['logo_tag', 'favicon_tag', 'meta_img_tag']
 
 

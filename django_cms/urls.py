@@ -23,9 +23,9 @@ from django.urls import path, include
 urlpatterns = [
     path('accounts/', include('custom_allauth.urls')),
     path('myadmin/login', admin.site.urls),
+    path('i18n/', include('django.conf.urls.i18n')),
     path('', include('novel.urls')),
     path('', include('django_backblaze_b2.urls')),
-    path('i18n/', include('django.conf.urls.i18n')),
 ]
 
 handler404 = 'django_cms.utils.view_base.view_404'

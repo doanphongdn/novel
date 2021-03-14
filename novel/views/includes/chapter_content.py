@@ -111,12 +111,13 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
         stream_images = self.stream_images(chapter, pos_of_stream)
 
         mix_images = []
-        if missing_img_pos:
+        if missing_img_pos and cdn_images:
             # use list(a) or a[:] to copy values only
             mix_images = cdn_images[:]
 
         for idx in missing_img_pos:
-            mix_images.insert(idx, stream_images[idx])
+            if 0 <= idx < len(stream_images):
+                mix_images.insert(idx, stream_images[idx])
 
         self.include_data.update({
             "chapter_list": chapter_list,

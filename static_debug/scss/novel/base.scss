@@ -33,6 +33,10 @@
   }
 }
 
+.modal {
+  z-index: 100000 !important;
+}
+
 .ads-area {
   display: flex;
   justify-content: center;
@@ -489,6 +493,12 @@ span.navbar-toggler-icon {
     margin: 20px 0 0 0;
   }
   .navbar-header-menu {
+    li:first-child:not(.nav-item-user) {
+      margin-top: 40px;
+      padding-top: 5px;
+      border-top: thin solid #eee;
+    }
+
     .nav-item-user {
       text-align: right;
       border-bottom: thin solid #eee;

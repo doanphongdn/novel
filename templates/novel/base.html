@@ -56,31 +56,29 @@
     {% endfor %}
     {% block ads_header %}{% endblock %}
 </head>
-<div>
-    <div id="backdrop" style="display: none"></div>
-    <div id="fb-root"></div>
-    {% csrf_token %}
-    {% if ads_data.base_scroll_left %}
-        <div id="ads-scroll-left">
-            {% for ad in ads_data.base_scroll_left %}
-                {% autoescape off %}
-                    {{ ad.ad_content }}
-                {% endautoescape %}
-            {% endfor %}
-        </div>
-    {% endif %}
-    {% if ads_data.base_scroll_right %}
-        <div id="ads-scroll-right">
-            {% for ad in ads_data.base_scroll_right %}
-                {% autoescape off %}
-                    {{ ad.ad_content }}
-                {% endautoescape %}
-            {% endfor %}
-        </div>
-    {% endif %}
-</div>
+<body>
+<div id="fb-root"></div>
+{% csrf_token %}
+{% if ads_data.base_scroll_left %}
+    <div id="ads-scroll-left">
+        {% for ad in ads_data.base_scroll_left %}
+            {% autoescape off %}
+                {{ ad.ad_content }}
+            {% endautoescape %}
+        {% endfor %}
+    </div>
+{% endif %}
+{% if ads_data.base_scroll_right %}
+    <div id="ads-scroll-right">
+        {% for ad in ads_data.base_scroll_right %}
+            {% autoescape off %}
+                {{ ad.ad_content }}
+            {% endautoescape %}
+        {% endfor %}
+    </div>
+{% endif %}
 {% if ads_data.base_top %}
-    <div class="container-fluid" style="max-height: 300px !important;">
+    <div id="base-top-ads" class="container-fluid" style="max-height: 300px !important;">
         <div class="row">
             <div class="col-12">
                 <div class="row ads-area">
@@ -97,10 +95,16 @@
 <header class="header">
     <nav class="navbar navbar-expand-lg navbar-dark navbar-base">
         <div class="container">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-danger"
-                    aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <nav id="mobile-menu" role="navigation" class="d-md-none navbar_menu">
+                <input type="checkbox" id="mobile-menu-action"/>
+                <div id="backdrop" style="display: none"></div>
+                <span class="menu-icon"></span>
+                <span class="menu-icon"></span>
+                <span class="menu-icon"></span>
+                <ul id="mobile-menu-toggle" class="navbar-header-menu">
+                    {{ base_navbar }}
+                </ul>
+            </nav>
             {% if setting.logo %}
                 <a class="navbar-brand" href="/">
                     <img src="{{ setting.logo }}" alt="{{ setting.title }}">
@@ -114,8 +118,9 @@
             </button>
             <div class="search-wrap d-lg-flex">
                 <div class="input-group input-group-alternative">
-                    <form action="/search" class="form-search">
-                        <input class="form-control search" placeholder="Search..." type="text">
+                    <form action="{% url "novel_search" %}" class="form-search">
+                        <label for="search-input"></label>
+                        <input id="search-input" class="form-control search" placeholder="Search..." type="text">
                         <div class="input-group-append">
                             <button type="submit" class="btn-search input-group-text"><i class="fa fa-search"></i>
                             </button>
@@ -124,7 +129,6 @@
                 </div>
                 <div id="search-area"></div>
             </div>
-
             <div class="collapse navbar-collapse" id="navbar-danger">
                 <div class="navbar-collapse-header">
                     <div class="row">
@@ -187,6 +191,7 @@
 <script type="text/javascript" src="{% static 'js/common/autosize.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/particles.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/run_particlejs.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/novel/base.js' %}"></script>
 {% if recapcha_site_key %}
     <script type="text/javascript"
             src="https://www.google.com/recaptcha/api.js?render={{ recapcha_site_key }}"></script>
@@ -214,7 +219,7 @@
 </script>
 
 {% block scripts %}{% endblock %}
-{% javascript 'base' %}
+{#{% javascript 'base' %}#}
 {% javascript 'user' %}
 {% if adsbygoogle %}
     <script data-ad-client="{{ adsbygoogle }}" async

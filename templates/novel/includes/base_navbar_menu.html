@@ -4,10 +4,16 @@
     {% if enable_auth_menu %}
         {% if user.is_authenticated %}
             <li class="nav-item dropdown nav-item-user d-lg-none">
+                <a class="nav-link nav-link-icon" href="#" rel="nofollow">
+                    <span class="nav-link-inner--text">{{ user.first_name }} {{ user.last_name }}</span>
+                    <img src="{{ user_avatar }}" class="user-avatar" alt="avatar" rel="nofollow">
+                </a>
+            </li>
+            <li class="nav-item dropdown d-lg-none">
                 <a class="nav-link nav-link-icon dropdown-toggle" href="#" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" rel="nofollow">
-                    <img src="{{ user_avatar }}" class="user-avatar" alt="avatar" rel="nofollow">
-                    <span class="nav-link-inner--text">{{ user.first_name }} {{ user.last_name }}</span>
+                    <i class="fa fa fa-address-book-o"></i>
+                    <span class="nav-link-inner--text">Thông tin tài khoản</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right user-profile-menu">
                     {% for menu in user_menus %}
@@ -90,8 +96,8 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="nav-inner-primary_dropdown_1">
                 {% for genre in genre_menu.data %}
-                    <a class="dropdown-item"
-                       href="{{ genre.get_absolute_url }}">{{ genre.name }}</a>
+                    <a class="dropdown-item" href="{{ genre.get_absolute_url }}">
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ genre.name }}</a>
                 {% endfor %}
             </div>
         </li>

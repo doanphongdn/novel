@@ -149,20 +149,6 @@ $(document).ready(function (e) {
 
     setInitAttrs();
 
-    $(document).scroll(function () {
-        var scrollTop = $(document).scrollTop();
-        var contentTop = $('.chapter-content').offset().top;
-        var menu = $('.chapter-actions');
-        var menuWidth = menu[0].offsetWidth;
-        diff = scrollTop - contentTop;
-        if (diff > 0) {
-            menu.css('width', menuWidth + "px");
-            menu.css('position', "fixed");
-            menu.css('box-shadow', "0 1px 10px rgba(50,50,93,.1),0 1px 5px rgba(0,0,0,.07)!important");
-        } else {
-            menu.css('position', "absolute");
-            menu.css('width', "100%");
-        }
-    });
+
 
 });

@@ -144,6 +144,10 @@ class NovelBaseView(TemplateView):
                 ads_data[place.code].append(ad)
 
         kwargs["ads_data"] = ads_data
+        kwargs["user"] = {
+            "name": request.user.first_name + " " + request.user.last_name,
+            "user_avatar": NovelUserProfile.get_avatar(request.user),
+        }
 
         response = super().get(request, *args, **kwargs)
         response.set_cookie('_redirect_url', request.build_absolute_uri())

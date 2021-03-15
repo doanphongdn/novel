@@ -1,4 +1,6 @@
 $(document).ready(function (e) {
+    history.scrollRestoration = "manual";
+    $(window).scrollTop(0);
     /* -------- START SEARCH ----------- */
     $('input.search').autocomplete({
         source: function (req, res) {
@@ -83,9 +85,10 @@ $(document).ready(function (e) {
     });
 
     let baseTopAdsHeight = 0;
+    let limit_top = 120;
     if ($("#base-top-ads").length) {
         baseTopAdsHeight = $("#base-top-ads")[0].offsetHeight;
-        $("#ads-scroll-left, #ads-scroll-right").css({"top": (baseTopAdsHeight + 120) + "px"});
+        $("#ads-scroll-left, #ads-scroll-right").css({"top": (baseTopAdsHeight + limit_top) + "px"});
     }
 
     $(document).scroll(function () {
@@ -93,7 +96,6 @@ $(document).ready(function (e) {
         var menuTop = $('.navbar-top-menu');
         var menuTopHeight = 0;
         var menuNavbarHeight = 0;
-        var baseTopAdsHeight = 0;
         var footerHeight = 0;
         if (menuTop !== undefined) {
             menuTopHeight = menuTop[0].offsetHeight;
@@ -144,11 +146,14 @@ $(document).ready(function (e) {
         if (!this.length)
             return;
 
-        top_pos = $(document).height() - scrollTop - footerHeight - this[0].offsetHeight;
-        limit_top = 120 + baseTopAdsHeight
-        if (top_pos > limit_top)
+        top_pos = $(document).height() - scrollTop - footerHeight - this[0].offsetHeight - 20;
+        if (top_pos > limit_top) {
             top_pos = limit_top;
-
+            if (scrollTop < baseTopAdsHeight) {
+                top_pos = limit_top + baseTopAdsHeight - scrollTop;
+            }
+        }
         this.css("top", top_pos + "px");
     };
+
 });

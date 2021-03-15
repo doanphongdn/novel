@@ -109,6 +109,7 @@ class Novel(models.Model):
                          max_length=250, blank=True, unique=True, null=True)
 
     thumbnail_image = models.TextField(blank=True, null=True)
+    thumbnail_image_replace = models.ImageField(upload_to="images/novels", blank=True, null=True)
     descriptions = models.TextField(blank=True, null=True)
 
     genres = models.ManyToManyField(Genre, db_table="novel_novel_genres_rel", blank=True)
@@ -192,7 +193,10 @@ class Novel(models.Model):
             },
         }
 
-        if self.thumbnail_image:
+        if self.thumbnail_image_replace:
+            # data['image'] = self.thumbnail_image_replace.url
+            data['image'] = self.thumbnail_image
+        elif self.thumbnail_image:
             data['image'] = site_url + self.stream_thumbnail_image
 
         return data
@@ -280,6 +284,10 @@ class Novel(models.Model):
     def stream_thumbnail_image(self):
         if not self.thumbnail_image:
             return "#"
+
+        if self.thumbnail_image_replace:
+            # return self.thumbnail_image_replace.url
+            return self.thumbnail_image
 
         if self.thumbnail_image.startswith('/static'):
             return self.thumbnail_image

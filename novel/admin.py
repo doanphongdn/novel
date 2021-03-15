@@ -12,6 +12,7 @@ from django.views.decorators.cache import never_cache
 
 from django_cms.admin import BaseActionAdmin, ActionAdmin
 from django_cms.models import CDNServer
+from novel import utils
 from novel.models import CDNNovelFile, Genre, Novel, NovelChapter, NovelSetting, Status, NovelReport, Comment, \
     NovelAdvertisementPlace, NovelAdvertisement
 
@@ -20,6 +21,7 @@ class NovelForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'vLargeTextField', 'maxlength': 250}))
     thumbnail_image = forms.CharField(required=False,
                                       widget=forms.TextInput(attrs={'class': 'vLargeTextField', 'maxlength': 250}))
+
     follow = forms.IntegerField(widget=forms.NumberInput(attrs={'class': ''}))
     vote_total = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'class': ''}))
     view_total = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'class': ''}))
@@ -47,6 +49,20 @@ class NovelAdmin(BaseActionAdmin):
             obj.save()
 
     update_flat_info.short_description = "Update flat info"
+
+    def save_model(self, request, obj, form, change):
+        path = url = None
+        if obj.thumbnail_image_replace:
+            url = obj.thumbnail_image_replace.field.upload_to + "/" + obj.thumbnail_image_replace.name
+            path = obj.thumbnail_image_replace.storage.location + "/" + url
+            obj.thumbnail_image = obj.thumbnail_image_replace.storage.base_url + url
+
+        super(NovelAdmin, self).save_model(request, obj, form, change)
+        if path and url:
+            uploaded_file = utils.upload_file2b2(path, url)
+            if uploaded_file:
+                obj.thumbnail_image = uploaded_file
+                obj.save()
 
 
 class NovelChapterForm(forms.ModelForm):

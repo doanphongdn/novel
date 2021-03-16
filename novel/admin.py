@@ -188,7 +188,7 @@ class CommentAdmin(BaseActionAdmin):
 
 
 @admin.register(NovelAdvertisementPlace)
-class NovelAdvertisementAdmin(BaseActionAdmin):
+class NovelAdvertisementPlaceAdmin(BaseActionAdmin):
     list_display = ("group", "code", "active")
 
 
@@ -196,3 +196,4 @@ class NovelAdvertisementAdmin(BaseActionAdmin):
 class NovelAdvertisementAdmin(BaseActionAdmin):
     list_display = ("name", "ad_type", "active")
     filter_horizontal = ("places",)
+    list_filter = ("places__code", )

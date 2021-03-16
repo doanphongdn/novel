@@ -5,10 +5,11 @@ from os.path import basename, splitext
 from urllib.parse import urlparse
 
 import requests
-from django.db.models import QuerySet
 from django.templatetags.static import static
+from django_backblaze_b2 import BackblazeB2Storage
 
 from django_cms import settings
+from django_cms.models import CDNServer
 
 
 def is_json(json_str):
@@ -93,3 +94,23 @@ def full_schema_url(url, origin_domain=None):
         url = url.rstrip('/ ')
 
     return url
+
+
+def upload_file2b2(file_path, b2_file_name, bucket_name='nettruyen', cdn_number=0):
+    active_cdn = CDNServer.get_active_cdn()
+    if not active_cdn:
+        return None
+    cdn = active_cdn[cdn_number]
+    b2 = BackblazeB2Storage(opts={'bucket': cdn.name, 'allowFileOverwrites': True})
+    if not b2:
+        return None
+    if not b2.bucket:
+        b2.bucket.name = bucket_name
+    try:
+        uploaded_file = b2.bucket.upload_local_file(file_path, b2_file_name)
+        if not uploaded_file:
+            return None
+        cdn_url = cdn.friendly_alias_url or cdn.friendly_url or cdn.s3_url
+        return cdn_url + uploaded_file.file_name
+    except Exception as e:
+        return None

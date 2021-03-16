@@ -109,11 +109,7 @@
                 {% for image_url in stream_images %}
                     {% if forloop.counter > cdn_images|length and forloop.counter <= cdn_images|length|add:"2" %}
                         <img src="{{ image_url }}" alt="">
-                    {% elif forloop.counter > cdn_images|length|add:"2" %}
-                        <img data-src="{{ image_url }}" src="{% static "images/lazyload.gif" %}" alt=""
-                             class="lazyload">
-                    {% endif %}
-                    {% if ads_inside_enable and forloop.counter|div_get_mod:ads_inside_limit and not forloop.last%}
+                        {% if ads_inside_enable and forloop.counter|div_get_mod:ads_inside_limit and not forloop.last%}
                         {% for ad in inside_content_ads %}
                             <div class="col-12">
                                 {% autoescape off %}
@@ -122,6 +118,20 @@
                             </div>
                         {% endfor %}
                     {% endif %}
+                    {% elif forloop.counter > cdn_images|length|add:"2" %}
+                        <img data-src="{{ image_url }}" src="{% static "images/lazyload.gif" %}" alt=""
+                             class="lazyload">
+                        {% if ads_inside_enable and forloop.counter|div_get_mod:ads_inside_limit and not forloop.last%}
+                        {% for ad in inside_content_ads %}
+                            <div class="col-12">
+                                {% autoescape off %}
+                                    {{ ad.ad_content }}
+                                {% endautoescape %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    {% endif %}
+
                 {% endfor %}
             {% endif %}
         </div>

@@ -146,9 +146,6 @@ $(document).ready(function (e) {
         Cookies.set('backgroundColor', newBgColor);
     });
 
-
     setInitAttrs();
-
-
 
 });

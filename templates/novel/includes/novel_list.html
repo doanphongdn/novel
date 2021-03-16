@@ -96,7 +96,7 @@
             </div>
         </div>
         </div>
-            {% if ads_inside_enable and forloop.counter|div_get_mod:ads_inside_limit %}
+            {% if ads_inside_enable and forloop.counter|div_get_mod:ads_inside_limit and not forloop.last %}
                 {% for ad in inside_content_ads %}
                     <div class="col-12">
                         {% autoescape off %}

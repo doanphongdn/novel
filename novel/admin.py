@@ -1,3 +1,4 @@
+import os
 import zlib
 
 from ckeditor.widgets import CKEditorWidget
@@ -53,13 +54,16 @@ class NovelAdmin(BaseActionAdmin):
     def save_model(self, request, obj, form, change):
         path = url = None
         if obj.thumbnail_image_replace:
-            url = obj.thumbnail_image_replace.field.upload_to + "/" + obj.thumbnail_image_replace.name
-            path = obj.thumbnail_image_replace.storage.location + "/" + url
-            obj.thumbnail_image = obj.thumbnail_image_replace.storage.base_url + url
+            url = os.path.join(obj.thumbnail_image_replace.field.upload_to, obj.thumbnail_image_replace.name)
+            path = os.path.join(obj.thumbnail_image_replace.storage.location, url.lstrip("/"))
+            if obj.thumbnail_image_replace.storage.base_url not in url:
+                url = os.path.join(obj.thumbnail_image_replace.storage.base_url, url.lstrip("/"))
+            obj.thumbnail_image = url
 
         super(NovelAdmin, self).save_model(request, obj, form, change)
+
         if path and url:
-            uploaded_file = utils.upload_file2b2(path, url)
+            uploaded_file = utils.upload_file2b2(path, obj.thumbnail_image_replace.url.lstrip("/"))
             if uploaded_file:
                 obj.thumbnail_image = uploaded_file
                 obj.save()
@@ -212,4 +216,4 @@ class NovelAdvertisementPlaceAdmin(BaseActionAdmin):
 class NovelAdvertisementAdmin(BaseActionAdmin):
     list_display = ("name", "ad_type", "active")
     filter_horizontal = ("places",)
-    list_filter = ("places__code", )
+    list_filter = ("places__code",)

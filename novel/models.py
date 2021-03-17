@@ -193,10 +193,7 @@ class Novel(models.Model):
             },
         }
 
-        if self.thumbnail_image_replace:
-            # data['image'] = self.thumbnail_image_replace.url
-            data['image'] = self.thumbnail_image
-        elif self.thumbnail_image:
+        if self.thumbnail_image:
             data['image'] = site_url + self.stream_thumbnail_image
 
         return data
@@ -285,11 +282,8 @@ class Novel(models.Model):
         if not self.thumbnail_image:
             return "#"
 
-        if self.thumbnail_image_replace:
-            # return self.thumbnail_image_replace.url
-            return self.thumbnail_image
-
-        if self.thumbnail_image.startswith('/static'):
+        # TODO: do not hard the 'cdn' string here, let replace by cdn server configuration
+        if self.thumbnail_image.startswith(('/static', '/media')) or '//cdn.' in self.thumbnail_image:
             return self.thumbnail_image
 
         referer = urlparse(self.src_url)

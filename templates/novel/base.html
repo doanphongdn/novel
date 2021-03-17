@@ -210,21 +210,13 @@
         gtag('js', new Date());
         gtag('config', '{{ setting.google_analystics_id }}');
 
-
     </script>
 {% endif %}
-
 <script type="text/javascript">
     let recapcha_site_key = '{{ recapcha_site_key }}';
 </script>
-
 {% block scripts %}{% endblock %}
 {% javascript 'base' %}
 {% javascript 'user' %}
-{% if adsbygoogle %}
-    <script data-ad-client="{{ adsbygoogle }}" async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-{% endif %}
-
 </body>
 </html>

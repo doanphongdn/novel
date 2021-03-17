@@ -630,11 +630,12 @@ NOVEL_ADV_PLACES = (
     # Novel all page
     ('novel_all_header', _('NOVEL ALL HEADER')),
     ('novel_all_top', _('NOVEL ALL TOP')),
-    ('novel_all_end', _('NOVEL ALL END')),
+    ('novel_all_bottom', _('NOVEL ALL END')),
 
     # Novel info page
     ('novel_info_header', _('NOVEL INFO HEADER')),
     ('novel_info_top', _('NOVEL INFO TOP')),
+    ('novel_info_bottom', _('NOVEL INFO BOTTOM')),
     ('novel_info_right', _('NOVEL INFO RIGHT')),
     ('novel_info_before_chap_list', _('NOVEL INFO BEFORE CHAP LIST')),
     ('novel_info_after_chap_list', _('NOVEL INFO AFTER CHAP LIST')),
@@ -643,8 +644,9 @@ NOVEL_ADV_PLACES = (
     # Novel chapter page
     ('novel_chapter_header', _('NOVEL CHAPTER HEADER')),
     ('novel_chapter_top', _('NOVEL CHAPTER TOP')),
-    ('novel_chapter_before_content', _('NOVEL CHPATER BEFORE IMAGE')),
-    ('novel_chapter_inside_content', _('NOVEL CHPATER INSIDE IMAGE')),
+    ('novel_chapter_bottom', _('NOVEL CHAPTER BOTTOM')),
+    ('novel_chapter_before_content', _('NOVEL CHPATER BEFORE CONTENT')),
+    ('novel_chapter_inside_content', _('NOVEL CHPATER INSIDE CONTENT')),
     ('novel_chapter_before_comment', _('NOVEL CHPATER BEFORE COMMENT')),
 )
 

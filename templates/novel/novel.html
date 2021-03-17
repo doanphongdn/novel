@@ -14,17 +14,6 @@
     {% endfor %}
 {% endblock %}
 {% block content %}
-    {% if ads_data.novel_info_top %}
-        <div class="col-12 mb-3">
-            <div class="row ads-area">
-                {% for ad in ads_data.novel_info_top %}
-                    {% autoescape off %}
-                        {{ ad.ad_content }}
-                    {% endautoescape %}
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
     <div class="row">
         {{ novel_html }}
     </div>

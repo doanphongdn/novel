@@ -137,11 +137,18 @@ class NovelBaseView(TemplateView):
             ads = CacheManager(NovelAdvertisement,
                                **{'places__code': place.code,
                                   'ad_type__in': ['all', device]}).get_from_cache(get_all=True)
-            for ad in ads:
-                if place.code not in ads_data:
-                    ads_data[place.code] = []
+            place_code = place.code
+            if place.group != 'base' and ads:
+                base_code = "base" + place_code.replace(self.ads_group_name, "")
+                if base_code in ads_data:
+                    place_code = base_code
+                    ads_data[place_code] = []
 
-                ads_data[place.code].append(ad)
+            for ad in ads:
+                if place_code not in ads_data:
+                    ads_data[place_code] = []
+
+                ads_data[place_code].append(ad)
 
         kwargs["ads_data"] = ads_data
 

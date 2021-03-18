@@ -1,12 +1,12 @@
 $(document).ready(function (e) {
     history.scrollRestoration = "manual";
     $(window).scrollTop(0);
-    $("#ads-scroll-left, #ads-scroll-right").hide();
+    $("#ads-scroll-left, #ads-scroll-right").css({"opacity": "0"});
     let baseTopAdsHeight = 0;
     let limit_top = 120;
     let stateCheck = setInterval(() => {
         if (document.readyState === 'complete') {
-            $("#ads-scroll-left, #ads-scroll-right").show();
+            $("#ads-scroll-left, #ads-scroll-right").css({"opacity": "1"});
             if ($("#base-top-ads").length) {
                 baseTopAdsHeight = $("#base-top-ads")[0].offsetHeight;
                 $("#ads-scroll-left, #ads-scroll-right").css({"top": (baseTopAdsHeight + limit_top) + "px"});

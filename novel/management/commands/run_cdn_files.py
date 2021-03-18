@@ -316,8 +316,13 @@ class CDNProcess:
                 chapter_updated_list.append(chapter)
                 continue
             valid_urls = list(set(valid_urls))  # Ensure have no duplication items
-            result_url = "\n".join(valid_urls) if len(valid_urls) else None
-            if number_urls == len(valid_urls):
+            # we have to sort the list to make sure the images is correct ordering
+            # regex map url: ^(.+\/)*(.+)\.(.+)$
+            new_list = [splitext(basename(x))[0] for x in valid_urls]
+            fin_list = list(zip(valid_urls, new_list))
+            fin_list = [x[0] for x in sorted(fin_list, key=lambda x: int(x[1]))]
+            result_url = "\n".join(fin_list) if len(fin_list) else None
+            if number_urls == len(fin_list):
                 full = True
             else:
                 full = False

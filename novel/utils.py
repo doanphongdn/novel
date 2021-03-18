@@ -20,7 +20,7 @@ def is_json(json_str):
     return json_object
 
 
-def sort_images(existed_urls):
+def sort_images(existed_urls, domain=''):
     # we have to sort the list to make sure the images is correct ordering
     # regex map url: ^(.+\/)*(.+)\.(.+)$
     existed_urls = list(set(existed_urls))  # Ensure have no duplication items
@@ -30,11 +30,19 @@ def sort_images(existed_urls):
         val = splitext(basename(x))[0]
         new_list.append(val)
         new_list_int.append(int(val))
-    new_list_int.sort()
-    missing_index = [x for x in range(0, new_list_int[-1] + 1) if x not in new_list_int]
     fin_list = list(zip(existed_urls, new_list))
-    fin_list = [x[0] for x in sorted(fin_list, key=lambda x: int(x[1]))]
-    return fin_list, missing_index
+    fin_list = [domain + x[0] for x in sorted(fin_list, key=lambda x: int(x[1]))]
+    new_list_int.sort()
+    # missing_index = [x for x in range(0, new_list_int[-1] + 1) if x not in new_list_int]
+    dict_images = {}
+    # from sorted list, just check index is valid and push to reason position
+    for x in range(0, new_list_int[-1] + 1):
+        if x not in new_list_int:
+            dict_images[x] = None  # missing image
+        else:
+            dict_images[x] = fin_list[x]  # image from cdn
+
+    return dict_images
 
 
 def get_history_cookies(request):

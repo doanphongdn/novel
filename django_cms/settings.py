@@ -16,6 +16,7 @@ from pathlib import Path
 from django.utils.translation import activate
 from dotenv import load_dotenv
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(os.path.join(BASE_DIR, '.env'), override=True, verbose=True)
@@ -304,3 +305,5 @@ BACKBLAZE_FRIENDLY_ALIAS_URL = os.environ.get('BACKBLAZE_FRIENDLY_ALIAS_URL', ''
 BACKBLAZE_S3_URL = os.environ.get('BACKBLAZE_S3_URL', '')
 IGNORE_REFERER_FOR = os.environ.get('IGNORE_REFERER_FOR', '')
 IGNORE_CLOUDFLARE_RESTRICT = os.environ.get('IGNORE_CLOUDFLARE_RESTRICT', '')
+
+YOUTUBE_EMBED_DOMAIN = os.environ.get('YOUTUBE_EMBED_DOMAIN', 'www.youtube.com/embed')

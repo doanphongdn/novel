@@ -15,7 +15,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
     template = "novel/includes/chapter_content.html"
 
     @staticmethod
-    def stream_images(chapter, cdn_img_count=0):
+    def stream_images(chapter, cdn_images):
         stream_images = []
         if not chapter:
             return stream_images
@@ -25,6 +25,10 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
             img_ignoring = []
             if novel_setting and novel_setting.img_ignoring:
                 img_ignoring = novel_setting.img_ignoring.split(",")
+
+            # Some time an outdated chapter will cannot streaming the old images,
+            # we have to mark the chapter to 'updated' as false to prepare crawling again
+            allow_retry_crawl = True
 
             images = chapter.images
             for idx, image in enumerate(images):
@@ -37,6 +41,10 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
 
                 origin_url = (image or "").strip()
 
+                if crawl_settings.YOUTUBE_EMBED_DOMAIN in origin_url:
+                    stream_images.append(origin_url)
+                    continue
+
                 if origin_url.strip().startswith('//'):
                     origin_url = referer.scheme + ":" + origin_url
                 elif origin_url.strip().startswith('/'):
@@ -47,15 +55,23 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                         referer_url = None
                         break
 
+                image_hash = hashlib.md5(origin_url.encode()).hexdigest()
+                if cdn_images and cdn_images.get(idx):
+                    stream_images.append(cdn_images.get(idx))
+                    # next to image
+                    continue
+
                 json_obj = {
                     "origin_url": origin_url,
                     "referer": referer_url,
                     "chapter": chapter.id,
                 }
-                if idx == cdn_img_count:
+                if allow_retry_crawl:
                     json_obj.update({"chapter_updated": chapter.chapter_updated, })
+                    allow_retry_crawl = False
+
                 json_str = json.dumps(json_obj)
-                image_hash = hashlib.md5(origin_url.encode()).hexdigest()
+
                 if not settings.redis_image.get(image_hash):
                     settings.redis_image.set(image_hash, json_str)
 
@@ -84,48 +100,29 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
 
         cdnnovelfile = chapter.cdnnovelfile_set.first() if chapter else None
         cdn_images = None
-        cdn_domain = None
-        # Sometime CDN unable to download all img, and missing some of them
-        # we hav eto fit these position by streaming img url
-        missing_img_pos = []
+        # Sometime CDN unable to upload all img, and missing some of them
+        # we have to fit these positions by streaming img url
         if cdnnovelfile:
-            cdn_images = cdnnovelfile.url.split('\n') if cdnnovelfile.url else None
-            if cdn_images:
-                cdn_images, missing_img_pos = sort_images(cdn_images)
-            if crawl_settings.BACKBLAZE_FRIENDLY_ALIAS_URL:
-                cdn_domain = crawl_settings.BACKBLAZE_FRIENDLY_ALIAS_URL
-            elif crawl_settings.BACKBLAZE_FRIENDLY_URL:
-                cdn_domain = crawl_settings.BACKBLAZE_FRIENDLY_URL
+            cdn_domain = crawl_settings.BACKBLAZE_FRIENDLY_ALIAS_URL or crawl_settings.BACKBLAZE_FRIENDLY_URL
             if not cdn_domain and cdnnovelfile.cdn:
                 cdn_domain = cdnnovelfile.cdn.friendly_alias_url or cdnnovelfile.cdn.friendly_url or cdnnovelfile.cdn.s3_url
+            cdn_images = cdnnovelfile.url.split('\n') if cdnnovelfile.url else None
+            if cdn_domain and cdn_images:
+                cdn_domain = cdn_domain.rstrip("/") + "/"
+                cdn_images = sort_images(cdn_images, cdn_domain)
+            else:
+                cdn_images = None
 
         chapter_list = []
         if novel and novel.novel_flat:
             chapter_list = novel.novel_flat.chapters.get("list")
 
-        pos_of_stream = 0
-        if cdn_images and cdn_domain:
-            pos_of_stream = len(cdn_images)
-            if missing_img_pos:
-                pos_of_stream = missing_img_pos[0]
-        stream_images = self.stream_images(chapter, pos_of_stream)
-
-        mix_images = []
-        if missing_img_pos and cdn_images:
-            # use list(a) or a[:] to copy values only
-            mix_images = cdn_images[:]
-
-        for idx in missing_img_pos:
-            if 0 <= idx < len(stream_images):
-                mix_images.insert(idx, stream_images[idx])
+        stream_images = self.stream_images(chapter, cdn_images)
 
         self.include_data.update({
             "chapter_list": chapter_list,
             "chapter_prev_url": chapter_prev_url,
             "chapter_next_url": chapter_next_url,
             "chapter_next_name": chapter_next_name,
-            "mix_images": mix_images,
             "stream_images": stream_images,
-            "cdn_images": cdn_images if cdn_images and cdn_domain else [],
-            "cdn_domain": cdn_domain.rstrip('/') if cdn_domain else None,
         })

@@ -31,7 +31,7 @@ def sort_images(existed_urls, domain=''):
         new_list.append(val)
         new_list_int.append(int(val))
     fin_list = list(zip(existed_urls, new_list))
-    fin_list = [domain + x[0] for x in sorted(fin_list, key=lambda x: int(x[1]))]
+    fin_list = {x[1]: domain + x[0] for x in sorted(fin_list, key=lambda x: int(x[1]))}
     new_list_int.sort()
     # missing_index = [x for x in range(0, new_list_int[-1] + 1) if x not in new_list_int]
     dict_images = {}
@@ -40,7 +40,7 @@ def sort_images(existed_urls, domain=''):
         if x not in new_list_int:
             dict_images[x] = None  # missing image
         else:
-            dict_images[x] = fin_list[x]  # image from cdn
+            dict_images[x] = fin_list.get(str(x))  # image from cdn
 
     return dict_images
 

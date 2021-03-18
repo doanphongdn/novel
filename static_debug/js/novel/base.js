@@ -1,6 +1,20 @@
 $(document).ready(function (e) {
     history.scrollRestoration = "manual";
     $(window).scrollTop(0);
+    $("#ads-scroll-left, #ads-scroll-right").hide();
+    let baseTopAdsHeight = 0;
+    let limit_top = 120;
+    let stateCheck = setInterval(() => {
+        if (document.readyState === 'complete') {
+            clearInterval(stateCheck);
+            if ($("#base-top-ads").length) {
+                baseTopAdsHeight = $("#base-top-ads")[0].offsetHeight;
+                $("#ads-scroll-left, #ads-scroll-right").css({"top": (baseTopAdsHeight + limit_top) + "px"});
+            }
+            $("#ads-scroll-left, #ads-scroll-right").show();
+        }
+    }, 100);
+
     /* -------- START SEARCH ----------- */
     $('input.search').autocomplete({
         source: function (req, res) {
@@ -83,13 +97,6 @@ $(document).ready(function (e) {
             $("body").css({"overflow": ""});
         }
     });
-
-    let baseTopAdsHeight = 0;
-    let limit_top = 120;
-    if ($("#base-top-ads").length) {
-        baseTopAdsHeight = $("#base-top-ads")[0].offsetHeight;
-        $("#ads-scroll-left, #ads-scroll-right").css({"top": (baseTopAdsHeight + limit_top) + "px"});
-    }
 
     $(document).scroll(function () {
         var scrollTop = $(document).scrollTop();

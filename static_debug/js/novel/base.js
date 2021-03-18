@@ -6,12 +6,12 @@ $(document).ready(function (e) {
     let limit_top = 120;
     let stateCheck = setInterval(() => {
         if (document.readyState === 'complete') {
-            clearInterval(stateCheck);
+            $("#ads-scroll-left, #ads-scroll-right").show();
             if ($("#base-top-ads").length) {
                 baseTopAdsHeight = $("#base-top-ads")[0].offsetHeight;
                 $("#ads-scroll-left, #ads-scroll-right").css({"top": (baseTopAdsHeight + limit_top) + "px"});
             }
-            $("#ads-scroll-left, #ads-scroll-right").show();
+            clearInterval(stateCheck);
         }
     }, 100);
 

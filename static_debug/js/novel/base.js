@@ -1,6 +1,6 @@
 $(document).ready(function (e) {
-    history.scrollRestoration = "manual";
-    $(window).scrollTop(0);
+    // history.scrollRestoration = "manual";
+    // $(window).scrollTop(0);
     $("#ads-scroll-left, #ads-scroll-right").css({"opacity": "0"});
     let baseTopAdsHeight = 0;
     let limit_top = 120;

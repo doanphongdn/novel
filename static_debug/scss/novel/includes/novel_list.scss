@@ -118,7 +118,8 @@
           -webkit-line-clamp: 2;
 
           h2 {
-            font-size: .9rem;
+            font-size: .8rem;
+            font-weight: 600;
             margin-bottom: 0;
           }
         }
@@ -234,10 +235,8 @@
 
           h2 {
             font-weight: 600;
-            font-size: .9rem;
+            font-size: .8rem;
           }
-
-
         }
 
         .novel-rating {
@@ -262,7 +261,7 @@
 
         .novel-chapter {
           h3 {
-            font-size: .9rem;
+            font-size: .8rem;
 
             a.btn {
               text-transform: capitalize;
@@ -380,7 +379,7 @@
         .novel-detail-wrap {
           .novel-name {
             h2 {
-              font-size: .8rem;
+              font-size: .6rem;
             }
           }
 

@@ -70,9 +70,7 @@ $(document).ready(function (e) {
         }
     });
 
-    $("img.lazyload").lazyload({
-        threshold: 1
-    });
+    $("img.lazyload").lazyload();
     //
     // var lazy_param = {
     //     scrollDirection: 'vertical',

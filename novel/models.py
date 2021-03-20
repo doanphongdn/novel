@@ -221,6 +221,11 @@ class Novel(models.Model):
                                               active=True, publish=True).distinct()
         return available_novels
 
+    @classmethod
+    def get_not_uploaded_cdn_thumbs(cls):
+        return cls.objects.filter(~Q(thumbnail_image__icontains='%cdn.nettruyen.vn%'),
+                                  active=True).order_by('-updated_at').all()[0:3000]
+
     @property
     def novel_chapter_condition(self):
         return {

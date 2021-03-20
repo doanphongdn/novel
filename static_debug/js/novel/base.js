@@ -70,17 +70,22 @@ $(document).ready(function (e) {
         }
     });
 
-    var lazy_param = {
-        scrollDirection: 'vertical',
-        effect: 'fadeIn',
-        effectTime: 200,
-        threshold: 1000,
-        visibleOnly: true,
-        onError: function (element) {
-            element.attr("src", "/static/images/lazyload.gif")
-        }
-    };
-    $('.lazyload').Lazy(lazy_param);
+    $("img.lazyload").lazyload({
+        threshold: 1000
+    });
+    //
+    // var lazy_param = {
+    //     scrollDirection: 'vertical',
+    //     effect: 'fadeIn',
+    //     delay: 5000,
+    //     effectTime: 100,
+    //     threshold: 1000,
+    //     visibleOnly: true,
+    //     onError: function (element) {
+    //         element.attr("src", "/static/images/lazyload.gif")
+    //     }
+    // };
+    // $('.lazyload').Lazy(lazy_param);
 
     $('#mobile-menu-action').on('change', function () {
         if (this.checked) {

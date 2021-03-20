@@ -30,7 +30,6 @@
       padding: 2px;
       position: relative;
       display: block;
-      overflow: hidden;
 
       .btn-remove {
         box-shadow: 0 5px 2px rgba(50, 50, 93, 0.2);
@@ -118,8 +117,7 @@
         .novel-name {
           -webkit-line-clamp: 2;
 
-          h5 {
-            font-weight: 600;
+          h2 {
             font-size: .9rem;
             margin-bottom: 0;
           }
@@ -138,7 +136,7 @@
         .novel-chapter {
           -webkit-line-clamp: 1;
 
-          h6 {
+          h3 {
             max-height: 36px;
             line-height: 18px;
             font-size: .8rem;
@@ -234,7 +232,7 @@
           width: calc(40% - 70px);
           float: left;
 
-          h5 {
+          h2 {
             font-weight: 600;
             font-size: .9rem;
           }
@@ -263,7 +261,7 @@
         }
 
         .novel-chapter {
-          h6 {
+          h3 {
             font-size: .9rem;
 
             a.btn {
@@ -285,6 +283,7 @@
     }
   }
 }
+
 /* Small Devices, Tablets */
 @media (max-width: 1024px) {
   .novel-grid {
@@ -297,6 +296,7 @@
     }
   }
 }
+
 /* Small Devices, Tablets */
 @media (max-width: 768px) {
   .novel-grid {
@@ -324,7 +324,7 @@
         }
 
         .novel-chapter {
-          h6 {
+          h3 {
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
@@ -358,7 +358,7 @@
         }
 
         .novel-chapter {
-          h6 {
+          h3 {
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
@@ -368,6 +368,7 @@
     }
   }
 }
+
 @media (max-width: 425px) {
   .novel-grid {
     .novel-item {
@@ -375,10 +376,25 @@
         .novel-thumbnail-image {
           height: 155px;
         }
+
+        .novel-detail-wrap {
+          .novel-name {
+            h2 {
+              font-size: .8rem;
+            }
+          }
+
+          .novel-chapter {
+            h3 {
+              font-size: .7rem;
+            }
+          }
+        }
       }
     }
   }
 }
+
 @media (max-width: 375px) {
   .novel-grid {
     .novel-item {
@@ -390,6 +406,7 @@
     }
   }
 }
+
 @media (max-width: 320px) {
   .novel-grid {
     .novel-item {

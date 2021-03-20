@@ -49,7 +49,7 @@
                     </div>
                     <div class="novel-detail-wrap">
                         <div class="novel-name">
-                            <h5><a href="{{ novel.get_absolute_url }}">{{ novel.name }}</a></h5>
+                            <h2><a href="{{ novel.get_absolute_url }}">{{ novel.name }}</a></h2>
                         </div>
                         {% if show_rating %}
                             <div class="novel-rating">
@@ -60,21 +60,19 @@
                         {% endif %}
                         <div class="novel-chapter">
                             {% if custom_chapters %}
-                                <h6>
-                                    <a class="btn btn-sm btn-outline-secondary"
-                                       href="{{ custom_chapters|get_item:novel.id|get_attr:"absolute_url" }}">
-                                        {{ custom_chapters|get_item:novel.id|get_attr:"name" }}</a>
-                                </h6>
+                                <h3>
+                                    <a{% if view_type == 'grid-detail' %} class="btn btn-sm btn-outline-secondary"{% endif %} href="{{ custom_chapters|get_item:novel.id|get_attr:"absolute_url" }}">
+                                        {{ custom_chapters|get_item:novel.id|get_attr:"name" }}
+                                    </a>
+                                </h3>
                             {% else %}
-                                <h6>
-                                    <a class="btn btn-sm btn-outline-secondary"
-                                       href="{{ novel.novel_flat.latest_chapter.url }}">{{ novel.novel_flat.latest_chapter.name }}</a>
-                                </h6>
+                                <h3>
+                                    <a{% if view_type == 'grid-detail' %} class="btn btn-sm btn-outline-secondary"{% endif %} href="{{ novel.novel_flat.latest_chapter.url }}">{{ novel.novel_flat.latest_chapter.name }}</a>
+                                </h3>
                                 {% if show_first_chapter %}
-                                    <h6>
-                                        <a class="btn btn-sm btn-outline-secondary"
-                                           href="{{ novel.novel_flat.first_chapter.url }}">{{ novel.novel_flat.first_chapter.name }}</a>
-                                    </h6>
+                                    <h3>
+                                        <a{% if view_type == 'grid-detail' %} class="btn btn-sm btn-outline-secondary"{% endif %} href="{{ novel.novel_flat.first_chapter.url }}">{{ novel.novel_flat.first_chapter.name }}</a>
+                                    </h3>
                                 {% endif %}
                             {% endif %}
                             {% if view_type == 'list' %}

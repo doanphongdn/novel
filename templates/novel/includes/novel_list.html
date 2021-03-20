@@ -29,73 +29,67 @@
     </div>
     <div class="row">
         {% for novel in novels %}
-            {% if view_type == 'list' %}
-                <div class="col-{{ css_class.novel_list_col }} novel-item">
-            {% else %}
-                <div class="col-{{ css_class.novel_grid_col }}
-            col-md-{{ css_class.novel_grid_col_md }}
-            col-lg-{{ css_class.novel_grid_col_lg }}
-            novel-item form-group">
-            {% endif %}
-        <div class="novel-wrap">
-            {% if show_ribbon %}
-                <div class="ribbon-right">{{ novel.latest_updated_at_str }}</div>
-            {% endif %}
-            <div class="novel-thumbnail-image">
-                <a href="{{ novel.get_absolute_url }}">
-                    {% if disable_lazyload %}
-                        <img src="{{ novel.stream_thumbnail_image }}"
-                             alt="{{ novel.name }}">
-                    {% else %}
-                        <img class="lazyload" data-src="{{ novel.stream_thumbnail_image }}"
-                             src="{% static "images/lazyload.gif" %}"
-                             alt="{{ novel.name }}">
+            <div class="novel-item form-group {% if view_type == 'list' %}col-
+                {{ css_class.novel_list_col }}{% else %}col-{{ css_class.novel_grid_col }} col-md-{{ css_class.novel_grid_col_md }} col-lg-{{ css_class.novel_grid_col_lg }}{% endif %}">
+                <div class="novel-wrap">
+                    {% if show_ribbon %}
+                        <div class="ribbon-right">{{ novel.latest_updated_at_str }}</div>
                     {% endif %}
-                </a>
-            </div>
-            <div class="novel-detail-wrap">
-                <div class="novel-name">
-                    <h5><a href="{{ novel.get_absolute_url }}">{{ novel.name }}</a></h5>
-                </div>
-                {% if show_rating %}
-                    <div class="novel-rating">
-                        {% for rating in novel.rating_classes %}
-                            <i class="{{ rating }} fa fa-star"></i>
-                        {% endfor %}
+                    <div class="novel-thumbnail-image">
+                        <a href="{{ novel.get_absolute_url }}">
+                            {% if disable_lazyload %}
+                                <img src="{{ novel.stream_thumbnail_image }}"
+                                     alt="{{ novel.name }}">
+                            {% else %}
+                                <img class="lazyload" data-src="{{ novel.stream_thumbnail_image }}"
+                                     src="{% static "images/lazyload.gif" %}"
+                                     alt="{{ novel.name }}">
+                            {% endif %}
+                        </a>
                     </div>
-                {% endif %}
-                <div class="novel-chapter">
-                    {% if custom_chapters %}
-                        <h6>
-                            <a class="btn btn-sm btn-outline-secondary"
-                               href="{{ custom_chapters|get_item:novel.id|get_attr:"absolute_url" }}">
-                                {{ custom_chapters|get_item:novel.id|get_attr:"name" }}</a>
-                        </h6>
-                    {% else %}
-                        <h6>
-                            <a class="btn btn-sm btn-outline-secondary"
-                               href="{{ novel.novel_flat.latest_chapter.url }}">{{ novel.novel_flat.latest_chapter.name }}</a>
-                        </h6>
-                        {% if show_first_chapter %}
-                            <h6>
-                                <a class="btn btn-sm btn-outline-secondary"
-                                   href="{{ novel.novel_flat.first_chapter.url }}">{{ novel.novel_flat.first_chapter.name }}</a>
-                            </h6>
-                        {% endif %}
-                    {% endif %}
-                    {% if view_type == 'list' %}
-                        <div class="updated-time">
-                            <i class="far fa-clock"></i> {{ novel.novel_flat.latest_chapter.created_at }}
+                    <div class="novel-detail-wrap">
+                        <div class="novel-name">
+                            <h5><a href="{{ novel.get_absolute_url }}">{{ novel.name }}</a></h5>
                         </div>
-                    {% endif %}
-                </div>
-                {% if show_button_remove and view_type == 'grid' %}
-                    <span class="btn-remove " data-action="{{ button_remove_type }}" data-id="{{ novel.id }}">
+                        {% if show_rating %}
+                            <div class="novel-rating">
+                                {% for rating in novel.rating_classes %}
+                                    <i class="{{ rating }} fa fa-star"></i>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="novel-chapter">
+                            {% if custom_chapters %}
+                                <h6>
+                                    <a class="btn btn-sm btn-outline-secondary"
+                                       href="{{ custom_chapters|get_item:novel.id|get_attr:"absolute_url" }}">
+                                        {{ custom_chapters|get_item:novel.id|get_attr:"name" }}</a>
+                                </h6>
+                            {% else %}
+                                <h6>
+                                    <a class="btn btn-sm btn-outline-secondary"
+                                       href="{{ novel.novel_flat.latest_chapter.url }}">{{ novel.novel_flat.latest_chapter.name }}</a>
+                                </h6>
+                                {% if show_first_chapter %}
+                                    <h6>
+                                        <a class="btn btn-sm btn-outline-secondary"
+                                           href="{{ novel.novel_flat.first_chapter.url }}">{{ novel.novel_flat.first_chapter.name }}</a>
+                                    </h6>
+                                {% endif %}
+                            {% endif %}
+                            {% if view_type == 'list' %}
+                                <div class="updated-time">
+                                    <i class="far fa-clock"></i> {{ novel.novel_flat.latest_chapter.created_at }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% if show_button_remove and view_type == 'grid' %}
+                            <span class="btn-remove " data-action="{{ button_remove_type }}" data-id="{{ novel.id }}">
                 <i class="fa fa-times-circle text-danger"></i></span>
-                {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-        </div>
-        </div>
             {% if ads_inside_enable and forloop.counter|div_get_mod:ads_inside_limit and not forloop.last %}
                 {% for ad in inside_content_ads %}
                     <div class="col-12">
@@ -106,11 +100,19 @@
                 {% endfor %}
             {% endif %}
         {% endfor %}
-        </div>
     </div>
-    {% if pagination_html %}
-        <div class="col-12">
-            {{ pagination_html }}
+</div>
+{% if pagination_html %}
+    <div class="col-12">
+        {{ pagination_html }}
+    </div>
+{% endif %}
+{% if ads_after_enable %}
+    {% for ad in after_content_ads %}
+        <div class="col-12 my-2">
+            {% autoescape off %}
+                {{ ad.ad_content }}
+            {% endautoescape %}
         </div>
-    {% endif %}
-
+    {% endfor %}
+{% endif %}

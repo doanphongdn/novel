@@ -15,6 +15,7 @@ class NovelIndexView(NovelBaseView):
             },
             "novel_list": {
                 "inside_content_ads": ads_data.get("index_inside_content"),
+                "after_content_ads": ads_data.get("index_after_content"),
             },
         }
         index_include_html = self.incl_manager.render_include_html('index', request=request, extra_data=extra_data)

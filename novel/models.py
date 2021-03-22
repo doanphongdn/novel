@@ -507,6 +507,7 @@ class Comment(models.Model):
     reply_id = models.IntegerField(null=True)
     name = models.CharField(max_length=250)
     content = models.TextField()
+    report_count = models.IntegerField(default=0)
 
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True)
@@ -684,3 +685,17 @@ class NovelAdvertisement(models.Model):
 
     def __str__(self):
         return self.name
+
+
+PARAMS = [
+    ('comment_filters', 'COMMENT FILTERS')
+]
+
+
+class NovelParam(models.Model):
+    class Meta:
+        db_table = "novel_params"
+
+    key = models.CharField(max_length=50, validators=[code_validate], unique=True, choices=PARAMS)
+    values = models.TextField()
+    active = models.BooleanField(default=True)

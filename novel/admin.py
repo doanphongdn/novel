@@ -15,7 +15,7 @@ from django_cms.admin import BaseActionAdmin, ActionAdmin
 from django_cms.models import CDNServer
 from novel import utils
 from novel.models import CDNNovelFile, Genre, Novel, NovelChapter, NovelSetting, Status, NovelReport, Comment, \
-    NovelAdvertisementPlace, NovelAdvertisement
+    NovelAdvertisementPlace, NovelAdvertisement, NovelParam
 
 
 class NovelForm(forms.ModelForm):
@@ -217,3 +217,8 @@ class NovelAdvertisementAdmin(BaseActionAdmin):
     list_display = ("name", "ad_type", "active")
     filter_horizontal = ("places",)
     list_filter = ("places__code",)
+
+
+@admin.register(NovelParam)
+class NovelParamAdmin(BaseActionAdmin):
+    list_display = ("key", "values", "active")

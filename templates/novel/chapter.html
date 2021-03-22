@@ -2,7 +2,7 @@
 {% load static %}
 {% load pipeline %}
 {% block meta %}
-    <meta name="thumbnail" content="{{ novel.stream_thumbnail_image }}"/>
+    <meta name="thumbnail" content="{{ thumbnail_image }}"/>
 {% endblock %}
 {% block ads_header %}
     {% for ad in ads_data.novel_chapter_header %}

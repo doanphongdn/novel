@@ -47,6 +47,8 @@ class ChapterView(NovelBaseView):
                 referer = urlparse(chapter.src_url)
                 if novel.thumbnail_image.strip().startswith('//'):
                     referer_url = referer.scheme
+                elif novel.thumbnail_image.strip().startswith('http'):
+                    referer_url = ''
                 else:
                     referer_url = referer.scheme + "://"  # + referer.netloc
 

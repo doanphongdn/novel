@@ -104,6 +104,8 @@ class NovelDetailView(NovelBaseView):
             if novel.thumbnail_image:
                 if novel.thumbnail_image.strip().startswith('//'):
                     response.context_data['setting']['meta_img'] = referer.scheme + novel.thumbnail_image
+                elif novel.thumbnail_image.strip().startswith('http'):
+                    response.context_data['setting']['meta_img'] = novel.thumbnail_image
                 else:
                     response.context_data['setting']['meta_img'] = referer.scheme + "://" + novel.thumbnail_image
 

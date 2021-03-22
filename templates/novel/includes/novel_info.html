@@ -3,115 +3,115 @@
 {% block stylesheet %}
 {% endblock %}
 {% if novel %}
-    <div class="novel-info">
-        <div class="col-12 novel-info-wrap">
-            <div class="row">
-                <div class="col-md-3 col-7 m-auto novel-thumbnail">
-                    <img class="" src="{{ novel.stream_thumbnail_image }}" alt="{{ novel.name }}">
-                </div>
-                <div class="col-md-9 col-12 novel-detail">
-                    <meta itemprop="inLanguage" content="vi"/>
-                    <div class="novel-detail-wrap">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="novel-info">
-                                    <div class="novel-name">
-                                        <h1 itemprop="name">{{ novel.name }} {{ meaning_emoji }}</h1>
-                                    </div>
-                                    <div class="rating">
-                                        {% for rating in novel.rating_classes %}
-                                            <i class="{{ rating }} fa fa-star"></i>
-                                        {% endfor %}
-                                        <span>{{ novel.vote }}</span>
-                                    </div>
-                                    <div class="novel-categories mb-3">
-                                        {% for gen in novel.genres.all %}
-                                            <a href="{{ gen.get_absolute_url }}">
-                                                <span class="cate-item">{{ gen.name }}</span>
-                                            </a>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="novel-authors">
-                                        <label><i class="fa fa-user-circle"></i> {{ author_label }} </label>
-                                        <span>{{ novel.authors_name }}</span>
-                                    </div>
-
-                                    <div>
-                                        <label><i class="fa fa-flag"></i> {{ status_label }}</label>
-                                        <span>{{ novel.status_name }}</span>
-                                    </div>
-                                    <div>
-                                        <label><i class="fa fa-list"></i> {{ chapter_total_label }}</label>
-                                        <span>{{ novel.novel_flat.chapters.total }}</span>
-                                    </div>
-                                    <div>
-                                        <label><i class="fa fa-eye"></i> {{ view_total_label }}</label>
-                                        <span>{{ novel.view_total }}</span>
-                                    </div>
-                                    <div>
-                                        <label><i class="fa fa-calendar"></i> {{ latest_update_label }} </label>
-                                        <span>{{ novel.novel_flat.latest_chapter.created_at }}</span>
-                                    </div>
-                                    <div class="novel-button">
-                                        <a href="#" data-toggle="modal" data-target="#modal-report" rel="nofollow">
-                                            <button class="btn btn-sm btn-warning">
-                                                <i class="fa fa-bug"></i> {% translate "Error report" %}
-                                            </button>
-                                        </a>
-                                        <a href="{{ novel.novel_flat.first_chapter.url }}">
-                                            <button class="btn btn-sm btn-success">
-                                                <i class="fa fa-sort-numeric-asc"></i> {{ first_chapter_label }}
-                                            </button>
-                                        </a>
-                                        <a href="{{ novel.novel_flat.latest_chapter.url }}">
-                                            <button class="btn btn-sm btn-info">
-                                                <i class="fa fa-sort-numeric-desc"></i> {{ latest_chapter_label }}
-                                            </button>
-                                        </a>
-                                        <a href="#comment" rel="nofollow" class="clearfix">
-                                            <button class="btn btn-sm btn-secondary">
-                                                <i class="fa fa-comments"></i></i> Comments
-                                            </button>
-                                        </a>
-                                        <a data-novel="{{ novel.id }}" data-status="{{ bookmark.status }}"
-                                           rel="nofollow"
-                                           data-logged="{{ bookmark.is_logged }}" class="novel-action-bookmark">
-                                            <button class="btn btn-sm btn-secondary">
-                                                <i class=" fa fa-bookmark"></i> {{ bookmark.text }}
-                                            </button>
-                                        </a>
-                                    </div>
-                                </div>
-                                {% if novel_info_ads %}
-                                    <div class="ads-area">
-                                        {% for ad in novel_info_ads %}
-                                            {% autoescape off %}
-                                                {{ ad.ad_content }}
-                                            {% endautoescape %}
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            {#                            <div class="col-12 col-md-6">#}
-                            {##}
-                            {#                                <div class="novel-action d-none d-lg-flex">#}
-                            {#                                    <a href="#comment" rel="nofollow">#}
-                            {#                                        <i class="fa fa-comments"></i>#}
-                            {#                                        <p>Comments</p>#}
-                            {#                                    </a>#}
-                            {#                                    <a class="novel-action-bookmark" href="#" data-novel="{{ novel.id }}"#}
-                            {#                                       data-status="{{ bookmark.status }}" data-logged="{{ bookmark.is_logged }}"#}
-                            {#                                       rel="nofollow">#}
-                            {#                                        <i class=" fa fa-bookmark"></i>#}
-                            {#                                        <p> {{ bookmark.text }}</p>#}
-                            {#                                    </a>#}
-                            {#                                </div>#}
-                            {#                            </div>#}
-
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div class="novel-info">
+    <div class="col-12 novel-info-wrap">
+      <div class="row">
+        <div class="col-md-3 col-7 m-auto novel-thumbnail">
+          <img class="" src="{{ novel.stream_thumbnail_image }}" alt="{{ novel.name }}">
         </div>
+        <div class="col-md-9 col-12 novel-detail">
+          <meta itemprop="inLanguage" content="vi"/>
+          <div class="novel-detail-wrap">
+            <div class="row">
+              <div class="col-12">
+                <div class="novel-info">
+                  <div class="novel-name">
+                    <h1 itemprop="name">{{ novel.name }} {{ meaning_emoji }}</h1>
+                  </div>
+                  <div class="rating">
+                    {% for rating in novel.rating_classes %}
+                      <i class="{{ rating }} fa fa-star"></i>
+                    {% endfor %}
+                    <span>{{ novel.vote }}</span>
+                  </div>
+                  <div class="novel-categories mb-3">
+                    {% for gen in novel.genres.all %}
+                      <a href="{{ gen.get_absolute_url }}">
+                        <span class="cate-item">{{ gen.name }}</span>
+                      </a>
+                    {% endfor %}
+                  </div>
+                  <div class="novel-authors">
+                    <label><i class="fa fa-user-circle"></i> {{ author_label }} </label>
+                    <span>{{ novel.authors_name }}</span>
+                  </div>
+
+                  <div>
+                    <label><i class="fa fa-flag"></i> {{ status_label }}</label>
+                    <span>{{ novel.status_name }}</span>
+                  </div>
+                  <div>
+                    <label><i class="fa fa-list"></i> {{ chapter_total_label }}</label>
+                    <span>{{ novel.novel_flat.chapters.total }}</span>
+                  </div>
+                  <div>
+                    <label><i class="fa fa-eye"></i> {{ view_total_label }}</label>
+                    <span>{{ novel.view_total }}</span>
+                  </div>
+                  <div>
+                    <label><i class="fa fa-calendar"></i> {{ latest_update_label }} </label>
+                    <span>{{ novel.novel_flat.latest_chapter.created_at }}</span>
+                  </div>
+                  <div class="novel-button">
+                    <a href="#" data-toggle="modal" data-target="#modal-report" rel="nofollow">
+                      <button class="btn btn-sm btn-warning">
+                        <i class="fa fa-bug"></i> {% translate "Error report" %}
+                      </button>
+                    </a>
+                    <a href="{{ novel.novel_flat.first_chapter.url }}">
+                      <button class="btn btn-sm btn-success">
+                        <i class="fa fa-sort-numeric-asc"></i> {{ first_chapter_label }}
+                      </button>
+                    </a>
+                    <a href="{{ novel.novel_flat.latest_chapter.url }}">
+                      <button class="btn btn-sm btn-info">
+                        <i class="fa fa-sort-numeric-desc"></i> {{ latest_chapter_label }}
+                      </button>
+                    </a>
+                    <a href="#comment" rel="nofollow" class="clearfix">
+                      <button class="btn btn-sm btn-secondary">
+                        <i class="fa fa-comments"></i></i> {% translate "Comments" %}
+                      </button>
+                    </a>
+                    <a data-novel="{{ novel.id }}" data-status="{{ bookmark.status }}"
+                       rel="nofollow"
+                       data-logged="{{ bookmark.is_logged }}" class="novel-action-bookmark">
+                      <button class="btn btn-sm btn-secondary">
+                        <i class=" fa fa-bookmark"></i> {% translate "Bookmark" %}
+                      </button>
+                    </a>
+                  </div>
+                </div>
+                {% if novel_info_ads %}
+                  <div class="ads-area">
+                    {% for ad in novel_info_ads %}
+                      {% autoescape off %}
+                        {{ ad.ad_content }}
+                      {% endautoescape %}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+              {#                            <div class="col-12 col-md-6">#}
+              {##}
+              {#                                <div class="novel-action d-none d-lg-flex">#}
+              {#                                    <a href="#comment" rel="nofollow">#}
+              {#                                        <i class="fa fa-comments"></i>#}
+              {#                                        <p>Comments</p>#}
+              {#                                    </a>#}
+              {#                                    <a class="novel-action-bookmark" href="#" data-novel="{{ novel.id }}"#}
+              {#                                       data-status="{{ bookmark.status }}" data-logged="{{ bookmark.is_logged }}"#}
+              {#                                       rel="nofollow">#}
+              {#                                        <i class=" fa fa-bookmark"></i>#}
+              {#                                        <p> {{ bookmark.text }}</p>#}
+              {#                                    </a>#}
+              {#                                </div>#}
+              {#                            </div>#}
+
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 {% endif %}

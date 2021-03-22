@@ -111,6 +111,13 @@ class NovelDetailView(NovelBaseView):
 
             response.context_data["setting"]["title"] = novel.name
 
+            # title for social
+            setting = response.context_data.get("setting")
+            if setting and setting.get("meta_og_title"):
+                response.context_data["setting"]["meta_og_title"] = setting.get("meta_og_title") + " - " + novel.name
+            else:
+                response.context_data["setting"]["meta_og_title"] = novel.name
+
             keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full']
             response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)
 

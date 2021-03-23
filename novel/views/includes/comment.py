@@ -1,4 +1,5 @@
 import time
+import urllib
 from copy import deepcopy
 from http import HTTPStatus
 from urllib.parse import urlencode
@@ -8,6 +9,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse, HttpResponse
 from django.template import loader
 from django.utils.translation import gettext as _
+from unidecode import unidecode
 
 from django_cms.utils.cache_manager import CacheManager
 from novel import settings
@@ -46,7 +48,8 @@ class CommentManager(object):
                     filter_args = filter_text.values.split("\n")
 
                 for f in filter_args:
-                    if f.strip() in content.replace(" ", "") or f.strip() in content.strip():
+                    f = unidecode(f.strip(" \r").lower())
+                    if f in unidecode(content.replace(" ", "").lower()) or f in unidecode(content.strip().lower()):
                         return JsonResponse({"success": False, "message": _("Content of your comment is invalid")})
 
                 data["user"] = None if isinstance(request.user, AnonymousUser) else request.user

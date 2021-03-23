@@ -129,19 +129,33 @@ class NovelBaseView(TemplateView):
             kwargs[page_tmpl_code] = html
 
         device = 'pc' if request.user_agent.is_pc else 'mobile'
-        ads_places = CacheManager(NovelAdvertisementPlace,
-                                  **{'group__in': ['base', self.ads_group_name]}).get_from_cache(get_all=True)
+        ads_base_places = CacheManager(NovelAdvertisementPlace,
+                                       **{'group': 'base'}).get_from_cache(get_all=True)
         ads_data = {}
-        for place in ads_places:
+        for place in ads_base_places:
             ads = CacheManager(NovelAdvertisement,
                                **{'places__code': place.code,
                                   'ad_type__in': ['all', device]}).get_from_cache(get_all=True)
+            for ad in ads:
+                if place.code not in ads_data:
+                    ads_data[place.code] = []
+
+                ads_data[place.code].append(ad)
+
+        ads_other_places = CacheManager(NovelAdvertisementPlace,
+                                        **{'group': self.ads_group_name}).get_from_cache(get_all=True)
+        for place in ads_other_places:
+            ads = CacheManager(NovelAdvertisement,
+                               **{'places__code': place.code,
+                                  'ad_type__in': ['all', device]}).get_from_cache(get_all=True)
+            if not ads:
+                continue
+
             place_code = place.code
-            if place.group != 'base' and ads:
-                base_code = "base" + place_code.replace(self.ads_group_name, "")
-                if base_code in ads_data:
-                    place_code = base_code
-                    ads_data[place_code] = []
+            base_code = "base" + place_code.replace(self.ads_group_name, "")
+            if base_code in ads_data:
+                place_code = base_code
+                ads_data[place_code] = []
 
             for ad in ads:
                 if place_code not in ads_data:

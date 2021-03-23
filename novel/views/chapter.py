@@ -11,6 +11,7 @@ from novel.cache_manager import NovelCache
 from novel.models import NovelChapter, Novel
 from novel.utils import get_history_cookies
 from novel.views.base import NovelBaseView
+from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.user import UserAction
 
 
@@ -105,6 +106,7 @@ class ChapterView(NovelBaseView):
             "chapter_content": {
                 "chapter": chapter,
                 "novel": novel,
+                "bookmark": NovelInfoTemplateInclude.get_bookmark_info(novel.id, self.request.user),
                 "chapter_content_before_ads": ads_data.get("novel_chapter_before_content"),
                 "inside_content_ads": ads_data.get("novel_chapter_inside_content"),
             },

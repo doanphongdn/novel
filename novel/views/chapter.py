@@ -45,14 +45,14 @@ class ChapterView(NovelBaseView):
 
                 referer = urlparse(chapter.src_url)
                 if novel.thumbnail_image.strip().startswith('//'):
-                    referer_url = referer.scheme
+                    referer_url = referer.scheme + ":"
                 elif novel.thumbnail_image.strip().startswith('http'):
                     referer_url = ''
                 else:
                     referer_url = referer.scheme + "://"  # + referer.netloc
 
                 response.context_data["setting"]["title"] = novel.name + " - " + chapter.name
-                response.context_data['setting']['meta_img'] = referer_url + novel.thumbnail_image
+                response.context_data['setting']['meta_img'] = referer_url + novel.thumbnail_image.strip()
                 keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full',
                             chapter.slug.replace('-', ' '), chapter.name]
                 response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)

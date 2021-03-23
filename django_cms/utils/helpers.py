@@ -60,6 +60,10 @@ def safe_open_w(path):
 
 def download_cdn_file(source, target_file, ext=None, referer=None, optimize=True):
     headers = {}
+    for ignoring_referer in settings.IGNORE_REFERER_FOR.split(","):
+        if ignoring_referer in source:
+            referer = None
+            break
     if referer:
         headers.update({"Referer": referer})
     try:

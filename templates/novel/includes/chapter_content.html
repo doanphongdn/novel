@@ -10,7 +10,7 @@
         <a href="#" data-novel="{{ novel.id }}" data-status="{{ bookmark.status }}"
            rel="nofollow" data-logged="{{ bookmark.is_logged }}"
            class="novel-action-bookmark btn btn-sm btn-success float-left">
-            <i class=" fa fa-bookmark"></i> {% translate "Next" %}
+            <i class="fa fa-bookmark"></i> {% translate "Bookmark" %}
         </a>
       {% if chapter_next_url %}
         <a href="{{ chapter_next_url }}" class="btn btn-secondary btn-sm float-right ml-2" rel="nofollow">
@@ -42,7 +42,7 @@
   <hr class="hr-light">
   <div class="col-12 chapter-detail">
     {% if stream_images %}
-      <p class="bg-yellow text-center text-uppercase box-warning">{% translate "Please visit this chapter after 5 minutes if your browser cannot load these images now." %}</p>
+      <p class="bg-yellow text-center text-uppercase box-warning d-none">{% translate "Please visit this chapter after 5 minutes if your browser cannot load these images now." %}</p>
     {% endif %}
 
     {% if chapter_content_before_ads %}

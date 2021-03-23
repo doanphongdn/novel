@@ -103,11 +103,20 @@ class NovelDetailView(NovelBaseView):
             referer = urlparse(novel.src_url)
             if novel.thumbnail_image:
                 if novel.thumbnail_image.strip().startswith('//'):
-                    response.context_data['setting']['meta_img'] = referer.scheme + novel.thumbnail_image
+                    response.context_data['setting']['meta_img'] = referer.scheme + ":" + novel.thumbnail_image.strip()
+                elif novel.thumbnail_image.strip().startswith('http'):
+                    response.context_data['setting']['meta_img'] = novel.thumbnail_image.strip()
                 else:
                     response.context_data['setting']['meta_img'] = referer.scheme + "://" + novel.thumbnail_image
 
             response.context_data["setting"]["title"] = novel.name
+
+            # title for social
+            setting = response.context_data.get("setting")
+            if setting and setting.get("meta_og_title"):
+                response.context_data["setting"]["meta_og_title"] = setting.get("meta_og_title") + " - " + novel.name
+            else:
+                response.context_data["setting"]["meta_og_title"] = novel.name
 
             keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full']
             response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)

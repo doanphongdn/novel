@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-24 01:28+0700\n"
+"POT-Creation-Date: 2021-03-24 01:53+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -177,6 +177,7 @@ msgid "Home"
 msgstr "Trang chủ"
 
 #: templates/novel/includes/chapter_content.html:13
+#: templates/novel/includes/novel_info.html:80
 msgid "Bookmark"
 msgstr "Theo dõi"
 
@@ -201,6 +202,19 @@ msgstr "Trước"
 msgid "Error report"
 msgstr "Báo lỗi"
 
+#: templates/novel/includes/chapter_content.html:45
+msgid ""
+"Please visit this chapter after 5 minutes if your browser cannot load these "
+"images now."
+msgstr ""
+"Nếu bạn chờ hình hiển thị quá lâu, có thể chúng tôi đang sửa lỗi các hình "
+"này, <br /> bạn Vui Lòng Quay Lại sau 5 phút 55 giây! <br /> Xin Chân Thành "
+"Cảm Ơn Bạn!"
+
+#: templates/novel/includes/novel_info.html:73
+msgid "Comments"
+msgstr ""
+
 #: templates/novel/includes/novel_list.html:16
 msgid "View all"
 msgstr "Xem tất cả"
@@ -212,11 +226,3 @@ msgstr "BÁO LỖI"
 #: templates/novel/includes/report_modal.html:28
 msgid "Send report"
 msgstr "Gửi báo cáo"
-
-#~ msgid ""
-#~ "Please visit this chapter after 5 minutes if your browser cannot load "
-#~ "these images now."
-#~ msgstr ""
-#~ "Nếu bạn chờ hình hiển thị quá lâu, có thể chúng tôi đang sửa lỗi các hình "
-#~ "này, <br /> bạn Vui Lòng Quay Lại sau 5 phút 55 giây! <br /> Xin Chân "
-#~ "Thành Cảm Ơn Bạn!"

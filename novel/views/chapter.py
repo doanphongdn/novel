@@ -6,9 +6,8 @@ from django.db import transaction
 from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 
-from django_cms import settings
 from novel.cache_manager import NovelCache
-from novel.models import NovelChapter, Novel
+from novel.models import Novel, NovelChapter
 from novel.utils import get_history_cookies
 from novel.views.base import NovelBaseView
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
@@ -47,18 +46,28 @@ class ChapterView(NovelBaseView):
 
                 referer = urlparse(chapter.src_url)
                 if novel.thumbnail_image.strip().startswith('//'):
-                    referer_url = referer.scheme
+                    referer_url = referer.scheme + ":"
+                elif novel.thumbnail_image.strip().startswith('http'):
+                    referer_url = ''
                 else:
                     referer_url = referer.scheme + "://"  # + referer.netloc
 
-                response.context_data["setting"]["title"] = novel.name + " " + chapter.name
-                response.context_data['setting']['meta_img'] = referer_url + novel.thumbnail_image
+                response.context_data["setting"]["title"] = novel.name + " - " + chapter.name
+                response.context_data['setting']['meta_img'] = referer_url + novel.thumbnail_image.strip()
                 keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full',
                             chapter.slug.replace('-', ' '), chapter.name]
                 response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)
 
                 # hard code to ignore index img google bot
                 response.context_data["setting"]["no_image_index"] = True
+
+                # title for social
+                setting = response.context_data.get("setting")
+                if setting and setting.get("meta_og_title"):
+                    response.context_data["setting"]["meta_og_title"] = setting.get("meta_og_title") \
+                                                                        + " - " + novel.name + " - " + chapter.name
+                else:
+                    response.context_data["setting"]["meta_og_title"] = chapter.name
 
                 # Update view count
                 chapter_id = chapter.id

@@ -191,7 +191,7 @@
 <script type="text/javascript" src="{% static 'js/common/autosize.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/particles.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/run_particlejs.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/novel/base.js' %}"></script>
+{#<script type="text/javascript" src="{% static 'js/novel/base.js' %}"></script>#}
 {% if recapcha_site_key %}
     <script type="text/javascript"
             src="https://www.google.com/recaptcha/api.js?render={{ recapcha_site_key }}"></script>
@@ -216,7 +216,7 @@
     let recapcha_site_key = '{{ recapcha_site_key }}';
 </script>
 {% block scripts %}{% endblock %}
-{#{% javascript 'base' %}#}
+{% javascript 'base' %}
 {% javascript 'user' %}
 </body>
 </html>

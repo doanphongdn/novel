@@ -99,7 +99,7 @@ class Command(BaseCommand):
             chapters = NovelChapter.objects.filter(images_content__icontains=item, active=True,
                                                    updated_at__gte=this_time_yesterday)
             if not chapters:
-                print('[Selenium Scraper] No chapter is invalid')
+                print('[Selenium Scraper] No chapter is valid')
                 return
             print('[Selenium Scraper] Fetched %s chapters' % len(chapters))
             for chapter in chapters:

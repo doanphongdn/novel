@@ -146,6 +146,9 @@ class CDNProcess:
         limit_image = int(os.environ.get('BACKBLAZE_LIMIT_IMG', 150))
         print('[process_missing_files] total %s records' % len(files))
         for file in files:
+            if self.is_ignored_chapter(file.chapter):
+                continue
+
             start_time = time.time()
 
             referer = self.get_referer(file.chapter)
@@ -246,6 +249,10 @@ class CDNProcess:
         with transaction.atomic():
             new_files = []
             for chapter in chapters:
+
+                if self.is_ignored_chapter(chapter):
+                    continue
+
                 hash_origin_url = hashlib.md5(chapter.src_url.encode()).hexdigest()
                 if not CDNNovelFile.objects.filter(hash_origin_url=hash_origin_url).first():
                     new_files.append(CDNNovelFile(cdn=self.cdn, chapter=chapter, type='chapter',
@@ -267,6 +274,9 @@ class CDNProcess:
         # batch_records = int(os.environ.get('BACKBLAZE_BATCH_RECORD_INSERT', 50))
         # Handle downloading & storing
         for chapter in chapters:
+            if self.is_ignored_chapter(chapter):
+                continue
+
             start_time = time.time()
 
             referer = self.get_referer(chapter)
@@ -352,6 +362,18 @@ class CDNProcess:
 
         finish_time = time.time() - init_time
         print('[process_not_running_files] Finish in', finish_time, 's')
+
+    def is_ignored_chapter(self, chapter):
+        img_ignoring = os.environ.get('BACKBLAZE_IMG_IGNORING', '')
+        # Sometimes the crawled chapter has content the wrong images,
+        # we should ignore this chapter to upload to the CDN
+        images_ignore = img_ignoring.split(",") if img_ignoring else []
+        ignore_chapter = False
+        for image_ignore in images_ignore:
+            if image_ignore in chapter.images_content:
+                ignore_chapter = True
+                break
+        return ignore_chapter
 
 
 class Command(BaseCommand):

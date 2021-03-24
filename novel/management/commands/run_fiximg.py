@@ -88,17 +88,20 @@ class Command(BaseCommand):
         if not img_ignoring:
             return
         print('[Selenium Scraper] Query chapters...')
-        query = reduce(operator.or_, (Q(images_content__icontains=item) for item in img_ignoring))
-        chapters = NovelChapter.objects.filter(query)
-        if not chapters:
-            print('[Selenium Scraper] No chapter is invalid')
-            return
-        for chapter in chapters:
-            print('[Selenium Scraper] Update images content for Chapter ID: ', chapter.id, ' - Chapter Name: ',
-                  chapter.name)
-            # url = 'http://www.nettruyen.com/truyen-tranh/trai-tim-sat/chap-12/678622'
-            links = scraper.get_links(url=chapter.src_url, timeout=settings.SELENIUM_LAZY_LOADING_TIMEOUT,
-                                      page_by_selector="div.page-chapter")
-            chapter.images_content = '\n'.join(links)
-            chapter.save()
+        # query = reduce(operator.or_, (Q(images_content__icontains=item) for item in img_ignoring))
+        # chapters = NovelChapter.objects.filter(query)
+        for item in img_ignoring:
+            chapters = NovelChapter.objects.filter(images_content__icontains=item)
+            if not chapters:
+                print('[Selenium Scraper] No chapter is invalid')
+                return
+            print('[Selenium Scraper] Fetched %s chapters' % len(chapters))
+            for chapter in chapters:
+                print('[Selenium Scraper] Update images content for Chapter ID: ', chapter.id, ' - Chapter Name: ',
+                      chapter.name)
+                # url = 'http://www.nettruyen.com/truyen-tranh/trai-tim-sat/chap-12/678622'
+                links = scraper.get_links(url=chapter.src_url, timeout=settings.SELENIUM_LAZY_LOADING_TIMEOUT,
+                                          page_by_selector="div.page-chapter")
+                chapter.images_content = '\n'.join(links)
+                chapter.save()
         print('[Selenium Scraper] Finish')

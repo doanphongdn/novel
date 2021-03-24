@@ -1,10 +1,10 @@
-import operator
+# import operator
 import time
-from functools import reduce
+from datetime import datetime, timedelta
 
 # from webdriver_manager.chrome import ChromeDriverManager
 from django.core.management.base import BaseCommand
-from django.db.models import Q
+# from django.db.models import Q
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -14,6 +14,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 from django_cms import settings
 from django_cms.utils.cache_manager import CacheManager
 from novel.models import NovelChapter, NovelSetting
+
+
+# from functools import reduce
 
 
 class SeleniumScraper:
@@ -91,7 +94,10 @@ class Command(BaseCommand):
         # query = reduce(operator.or_, (Q(images_content__icontains=item) for item in img_ignoring))
         # chapters = NovelChapter.objects.filter(query)
         for item in img_ignoring:
-            chapters = NovelChapter.objects.filter(images_content__icontains=item)
+            now = datetime.now()
+            this_time_yesterday = now - timedelta(hours=48)
+            chapters = NovelChapter.objects.filter(images_content__icontains=item, active=True,
+                                                   updated_at__gte=this_time_yesterday)
             if not chapters:
                 print('[Selenium Scraper] No chapter is invalid')
                 return

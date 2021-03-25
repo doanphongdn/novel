@@ -56,7 +56,7 @@
     {% endfor %}
     {% block ads_header %}{% endblock %}
 </head>
-<body>
+<body class="{{ads_group_name}}">
 <div id="fb-root"></div>
 {% csrf_token %}
 {% if ads_data.base_scroll_left %}

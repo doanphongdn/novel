@@ -164,6 +164,7 @@ class NovelBaseView(TemplateView):
                 ads_data[place_code].append(ad)
 
         kwargs["ads_data"] = ads_data
+        kwargs["ads_group_name"] = self.ads_group_name
 
         response = super().get(request, *args, **kwargs)
         response.set_cookie('_redirect_url', request.build_absolute_uri())

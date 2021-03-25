@@ -62,12 +62,8 @@ class ChapterView(NovelBaseView):
                 response.context_data["setting"]["no_image_index"] = True
 
                 # title for social
-                setting = response.context_data.get("setting")
-                if setting and setting.get("meta_og_title"):
-                    response.context_data["setting"]["meta_og_title"] = setting.get("meta_og_title") \
-                                                                        + " - " + novel.name + " - " + chapter.name
-                else:
-                    response.context_data["setting"]["meta_og_title"] = chapter.name
+                # setting = response.context_data.get("setting")
+                response.context_data["setting"]["meta_og_title"] = novel.name + " - " + chapter.name
 
                 # Update view count
                 chapter_id = chapter.id

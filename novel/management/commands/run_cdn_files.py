@@ -234,7 +234,7 @@ class CDNProcess:
         print('[process_missing_files] Finish in ', finish_time, 's')
 
     # For the files never running before
-    def process_not_running_files(self):
+    def process_not_running_files(self, order_by_list=None, limit=None):
         print('[process_rest_files] Starting...')
         if not self.cdn:
             print('[process_not_running_files] Missing cdn object...')
@@ -243,7 +243,14 @@ class CDNProcess:
 
         init_time = time.time()
 
-        chapters = NovelChapter.get_undownloaded_images_chapters()
+        if order_by_list and limit:
+            chapters = NovelChapter.get_undownloaded_images_chapters(order_by_list=order_by_list, limit=limit)
+        elif order_by_list:
+            chapters = NovelChapter.get_undownloaded_images_chapters(order_by_list=order_by_list)
+        elif limit:
+            chapters = NovelChapter.get_undownloaded_images_chapters(limit=limit)
+        else:
+            chapters = NovelChapter.get_undownloaded_images_chapters()
 
         inserted_files = None
         with transaction.atomic():
@@ -381,8 +388,18 @@ class Command(BaseCommand):
     # def __init__(self, cdn_process=None):
     #     self.cdn_process = cdn_process
 
+    def add_arguments(self, parser):
+        parser.add_argument('-c', '--order_by_list', '--limit')
+
     def handle(self, *args, **kwargs):
         print('[CDN Processing Files] Starting...')
+        order_by_list = kwargs.get("order_by_list")
+        if order_by_list:
+            order_by_result = []
+            for orderby in order_by_list.split(","):
+                order_by_result.append('-' + orderby)
+            order_by_list = order_by_result
+        limit = kwargs.get("limit")
         ### Test code
         # self.cdn_process.upload_file2b2("/data/cdn/novel/goong-hoang-cung/chapter-24/0.jpg",
         #                                 "goong-hoang-cung/chapter-24/0.jpg")
@@ -408,7 +425,7 @@ class Command(BaseCommand):
 
                 # Create threads
                 t1 = Thread(target=cdn_process.process_missing_files)
-                t2 = Thread(target=cdn_process.process_not_running_files)
+                t2 = Thread(target=cdn_process.process_not_running_files, args=(order_by_list, limit,))
 
                 # Start all threads
                 t1.start()

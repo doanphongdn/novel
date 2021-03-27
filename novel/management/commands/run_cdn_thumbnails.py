@@ -21,7 +21,12 @@ class CDNThumbnailProcess:
     def upload_file2b2(self, file_path, b2_file_name, bucket_name='nettruyen'):
         if not self.b2.bucket:
             self.b2.bucket = bucket_name
-        self.b2.bucket.upload_local_file(file_path, b2_file_name)
+
+        uploaded_file = None
+        if not self.b2.exists(b2_file_name):
+            uploaded_file = self.b2.bucket.upload_local_file(file_path, b2_file_name)
+
+        return uploaded_file
 
     def get_cdn_domain(self):
         cdn_domain = settings.BACKBLAZE_FRIENDLY_ALIAS_URL or settings.BACKBLAZE_FRIENDLY_URL

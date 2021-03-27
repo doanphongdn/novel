@@ -115,10 +115,15 @@ def upload_file2b2(file_path, b2_file_name, bucket_name='nettruyen', cdn_number=
     if not b2.bucket:
         b2.bucket.name = bucket_name
     try:
+        cdn_url = cdn.friendly_alias_url or cdn.friendly_url or cdn.s3_url
+        file_info = b2.exists(b2_file_name)
+        if file_info:
+            return cdn_url + file_info.file_name
+
         uploaded_file = b2.bucket.upload_local_file(file_path, b2_file_name)
         if not uploaded_file:
             return None
-        cdn_url = cdn.friendly_alias_url or cdn.friendly_url or cdn.s3_url
+
         return cdn_url + uploaded_file.file_name
     except Exception as e:
         return None

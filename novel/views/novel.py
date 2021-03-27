@@ -61,7 +61,7 @@ class NovelDetailView(NovelBaseView):
         search = request.POST.get('q', "")
         if len(search) > 2:
             limit = 10
-            novels = NovelCache(Novel, limit=limit, **{"name__unaccent__icontains": search.strip()}) \
+            novels = NovelCache(Novel, limit=limit, **{"name__unaccent__icontains": search.strip(), "active": True}) \
                 .get_from_cache(get_all=True)
             if not novels:
                 # split to multiple keywords

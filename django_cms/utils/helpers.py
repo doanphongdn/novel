@@ -91,6 +91,48 @@ def download_cdn_file(source, target_file, ext=None, referer=None, optimize=True
     return None
 
 
+def download_cdn_file_multi_thread(pending_file, optimize=True):
+    headers = {}
+    source = pending_file.get('source')
+    target_file = pending_file.get('target_file')
+    ext = pending_file.get('ext')
+    referer = pending_file.get('referer')
+    if not source or not target_file:
+        return None
+
+    for ignoring_referer in settings.IGNORE_REFERER_FOR.split(","):
+        if ignoring_referer in source:
+            referer = None
+            break
+    if referer:
+        headers.update({"Referer": referer})
+
+    try:
+        if not ext:
+            short_path = get_short_url(source)
+            _, ext = os.path.splitext(short_path)
+        target_file = "%s%s" % (target_file, ext or '.jpg')
+        target_dir = "%s/%s" % (settings.CDN_FILE_FOLDER, target_file)
+        file_request = requests.get(source, headers=headers, timeout=5)
+        if settings.IGNORE_CLOUDFLARE_RESTRICT in file_request.url:
+            print("[download_cdn_file] [%s] does not pass CLOUDFLARE_RESTRICT " % source)
+            return None
+
+        if file_request.status_code == 200:
+            # with open(target_dir, 'wb') as f:
+            with safe_open_w(target_dir) as f:
+                f.write(file_request.content)
+                output = "%s/%s" % (settings.CDN_FILE_FOLDER, target_file)
+                if optimize:
+                    optimize_image(output)
+                pending_file['url'] = output
+                return output
+    except Exception as e:
+        print("[download_cdn_file] Error: %s : %s" % (source, e))
+
+    return None
+
+
 def image_processing(image):
     '''
     Optimize images

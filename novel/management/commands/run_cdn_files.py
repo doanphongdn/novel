@@ -69,15 +69,15 @@ class CDNProcess:
         pending_file['uploaded_file'] = uploaded_file
         return uploaded_file
 
-    def download_file_to_local(self, origin_file_urls, local_path, referer=None, limit_image=-1, num_downloaded_url=0):
+    def download_file_to_local(self, origin_file_urls, local_path, referer=None, limit_image=-1):
         success_files = []
         for idx, origin_file in enumerate(origin_file_urls):
             # stop download if reach limit images
             if 0 < limit_image <= idx and settings.BACKBLAZE_ALLOW_LIMIT:
                 break
-            # when we need to run full images after run for a limit number
-            if settings.BACKBLAZE_NOT_ALLOW_LIMIT and idx < num_downloaded_url:
-                continue
+            # # when we need to run full images after run for a limit number
+            # if settings.BACKBLAZE_NOT_ALLOW_LIMIT and idx < num_downloaded_url:
+            #     continue
             # Check local is exist the file, just return to upload it without download it again
             source = origin_file.get('url')
             short_path = get_short_url(source)
@@ -104,8 +104,7 @@ class CDNProcess:
             })
         return success_files
 
-    def download_file_to_local_multi_thread(self, origin_file_urls, local_path, referer=None, limit_image=-1,
-                                            num_downloaded_url=0):
+    def download_file_to_local_multi_thread(self, origin_file_urls, local_path, referer=None, limit_image=-1):
         success_files = []
         pending_files = []
         for idx, origin_file in enumerate(origin_file_urls):
@@ -227,7 +226,7 @@ class CDNProcess:
         return referer
 
     # For the files has been processed before but not get any images
-    def process_missing_files(self):
+    def process_missing_files(self, multi_thread=False):
         print('[process_missing_files] Starting...')
         if not self.cdn:
             print('[process_missing_files] Missing cdn object...')
@@ -269,10 +268,16 @@ class CDNProcess:
             #       % (local_path, file.chapter.id, get_img_time, len(missing_files)))
 
             # Download Files to local server
-            success_files = self.download_file_to_local_multi_thread(origin_file_urls=missing_files,
-                                                                     local_path=local_path,
-                                                                     referer=referer, limit_image=limit_image,
-                                                                     num_downloaded_url=limit_download)
+            if multi_thread:
+                success_files = self.download_file_to_local_multi_thread(origin_file_urls=missing_files,
+                                                                         local_path=local_path,
+                                                                         referer=referer, limit_image=limit_image,
+                                                                         num_downloaded_url=limit_download)
+            else:
+                success_files = self.download_file_to_local(origin_file_urls=missing_files,
+                                                            local_path=local_path,
+                                                            referer=referer, limit_image=limit_image,
+                                                            num_downloaded_url=limit_download)
             # downloaded_time = time.time() - get_img_time - start_time
             # print('[process_missing_files][%s-%s] spent %s to download %s missing images'
             #       % (local_path, file.chapter.id, downloaded_time, len(missing_files)))
@@ -282,7 +287,10 @@ class CDNProcess:
                 continue
 
             # Upload Files to CDN
-            url_hashed = self.upload_file_to_cdn_multi_thread(local_files=success_files)
+            if multi_thread:
+                url_hashed = self.upload_file_to_cdn_multi_thread(local_files=success_files)
+            else:
+                url_hashed = self.upload_file_to_cdn(local_files=success_files)
 
             # uploaded_time = time.time() - downloaded_time - get_img_time - start_time
             uploaded_time = time.time() - start_time
@@ -329,7 +337,7 @@ class CDNProcess:
         print('[process_missing_files] Finish in ', finish_time, 's')
 
     # For the files never running before
-    def process_not_running_files(self, order_by_list=None, limit=None):
+    def process_not_running_files(self, order_by_list=None, limit=None, multi_thread=False):
         print('[process_not_running_files] Starting...')
         if not self.cdn:
             print('[process_not_running_files] Missing cdn object...')
@@ -395,8 +403,12 @@ class CDNProcess:
             number_urls = len(urls)
 
             # Download Files to local server
-            success_files = self.download_file_to_local_multi_thread(origin_file_urls=urls, local_path=local_path,
-                                                                     referer=referer, limit_image=limit_image)
+            if multi_thread:
+                success_files = self.download_file_to_local_multi_thread(origin_file_urls=urls, local_path=local_path,
+                                                                         referer=referer, limit_image=limit_image)
+            else:
+                success_files = self.download_file_to_local(origin_file_urls=urls, local_path=local_path,
+                                                            referer=referer, limit_image=limit_image)
 
             # downloaded_time = time.time() - start_time
             # print('[process_not_running_files][%s-%s] spent %s to get %s images'
@@ -407,7 +419,10 @@ class CDNProcess:
                 continue
 
             # Upload Files to CDN
-            url_hashed = self.upload_file_to_cdn_multi_thread(local_files=success_files)
+            if multi_thread:
+                url_hashed = self.upload_file_to_cdn_multi_thread(local_files=success_files)
+            else:
+                url_hashed = self.upload_file_to_cdn(local_files=success_files)
 
             # uploaded_time = time.time() - downloaded_time - start_time
             uploaded_time = time.time() - start_time
@@ -484,11 +499,12 @@ class Command(BaseCommand):
     #     self.cdn_process = cdn_process
 
     def add_arguments(self, parser):
-        parser.add_argument('-c', '--order_by_list', '--limit')
+        parser.add_argument('-c', '--order_by_list', '--limit', '--multi_thread')
 
     def handle(self, *args, **kwargs):
         print('[CDN Processing Files] Starting...')
         order_by_list = kwargs.get("order_by_list")
+        multi_thread = kwargs.get("multi_thread", False)
         if order_by_list:
             order_by_result = []
             for orderby in order_by_list.split(","):
@@ -519,8 +535,8 @@ class Command(BaseCommand):
                 cdn_process.update_status('running')
 
                 # Create threads
-                t1 = Thread(target=cdn_process.process_missing_files)
-                t2 = Thread(target=cdn_process.process_not_running_files, args=(order_by_list, limit,))
+                t1 = Thread(target=cdn_process.process_missing_files, args=(multi_thread,))
+                t2 = Thread(target=cdn_process.process_not_running_files, args=(order_by_list, limit, multi_thread))
 
                 # Start all threads
                 t1.start()

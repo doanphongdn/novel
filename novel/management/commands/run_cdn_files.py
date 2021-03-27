@@ -271,13 +271,11 @@ class CDNProcess:
             if multi_thread:
                 success_files = self.download_file_to_local_multi_thread(origin_file_urls=missing_files,
                                                                          local_path=local_path,
-                                                                         referer=referer, limit_image=limit_image,
-                                                                         num_downloaded_url=limit_download)
+                                                                         referer=referer, limit_image=limit_image)
             else:
                 success_files = self.download_file_to_local(origin_file_urls=missing_files,
                                                             local_path=local_path,
-                                                            referer=referer, limit_image=limit_image,
-                                                            num_downloaded_url=limit_download)
+                                                            referer=referer, limit_image=limit_image)
             # downloaded_time = time.time() - get_img_time - start_time
             # print('[process_missing_files][%s-%s] spent %s to download %s missing images'
             #       % (local_path, file.chapter.id, downloaded_time, len(missing_files)))
@@ -499,7 +497,9 @@ class Command(BaseCommand):
     #     self.cdn_process = cdn_process
 
     def add_arguments(self, parser):
-        parser.add_argument('-c', '--order_by_list', '--limit', '--multi_thread')
+        parser.add_argument('--order_by_list', '-o')
+        parser.add_argument('-l', '--limit')
+        parser.add_argument('-m', '--multi_thread')
 
     def handle(self, *args, **kwargs):
         print('[CDN Processing Files] Starting...')

@@ -2,6 +2,7 @@ import hashlib
 import os
 import shutil
 import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from os.path import basename, splitext
 from threading import Thread
@@ -13,7 +14,8 @@ from django_backblaze_b2 import BackblazeB2Storage
 
 from django_cms import settings
 from django_cms.models import CDNServer
-from django_cms.utils.helpers import download_cdn_file, get_short_url, str_format_num_alpha_only
+from django_cms.utils.helpers import download_cdn_file, get_short_url, str_format_num_alpha_only, \
+    download_cdn_file_multi_thread
 from novel.models import CDNNovelFile, NovelChapter
 
 
@@ -42,7 +44,30 @@ class CDNProcess:
     def upload_file2b2(self, file_path, b2_file_name, bucket_name='nettruyen'):
         if not self.b2.bucket:
             self.b2.bucket = bucket_name
-        self.b2.bucket.upload_local_file(file_path, b2_file_name)
+
+        uploaded_file = None
+        if not self.b2.exists(b2_file_name):
+            uploaded_file = self.b2.bucket.upload_local_file(file_path, b2_file_name)
+
+        return uploaded_file
+
+    def upload_file2b2_multi_thread(self, pending_file, bucket_name='nettruyen'):
+        if not pending_file:
+            return None
+
+        file_path = pending_file.get('url')
+        if not file_path:
+            return None
+
+        if not self.b2.bucket:
+            self.b2.bucket = bucket_name
+
+        uploaded_file = None
+        b2_file_name = file_path.replace(settings.CDN_FILE_FOLDER, '').lstrip('/')
+        if not self.b2.exists(b2_file_name):
+            uploaded_file = self.b2.bucket.upload_local_file(file_path, b2_file_name)
+        pending_file['uploaded_file'] = uploaded_file
+        return uploaded_file
 
     def download_file_to_local(self, origin_file_urls, local_path, referer=None, limit_image=-1, num_downloaded_url=0):
         success_files = []
@@ -79,7 +104,58 @@ class CDNProcess:
             })
         return success_files
 
-    def upload_file_to_cdn(self, local_files):
+    def download_file_to_local_multi_thread(self, origin_file_urls, local_path, referer=None, limit_image=-1,
+                                            num_downloaded_url=0):
+        success_files = []
+        pending_files = []
+        for idx, origin_file in enumerate(origin_file_urls):
+            # stop download if reached limit images
+            if 0 < limit_image <= idx and settings.BACKBLAZE_ALLOW_LIMIT:
+                break
+            # Check local is exist the file, just return to upload it without download it again
+            source = origin_file.get('url')
+            _, ext = os.path.splitext(get_short_url(source))
+            ext = ext or '.jpg'
+            output_file = "%s/%s/%s" % (settings.CDN_FILE_FOLDER, local_path, str(origin_file.get('index')))
+            if os.path.isfile(output_file + ext):
+                success_files.append({
+                    'index': origin_file.get('index'),
+                    'url': output_file + ext,
+                    'url_hash': origin_file.get('url_hash')
+                })
+                continue
+
+            # Get file from origin url and download to local server
+            if not local_path and self.local_path:
+                local_path = self.local_path
+            target_file = "%s/%s" % (local_path, str(origin_file.get('index')))
+            pending_files.append({
+                'index': origin_file.get('index'),
+                'url': None,
+                'url_hash': origin_file.get('url_hash'),
+                'source': source,
+                'target_file': target_file,
+                'ext': ext,
+                'referer': referer,
+            })
+
+        start = time.perf_counter()  # start timer
+        with ThreadPoolExecutor() as executor:
+            results = executor.map(download_cdn_file_multi_thread,
+                                   pending_files)  # this is Similar to map(func, *iterables)
+        finish = time.perf_counter()  # end timer
+        print(f"Finished download in {round(finish - start, 2)} seconds")
+
+        for pending_file in pending_files:
+            if pending_file.get('url'):
+                success_files.append({
+                    'index': pending_file.get('index'),
+                    'url': pending_file.get('url'),
+                    'url_hash': pending_file.get('url_hash')
+                })
+        return success_files
+
+    def upload_file_to_cdn(self, local_files, explicit_restriction=True):
         # Process to upload local files to remote CDN server
         img_hash = []
         for local_file in local_files:
@@ -87,8 +163,27 @@ class CDNProcess:
                 continue
             b2_file_name = local_file.get('url').replace(settings.CDN_FILE_FOLDER, '')
             # utils.upload_file_to_b2(local_file, b2_file_name)
-            self.upload_file2b2(local_file.get('url'), b2_file_name.lstrip('/'))
-            if local_file.get('url_hash'):
+            uploaded_file = self.upload_file2b2(local_file.get('url'), b2_file_name.lstrip('/'))
+            allow_img_hash = (explicit_restriction and uploaded_file) or (not explicit_restriction)
+            if allow_img_hash and local_file.get('url_hash'):
+                img_hash.append(local_file.get('url_hash'))
+        return img_hash
+
+    def upload_file_to_cdn_multi_thread(self, local_files, explicit_restriction=True):
+        # Process to upload local files to remote CDN server
+        start = time.perf_counter()  # start timer
+        with ThreadPoolExecutor() as executor:
+            results = executor.map(self.upload_file2b2_multi_thread,
+                                   local_files)  # this is Similar to map(func, *iterables)
+        finish = time.perf_counter()  # end timer
+        print(f"Finished upload in {round(finish - start, 2)} seconds")
+
+        img_hash = []
+        for local_file in local_files:
+            if not local_file.get('url_hash'):
+                continue
+            allow_img_hash = (explicit_restriction and local_file.get('uploaded_file')) or (not explicit_restriction)
+            if allow_img_hash and local_file.get('url_hash'):
                 img_hash.append(local_file.get('url_hash'))
         return img_hash
 
@@ -165,19 +260,19 @@ class CDNProcess:
                     missing_files.append({"index": idx, "url": chapter_image, "url_hash": origin_img})
 
             # compute number of downloaded url
-            num_downloaded_url = 0
+            limit_download = 0
             if file.url:
-                num_downloaded_url = len(file.url.split("\n"))
+                limit_download = len(urls)
 
             # get_img_time = time.time() - start_time
             # print('[process_missing_files][%s-%s] spent %s to get %s missing images'
             #       % (local_path, file.chapter.id, get_img_time, len(missing_files)))
 
             # Download Files to local server
-            success_files = self.download_file_to_local(origin_file_urls=missing_files,
-                                                        local_path=local_path,
-                                                        referer=referer, limit_image=limit_image,
-                                                        num_downloaded_url=num_downloaded_url)
+            success_files = self.download_file_to_local_multi_thread(origin_file_urls=missing_files,
+                                                                     local_path=local_path,
+                                                                     referer=referer, limit_image=limit_image,
+                                                                     num_downloaded_url=limit_download)
             # downloaded_time = time.time() - get_img_time - start_time
             # print('[process_missing_files][%s-%s] spent %s to download %s missing images'
             #       % (local_path, file.chapter.id, downloaded_time, len(missing_files)))
@@ -187,7 +282,7 @@ class CDNProcess:
                 continue
 
             # Upload Files to CDN
-            url_hashed = self.upload_file_to_cdn(local_files=success_files)
+            url_hashed = self.upload_file_to_cdn_multi_thread(local_files=success_files)
 
             # uploaded_time = time.time() - downloaded_time - get_img_time - start_time
             uploaded_time = time.time() - start_time
@@ -235,7 +330,7 @@ class CDNProcess:
 
     # For the files never running before
     def process_not_running_files(self, order_by_list=None, limit=None):
-        print('[process_rest_files] Starting...')
+        print('[process_not_running_files] Starting...')
         if not self.cdn:
             print('[process_not_running_files] Missing cdn object...')
             print('[process_not_running_files] Finish')
@@ -300,8 +395,8 @@ class CDNProcess:
             number_urls = len(urls)
 
             # Download Files to local server
-            success_files = self.download_file_to_local(origin_file_urls=urls, local_path=local_path,
-                                                        referer=referer, limit_image=limit_image)
+            success_files = self.download_file_to_local_multi_thread(origin_file_urls=urls, local_path=local_path,
+                                                                     referer=referer, limit_image=limit_image)
 
             # downloaded_time = time.time() - start_time
             # print('[process_not_running_files][%s-%s] spent %s to get %s images'
@@ -312,7 +407,7 @@ class CDNProcess:
                 continue
 
             # Upload Files to CDN
-            url_hashed = self.upload_file_to_cdn(local_files=success_files)
+            url_hashed = self.upload_file_to_cdn_multi_thread(local_files=success_files)
 
             # uploaded_time = time.time() - downloaded_time - start_time
             uploaded_time = time.time() - start_time

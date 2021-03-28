@@ -104,7 +104,8 @@ class CDNProcess:
             })
         return success_files
 
-    def download_file_to_local_multi_thread(self, origin_file_urls, local_path, referer=None, limit_image=-1):
+    def download_file_to_local_multi_thread(self, origin_file_urls, local_path, referer=None, limit_image=-1,
+                                            max_worker=5):
         success_files = []
         pending_files = []
         for idx, origin_file in enumerate(origin_file_urls):
@@ -139,7 +140,7 @@ class CDNProcess:
             })
 
         start = time.perf_counter()  # start timer
-        with ThreadPoolExecutor() as executor:
+        with ThreadPoolExecutor(max_workers=max_worker) as executor:
             results = executor.map(download_cdn_file_multi_thread,
                                    pending_files)  # this is Similar to map(func, *iterables)
         finish = time.perf_counter()  # end timer
@@ -168,10 +169,10 @@ class CDNProcess:
                 img_hash.append(local_file.get('url_hash'))
         return img_hash
 
-    def upload_file_to_cdn_multi_thread(self, local_files, explicit_restriction=True):
+    def upload_file_to_cdn_multi_thread(self, local_files, explicit_restriction=True, max_worker=5):
         # Process to upload local files to remote CDN server
         start = time.perf_counter()  # start timer
-        with ThreadPoolExecutor() as executor:
+        with ThreadPoolExecutor(max_workers=max_worker) as executor:
             results = executor.map(self.upload_file2b2_multi_thread,
                                    local_files)  # this is Similar to map(func, *iterables)
         finish = time.perf_counter()  # end timer
@@ -271,7 +272,8 @@ class CDNProcess:
             if multi_thread:
                 success_files = self.download_file_to_local_multi_thread(origin_file_urls=missing_files,
                                                                          local_path=local_path,
-                                                                         referer=referer, limit_image=limit_image)
+                                                                         referer=referer, limit_image=limit_image,
+                                                                         max_worker=multi_thread)
             else:
                 success_files = self.download_file_to_local(origin_file_urls=missing_files,
                                                             local_path=local_path,
@@ -286,7 +288,7 @@ class CDNProcess:
 
             # Upload Files to CDN
             if multi_thread:
-                url_hashed = self.upload_file_to_cdn_multi_thread(local_files=success_files)
+                url_hashed = self.upload_file_to_cdn_multi_thread(local_files=success_files, max_worker=multi_thread)
             else:
                 url_hashed = self.upload_file_to_cdn(local_files=success_files)
 

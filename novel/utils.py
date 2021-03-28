@@ -132,11 +132,12 @@ def upload_file2b2(file_path, b2_file_name, bucket_name='nettruyen', cdn_number=
 def get_first_number_pattern(string, pattern='Chapter '):
     if pattern != 'Chapter':
         pattern = '(' + pattern + '|Chapter)([a-zA-Z ])*'
+    else:
+        pattern = '(' + pattern + ')([a-zA-Z ])*'
     regex = re.compile(r'^' + pattern + '([0-9.]*)')
     result = regex.findall(string)
     if result:
         # Get the second group from the result, such as:
         return result[0][2].rstrip(".")
     else:
-        regex = re.compile(pattern + '([0-9.]*)')
         return None

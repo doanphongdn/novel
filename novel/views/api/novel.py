@@ -11,8 +11,10 @@ from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from django_cms import settings
 from django_cms.utils.helpers import full_schema_url
 from novel import utils
+from novel.utils import get_first_number_pattern
 from novel.views.api.schema import NovelChapterCampaignSchema, NovelInfoCampaignSchema, NovelListCampaignSchema
 from novel.models import Novel, NovelChapter, Author, Genre, Status
 
@@ -215,7 +217,14 @@ class NovelAPIView(BaseAPIView):
                     ex_chap.save()
                     update = True
 
-            new_chapters = [NovelChapter(novel=novel, name=name.title(), src_url=url, novel_slug=novel.slug)
+            chapter_name = name.title()
+            chapter_name_index = get_first_number_pattern(chapter_name.name,
+                                                          os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chapter'))
+            if 'en' not in settings.LANGUAGE_CODE and chapter_name.startswith('Chapter'):
+                chapter_name = chapter_name.replace('Chapter', os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))
+
+            new_chapters = [NovelChapter(novel=novel, name=chapter_name, name_index=chapter_name_index, src_url=url,
+                                         novel_slug=novel.slug)
                             for url, name in chapters.items()]
             if new_chapters:
                 NovelChapter.objects.bulk_create(new_chapters, ignore_conflicts=True)

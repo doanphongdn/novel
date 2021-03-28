@@ -507,6 +507,11 @@ class Command(BaseCommand):
         print('[CDN Processing Files] Starting...')
         order_by_list = kwargs.get("order_by_list")
         multi_thread = kwargs.get("multi_thread", False)
+        if multi_thread:
+            multi_thread = int(multi_thread)
+            if multi_thread < 1:
+                multi_thread = 5  # default
+
         if order_by_list:
             order_by_result = []
             for orderby in order_by_list.split(","):

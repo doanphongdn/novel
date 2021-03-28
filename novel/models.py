@@ -252,6 +252,10 @@ class Novel(models.Model):
         }
         self.novel_flat.save()
 
+    def update_chapter_name(self):
+        for chatper in self.chapters:
+            chatper.update_name()
+
     @cached_property
     def chapter_total(self):
         return NovelChapter.objects.filter(**self.novel_chapter_condition).count()
@@ -407,6 +411,11 @@ class NovelChapter(models.Model):
 
     def get_absolute_url(self):
         return reverse("chapter", args=[self.novel_slug, self.slug])
+
+    def update_name(self):
+        if 'en' not in settings.LANGUAGE_CODE and self.name.startswith('Chapter'):
+            self.name = self.name.replace('Chapter', os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))
+            self.save()
 
     def save(self, *args, **kwargs):
         if not self.name_index:

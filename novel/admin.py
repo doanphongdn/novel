@@ -41,12 +41,17 @@ class NovelAdmin(BaseActionAdmin):
     search_fields = ("name", "slug", "src_url")
     list_filter = ("status",)
     filter_horizontal = ("authors", "genres")
-    actions = ["update_flat_info"]
+    actions = ["update_flat_info", "update_chapter_name"]
     exclude = ["novel_flat"]
 
     def update_flat_info(self, request, queryset):
         for obj in queryset:
             obj.update_flat_info()
+            obj.save()
+
+    def update_chapter_name(self, request, queryset):
+        for obj in queryset:
+            obj.update_chapter_name()
             obj.save()
 
     update_flat_info.short_description = "Update flat info"
@@ -86,7 +91,7 @@ class NovelChapterAdmin(ActionAdmin):
     list_display = ("id", "name", "novel", "chapter_updated", "created_at", "updated_at", "active")
     search_fields = ("novel__id", "novel__name", "novel_slug", "name", "slug")
 
-    actions = ("active", "deactive", "chapter_updated_true", "chapter_updated_false")
+    actions = ("active", "deactive", "chapter_updated_true", "chapter_updated_false", "update_name_by_language")
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)
@@ -113,6 +118,11 @@ class NovelChapterAdmin(ActionAdmin):
     def chapter_updated_false(self, request, queryset):
         for obj in queryset:
             obj.chapter_updated = False
+            obj.save()
+
+    def update_name_by_language(self, request, queryset):
+        for obj in queryset:
+            obj.update_name()
             obj.save()
 
     chapter_updated_true.short_description = "Chapter updated ->> TRUE"

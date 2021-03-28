@@ -390,12 +390,14 @@ class NovelChapter(models.Model):
 
     @cached_property
     def next_chapter(self):
-        next_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__gt=self.id).order_by("name_index").first()
+        next_chap = NovelChapter.objects.filter(novel_id=self.novel_id, name_index__gt=self.name_index) \
+            .order_by("name_index").first()
         return next_chap
 
     @cached_property
     def prev_chapter(self):
-        prev_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__lt=self.id).order_by("name_index").last()
+        prev_chap = NovelChapter.objects.filter(novel_id=self.novel_id, name_index__lt=self.name_index) \
+            .order_by("name_index").last()
         return prev_chap
 
     @cached_property

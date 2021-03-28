@@ -62,11 +62,13 @@
       {% for image_url in stream_images %}
         {% if "www.youtube.com" in image_url %}
           <iframe width="100%" height="400" src="{{ image_url }}" frameborder="0" allowfullscreen></iframe>
-        {% elif "<video " in image_url %}
-          {{ img_url }}
         {% endif %}
         {% if forloop.counter <= 3 %}
-          <img src="{{ image_url }}" alt="">
+          {% if "<video " in image_url %}
+            {{ image_url }}
+          {% else %}
+            <img src="{{ image_url }}" alt="">
+          {% endif %}
         {% else %}
           <img data-src="{{ image_url }}" src="{% static "images/lazyload.gif" %}" alt=""
                class="lazyload">

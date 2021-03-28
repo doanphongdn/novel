@@ -5,13 +5,13 @@
   <div class="col-12 chapter-actions">
     <div class="action-wrap">
       <a href="/" rel="nofollow" class="btn btn-sm btn-default float-left"><i class="fa fa-home"></i></a>
-        <a href="{{ novel.get_absolute_url }}" rel="nofollow" class="btn btn-sm btn-default float-left">
-            <i class="fa fa-newspaper-o"></i></a>
-        <a href="#" data-novel="{{ novel.id }}" data-status="{{ bookmark.status }}"
-           rel="nofollow" data-logged="{{ bookmark.is_logged }}"
-           class="novel-action-bookmark btn btn-sm btn-success float-left">
-            <i class="fa fa-bookmark"></i> {% translate "Bookmark" %}
-        </a>
+      <a href="{{ novel.get_absolute_url }}" rel="nofollow" class="btn btn-sm btn-default float-left">
+        <i class="fa fa-newspaper-o"></i></a>
+      <a href="#" data-novel="{{ novel.id }}" data-status="{{ bookmark.status }}"
+         rel="nofollow" data-logged="{{ bookmark.is_logged }}"
+         class="novel-action-bookmark btn btn-sm btn-success float-left">
+        <i class="fa fa-bookmark"></i> {% translate "Bookmark" %}
+      </a>
       {% if chapter_next_url %}
         <a href="{{ chapter_next_url }}" class="btn btn-secondary btn-sm float-right ml-2" rel="nofollow">
           <span class="d-none d-lg-inline">{% translate "Next" %}</span> <i
@@ -62,6 +62,8 @@
       {% for image_url in stream_images %}
         {% if "www.youtube.com" in image_url %}
           <iframe width="100%" height="400" src="{{ image_url }}" frameborder="0" allowfullscreen></iframe>
+        {% elif "<video " in image_url %}
+          {{ img_url }}
         {% endif %}
         {% if forloop.counter <= 3 %}
           <img src="{{ image_url }}" alt="">

@@ -378,7 +378,10 @@ class NovelChapter(models.Model):
     def images(self):
         images = []
         if self.images_content:
-            images = self.images_content.split('\n')
+            if self.images_content.strip().startswith('<video '):
+                images = [self.images_content]
+            else:
+                images = self.images_content.split('\n')
         return images
 
     @cached_property

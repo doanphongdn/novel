@@ -45,6 +45,10 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                     stream_images.append(origin_url)
                     continue
 
+                if "<video " in origin_url:
+                    stream_images.append(origin_url)
+                    continue
+
                 if origin_url.strip().startswith('//'):
                     origin_url = referer.scheme + ":" + origin_url
                 elif origin_url.strip().startswith('/'):

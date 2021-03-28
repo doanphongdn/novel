@@ -314,12 +314,17 @@ class ChapterAPIView(BaseAPIView):
             # chapter.novel.save()
             updated = True
         else:
-            chapter.crawl_errors = "No content to update, deactived chapter"
-            chapter.active = False
-            chapter.save()
-            return self.parse_response(is_success=False, continue_paging=False, log_enable=True,
-                                       message="No content to update, deactived chapter",
-                                       extra_data=errors)
+            content_video = crawled_data.get("content_video") or None
+            if content_video:
+                chapter.images_content = content_video + '\n'
+                updated = True
+            else:
+                chapter.crawl_errors = "No content to update, deactived chapter"
+                chapter.active = False
+                chapter.save()
+                return self.parse_response(is_success=False, continue_paging=False, log_enable=True,
+                                           message="No content to update, deactived chapter",
+                                           extra_data=errors)
 
         if updated:
             chapter.chapter_updated = True

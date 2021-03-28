@@ -65,7 +65,9 @@
         {% endif %}
         {% if forloop.counter <= 3 %}
           {% if "<video " in image_url %}
-            {{ image_url }}
+            {% autoescape off %}
+              {{ image_url }}
+            {% endautoescape %}
           {% else %}
             <img src="{{ image_url }}" alt="">
           {% endif %}

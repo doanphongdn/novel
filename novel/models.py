@@ -24,6 +24,7 @@ from django_cms.models import CDNServer
 from django_cms.utils.cache_manager import CacheManager
 from django_cms.utils.helpers import code_validate
 from novel.utils import get_first_number_pattern
+from django.utils.translation import ugettext as _
 
 
 def datetime2string(value):
@@ -33,11 +34,11 @@ def datetime2string(value):
     diff_timestamp = datetime.timestamp(datetime.now()) - datetime.timestamp(value)
 
     if diff_timestamp / 60 < 60:
-        updated_at = "%s minute(s) ago" % (int(diff_timestamp / 60) + 1)
+        updated_at = "%s " % (int(diff_timestamp / 60) + 1) + _("minute(s) ago")
     elif diff_timestamp / 3600 < 24:
-        updated_at = "%s hour(s) ago" % int(diff_timestamp / 3600)
+        updated_at = "%s " % int(diff_timestamp / 3600) + _("hour(s) ago")
     elif diff_timestamp / 3600 / 24 < 30:
-        updated_at = "%s day(s) ago" % int(diff_timestamp / 3600 / 24)
+        updated_at = "%s " % int(diff_timestamp / 3600 / 24) + _("day(s) ago")
     else:
         updated_at = value.strftime("%Y/%m/%d")
 

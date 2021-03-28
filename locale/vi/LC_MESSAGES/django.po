@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-24 01:53+0700\n"
+"POT-Creation-Date: 2021-03-28 15:22+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,115 +18,127 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: novel/models.py:183
+#: novel/models.py:37
+msgid "minute(s) ago"
+msgstr "phút trước"
+
+#: novel/models.py:39
+msgid "hour(s) ago"
+msgstr "giờ trước"
+
+#: novel/models.py:41
+msgid "day(s) ago"
+msgstr "ngày trước"
+
+#: novel/models.py:186
 msgid "The fastest and most complete updated {} comics at {}."
 msgstr "Truyện tranh {} được cập nhật nhanh nhất và đầy đủ nhất tại {}."
 
-#: novel/models.py:617
+#: novel/models.py:637
 msgid "BASE HEADER"
 msgstr ""
 
-#: novel/models.py:618
+#: novel/models.py:638
 msgid "BASE TOP"
 msgstr ""
 
-#: novel/models.py:619
+#: novel/models.py:639
 msgid "BASE BOTTOM"
 msgstr ""
 
-#: novel/models.py:620
+#: novel/models.py:640
 msgid "BASE SCROLL LEFT"
 msgstr ""
 
-#: novel/models.py:621
+#: novel/models.py:641
 msgid "BASE SCROLL RIGHT"
 msgstr ""
 
-#: novel/models.py:624
+#: novel/models.py:644
 msgid "INDEX HEADER"
 msgstr ""
 
-#: novel/models.py:625
+#: novel/models.py:645
 msgid "INDEX TOP"
 msgstr ""
 
-#: novel/models.py:626
+#: novel/models.py:646
 msgid "INDEX BOTTOM"
 msgstr ""
 
-#: novel/models.py:627
+#: novel/models.py:647
 msgid "INDEX SIDEBAR"
 msgstr ""
 
-#: novel/models.py:628
+#: novel/models.py:648
 msgid "INDEX INSIDE CONTENT"
 msgstr ""
 
-#: novel/models.py:629
+#: novel/models.py:649
 msgid "INDEX AFTER CONTENT"
 msgstr ""
 
-#: novel/models.py:632
+#: novel/models.py:652
 msgid "NOVEL ALL HEADER"
 msgstr ""
 
-#: novel/models.py:633
+#: novel/models.py:653
 msgid "NOVEL ALL TOP"
 msgstr ""
 
-#: novel/models.py:634
+#: novel/models.py:654
 msgid "NOVEL ALL END"
 msgstr ""
 
-#: novel/models.py:637
+#: novel/models.py:657
 msgid "NOVEL INFO HEADER"
 msgstr ""
 
-#: novel/models.py:638
+#: novel/models.py:658
 msgid "NOVEL INFO TOP"
 msgstr ""
 
-#: novel/models.py:639
+#: novel/models.py:659
 msgid "NOVEL INFO BOTTOM"
 msgstr ""
 
-#: novel/models.py:640
+#: novel/models.py:660
 msgid "NOVEL INFO RIGHT"
 msgstr ""
 
-#: novel/models.py:641
+#: novel/models.py:661
 msgid "NOVEL INFO BEFORE CHAP LIST"
 msgstr ""
 
-#: novel/models.py:642
+#: novel/models.py:662
 msgid "NOVEL INFO AFTER CHAP LIST"
 msgstr ""
 
-#: novel/models.py:643
+#: novel/models.py:663
 msgid "NOVEL INFO BEFORE COMMENT"
 msgstr ""
 
-#: novel/models.py:646
+#: novel/models.py:666
 msgid "NOVEL CHAPTER HEADER"
 msgstr ""
 
-#: novel/models.py:647
+#: novel/models.py:667
 msgid "NOVEL CHAPTER TOP"
 msgstr ""
 
-#: novel/models.py:648
+#: novel/models.py:668
 msgid "NOVEL CHAPTER BOTTOM"
 msgstr ""
 
-#: novel/models.py:649
+#: novel/models.py:669
 msgid "NOVEL CHPATER BEFORE CONTENT"
 msgstr ""
 
-#: novel/models.py:650
+#: novel/models.py:670
 msgid "NOVEL CHPATER INSIDE CONTENT"
 msgstr ""
 
-#: novel/models.py:651
+#: novel/models.py:671
 msgid "NOVEL CHPATER BEFORE COMMENT"
 msgstr ""
 

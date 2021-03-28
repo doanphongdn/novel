@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 import zlib
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
@@ -22,6 +23,7 @@ from django_cms import settings
 from django_cms.models import CDNServer
 from django_cms.utils.cache_manager import CacheManager
 from django_cms.utils.helpers import code_validate
+from novel.utils import get_first_number_pattern
 
 
 def datetime2string(value):
@@ -231,7 +233,7 @@ class Novel(models.Model):
         return {
             "novel_id": self.id,
             # "chapter_updated": True,
-            "active": True
+            "active": True,
         }
 
     def update_flat_info(self):
@@ -256,15 +258,15 @@ class Novel(models.Model):
 
     @cached_property
     def chapters(self):
-        return NovelChapter.objects.filter(**self.novel_chapter_condition).all()
+        return NovelChapter.objects.filter(**self.novel_chapter_condition).order_by("name_index").all()
 
     @cached_property
     def first_chapter(self):
-        return NovelChapter.objects.filter(**self.novel_chapter_condition).last()
+        return NovelChapter.objects.filter(**self.novel_chapter_condition).order_by("--name_index").last()
 
     @cached_property
     def latest_chapter(self):
-        return NovelChapter.objects.filter(**self.novel_chapter_condition).first()
+        return NovelChapter.objects.filter(**self.novel_chapter_condition).order_by("--name_index").first()
 
     def get_absolute_url(self):
         return reverse("novel", args=[self.slug])
@@ -324,6 +326,7 @@ class NovelChapter(models.Model):
 
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, db_index=True)
+    name_index = models.FloatField(db_index=True, null=True)
 
     novel_slug = models.CharField(max_length=250, blank=True, null=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, max_length=250, blank=True, null=True,
@@ -404,6 +407,13 @@ class NovelChapter(models.Model):
 
     def get_absolute_url(self):
         return reverse("chapter", args=[self.novel_slug, self.slug])
+
+    def save(self, *args, **kwargs):
+        if not self.name_index:
+            self.name_index = get_first_number_pattern(self.name, os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chapter'))
+        if 'en' not in settings.LANGUAGE_CODE and self.name.startswith('Chapter'):
+            self.name.replace('Chapter', os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))
+        super(NovelChapter, self).save(*args, **kwargs)
 
 
 class NovelSetting(models.Model):

@@ -218,7 +218,7 @@ class NovelAPIView(BaseAPIView):
                     update = True
 
             chapter_name = name.title()
-            chapter_name_index = get_first_number_pattern(chapter_name.name,
+            chapter_name_index = get_first_number_pattern(chapter_name,
                                                           os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chapter'))
             if 'en' not in settings.LANGUAGE_CODE and chapter_name.startswith('Chapter'):
                 chapter_name = chapter_name.replace('Chapter', os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))

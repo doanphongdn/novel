@@ -421,7 +421,7 @@ class NovelChapter(models.Model):
         if not self.name_index:
             self.name_index = get_first_number_pattern(self.name, os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chapter'))
         if 'en' not in settings.LANGUAGE_CODE and self.name.startswith('Chapter'):
-            self.name.replace('Chapter', os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))
+            self.name = self.name.replace('Chapter', os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))
         super(NovelChapter, self).save(*args, **kwargs)
 
 

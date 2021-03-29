@@ -133,4 +133,4 @@ templates/novel/robots.txt
 
 #static
 static_files
-pre_debug.sh
+.pre_debug.sh

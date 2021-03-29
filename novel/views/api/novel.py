@@ -12,11 +12,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from django_cms import settings
+from novel import settings as novel_setting
 from django_cms.utils.helpers import full_schema_url
 from novel import utils
 from novel.utils import get_first_number_pattern
 from novel.views.api.schema import NovelChapterCampaignSchema, NovelInfoCampaignSchema, NovelListCampaignSchema
-from novel.models import Novel, NovelChapter, Author, Genre, Status
+from novel.models import Novel, NovelChapter, Author, Genre, Status, NovelNotify, Bookmark
 
 
 class BaseAPIView(APIView):
@@ -273,8 +274,9 @@ class ChapterAPIView(BaseAPIView):
         except:
             limit = self.api_limit
 
-        chapter_list = NovelChapter.objects.filter(novel__src_campaign=src_campaign_code, chapter_updated=False,
-                                                   active=True).all()[0:limit]
+        chapter_list = NovelChapter.objects.select_related("novel") \
+                           .filter(novel__src_campaign=src_campaign_code,
+                                   chapter_updated=False, active=True).all()[0:limit]
         chapter_urls = []
         for chapter in chapter_list:
             chapter_urls.append(chapter.src_url)
@@ -288,7 +290,8 @@ class ChapterAPIView(BaseAPIView):
         url_parse = urlparse(src_url)
         referer_url = "%s://%s" % (url_parse.scheme, url_parse.netloc)
 
-        chapter = self.temp_chapters.get(src_url) or NovelChapter.objects.filter(src_url=src_url).first()
+        chapter = self.temp_chapters.get(src_url) or NovelChapter.objects.select_related("novel").filter(
+            src_url=src_url).first()
         if not chapter:
             # Continue update
             return self.parse_response(is_success=True, continue_paging=False, log_enable=True,
@@ -330,5 +333,16 @@ class ChapterAPIView(BaseAPIView):
         if updated:
             chapter.chapter_updated = True
             chapter.save()
+
+            novel = chapter.novel
+            bookmarks = Bookmark.objects.filter(novel=novel).all()
+            notify = []
+            for bm in bookmarks:
+                notify.append(NovelNotify(user=bm.user,
+                                          notify=novel_setting.NEW_CHAPTER_NOTIFY_MSG % (
+                                              novel.name, chapter.name), novel=novel))
+
+            if notify:
+                NovelNotify.objects.bulk_create(notify, ignore_conflicts=True)
 
         return self.parse_response(is_success=True)

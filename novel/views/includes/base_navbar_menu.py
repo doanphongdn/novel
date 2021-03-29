@@ -1,6 +1,8 @@
+from django.contrib.auth.models import AnonymousUser
+
 from django_cms.utils.cache_manager import CacheManager
 from django_cms.models import Menu
-from novel.models import Genre
+from novel.models import Genre, NovelNotify
 from novel.views.includes.base import BaseTemplateInclude
 
 
@@ -33,7 +35,12 @@ class BaseNavbarTemplateInclude(BaseTemplateInclude):
         if "logout_label" not in self.include_data:
             self.include_data["logout_label"] = "Logout"
 
+        unread_notify_number = 0
+        if not isinstance(self.request.user, AnonymousUser):
+            unread_notify_number = NovelNotify.unread_notify_number(self.request.user)
+
         self.include_data.update({
+            "unread_notify_number": unread_notify_number,
             "enable_auth_menu": enable_auth_menu,
             "navbar_menus": navbar_menus,
             "genre_menu": genre_menu,

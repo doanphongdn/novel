@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import models
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -738,3 +738,15 @@ class NovelNotify(models.Model):
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE, blank=True, null=True)
     notify = models.TextField()
     read = models.BooleanField(default=False)
+
+    # Datetime
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    @classmethod
+    def unread_notify_number(cls, user):
+        number = cls.objects.filter(user=user, read=False).count()
+        return number
+
+    @classmethod
+    def get_notify(cls, user):
+        return cls.objects.filter(user=user).order_by("-id").order_by("read").all()[0:10]

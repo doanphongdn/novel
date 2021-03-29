@@ -192,14 +192,14 @@
 <script type="text/javascript" src="{% static 'js/common/particles.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/run_particlejs.js' %}"></script>
 {#<script type="text/javascript" src="{% static 'js/novel/base.js' %}"></script>#}
-{% if recapcha_site_key %}
+{% if recaptcha_site_key %}
     <script type="text/javascript"
-            src="https://www.google.com/recaptcha/api.js?render={{ recapcha_site_key }}"></script>
+            src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
 {% endif %}
 
-{% if setting.google_analystics_id %}
+{% if setting.google_analytics_id %}
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ setting.google_analystics_id }}"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ setting.google_analytics_id }}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -208,12 +208,12 @@
         }
 
         gtag('js', new Date());
-        gtag('config', '{{ setting.google_analystics_id }}');
+        gtag('config', '{{ setting.google_analytics_id }}');
 
     </script>
 {% endif %}
 <script type="text/javascript">
-    let recapcha_site_key = '{{ recapcha_site_key }}';
+    let recaptcha_site_key = '{{ recaptcha_site_key }}';
 </script>
 {% block scripts %}{% endblock %}
 {% javascript 'base' %}

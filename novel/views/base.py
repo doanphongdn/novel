@@ -102,7 +102,7 @@ class NovelBaseView(TemplateView):
 
         base_navbar = self.incl_manager.render_include_html('base_navbar', extra_data=extra_data, request=request)
         kwargs["base_navbar"] = base_navbar
-        kwargs["recapcha_site_key"] = settings.GOOGLE_RECAPTCHA_SITE_KEY
+        kwargs["recaptcha_site_key"] = settings.GOOGLE_RECAPTCHA_SITE_KEY
         kwargs["css_style"] = settings.CSS_STYLE
         kwargs["setting"] = {
             "title": title,
@@ -119,7 +119,7 @@ class NovelBaseView(TemplateView):
             "meta_og_description": meta_og_description,
             "meta_fb_app_id": meta_fb_app_id,
             "meta_img": img_view,
-            "google_analystics_id": novel_setting and novel_setting.google_analystics_id or "",
+            "google_analytics_id": novel_setting and novel_setting.google_analytics_id or "",
             "no_image_index": False,
         }
 

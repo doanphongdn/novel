@@ -21,7 +21,7 @@ class ReportModalTemplateInclude(BaseTemplateInclude):
         })
 
         self.include_data.update({
-            "recapcha_site_key": settings.GOOGLE_RECAPTCHA_SITE_KEY,
+            "recaptcha_site_key": settings.GOOGLE_RECAPTCHA_SITE_KEY,
             "report_form": report_form,
             "novel_name": novel.name if novel else "",
             "chapter_name": chapter.name if chapter else "",

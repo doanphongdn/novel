@@ -15,7 +15,7 @@ class BaseAuthModalTemplateInclude(BaseTemplateInclude):
         lost_pass_form = LostPassForm()
 
         self.include_data.update({
-            "recapcha_site_key": settings.GOOGLE_RECAPTCHA_SITE_KEY,
+            "recaptcha_site_key": settings.GOOGLE_RECAPTCHA_SITE_KEY,
             "login_form": login_form,
             "register_form": register_form,
             "lost_pass_form": lost_pass_form,

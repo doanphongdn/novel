@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from novel.form.user import UserProfileForm
-from novel.models import Novel, Bookmark, History, NovelChapter, NovelUserProfile
+from novel.models import Novel, Bookmark, History, NovelChapter, NovelUserProfile, NovelNotify
 from novel.utils import get_history_cookies
 from novel.views.includes.base import BaseTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
@@ -114,6 +114,21 @@ class UserProfileTemplateInclude(BaseTemplateInclude):
                     <i class="fa fa-save"></i> {submit_label}
                     </button></div>""".format(submit_label=input_labels.get("submit_label") or "Save"))
                 profile_html = mark_safe("".join(html_groups))
+        elif tab_name == "message":
+            html_groups = ["""<table class="table table-striped table-sm table-hover">"""]
+            notify = NovelNotify.get_notify(self.request.user)
+            for n in notify:
+                bold_class = "" if n.read else "font-weight: 600;"
+                html_groups.append("""<tr style="cursor: pointer;">
+                                        <td style="width:200px;%s">
+                                            <i class="fa fa-calendar"></i> %s
+                                        </td>
+                                        <td style="%s">%s</td>
+                                    </tr>""" %
+                                   (bold_class, n.created_at.strftime("%d/%m/%Y %H:%M"), bold_class, n.notify))
+
+            html_groups.append("""</tr></table>""")
+            profile_html = mark_safe("".join(html_groups))
 
         self.include_data.update({
             "profile_html": profile_html,

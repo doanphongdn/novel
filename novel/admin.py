@@ -5,17 +5,20 @@ from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import AdminSite
+from django.contrib.admin.helpers import ActionForm
 from django.contrib.admin.views.main import ChangeList
+from django.contrib.auth.models import User
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.html import format_html
 from django.views.decorators.cache import never_cache
+from django_json_widget.widgets import JSONEditorWidget
 
 from django_cms.admin import BaseActionAdmin, ActionAdmin
 from django_cms.models import CDNServer
 from novel import utils
 from novel.models import CDNNovelFile, Genre, Novel, NovelChapter, NovelSetting, Status, NovelReport, Comment, \
-    NovelAdvertisementPlace, NovelAdvertisement, NovelParam
+    NovelAdvertisementPlace, NovelAdvertisement, NovelParam, NovelNotify
 
 
 class NovelForm(forms.ModelForm):
@@ -129,15 +132,32 @@ class NovelChapterAdmin(ActionAdmin):
     chapter_updated_false.short_description = "Chapter updated ->> FALSE"
 
 
+class NovelSettingForm(forms.ModelForm):
+    class Meta:
+        model = NovelSetting
+        fields = '__all__'
+        widgets = {
+            'meta': JSONEditorWidget(options={
+                'modes': ['code', 'tree'],
+                'mode': 'tree',
+                'search': False,
+            }, attrs={
+                "class": "vLargeTextField",
+                "style": "height:400px; display:inline-block;",
+            })
+        }
+
+
 @admin.register(NovelSetting)
 class NovelSettingAdmin(BaseActionAdmin):
+    form = NovelSettingForm
     list_display = (
         "id", "title", "favicon_tag", "logo_tag")
 
-    fields = ["title", 'favicon_tag', "favicon", "novel_type", 'logo_tag', "logo", "meta_keywords", "meta_description",
+    fields = ["title", 'favicon_tag', "favicon", 'meta', 'logo_tag', "logo", "meta_keywords", "meta_description",
               "meta_copyright", "meta_author", "meta_img", "meta_img_tag", "img_ignoring",
               "meta_og_type", "meta_og_description", "meta_fb_app_id",
-              "google_analystics_id", "ads_txt", "robots_txt"]
+              "google_analytics_id", "ads_txt", "robots_txt"]
 
     readonly_fields = ['logo_tag', 'favicon_tag', 'meta_img_tag']
 
@@ -232,3 +252,26 @@ class NovelAdvertisementAdmin(BaseActionAdmin):
 @admin.register(NovelParam)
 class NovelParamAdmin(BaseActionAdmin):
     list_display = ("key", "values", "active")
+
+
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('email', 'first_name', 'last_name')
+    list_filter = ('is_staff', 'is_superuser')
+    actions = ["send_notify"]
+
+    class NotifyForm(ActionForm):
+        notify = forms.CharField()
+
+    action_form = NotifyForm
+
+    def send_notify(self, request, queryset):
+        notify = request.POST.get('notify')
+
+        for user in queryset:
+            NovelNotify(user=user, notify=notify).save()
+
+    send_notify.short_description = "Send Notify to user >>"
+
+
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)

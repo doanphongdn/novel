@@ -438,6 +438,7 @@ class NovelSetting(models.Model):
     title = models.CharField(max_length=250)
     favicon = models.ImageField(upload_to="images", null=True, blank=True)
     logo = models.ImageField(upload_to="images", null=True, blank=True)
+    meta = models.JSONField(null=True, blank=True)
     meta_keywords = models.TextField(null=True, blank=True)
     meta_description = models.TextField(null=True, blank=True)
     meta_copyright = models.TextField(null=True, blank=True)
@@ -451,7 +452,7 @@ class NovelSetting(models.Model):
     ads_txt = models.TextField(blank=True, null=True)
     robots_txt = models.TextField(blank=True, null=True)
     img_ignoring = models.TextField(null=True, blank=True)
-    google_analystics_id = models.TextField(null=True, blank=True)
+    google_analytics_id = models.TextField(null=True, blank=True)
     novel_type = models.CharField(max_length=250, choices=[('COMIC', 'Comic'), ('TEXT', 'Text')])
 
     def logo_tag(self):
@@ -727,3 +728,13 @@ class NovelParam(models.Model):
     key = models.CharField(max_length=50, validators=[code_validate], unique=True, choices=PARAMS)
     values = models.TextField()
     active = models.BooleanField(default=True)
+
+
+class NovelNotify(models.Model):
+    class Meta:
+        db_table = "novel_notifications"
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    novel = models.ForeignKey(Novel, on_delete=models.CASCADE, blank=True, null=True)
+    notify = models.TextField()
+    read = models.BooleanField(default=False)

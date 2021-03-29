@@ -671,9 +671,11 @@ NOVEL_ADV_PLACES = (
     ('novel_chapter_header', _('NOVEL CHAPTER HEADER')),
     ('novel_chapter_top', _('NOVEL CHAPTER TOP')),
     ('novel_chapter_bottom', _('NOVEL CHAPTER BOTTOM')),
-    ('novel_chapter_before_content', _('NOVEL CHPATER BEFORE CONTENT')),
-    ('novel_chapter_inside_content', _('NOVEL CHPATER INSIDE CONTENT')),
-    ('novel_chapter_before_comment', _('NOVEL CHPATER BEFORE COMMENT')),
+    ('novel_chapter_before_content', _('NOVEL CHAPTER BEFORE CONTENT')),
+    ('novel_chapter_inside_content', _('NOVEL CHAPTER INSIDE CONTENT')),
+    ('novel_chapter_before_comment', _('NOVEL CHAPTER BEFORE COMMENT')),
+    ('novel_chapter_scroll_left', _('NOVEL CHAPTER SCROLL LEFT')),
+    ('novel_chapter_scroll_right', _('NOVEL CHAPTER SCROLL RIGHT')),
 )
 
 
@@ -684,6 +686,7 @@ class NovelAdvertisementPlace(models.Model):
 
     group = models.CharField(max_length=50, choices=NOVEL_ADV_GROUPS)
     code = models.CharField(max_length=50, choices=NOVEL_ADV_PLACES, unique=True)
+    base_override = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
 
     def __str__(self):

@@ -153,7 +153,7 @@ class NovelBaseView(TemplateView):
 
             place_code = place.code
             base_code = "base" + place_code.replace(self.ads_group_name, "")
-            if base_code in ads_data:
+            if base_code in ads_data or place.base_override:
                 place_code = base_code
                 ads_data[place_code] = []
 

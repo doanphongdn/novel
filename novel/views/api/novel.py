@@ -217,15 +217,16 @@ class NovelAPIView(BaseAPIView):
                     ex_chap.save()
                     update = True
 
-            chapter_name = name.title()
-            chapter_name_index = get_first_number_pattern(chapter_name,
-                                                          os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chapter'))
-            if 'en' not in settings.LANGUAGE_CODE and chapter_name.startswith('Chapter'):
-                chapter_name = chapter_name.replace('Chapter', os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))
+            new_chapters = []
+            for url, name in chapters.items():
+                chapter_name = name.title()
+                chapter_name_index = get_first_number_pattern(chapter_name,
+                                                              os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chapter'))
+                if 'en' not in settings.LANGUAGE_CODE and chapter_name.startswith('Chapter'):
+                    chapter_name = chapter_name.replace('Chapter', os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))
 
-            new_chapters = [NovelChapter(novel=novel, name=chapter_name, name_index=chapter_name_index, src_url=url,
-                                         novel_slug=novel.slug)
-                            for url, name in chapters.items()]
+                new_chapters.append(NovelChapter(novel=novel, name=chapter_name, name_index=chapter_name_index,
+                                                 src_url=url, novel_slug=novel.slug))
             if new_chapters:
                 NovelChapter.objects.bulk_create(new_chapters, ignore_conflicts=True)
                 novel.latest_updated_time = datetime.now()

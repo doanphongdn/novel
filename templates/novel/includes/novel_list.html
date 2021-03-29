@@ -110,7 +110,7 @@
     <div class="row">
         {% if ads_after_enable %}
             {% for ad in after_content_ads %}
-                <div class="col-12 my-2">
+                <div class="col-12 my-2" style="padding-right: 0 !important;">
                     {% autoescape off %}
                         {{ ad.ad_content }}
                     {% endautoescape %}

@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import re
 from os.path import basename, splitext
@@ -10,6 +11,9 @@ from django_backblaze_b2 import BackblazeB2Storage
 
 from django_cms import settings
 from django_cms.models import CDNServer
+
+
+logger = logging.getLogger(__name__)
 
 
 def is_json(json_str):
@@ -127,6 +131,25 @@ def upload_file2b2(file_path, b2_file_name, bucket_name='nettruyen', cdn_number=
         return cdn_url + uploaded_file.file_name
     except Exception as e:
         return None
+
+
+def remove_b2_files(b2_file_name, bucket_name='nettruyen', cdn_number=0):
+    """
+    b2_file_name should be a file path or folder path
+    """
+    active_cdn = CDNServer.get_active_cdn()
+    if not active_cdn:
+        return
+    cdn = active_cdn[cdn_number]
+    b2 = BackblazeB2Storage(opts={'bucket': cdn.name, 'allowFileOverwrites': True})
+    if not b2:
+        return
+    if not b2.bucket:
+        b2.bucket.name = bucket_name
+    try:
+        b2.delete(b2_file_name)
+    except Exception as e:
+        logger.exception(e)
 
 
 def get_first_number_pattern(string, pattern='Chapter '):

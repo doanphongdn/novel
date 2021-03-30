@@ -94,7 +94,8 @@ class NovelChapterAdmin(ActionAdmin):
     list_display = ("id", "name", "novel", "chapter_updated", "created_at", "updated_at", "active")
     search_fields = ("novel__id", "novel__name", "novel_slug", "name", "slug")
 
-    actions = ("active", "deactive", "chapter_updated_true", "chapter_updated_false", "update_name_by_language")
+    actions = ("active", "deactive", "chapter_updated_true", "chapter_updated_false", "update_name_by_language",
+               "remove_cdn_files")
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)
@@ -127,6 +128,10 @@ class NovelChapterAdmin(ActionAdmin):
         for obj in queryset:
             obj.update_name()
             obj.save()
+
+    def remove_cdn_files(self, request, queryset):
+        for obj in queryset:
+            obj.remove_cdn_files()
 
     chapter_updated_true.short_description = "Chapter updated ->> TRUE"
     chapter_updated_false.short_description = "Chapter updated ->> FALSE"

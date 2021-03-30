@@ -4,6 +4,7 @@ import os
 import zlib
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
+from pathlib import Path
 
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
@@ -23,6 +24,7 @@ from django_cms import settings
 from django_cms.models import CDNServer
 from django_cms.utils.cache_manager import CacheManager
 from django_cms.utils.helpers import code_validate
+from novel import utils
 from novel.utils import get_first_number_pattern
 from django.utils.translation import ugettext as _
 
@@ -417,6 +419,19 @@ class NovelChapter(models.Model):
 
     def get_absolute_url(self):
         return reverse("chapter", args=[self.novel_slug, self.slug])
+
+    def remove_cdn_files(self):
+        # Get CDN item
+        cdn_file = CDNNovelFile.objects.filter(chapter_id=self.id).first()
+        if cdn_file:
+            path = "%s/%s" % (self.novel_slug, self.slug)
+            if cdn_file.url:
+                for file in cdn_file.url:
+                    path = Path(file)
+                    utils.remove_b2_files(path + "/" + path.name)
+            else:
+                for idx, url in enumerate(self.images):
+                    utils.remove_b2_files(path + "/" + str(idx) + ".jpg")
 
     def update_name(self):
         if 'en' not in settings.LANGUAGE_CODE and self.name.startswith('Chapter'):

@@ -12,7 +12,7 @@ from django.urls import reverse
 from novel import utils
 from novel.form.auth import RegisterForm, LoginForm
 from novel.form.user import UserProfileForm
-from novel.models import Novel, Bookmark, History, NovelChapter, NovelUserProfile
+from novel.models import Novel, Bookmark, History, NovelChapter, NovelUserProfile, NovelNotify
 from novel.utils import get_history_cookies
 from novel.views.base import NovelBaseView
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
@@ -123,6 +123,22 @@ class UserAction(object):
                 }, status=HTTPStatus.BAD_REQUEST)
 
         return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
+
+    @staticmethod
+    def read_notify(request):
+        res = JsonResponse({"success": False, })
+        if request.method == 'POST':
+            try:
+                notify_id = request.POST.get('notify_id')
+                notify = NovelNotify.objects.filter(id=notify_id).first()
+                if notify:
+                    notify.read = True
+                    notify.save()
+                    res = JsonResponse({"success": True, "redirect_url": notify.novel.get_absolute_url()})
+            except:
+                pass
+
+        return res
 
     @staticmethod
     def sign_up(request):

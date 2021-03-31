@@ -193,4 +193,22 @@ $(document).ready(function (e) {
             }
         });
     });
+
+    $(document).on('click', '.notify-message', function (e) {
+        e.preventDefault();
+        let notify_id = $(this).data("id");
+        $.ajax({
+            type: 'post',
+            url: '/user/read_notify',
+            data: {
+                'notify_id': notify_id,
+                'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+            },
+            success: function (data) {
+                // if (data.success === true && data.redirect_url) {
+                //     window.location.href = data.redirect_url;
+                // }
+            }
+        });
+    })
 });

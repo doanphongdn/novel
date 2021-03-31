@@ -14,7 +14,7 @@
   background: #ff5370;
   display: inline-block;
   border-radius: 50%;
-  right: -3px;
+  left: 13px;
   position: absolute;
   top: 10px;
   color: #fff;
@@ -287,6 +287,20 @@ a {
       a {
         font-size: .9rem;
         font-weight: normal;
+      }
+
+      .notify-message-menu {
+        width: 300px;
+
+        a {
+          padding: 10px 15px;
+          width: auto;
+          border-bottom: thin solid #eeeeee;
+        }
+
+        a:last-child {
+          border-bottom: none;
+        }
       }
 
       .user-profile-menu {

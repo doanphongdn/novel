@@ -35,12 +35,17 @@ class BaseNavbarTemplateInclude(BaseTemplateInclude):
         if "logout_label" not in self.include_data:
             self.include_data["logout_label"] = "Logout"
 
-        unread_notify_number = 0
+        notify = []
+        notify_unread = 0
         if not isinstance(self.request.user, AnonymousUser):
-            unread_notify_number = NovelNotify.unread_notify_number(self.request.user)
+            notify_unread = len(CacheManager(NovelNotify, **{"user_id": self.request.user.id,
+                                                             "read": False}).get_from_cache(get_all=True))
+            notify = CacheManager(NovelNotify, **{"user_id": self.request.user.id},
+                                  limit=10, order_by=["-id", "read"]).get_from_cache(get_all=True)
 
         self.include_data.update({
-            "unread_notify_number": unread_notify_number,
+            "notify_list": notify,
+            "notify_unread": notify_unread,
             "enable_auth_menu": enable_auth_menu,
             "navbar_menus": navbar_menus,
             "genre_menu": genre_menu,

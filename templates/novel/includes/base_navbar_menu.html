@@ -4,10 +4,18 @@
     {% if enable_auth_menu %}
         {% if user.is_authenticated %}
             <li class="nav-item dropdown nav-item-user d-lg-none">
-                <a class="nav-link nav-link-icon" href="#" rel="nofollow">
+                <a class="nav-link nav-link-icon float-right" href="#" rel="nofollow">
                     <span class="nav-link-inner--text">{{ user.first_name }} {{ user.last_name }}</span>
                     <img src="{{ user_avatar }}" class="user-avatar" alt="avatar" rel="nofollow">
                 </a>
+                <a class="nav-link nav-link-icon float-right mr-3" rel="nofollow"
+                   href="{% url "user_profile" tab_name="message" %}">
+                    <i class="fa fa fa-bell"></i>
+                    {% if notify_unread %}
+                        <span class="badge bg-c-red">{{ notify_unread }}</span>
+                    {% endif %}
+                </a>
+
             </li>
             <li class="nav-item dropdown d-lg-none">
                 <a class="nav-link nav-link-icon dropdown-toggle" href="#" role="button"
@@ -52,20 +60,36 @@
     {% endfor %}
     {% if enable_auth_menu %}
         {% if user.is_authenticated %}
-            <li class="nav-item">
-                <a class="nav-link nav-link-icon" href="{% url "user_profile" tab_name="message" %}" rel="nofollow">
+            <li class="nav-item d-none d-lg-block">
+                <a class="nav-link nav-link-icon dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                   aria-expanded="true" rel="nofollow" href="#"
+                   rel="nofollow">
                     <i class="fa fa fa-bell"></i>
-                    {% if unread_notify_number %}
-                        <span class="badge bg-c-red">{{ unread_notify_number }}</span>
+                    {% if notify_unread %}
+                        <span class="badge bg-c-red">{{ notify_unread }}</span>
                     {% endif %}
                 </a>
+                {% if notify_list %}
+                    <div class="dropdown-menu dropdown-menu-right notify-message-menu">
+                        {% for notify in notify_list %}
+                            <a class="dropdown-item notify-message{% if not notify.read %} font-weight-bold{% endif %}"
+                               data-id="{{ notify.id }}" href="{{ notify.novel.get_absolute_url }}" rel="nofollow">
+                                {{ notify.notify }}
+                            </a>
+                        {% endfor %}
+                        <a class="dropdown-item text-center" rel="nofollow"
+                           href="{% url "user_profile" tab_name="message" %}">
+                            {% translate "View all messages" %}
+                        </a>
+                    </div>
+                {% endif %}
             </li>
-{#            <li class="nav-item">#}
-{#                <a class="nav-link nav-link-icon" href="{% url "user_profile" tab_name="comment" %}" rel="nofollow">#}
-{#                    <i class="fa fa fa-comments"></i>#}
-{#                    <span class="badge bg-c-red">5</span>#}
-{#                </a>#}
-{#            </li>#}
+            {#            <li class="nav-item">#}
+            {#                <a class="nav-link nav-link-icon" href="{% url "user_profile" tab_name="comment" %}" rel="nofollow">#}
+            {#                    <i class="fa fa fa-comments"></i>#}
+            {#                    <span class="badge bg-c-red">5</span>#}
+            {#                </a>#}
+            {#            </li>#}
             <li class="nav-item dropdown nav-item-user d-none d-lg-block">
                 <a class="nav-link nav-link-icon dropdown-toggle" href="#" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" rel="nofollow">

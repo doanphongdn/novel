@@ -74,6 +74,7 @@ urlpatterns = [
     path("user/signin", UserAction.sign_in, name='user_sign_in'),
     path("user/logout", UserAction.user_logout, name='user_logout'),
     path('user/bookmark', UserAction.bookmark, name='user_bookmark'),
+    path('user/read_notify', UserAction.read_notify, name='user_read_notify'),
     path('user/novel-remove', UserAction.novel_remove, name='novel_remove'),
     path('novel/report', NovelAction.report_form, name="novel_report"),
 

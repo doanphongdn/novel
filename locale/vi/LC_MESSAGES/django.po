@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-28 15:22+0700\n"
+"POT-Creation-Date: 2021-04-01 00:58+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,112 +34,120 @@ msgstr "ngày trước"
 msgid "The fastest and most complete updated {} comics at {}."
 msgstr "Truyện tranh {} được cập nhật nhanh nhất và đầy đủ nhất tại {}."
 
-#: novel/models.py:637
+#: novel/models.py:643
 msgid "BASE HEADER"
 msgstr ""
 
-#: novel/models.py:638
+#: novel/models.py:644
 msgid "BASE TOP"
 msgstr ""
 
-#: novel/models.py:639
+#: novel/models.py:645
 msgid "BASE BOTTOM"
 msgstr ""
 
-#: novel/models.py:640
+#: novel/models.py:646
 msgid "BASE SCROLL LEFT"
 msgstr ""
 
-#: novel/models.py:641
+#: novel/models.py:647
 msgid "BASE SCROLL RIGHT"
 msgstr ""
 
-#: novel/models.py:644
+#: novel/models.py:650
 msgid "INDEX HEADER"
 msgstr ""
 
-#: novel/models.py:645
+#: novel/models.py:651
 msgid "INDEX TOP"
 msgstr ""
 
-#: novel/models.py:646
+#: novel/models.py:652
 msgid "INDEX BOTTOM"
 msgstr ""
 
-#: novel/models.py:647
+#: novel/models.py:653
 msgid "INDEX SIDEBAR"
 msgstr ""
 
-#: novel/models.py:648
+#: novel/models.py:654
 msgid "INDEX INSIDE CONTENT"
 msgstr ""
 
-#: novel/models.py:649
+#: novel/models.py:655
 msgid "INDEX AFTER CONTENT"
 msgstr ""
 
-#: novel/models.py:652
+#: novel/models.py:658
 msgid "NOVEL ALL HEADER"
 msgstr ""
 
-#: novel/models.py:653
+#: novel/models.py:659
 msgid "NOVEL ALL TOP"
 msgstr ""
 
-#: novel/models.py:654
+#: novel/models.py:660
 msgid "NOVEL ALL END"
 msgstr ""
 
-#: novel/models.py:657
+#: novel/models.py:663
 msgid "NOVEL INFO HEADER"
 msgstr ""
 
-#: novel/models.py:658
+#: novel/models.py:664
 msgid "NOVEL INFO TOP"
 msgstr ""
 
-#: novel/models.py:659
+#: novel/models.py:665
 msgid "NOVEL INFO BOTTOM"
 msgstr ""
 
-#: novel/models.py:660
+#: novel/models.py:666
 msgid "NOVEL INFO RIGHT"
 msgstr ""
 
-#: novel/models.py:661
+#: novel/models.py:667
 msgid "NOVEL INFO BEFORE CHAP LIST"
 msgstr ""
 
-#: novel/models.py:662
+#: novel/models.py:668
 msgid "NOVEL INFO AFTER CHAP LIST"
 msgstr ""
 
-#: novel/models.py:663
+#: novel/models.py:669
 msgid "NOVEL INFO BEFORE COMMENT"
 msgstr ""
 
-#: novel/models.py:666
+#: novel/models.py:672
 msgid "NOVEL CHAPTER HEADER"
 msgstr ""
 
-#: novel/models.py:667
+#: novel/models.py:673
 msgid "NOVEL CHAPTER TOP"
 msgstr ""
 
-#: novel/models.py:668
+#: novel/models.py:674
 msgid "NOVEL CHAPTER BOTTOM"
 msgstr ""
 
-#: novel/models.py:669
-msgid "NOVEL CHPATER BEFORE CONTENT"
+#: novel/models.py:675
+msgid "NOVEL CHAPTER BEFORE CONTENT"
 msgstr ""
 
-#: novel/models.py:670
-msgid "NOVEL CHPATER INSIDE CONTENT"
+#: novel/models.py:676
+msgid "NOVEL CHAPTER INSIDE CONTENT"
 msgstr ""
 
-#: novel/models.py:671
-msgid "NOVEL CHPATER BEFORE COMMENT"
+#: novel/models.py:677
+msgid "NOVEL CHAPTER BEFORE COMMENT"
+msgstr ""
+
+#: novel/models.py:678
+msgid "NOVEL CHAPTER SCROLL LEFT"
+msgstr ""
+
+#: novel/models.py:679
+msgid "NOVEL CHAPTER SCROLL RIGHT"
 msgstr ""
 
 #: novel/views/includes/comment.py:53
@@ -174,15 +182,21 @@ msgstr "Không tồn tại"
 msgid "Unknown content"
 msgstr "Nội dung không xác định"
 
-#: templates/novel/includes/base_navbar_menu.html:34
-#: templates/novel/includes/base_navbar_menu.html:77
+#: templates/novel/includes/base_navbar_menu.html:42
+#: templates/novel/includes/base_navbar_menu.html:115
 msgid "Login"
 msgstr "Đăng nhập"
 
-#: templates/novel/includes/base_navbar_menu.html:40
-#: templates/novel/includes/base_navbar_menu.html:83
+#: templates/novel/includes/base_navbar_menu.html:48
+#: templates/novel/includes/base_navbar_menu.html:121
 msgid "Register"
 msgstr "Đăng ký"
+
+#: templates/novel/includes/base_navbar_menu.html:82
+#, fuzzy
+#| msgid "View all"
+msgid "View all messages"
+msgstr "Xem tất cả"
 
 #: templates/novel/includes/breadcrumb.html:4
 msgid "Home"
@@ -194,7 +208,7 @@ msgid "Bookmark"
 msgstr "Theo dõi"
 
 #: templates/novel/includes/chapter_content.html:17
-#: templates/novel/includes/chapter_content.html:96
+#: templates/novel/includes/chapter_content.html:102
 msgid "Next"
 msgstr "Sau"
 
@@ -205,7 +219,7 @@ msgid "Chapter list"
 msgstr "Chương"
 
 #: templates/novel/includes/chapter_content.html:26
-#: templates/novel/includes/chapter_content.html:103
+#: templates/novel/includes/chapter_content.html:109
 msgid "Prev"
 msgstr "Trước"
 

@@ -119,7 +119,7 @@ class UserProfileTemplateInclude(BaseTemplateInclude):
             notify = NovelNotify.get_notify(self.request.user)
             for n in notify:
                 bold_class = "" if n.read else "font-weight: 600;"
-                html_groups.append("""<tr style="cursor: pointer;">
+                html_groups.append("""<tr style="cursor: pointer;" class="notify-message">
                                         <td style="width:200px;%s">
                                             <i class="fa fa-calendar"></i> %s
                                         </td>

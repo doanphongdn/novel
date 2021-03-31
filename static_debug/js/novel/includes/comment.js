@@ -37,7 +37,7 @@ $(document).ready(function (e) {
             CKEDITOR.instances[instance].updateElement();
         }
         var form_data = $(this).serializeArray();
-        grecaptcha.execute(recapcha_site_key, {action: 'submit'}).then(function (token) {
+        grecaptcha.execute(recaptcha_site_key, {action: 'submit'}).then(function (token) {
             form_data.push({name: 'g-recaptcha-response', value: $("*[name='g-recaptcha-response']").val()});
             $.ajax({
                 type: "POST",
@@ -61,7 +61,7 @@ $(document).ready(function (e) {
                         console.log(json_data.message);
                         $("#comment-error").html(json_data.message);
                     }
-                    grecaptcha.reset(recapcha_site_key);
+                    grecaptcha.reset(recaptcha_site_key);
                 }
             });
         });

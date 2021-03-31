@@ -24,6 +24,19 @@
   animation: not-blink 2.1s cubic-bezier(.65, .815, .735, .395) infinite;
 }
 
+#mobile-menu-toggle {
+  .notify-icon {
+    position: relative;
+  }
+
+  .badge {
+    left: 5px;
+    position: absolute;
+    top: 0;
+
+  }
+}
+
 //
 //.btn-primary:hover {
 //  color: #fff;
@@ -542,5 +555,7 @@ span.navbar-toggler-icon {
   .navbar-brand {
     margin-right: 0;
   }
+
+}
 
 }

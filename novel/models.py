@@ -429,6 +429,10 @@ class NovelChapter(models.Model):
                 for file in cdn_file.url:
                     path = Path(file)
                     utils.remove_b2_files(path + "/" + path.name)
+                cdn_file.url = None
+                cdn_file.full = False
+                cdn_file.url_hash = None
+                cdn_file.save()
             else:
                 for idx, url in enumerate(self.images):
                     utils.remove_b2_files(path + "/" + str(idx) + ".jpg")

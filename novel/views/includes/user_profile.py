@@ -38,13 +38,14 @@ class UserProfileTemplateInclude(BaseTemplateInclude):
         if tab_name in ["bookmark", "history"]:
             novel_grid_col_lg = 3
             if tab_name == "bookmark":
-                novel_ids = Bookmark.objects.filter(user=user).values_list('novel_id', flat=True)
+                novel_ids = Bookmark.objects.filter(user=user).order_by('-updated_at') \
+                    .values_list('novel_id', flat=True)
 
             # end is history
             else:
                 # get data from logger
                 if user.is_authenticated:
-                    values = History.objects.filter(user=user).values_list("novel", "chapter")
+                    values = History.objects.filter(user=user).order_by('-updated_at').values_list("novel", "chapter")
                     chapter_ids = []
                     novel_ids = []
                     for val in values:

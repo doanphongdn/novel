@@ -37,7 +37,7 @@ $(document).ready(function (e) {
             }
         });
     });
-    $(document).on('click', '.novel-wrap > .btn-remove ', function () {
+    $(document).on('click', '.novel-wrap span.btn-remove ', function () {
         novel_id = $(this).data("id");
         action = $(this).data("action");
         $.ajax({

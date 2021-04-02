@@ -427,8 +427,8 @@ class NovelChapter(models.Model):
             path = "%s/%s" % (self.novel_slug, self.slug)
             if cdn_file.url:
                 for file in cdn_file.url:
-                    path = Path(file)
-                    utils.remove_b2_files(path + "/" + path.name)
+                    file_path = Path(file)
+                    utils.remove_b2_files(path + "/" + file_path.name)
                 cdn_file.url = None
                 cdn_file.full = False
                 cdn_file.url_hash = None

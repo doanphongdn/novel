@@ -427,8 +427,8 @@ class NovelChapter(models.Model):
             path = "%s/%s" % (self.novel_slug, self.slug)
             if cdn_file.url:
                 for file in cdn_file.url:
-                    path = Path(file)
-                    utils.remove_b2_files(path + "/" + path.name)
+                    file_path = Path(file)
+                    utils.remove_b2_files(path + "/" + file_path.name)
                 cdn_file.url = None
                 cdn_file.full = False
                 cdn_file.url_hash = None
@@ -601,6 +601,8 @@ class Bookmark(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class History(models.Model):
@@ -611,6 +613,9 @@ class History(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE, db_index=True)
     chapter = models.ForeignKey(NovelChapter, on_delete=models.CASCADE, db_index=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     @classmethod
     def get_chapter_history_by_user(cls, user):

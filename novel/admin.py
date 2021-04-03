@@ -212,8 +212,8 @@ class GenreAdmin(BaseActionAdmin):
 
 @admin.register(NovelReport)
 class ReportAdmin(BaseActionAdmin):
-    readonly_fields = ("user", "novel", "chapter", "content")
-    list_display = ("id", "user", "novel_link", "chapter_link", "content")
+    readonly_fields = ("user", "novel", "chapter", "content", "created_at")
+    list_display = ("id", "user", "novel_link", "chapter_link", "content", "created_at")
 
     @staticmethod
     def novel_link(instance):

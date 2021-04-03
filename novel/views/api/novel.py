@@ -234,6 +234,17 @@ class NovelAPIView(BaseAPIView):
                 novel.update_flat_info()
                 update = True
 
+                bookmarks = Bookmark.objects.filter(novel=novel).all()
+                notify = []
+                for bm in bookmarks:
+                    latest_chapter_name = novel.novel_flat.latest_chapter.get("name", "")
+                    notify.append(NovelNotify(user=bm.user,
+                                              notify=novel_setting.NEW_CHAPTER_NOTIFY_MSG % (
+                                                  novel.name, latest_chapter_name), novel=novel))
+
+                if notify:
+                    NovelNotify.objects.bulk_create(notify, ignore_conflicts=True)
+
         status = crawled_data.get("status")
         if status and (not novel.status or status != novel.status.name):
             status, _ = Status.objects.get_or_create(name=status.title().strip())
@@ -333,16 +344,5 @@ class ChapterAPIView(BaseAPIView):
         if updated:
             chapter.chapter_updated = True
             chapter.save()
-
-            novel = chapter.novel
-            bookmarks = Bookmark.objects.filter(novel=novel).all()
-            notify = []
-            for bm in bookmarks:
-                notify.append(NovelNotify(user=bm.user,
-                                          notify=novel_setting.NEW_CHAPTER_NOTIFY_MSG % (
-                                              novel.name, chapter.name), novel=novel))
-
-            if notify:
-                NovelNotify.objects.bulk_create(notify, ignore_conflicts=True)
 
         return self.parse_response(is_success=True)

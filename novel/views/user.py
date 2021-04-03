@@ -126,7 +126,7 @@ class UserAction(object):
 
     @staticmethod
     def read_notify(request):
-        res = JsonResponse({"success": False, })
+        res = JsonResponse({"success": False, }, status=HTTPStatus.BAD_REQUEST)
         if request.method == 'POST':
             try:
                 notify_id = request.POST.get('notify_id')
@@ -134,7 +134,11 @@ class UserAction(object):
                 if notify:
                     notify.read = True
                     notify.save()
-                    res = JsonResponse({"success": True, "redirect_url": notify.novel.get_absolute_url()})
+                    res_data = {"success": True}
+                    if notify.novel:
+                        res_data["redirect_url"] = notify.novel.get_absolute_url()
+
+                    res = JsonResponse(res_data, status=HTTPStatus.OK)
             except:
                 pass
 

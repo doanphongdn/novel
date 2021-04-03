@@ -205,9 +205,9 @@ $(document).ready(function (e) {
                 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
             },
             success: function (data) {
-                // if (data.success === true && data.redirect_url) {
-                //     window.location.href = data.redirect_url;
-                // }
+                if (data.success === true && data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                }
             }
         });
     })

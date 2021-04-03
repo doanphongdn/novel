@@ -303,12 +303,14 @@ a {
       }
 
       .notify-message-menu {
-        width: 300px;
+        min-width: 300px;
+        max-width: 400px;
 
         a {
           padding: 10px 15px;
           width: auto;
           border-bottom: thin solid #eeeeee;
+          white-space: unset !important;
         }
 
         a:last-child {

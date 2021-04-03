@@ -683,6 +683,7 @@ NOVEL_ADV_PLACES = (
     ('novel_info_top', _('NOVEL INFO TOP')),
     ('novel_info_bottom', _('NOVEL INFO BOTTOM')),
     ('novel_info_right', _('NOVEL INFO RIGHT')),
+    ('novel_info_after_thumbnail', _('NOVEL INFO AFTER THUMBNAIL')),
     ('novel_info_before_chap_list', _('NOVEL INFO BEFORE CHAP LIST')),
     ('novel_info_after_chap_list', _('NOVEL INFO AFTER CHAP LIST')),
     ('novel_info_before_comment', _('NOVEL INFO BEFORE COMMENT')),

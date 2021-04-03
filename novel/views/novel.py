@@ -137,6 +137,7 @@ class NovelDetailView(NovelBaseView):
             "novel_info": {
                 "novel": novel,
                 "novel_info_ads": ads_data.get("novel_info_right"),
+                "novel_info_after_thumbnail": ads_data.get("novel_info_after_thumbnail"),
             },
             "chapter_list": {
                 "novel": novel,

@@ -2,7 +2,7 @@ $(document).ready(function (e) {
     $('#report-form').on('submit', function (e) {
         e.preventDefault();
         let form_data = $(this).serializeArray();
-        grecaptcha.execute(recapcha_site_key, {action: 'submit'}).then(function (token) {
+        grecaptcha.execute(recaptcha_site_key, {action: 'submit'}).then(function (token) {
             form_data.push({name: 'g-recaptcha-response', value: $("*[name='g-recaptcha-response']").val()});
             $.ajax({
                 type: "POST",

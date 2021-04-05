@@ -62,7 +62,7 @@ class CacheManager(object):
 class IncludeHtmlCache(CacheManager):
 
     def __init__(self, include_obj, inc_params, extra_data, wrap_class_name, request=None):
-        super().__init__(class_model=None, cache_key=include_obj.__name__)
+        super().__init__(class_model=None, cache_key=include_obj.__name__, **inc_params)
         self.include_obj = include_obj
         self.inc_params = inc_params
         self.extra_data = extra_data

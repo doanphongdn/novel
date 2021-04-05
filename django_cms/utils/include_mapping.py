@@ -35,7 +35,7 @@ class IncludeManager(object):
 
         # Get template from cache
         template = CacheManager(PageTemplate, **{"page_file": tmpl_code}).get_from_cache()
-        includes = CacheManager(InludeTemplate, 'priority',
+        includes = CacheManager(InludeTemplate, order_by='priority',
                                 **{"template__page_file": tmpl_code}).get_from_cache(get_all=True)
 
         inc_htmls = []

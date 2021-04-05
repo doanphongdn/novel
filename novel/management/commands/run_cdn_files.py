@@ -47,6 +47,7 @@ class CDNProcess:
 
         uploaded_file = None
         if not self.b2.exists(b2_file_name):
+            self.b2.delete(b2_file_name)
             uploaded_file = self.b2.bucket.upload_local_file(file_path, b2_file_name)
 
         return uploaded_file

@@ -538,7 +538,7 @@ class CDNNovelFile(models.Model):
         return cls.objects.filter(full=False,
                                   allow_limit=settings.BACKBLAZE_NOT_ALLOW_LIMIT,
                                   retry__lte=settings.BACKBLAZE_MAX_RETRY,
-                                  updated_at__lte=limit_time).all()[0:50]
+                                  updated_at__lte=limit_time).order_by('-updated_at').all()[0:50]
 
 
 class Comment(models.Model):

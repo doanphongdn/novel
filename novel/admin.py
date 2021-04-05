@@ -1,12 +1,13 @@
+import logging
 import os
+import time
 import zlib
+from concurrent.futures import ThreadPoolExecutor
 
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
-from django.contrib.admin import AdminSite
 from django.contrib.admin.helpers import ActionForm
-from django.contrib.admin.views.main import ChangeList
 from django.contrib.auth.models import User
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -14,11 +15,14 @@ from django.utils.html import format_html
 from django.views.decorators.cache import never_cache
 from django_json_widget.widgets import JSONEditorWidget
 
-from django_cms.admin import BaseActionAdmin, ActionAdmin
+from django_cms.admin import ActionAdmin, BaseActionAdmin
 from django_cms.models import CDNServer
 from novel import utils
-from novel.models import CDNNovelFile, Genre, Novel, NovelChapter, NovelSetting, Status, NovelReport, Comment, \
-    NovelAdvertisementPlace, NovelAdvertisement, NovelParam, NovelNotify
+from novel.models import CDNNovelFile, Comment, Genre, Novel, NovelAdvertisement, NovelAdvertisementPlace, NovelChapter, \
+    NovelNotify, NovelParam, NovelReport, NovelSetting, Status
+
+
+logger = logging.getLogger(__name__)
 
 
 class NovelForm(forms.ModelForm):
@@ -129,9 +133,17 @@ class NovelChapterAdmin(ActionAdmin):
             obj.update_name()
             obj.save()
 
+    def remove_chapter_cdn_files(self, chapter):
+        chapter.remove_cdn_files()
+
     def remove_cdn_files(self, request, queryset):
-        for obj in queryset:
-            obj.remove_cdn_files()
+        start = time.perf_counter()  # start timer
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            results = executor.map(self.remove_chapter_cdn_files,
+                                   queryset)  # this is Similar to map(func, *iterables)
+        finish = time.perf_counter()  # end timer
+
+        logger.info("[remove_cdn_files] Finished remove cdn files chapters in %s seconds" % round(finish - start, 2))
 
     chapter_updated_true.short_description = "Chapter updated ->> TRUE"
     chapter_updated_false.short_description = "Chapter updated ->> FALSE"
@@ -170,7 +182,7 @@ class NovelSettingAdmin(BaseActionAdmin):
 @admin.register(CDNNovelFile)
 class CDNNovelFileAdmin(BaseActionAdmin):
     list_display = ("id", "cdn", "chapter", "type", "hash_origin_url", "retry", "full")
-    search_fields = ("cdn", "chapter", "hash_origin_url", "url")
+    search_fields = ("cdn__name", "chapter__name", "hash_origin_url", "url")
     readonly_fields = ("chapter",)
 
 

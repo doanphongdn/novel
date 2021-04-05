@@ -774,4 +774,4 @@ class NovelNotify(models.Model):
 
     @classmethod
     def get_notify(cls, user):
-        return cls.objects.filter(user=user).order_by("-id").order_by("read").all()[0:10]
+        return cls.objects.filter(user=user).order_by("-id").order_by("read").all()

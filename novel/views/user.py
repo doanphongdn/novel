@@ -9,6 +9,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
+from django_cms.utils.cache_manager import CacheManager
 from novel import utils
 from novel.form.auth import RegisterForm, LoginForm
 from novel.form.user import UserProfileForm
@@ -134,6 +135,9 @@ class UserAction(object):
                 if notify:
                     notify.read = True
                     notify.save()
+                    CacheManager(NovelNotify, **{"user_id": request.user.id, "read": False}).clear_cache()
+                    CacheManager(NovelNotify, **{"user_id": request.user.id}).clear_cache()
+
                     res_data = {"success": True}
                     if notify.novel:
                         res_data["redirect_url"] = notify.novel.get_absolute_url()

@@ -3,11 +3,14 @@ import json
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
+from django_cms.utils.paginator import ModelPaginator
 from novel.form.user import UserProfileForm
 from novel.models import Novel, Bookmark, History, NovelChapter, NovelUserProfile, NovelNotify
+from novel.paginator import NotifyPaginator
 from novel.utils import get_history_cookies
 from novel.views.includes.base import BaseTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
+from novel.views.includes.pagination import PaginationTemplateInclude
 
 
 class UserProfileTemplateInclude(BaseTemplateInclude):
@@ -117,19 +120,22 @@ class UserProfileTemplateInclude(BaseTemplateInclude):
                 profile_html = mark_safe("".join(html_groups))
         elif tab_name == "message":
             html_groups = ["""<table class="table table-striped table-sm table-hover">"""]
-            notify = NovelNotify.get_notify(self.request.user)
+            notify = NotifyPaginator(10, page, **{"user": user}, order_by=["read", "-id"])
+
             for n in notify:
                 bold_class = "" if n.read else "font-weight: 600;"
-                html_groups.append("""<tr style="cursor: pointer;" class="notify-message">
+                html_groups.append("""<tr style="cursor: pointer;" class="notify-message" data-id="%s">
                                         <td style="width:200px;%s">
                                             <i class="fa fa-calendar"></i> %s
                                         </td>
                                         <td style="%s">%s</td>
                                     </tr>""" %
-                                   (bold_class, n.created_at.strftime("%d/%m/%Y %H:%M"), bold_class, n.notify))
+                                   (n.id, bold_class, n.created_at.strftime("%d/%m/%Y %H:%M"), bold_class, n.notify))
 
             html_groups.append("""</tr></table>""")
             profile_html = mark_safe("".join(html_groups))
+            pagination = PaginationTemplateInclude({"paginated_data": notify, "page_label": "page"})
+            profile_html += pagination.render_html()
 
         self.include_data.update({
             "profile_html": profile_html,

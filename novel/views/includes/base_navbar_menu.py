@@ -41,7 +41,7 @@ class BaseNavbarTemplateInclude(BaseTemplateInclude):
             notify_unread = len(CacheManager(NovelNotify, **{"user_id": self.request.user.id,
                                                              "read": False}).get_from_cache(get_all=True))
             notify = CacheManager(NovelNotify, **{"user_id": self.request.user.id},
-                                  limit=10, order_by=["-id", "read"]).get_from_cache(get_all=True)
+                                  limit=5, order_by=["read", "-id"]).get_from_cache(get_all=True)
 
         self.include_data.update({
             "notify_list": notify,

@@ -31,6 +31,8 @@ def sort_images(existed_urls, domain=''):
     new_list = []
     new_list_int = []
     for x in existed_urls:
+        if not x:
+            continue
         val = splitext(basename(x))[0]
         new_list.append(val)
         new_list_int.append(int(val))

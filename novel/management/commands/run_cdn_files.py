@@ -260,10 +260,10 @@ class CDNProcess:
                 if not file.url or (file.url_hash and origin_img not in file.url_hash):
                     missing_files.append({"index": idx, "url": chapter_image, "url_hash": origin_img})
 
-            # compute number of downloaded url
-            limit_download = 0
-            if file.url:
-                limit_download = len(urls)
+            # # compute number of downloaded url
+            # limit_download = 0
+            # if file.url:
+            #     limit_download = len(urls)
 
             # get_img_time = time.time() - start_time
             # print('[process_missing_files][%s-%s] spent %s to get %s missing images'
@@ -284,6 +284,11 @@ class CDNProcess:
             #       % (local_path, file.chapter.id, downloaded_time, len(missing_files)))
 
             if not len(success_files):
+                file.url = file.url
+                file.url_hash = file.url_hash
+                file.full = False
+                file.retry = file.retry + 1
+                processed_files.append(file)
                 print('[process_missing_files][%s-%s] NO missing images uploaded' % (local_path, file.chapter.id))
                 continue
 
@@ -416,7 +421,7 @@ class CDNProcess:
             #       % (local_path, chapter.id, downloaded_time, len(urls)))
 
             if not len(success_files):
-                print('[process_missing_files][%s-%s] NO images uploaded' % (local_path, chapter.id))
+                print('[process_not_running_files][%s-%s] NO images uploaded' % (local_path, chapter.id))
                 continue
 
             # Upload Files to CDN

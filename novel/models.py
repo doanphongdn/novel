@@ -536,6 +536,7 @@ class CDNNovelFile(models.Model):
     def get_missing_files(cls):
         limit_time = datetime.now() - timedelta(minutes=10)
         return cls.objects.filter(full=False,
+                                  url__isnull=True,
                                   allow_limit=settings.BACKBLAZE_NOT_ALLOW_LIMIT,
                                   retry__lte=settings.BACKBLAZE_MAX_RETRY,
                                   updated_at__lte=limit_time).order_by('-updated_at').all()[0:50]

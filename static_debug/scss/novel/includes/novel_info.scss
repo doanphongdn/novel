@@ -170,6 +170,7 @@
         }
 
         input:checked ~ .des-panel {
+          max-height: unset;
           height: 100%;
         }
 
@@ -178,7 +179,7 @@
         }
 
         .des-panel {
-          height: 100px;
+          max-height: 100px;
           overflow: hidden;
           text-align: justify;
         }

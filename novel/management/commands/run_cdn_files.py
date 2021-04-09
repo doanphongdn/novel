@@ -239,6 +239,7 @@ class CDNProcess:
 
         files = CDNNovelFile.get_missing_files()
         processed_files = []
+        chapter_updated_lst = []
         limit_image = int(os.environ.get('BACKBLAZE_LIMIT_IMG', 150))
         print('[process_missing_files] total %s records' % len(files))
         for file in files:
@@ -289,6 +290,8 @@ class CDNProcess:
                 file.full = False
                 file.retry = file.retry + 1
                 processed_files.append(file)
+                file.chapter.chapter_updated = False
+                chapter_updated_lst.append(file.chapter)
                 print('[process_missing_files][%s-%s] NO missing images uploaded' % (local_path, file.chapter.id))
                 continue
 
@@ -338,6 +341,9 @@ class CDNProcess:
 
         if processed_files:
             CDNNovelFile.objects.bulk_update(processed_files, ['url', 'url_hash', 'full', 'retry'])
+
+        if chapter_updated_lst:
+            NovelChapter.objects.bulk_update(chapter_updated_lst, ['chapter_updated'])
 
         finish_time = time.time() - init_time
         print('[process_missing_files] Finish in ', finish_time, 's')

@@ -10,6 +10,7 @@
       padding: 10px;
       background: #fff;
       box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02);
+      height: fit-content;
 
       img {
         width: 100%;
@@ -25,7 +26,7 @@
 
 
   .novel-detail {
-    padding: 15px;
+    padding: 0 15px;
 
     .novel-name {
       h1 {
@@ -129,7 +130,70 @@
           }
         }
       }
+
+      .des-label {
+        border-bottom: 2px solid #{$color1};
+      }
+
+      .description-wrapper {
+        position: relative;
+        margin-bottom: 35px;
+
+        .show-more-btn {
+          color: #{$color1};
+          position: absolute;
+          padding: 2px 5px;
+          top: calc(100% - -5px);
+          text-decoration: underline;
+          text-transform: capitalize;
+          cursor: pointer;
+          font-size: .9rem;
+          font-weight: 500;
+          font-style: italic;
+        }
+
+        input {
+          display: none;
+        }
+
+        .show-more-btn:after {
+          content: "Xem thêm >";
+        }
+
+
+        .show-more-btn:hover {
+          color: #{$text_color_hover};
+        }
+
+        input:checked + .show-more-btn:after {
+          content: "Thu gọn >";
+        }
+
+        input:checked ~ .des-panel {
+          height: 100%;
+        }
+
+        input:checked ~ .des-fade {
+          display: none;
+        }
+
+        .des-panel {
+          height: 100px;
+          overflow: hidden;
+          text-align: justify;
+        }
+
+        .des-fade {
+          background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0, #ffffffd9 75%);
+          height: 50px;
+          bottom: 0;
+          width: 100%;
+          position: absolute;
+        }
+      }
     }
+
+
   }
 }
 
@@ -165,6 +229,7 @@
 
         .novel-button {
           text-align: center;
+
           a {
             display: inline-block;
             float: unset;

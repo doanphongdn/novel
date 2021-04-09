@@ -6,7 +6,7 @@
     <div class="novel-info">
         <div class="col-12 novel-info-wrap">
             <div class="row">
-                <div class="col-md-3 col-7 m-auto novel-thumbnail">
+                <div class="col-md-3 col-7 novel-thumbnail">
                     <img class="" src="{{ novel.stream_thumbnail_image }}" alt="{{ novel.name }}">
                 </div>
                 {% if novel_info_after_thumbnail %}
@@ -19,7 +19,6 @@
                     {% endfor %}
                 {% endif %}
                 <div class="col-md-9 col-12 novel-detail">
-                    <meta itemprop="inLanguage" content="vi"/>
                     <div class="novel-detail-wrap">
                         <div class="row">
                             <div class="col-12">
@@ -61,17 +60,17 @@
                                         <label><i class="fa fa-calendar"></i> {{ latest_update_label }} </label>
                                         <span>{{ novel.novel_flat.latest_chapter.created_at }}</span>
                                     </div>
-                                    <div class="novel-button">
+                                    <div class="novel-button mb-3">
                                         <a href="#" data-toggle="modal" data-target="#modal-report" rel="nofollow">
                                             <button class="btn btn-sm btn-warning">
                                                 <i class="fa fa-bug"></i> {% translate "Error report" %}
                                             </button>
                                         </a>
-                                        <a href="{{ novel.novel_flat.first_chapter.url }}">
-                                            <button class="btn btn-sm btn-success">
-                                                <i class="fa fa-sort-numeric-asc"></i> {{ first_chapter_label }}
-                                            </button>
-                                        </a>
+                                        {#                                        <a href="{{ novel.novel_flat.first_chapter.url }}">#}
+                                        {#                                            <button class="btn btn-sm btn-success">#}
+                                        {#                                                <i class="fa fa-sort-numeric-asc"></i> {{ first_chapter_label }}#}
+                                        {#                                            </button>#}
+                                        {#                                        </a>#}
                                         <a href="{{ novel.novel_flat.latest_chapter.url }}">
                                             <button class="btn btn-sm btn-info">
                                                 <i class="fa fa-sort-numeric-desc"></i> {{ latest_chapter_label }}
@@ -90,6 +89,19 @@
                                             </button>
                                         </a>
                                     </div>
+                                    {% if novel.descriptions %}
+                                        <label class="des-label"><i
+                                                class="fa fa-info-circle"></i> {% translate "DESCRIPTIONS" %}</label>
+                                        <div class="description-wrapper">
+                                            <input id="des-show-more" type="checkbox">
+                                            <label class='show-more-btn mx-auto'
+                                                   for="des-show-more"></label>
+                                            <div class="des-panel">
+                                                {{ novel.descriptions }}
+                                            </div>
+                                            <div class="des-fade"></div>
+                                        </div>
+                                    {% endif %}
                                 </div>
                                 {% if novel_info_ads %}
                                     <div class="ads-area">
@@ -119,6 +131,7 @@
 
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

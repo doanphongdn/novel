@@ -266,23 +266,7 @@ class Novel(models.Model):
 
     @cached_property
     def chapters(self):
-        res_chapters = {}
-        chapters = NovelChapter.objects.filter(**self.novel_chapter_condition).order_by("name_index").all()
-        try:
-            for chapter in chapters:
-                total = 0
-                chap_nums = re.findall(r'([0-9.]+)', chapter.name)
-                if len(chap_nums) > 1:
-                    total = (float(chap_nums[0]) * 1000) + float(chap_nums[1])
-                else:
-                    total = float(chap_nums[0])
-
-                res_chapters[total] = chapter
-
-            sorted(res_chapters)
-            return res_chapters.values()
-        except:
-            return chapters
+        return NovelChapter.objects.filter(**self.novel_chapter_condition).order_by("name_index").order_by("-id").all()
 
     @cached_property
     def first_chapter(self):

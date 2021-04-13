@@ -139,9 +139,6 @@ class NovelAPIView(BaseAPIView):
                 if item.get('src_url') and novel.src_url != item['src_url']:
                     novel.src_url = item['src_url']
                     update = True
-                if item.get("name") and novel.name.lower() != item["name"].lower():
-                    novel.name = item["name"]
-                    update = True
 
                 if update:
                     # bypass duplicate name
@@ -189,6 +186,10 @@ class NovelAPIView(BaseAPIView):
             local_image = utils.download_image(thumbnail_image, novel.slug, referer=referer_url)
 
             novel.thumbnail_image = local_image or thumbnail_image
+            update = True
+
+        if crawled_data.get('name') and novel.name.lower() != crawled_data.get('name'):
+            novel.name = crawled_data.get('name')
             update = True
 
         if not novel.authors.first():

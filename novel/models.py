@@ -266,7 +266,7 @@ class Novel(models.Model):
 
     @cached_property
     def chapters(self):
-        return NovelChapter.objects.filter(**self.novel_chapter_condition).order_by("name_index").order_by("-id").all()
+        return NovelChapter.objects.filter(**self.novel_chapter_condition).order_by("name_index").order_by("id").all()
 
     @cached_property
     def first_chapter(self):

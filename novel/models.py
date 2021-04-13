@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+import re
 import zlib
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
@@ -265,7 +266,23 @@ class Novel(models.Model):
 
     @cached_property
     def chapters(self):
-        return NovelChapter.objects.filter(**self.novel_chapter_condition).order_by("name_index").all()
+        res_chapters = {}
+        chapters = NovelChapter.objects.filter(**self.novel_chapter_condition).order_by("name_index").all()
+        try:
+            for chapter in chapters:
+                total = 0
+                chap_nums = re.findall(r'([0-9.]+)', chapter.name)
+                if len(chap_nums) > 1:
+                    total = (float(chap_nums[0]) * 1000) + float(chap_nums[1])
+                else:
+                    total = float(chap_nums[0])
+
+                res_chapters[total] = chapter
+
+            sorted(res_chapters)
+            return res_chapters.values()
+        except:
+            return chapters
 
     @cached_property
     def first_chapter(self):
@@ -333,7 +350,7 @@ class NovelChapter(models.Model):
 
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, db_index=True)
-    name_index = models.FloatField(db_index=True, null=True)
+    name_index = models.FloatField(db_index=True, null=True, default=-1)
 
     novel_slug = models.CharField(max_length=250, blank=True, null=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, max_length=250, blank=True, null=True,

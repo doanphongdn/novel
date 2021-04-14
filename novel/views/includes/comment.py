@@ -118,7 +118,6 @@ class CommentTemplateInclude(BaseTemplateInclude):
             "user_type": "Mem" if comment.user else "Guest",
             "user_type_color": "#3f9d87" if comment.user else "#999",
             "reply_to": reply_to,
-
         }
 
     def prepare_include_data(self):

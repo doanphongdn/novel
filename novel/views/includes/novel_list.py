@@ -13,6 +13,8 @@ class NovelListTemplateInclude(BaseTemplateInclude):
 
     def prepare_include_data(self):
         filter_by = self.include_data.get('filter_by', {})
+        distinct = self.include_data.get('distinct', False)
+        exclude = self.include_data.get('exclude', {})
         view_type = self.include_data.get('view_type', 'grid')
         show_button_type = self.include_data.get('show_button_type')
         show_button_view_all = self.include_data.get('show_button_view_all')
@@ -68,7 +70,8 @@ class NovelListTemplateInclude(BaseTemplateInclude):
                 button_type_urls['list'] = "?" + urlencode(params)
 
         pagination = None
-        novel_paginated = NovelPaginator(limit, page, order_by, custom_data=custom_data, **filter_by)
+        novel_paginated = NovelPaginator(limit, page, order_by, exclude=exclude, distinct=distinct,
+                                         custom_data=custom_data, **filter_by)
         if paginate_enable is True:
             paging_data = {"paginated_data": novel_paginated, "page_label": "page"}
             pagination = PaginationTemplateInclude(paging_data)

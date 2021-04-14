@@ -7,8 +7,9 @@ class BaseTemplateInclude(object):
     template = None
     default_values = {}
 
-    def __init__(self, include_data, extra_data=None, request=None, cache=True):
+    def __init__(self, include_data, extra_data=None, request=None, cache=True, base_context=None):
         self.request = request
+        self.base_context = base_context or {}
         self.include_data = include_data or {}
 
         # extra data must have key by code of include to support multi

@@ -1,4 +1,5 @@
 from django.contrib.sites.shortcuts import get_current_site
+from django.template.context_processors import static
 from django.views.generic import TemplateView
 
 from django_cms import settings
@@ -51,8 +52,14 @@ class NovelBaseView(TemplateView):
         self.base_setting = {}
 
     def get(self, request, *args, **kwargs):
+        # Base content, using for all page
+        base_context = {
+            "user_avatar": NovelUserProfile.get_avatar(request.user)
+        }
+
         # Set hash for each request to use cache
         self.incl_manager.set_request_hash(request)
+        self.incl_manager.set_context(base_context)
 
         # Get novel setting from cache
         novel_setting = CacheManager(NovelSetting).get_from_cache()
@@ -96,7 +103,7 @@ class NovelBaseView(TemplateView):
         extra_data = {
             "base_navbar_menu": {
                 "user": request.user,
-                "user_avatar": NovelUserProfile.get_avatar(request.user),
+                "user_avatar": base_context.get("user_avatar")
             }
         }
 
@@ -122,7 +129,7 @@ class NovelBaseView(TemplateView):
             "google_analytics_id": novel_setting and novel_setting.google_analytics_id or "",
             "no_image_index": False,
         }
-
+        kwargs["base_context"] = base_context
         tmpl_codes = ['base_footer', 'base_other_html', 'base_top_menu']
         tmpl_htmls = self.incl_manager.get_include_htmls(tmpl_codes, request=request)
         for page_tmpl_code, html in tmpl_htmls.items():

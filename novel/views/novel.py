@@ -125,10 +125,8 @@ class NovelDetailView(NovelBaseView):
         else:
             return redirect('home')
 
-        novels = Novel.get_available_novel().filter(
-            genres__in=novel.genres.filter(active=True).all()
-        ).distinct().order_by("-view_total").exclude(id=novel.id).all()
-
+        # novels = NovelCache(Novel, **{"genres__in": novel.genre_all}, limit=12).get_from_cache(
+        #     get_all=True).distinct().exclude(id=novel.id).all()
         ads_data = response.context_data.get("ads_data", {})
         extra_data = {
             "breadcrumb": {
@@ -155,7 +153,9 @@ class NovelDetailView(NovelBaseView):
                 "novel": novel
             },
             "novel_list": {
-                "related_novels": novels
+                "filter_by": {"genres__in": novel.genre_all},
+                "exclude": {"id": novel.id},
+                "distinct": True,
             }
         }
         latest_chap = novel.novel_flat and novel.novel_flat.latest_chapter.get("name") or ""

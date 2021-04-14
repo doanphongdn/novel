@@ -210,7 +210,7 @@ class Novel(models.Model):
 
     @cached_property
     def genres_name(self):
-        return ", ".join([str(p.name) for p in self.genres.all()])
+        return ", ".join([str(p.name) for p in self.genres.filter(active=True).all()])
 
     @cached_property
     def status_name(self):
@@ -218,7 +218,7 @@ class Novel(models.Model):
 
     @cached_property
     def genre_all(self):
-        return self.genres.all()
+        return self.genres.filter(active=True).all()
 
     @classmethod
     def get_available_novel(cls):
@@ -501,15 +501,11 @@ class NovelUserProfile(models.Model):
     avatar = models.CharField(max_length=250, null=True, blank=True)
 
     @classmethod
-    def get_profiles(cls, user_id):
-        return cls.objects.get_or_create(user_id=user_id)
-
-    @classmethod
     def get_avatar(cls, user):
         if user and user.is_authenticated:
-            profile = cls.objects.filter(user_id=user.id).first()
-            if profile:
-                return profile.avatar
+            user_profile = CacheManager(NovelUserProfile, **{"user_id": user.id}).get_from_cache()
+            if user_profile:
+                return user_profile.avatar
 
         return static("images/user-default.png")
 

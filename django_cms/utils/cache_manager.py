@@ -5,7 +5,9 @@ from django.utils.html import format_html_join
 
 
 class CacheManager(object):
-    def __init__(self, class_model, cache_key=None, order_by=None, limit=None, **kwargs):
+    def __init__(self, class_model,
+                 cache_key=None, order_by=None, limit=None,
+                 select_related=None, prefetch_related=None, **kwargs):
         if not order_by:
             order_by = ["pk"]
         elif isinstance(order_by, list):
@@ -17,6 +19,8 @@ class CacheManager(object):
         self.kwargs = kwargs
         self.order_by = order_by
         self.limit = limit
+        self.select_related = [select_related] if isinstance(select_related, str) else select_related
+        self.prefetch_related = [prefetch_related] if isinstance(prefetch_related, str) else prefetch_related
 
         cache_keys = [str(val) for val in self.kwargs.values()]
         if class_model:
@@ -34,6 +38,11 @@ class CacheManager(object):
             kwargs["active"] = True
 
         res = self.class_model.objects.filter(**kwargs).order_by(*self.order_by)
+        if self.select_related:
+            res = res.select_related(*self.select_related)
+
+        if self.prefetch_related:
+            res = res.prefetch_related(*self.prefetch_related)
 
         if self.limit and self.limit > 0:
             return res.all()[:self.limit]
@@ -48,7 +57,7 @@ class CacheManager(object):
                 if data and not get_all:
                     data = data[0]
 
-                cache.set(self.cache_key, data or None)
+                cache.set(self.cache_key, data)
                 return data
 
             return cached
@@ -61,7 +70,7 @@ class CacheManager(object):
 
 class IncludeHtmlCache(CacheManager):
 
-    def __init__(self, include_obj, inc_params, extra_data, wrap_class_name, request=None):
+    def __init__(self, include_obj, inc_params, extra_data, wrap_class_name, request=None, base_context=None):
         inc_params.update(extra_data)
         super().__init__(class_model=None, cache_key=include_obj.__name__, **inc_params)
         self.include_obj = include_obj
@@ -69,6 +78,7 @@ class IncludeHtmlCache(CacheManager):
         self.extra_data = extra_data
         self.wrap_class_name = wrap_class_name
         self.request = request
+        self.base_context = base_context or {}
 
     def get_from_cache(self, get_all=True, **kwargs):
         cached = cache.get(self.cache_key)
@@ -87,7 +97,8 @@ class IncludeHtmlCache(CacheManager):
 
     def _get_data(self, **kwargs):
         if self.include_obj:
-            inc_obj = self.include_obj(self.inc_params, self.extra_data, request=self.request)
+            inc_obj = self.include_obj(self.inc_params, self.extra_data,
+                                       request=self.request, base_context=self.base_context)
             if self.wrap_class_name:
                 return format_html_join("", "<div class='{}'>{}</div>",
                                         [(self.wrap_class_name, inc_obj.render_html())])

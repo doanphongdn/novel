@@ -6,7 +6,7 @@ from django.core.paginator import PageNotAnInteger, EmptyPage
 class ModelPaginator:
     model = None
 
-    def __init__(self, per_page, number, order_by=None, custom_data=None, **kwargs):
+    def __init__(self, per_page, number, order_by=None, distinct=False, exclude=None, custom_data=None, **kwargs):
         if not order_by:
             order_by = ["-pk"]
         elif isinstance(order_by, list):
@@ -17,7 +17,12 @@ class ModelPaginator:
         if custom_data is None:
             custom_data = []
 
+        if exclude is None:
+            exclude = {}
+
         self.custom_data = custom_data
+        self.exclude = exclude
+        self.distinct = distinct
         self.per_page = per_page
         self.order_by = order_by
         self.total = self.calc_total(**kwargs)
@@ -30,8 +35,17 @@ class ModelPaginator:
 
     def get_data(self, **kwargs):
         limit = self.offset + self.per_page
-        return self.custom_data[self.offset:limit] or self.model.objects.filter(**kwargs) \
-                                                          .order_by(*self.order_by).all()[self.offset:limit]
+        data = self.custom_data[self.offset:limit]
+        if not data:
+            data = self.model.objects.filter(**kwargs).order_by(*self.order_by)
+            if self.distinct:
+                data = data.distinct()
+            if self.exclude:
+                data = data.exclude(**self.exclude)
+
+            data = data.all()[self.offset:limit]
+
+        return data
 
     def __repr__(self):
         return '<Page %s of %s>' % (self.number, self.num_pages)

@@ -1,4 +1,5 @@
 import json
+import os
 from urllib.parse import urlparse
 
 from django.contrib.auth.models import AnonymousUser
@@ -6,6 +7,7 @@ from django.db import transaction
 from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 
+from novel import settings
 from novel.cache_manager import NovelCache
 from novel.models import Novel, NovelChapter
 from novel.utils import get_history_cookies
@@ -133,6 +135,7 @@ class ChapterView(NovelBaseView):
             'novel_url': novel.get_absolute_url(),
             'include_html': include_html,
             'request_url': request.build_absolute_uri(),
+            'novel_config_enable': settings.CHAPTER_CONFIG_ENABLE
         })
 
         return response

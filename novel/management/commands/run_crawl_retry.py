@@ -37,7 +37,10 @@ class Command(BaseCommand):
                 #     chapter__in=retry.novel.chapters).all()
                 # cdn_files = CDNNovelFile.objects.filter(chapter__in=retry.novel.chapters).all()
                 ids = CDNNovelFile.objects.filter(chapter__in=retry.novel.chapters).values_list('chapter', flat=True)
-                for chapter in retry.novel.chapters.exclude(pk__in=set(ids)):
+                ids = set(ids)
+                available_chapters = filter(lambda available_chapter: available_chapter.id not in ids,
+                                            retry.novel.chapters)
+                for chapter in available_chapters:
                     if chapter == retry.chapter:
                         continue
                     if not chapter.images_content:

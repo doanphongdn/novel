@@ -19,8 +19,12 @@ class Command(BaseCommand):
 
             print('[Retry Crawl New Novel] Found %s records for processing...' % len(available_chapters))
             ids = CDNNovelFile.objects.filter(chapter__in=available_chapters).values_list('chapter', flat=True)
+            # because query available_chapters once a slice has been taken, not use filter of django again
+            # we have to use python filter for this action
+            ids = set(ids)
+            available_chapters = filter(lambda available_chapter: available_chapter.id not in ids, available_chapters)
             chapter_updated_list = []
-            for chapter in available_chapters.exclude(pk__in=set(ids)):
+            for chapter in available_chapters:
                 urls = chapter.images
                 if not len(urls):
                     continue

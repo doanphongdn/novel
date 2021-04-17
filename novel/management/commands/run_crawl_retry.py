@@ -5,7 +5,7 @@ from django.db.models import Q
 
 # from crawl_service.utils import query_debugger
 from django_cms.utils.helpers import check_url, full_schema_url, get_referer
-from novel.models import CrawlNovelRetry, NovelChapter
+from novel.models import CrawlNovelRetry, NovelChapter, CDNNovelFile
 
 
 class Command(BaseCommand):
@@ -33,7 +33,11 @@ class Command(BaseCommand):
 
             chapter_updated_list = []
             for retry in available_retrying:
-                for chapter in retry.novel.chapters:
+                # cdn_files = CDNNovelFile.objects.select_related('chapter').filter(
+                #     chapter__in=retry.novel.chapters).all()
+                # cdn_files = CDNNovelFile.objects.filter(chapter__in=retry.novel.chapters).all()
+                ids = CDNNovelFile.objects.filter(chapter__in=retry.novel.chapters).values_list('chapter', flat=True)
+                for chapter in retry.novel.chapters.exclude(pk__in=set(ids)):
                     if chapter == retry.chapter:
                         continue
                     if not chapter.images_content:

@@ -274,6 +274,7 @@ class NovelParamAdmin(BaseActionAdmin):
 class UserAdmin(admin.ModelAdmin):
     list_display = ('email', 'first_name', 'last_name')
     list_filter = ('is_staff', 'is_superuser')
+    search_fields = ("email", "first_name", "last_name")
     actions = ["send_notify"]
 
     class NotifyForm(ActionForm):

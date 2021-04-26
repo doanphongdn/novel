@@ -112,10 +112,6 @@ TEMPLATES = [
     },
 ]
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django_admin_dialog.context_processors.django_admin_dialog',
-)
-
 WSGI_APPLICATION = 'django_cms.wsgi.application'
 
 # Database

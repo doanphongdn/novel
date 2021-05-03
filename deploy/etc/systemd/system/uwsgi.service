@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI Emperor service
+
+[Service]
+ExecStartPre=/bin/bash -c 'mkdir -p /run/uwsgi; chown <USER>:<USER> /run/uwsgi'
+ExecStart=/usr/bin/uwsgi --emperor /etc/uwsgi/apps-enabled
+Restart=always #make sure the server is running
+KillSignal=SIGQUIT
+Type=notify
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target

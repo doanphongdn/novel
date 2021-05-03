@@ -44,6 +44,7 @@ sudo ln -s /etc/nginx/sites-available/$APP.ini /etc/nginx/sites-enabled/
 # Install uwsgi
 sudo apt-get -y install uwsgi-plugin-python3
 sudo mv /etc/uwsgi/apps-available/uwsgi.example.ini /etc/uwsgi/apps-available/$APP.ini
+sudo mkdir /etc/uwsgi/apps-enabled/
 sudo ln -s /etc/uwsgi/apps-available/$APP.ini /etc/uwsgi/apps-enabled/
 sudo chmod +x /etc/systemd/system/uwsgi.service
 

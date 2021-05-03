@@ -1,8 +1,7 @@
 echo "Enter a few values before running the script, MAKE SURE there is no space character."
 echo "User:"
 read USER
-if id "$USER" &>/dev/null; then
-else
+if ! id "$USER" &>/dev/null; then
     echo 'User not found'
     exit
 fi

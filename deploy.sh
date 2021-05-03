@@ -1,9 +1,13 @@
-
 echo "Enter a few values before running the script, MAKE SURE there is no space character."
 echo "App name:"
 read APP
 echo "User:"
 read USER
+if id "$USER" &>/dev/null; then
+else
+    echo 'User not found'
+    exit
+fi
 echo "Postgres user:"
 read POSTGRES_USER
 echo "Postgres password:"

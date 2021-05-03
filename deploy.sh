@@ -1,6 +1,4 @@
 echo "Enter a few values before running the script, MAKE SURE there is no space character."
-echo "App name:"
-read APP
 echo "User:"
 read USER
 if id "$USER" &>/dev/null; then
@@ -13,6 +11,7 @@ read POSTGRES_USER
 echo "Postgres password:"
 read POSTGRES_PASSWORD
 
+APP=$(basename $PWD)
 sudo mkdir -p /var/log/nginx/$APP /var/log/uwsgi/$APP /var/log/$APP /run/uwsgi/$APP
 sudo chown $USER. -R /var/log/nginx/$APP /var/log/uwsgi/$APP /var/log/$APP /run/uwsgi/$APP
 

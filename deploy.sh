@@ -11,6 +11,7 @@ echo "Postgres password:"
 read POSTGRES_PASSWORD
 
 APP=$(basename $PWD)
+
 sudo mkdir -p /var/log/nginx/$APP /var/log/uwsgi/$APP /var/log/$APP /run/uwsgi/$APP
 sudo chown $USER. -R /var/log/nginx/$APP /var/log/uwsgi/$APP /var/log/$APP /run/uwsgi/$APP
 
@@ -25,7 +26,7 @@ sudo apt-get -y install redis-server
 sudo apt install -y python3-pip
 
 # Install library
-sudo apt-get -y install libpq-dev python3-dev build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev
+sudo apt-get -y install libpq-dev python3-dev build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev redis-server
 sudo apt-get -y install npm
 sudo npm install -g sass
 sudo npm -g install yuglify
@@ -37,7 +38,7 @@ sudo cp -a deploy/etc/. /etc
 sudo apt-get -y install nginx
 sudo mkdir -p /var/www/$APP/static /var/www/$APP/media
 sudo mv /etc/nginx/sites-available/nginx.example.conf /etc/nginx/sites-available/$APP.conf
-sudo ln -s /etc/nginx/sites-available/$APP.ini /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/$APP.conf /etc/nginx/sites-enabled/
 
 # Install uwsgi
 sudo apt-get -y install uwsgi-plugin-python3
@@ -65,3 +66,8 @@ sudo pip3 install virtualenv
 
 # Install .venv
 virtualenv -p python3 .venv
+
+.venv/bin/pip3 install -r requirements.txt
+
+# TODO: script rclone backup date
+# TODO: script config domain

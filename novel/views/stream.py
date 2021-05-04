@@ -27,7 +27,8 @@ def url2yield(url, chunksize=1024, referer=None):
         yield {"status": response.status_code}
         chunk = False
 
-    if crawl_settings.IGNORE_CLOUDFLARE_RESTRICT in response.url:
+    restrict_config = crawl_settings.IGNORE_CLOUDFLARE_RESTRICT
+    if restrict_config and restrict_config in response.url:
         yield {"cloudflare_restricted": "true"}
         chunk = False
 

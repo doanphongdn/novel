@@ -10,7 +10,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -52,7 +51,7 @@ coverage.xml
 .pytest_cache/
 
 # Translations
-*.mo
+#*.mo
 *.pot
 
 # Django stuff:
@@ -134,4 +133,4 @@ templates/novel/robots.txt
 
 #static
 static_files
-pre_debug.sh
+.pre_debug.sh

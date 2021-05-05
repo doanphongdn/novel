@@ -1,9 +1,9 @@
-from cms.paginator import ModelPaginator
-from novel.models import Novel, Comment
+from django_cms.utils.paginator import ModelPaginator
+from novel.models import Novel, Comment, NovelNotify
 
 
 class ChapterPaginator(ModelPaginator):
-    def __init__(self, novel, per_page, number, order_by='-id', **kwargs):
+    def __init__(self, novel, per_page, number, order_by=None, **kwargs):
         self.novel_flat = novel.novel_flat
         super().__init__(per_page, number, order_by, **kwargs)
 
@@ -22,7 +22,7 @@ class ChapterPaginator(ModelPaginator):
 
 
 class CommentPaginator(ModelPaginator):
-    def __init__(self, novel, per_page, number, order_by='-id', **kwargs):
+    def __init__(self, novel, per_page, number, order_by=None, **kwargs):
         self.novel = novel
         super().__init__(per_page, number, order_by, **kwargs)
 
@@ -37,7 +37,7 @@ class CommentPaginator(ModelPaginator):
             return []
         comment_data = []
         comment_list = Comment.objects.filter(novel=self.novel, **kwargs).prefetch_related('chapter', 'user').order_by(
-            self.order_by).all()[self.offset:self.offset + self.per_page]
+            *self.order_by).all()[self.offset:self.offset + self.per_page]
         for cmt in comment_list:
             child_comments = Comment.objects.filter(parent_id=cmt.id)
             comment_data.append(cmt)
@@ -49,8 +49,13 @@ class NovelPaginator(ModelPaginator):
     model = Novel
 
     def calc_total(self, **kwargs):
-        return self.model.get_available_novel().filter(**kwargs).count()
+        return len(self.custom_data) or self.model.get_available_novel().filter(**kwargs).count()
 
     def get_data(self, **kwargs):
-        return self.model.get_available_novel().filter(**kwargs).prefetch_related("novel_flat") \
-                   .order_by(self.order_by).all()[self.offset:self.offset + self.per_page]
+        return self.custom_data[self.offset:self.offset + self.per_page] or \
+               self.model.get_available_novel().filter(**kwargs).prefetch_related("novel_flat") \
+                   .order_by(*self.order_by).all()[self.offset:self.offset + self.per_page]
+
+
+class NotifyPaginator(ModelPaginator):
+    model = NovelNotify

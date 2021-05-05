@@ -13,6 +13,8 @@ class NovelListTemplateInclude(BaseTemplateInclude):
 
     def prepare_include_data(self):
         filter_by = self.include_data.get('filter_by', {})
+        distinct = self.include_data.get('distinct', False)
+        exclude = self.include_data.get('exclude', {})
         view_type = self.include_data.get('view_type', 'grid')
         show_button_type = self.include_data.get('show_button_type')
         show_button_view_all = self.include_data.get('show_button_view_all')
@@ -26,6 +28,18 @@ class NovelListTemplateInclude(BaseTemplateInclude):
         novel_grid_col_md = self.include_data.get('novel_grid_col_md') or 3
         novel_grid_col_lg = self.include_data.get('novel_grid_col_lg') or 2
         custom_chapters = self.include_data.get('custom_chapters') or {}
+        custom_data_field = self.include_data.get('custom_data_field')
+
+        ads_inside_limit = self.include_data.get('ads_inside_limit') or 4
+        ads_inside_enable = self.include_data.get('ads_inside_enable') or False
+        inside_content_ads = self.include_data.get('inside_content_ads') or []
+
+        ads_after_enable = self.include_data.get('ads_after_enable') or False
+        after_content_ads = self.include_data.get('after_content_ads') or []
+
+        custom_data = []
+        if custom_data_field:
+            custom_data = self.include_data.get(custom_data_field)
 
         css_class = {
             "novel_list_col": novel_list_col,
@@ -37,8 +51,11 @@ class NovelListTemplateInclude(BaseTemplateInclude):
         button_type_urls = {}
         if show_button_type is True:
             params = {}
-            if int(page) > 1:
-                params = {'page': page}
+            try:
+                if int(page) > 1:
+                    params = {'page': page}
+            except:
+                params = {'page': 1}
 
             button_type_urls = {
                 'grid': '#',
@@ -53,7 +70,8 @@ class NovelListTemplateInclude(BaseTemplateInclude):
                 button_type_urls['list'] = "?" + urlencode(params)
 
         pagination = None
-        novel_paginated = NovelPaginator(limit, page, order_by, **filter_by)
+        novel_paginated = NovelPaginator(limit, page, order_by, exclude=exclude, distinct=distinct,
+                                         custom_data=custom_data, **filter_by)
         if paginate_enable is True:
             paging_data = {"paginated_data": novel_paginated, "page_label": "page"}
             pagination = PaginationTemplateInclude(paging_data)
@@ -66,4 +84,9 @@ class NovelListTemplateInclude(BaseTemplateInclude):
             "button_type_urls": button_type_urls,
             "pagination_html": pagination.render_html() if pagination else "",
             "css_class": css_class,
+            "inside_content_ads": inside_content_ads,
+            "after_content_ads": after_content_ads,
+            "ads_inside_limit": ads_inside_limit,
+            "ads_inside_enable": ads_inside_enable,
+            "ads_after_enable": ads_after_enable,
         })

@@ -10,6 +10,7 @@
       padding: 10px;
       background: #fff;
       box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02);
+      height: fit-content;
 
       img {
         width: 100%;
@@ -19,76 +20,78 @@
 
     .novel-categories a {
       display: inline-block;
+      margin: 2px 0;
     }
   }
 
 
   .novel-detail {
-    padding: 15px;
+    padding: 0 15px;
 
     .novel-name {
-      h3 {
+      h1 {
+        font-size: 1.5rem;
         font-weight: 600;
       }
     }
 
     .novel-detail-wrap {
-      .cate-item {
-        color: #FFF;
-        background: #5b707b;
-        border: thin solid #576675;
-        padding: 2px 7px;
-        margin-right: 5px;
-        font-size: 0.9rem;
-        border-radius: 4px;
+      .novel-info {
+        float: left;
+        max-width: calc(100% - 336px);
+        overflow: hidden;
+        display: block;
       }
 
-      .novel-mobile-action {
-        margin-top: 30px;
+      .ads-area {
+        float: right;
+        width: 336px;
+        margin-right: -15px;
+        display: block;
+        overflow: hidden;
 
-        .action-item {
-          text-align: center;
-
-          i {
-            font-size: 2rem;
-            color: #5b707b;
-          }
+        img {
+          width: 100%;
         }
       }
 
-      .novel-summary {
-        .novel-action-bookmark {
-          cursor: pointer;
+      .novel-action {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
 
+        a {
           &:hover {
-            color: #{$text_color_hover};
+            color: #444;
           }
-        }
 
-        .novel-action-comment {
-          &:hover {
-            color: #{$text_color_hover};
-          }
-        }
-
-        .novel-summury-item:not(:last-child):not(:nth-child(3)) {
-          border-right: thin solid #EEE;
-        }
-
-        .novel-summury-item.action-item {
           text-align: center;
+          font-size: 45px;
 
-          i {
-            font-size: 2rem;
-            color: #5b707b;
+          p {
+            font-size: .9rem;
+          }
+        }
+      }
+
+      .novel-categories {
+        a {
+          .cate-item {
+            color: #FFF;
+            background: #5b707b;
+            border: thin solid #576675;
+            padding: 2px 6px;
+            margin: 0 3px 3px 0;
+            font-size: 0.9rem;
+            border-radius: 6px;
           }
         }
 
       }
 
       label {
-        font-size: 1rem;
-        min-width: 120px;
+        font-size: .9rem;
+        min-width: 130px;
       }
 
       .rating {
@@ -113,11 +116,85 @@
       }
 
       .novel-button {
-        button {
-          margin: 10px 5px 0 0;
+        text-align: left;
+        overflow: hidden;
+        display: block;
+
+        a {
+          display: inline-block;
+          float: left;
+
+          button {
+            margin: 2px 5px 2px 0;
+            font-weight: 400;
+          }
+        }
+      }
+
+      .des-label {
+        border-bottom: 2px solid #{$color1};
+      }
+
+      .description-wrapper {
+        position: relative;
+        margin-bottom: 35px;
+
+        .show-more-btn {
+          color: #{$color1};
+          position: absolute;
+          padding: 2px 5px;
+          top: calc(100% - -5px);
+          text-decoration: underline;
+          text-transform: capitalize;
+          cursor: pointer;
+          font-size: .9rem;
+          font-weight: 500;
+          font-style: italic;
+        }
+
+        input {
+          display: none;
+        }
+
+        .show-more-btn:after {
+          content: "Xem thêm >";
+        }
+
+
+        .show-more-btn:hover {
+          color: #{$text_color_hover};
+        }
+
+        input:checked + .show-more-btn:after {
+          content: "Thu gọn >";
+        }
+
+        input:checked ~ .des-panel {
+          max-height: unset;
+          height: 100%;
+        }
+
+        input:checked ~ .des-fade {
+          display: none;
+        }
+
+        .des-panel {
+          max-height: 100px;
+          overflow: hidden;
+          text-align: justify;
+        }
+
+        .des-fade {
+          background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0, #ffffffd9 75%);
+          height: 50px;
+          bottom: 0;
+          width: 100%;
+          position: absolute;
         }
       }
     }
+
+
   }
 }
 
@@ -139,6 +216,32 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .novel-info {
+    .novel-detail {
+      .novel-detail-wrap {
+        .novel-info {
+          max-width: 100%;
+        }
+
+        .ads-area {
+          display: none;
+        }
+
+        .novel-button {
+          text-align: center;
+
+          a {
+            display: inline-block;
+            float: unset;
+          }
+        }
+      }
+    }
+  }
+
+}
+
 /* Small Devices, Tablets */
 @media (max-width: 768px) {
   .novel-info {
@@ -146,6 +249,11 @@
       .novel-detail-wrap {
         margin-left: -15px;
         margin-right: -15px;
+
+        .novel-categories {
+          text-align: center;
+        }
+
       }
     }
   }

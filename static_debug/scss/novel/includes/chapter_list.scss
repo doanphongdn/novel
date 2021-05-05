@@ -8,7 +8,7 @@
 
     .chapter-wrap {
       margin: 2px;
-      border: thin solid #F0F0F0;
+      border: thin solid #DDD;
       width: 100%;
       padding: 10px;
 
@@ -26,6 +26,7 @@
 
         h6 {
           font-size: .9rem;
+          font-weight: 400;
           text-overflow: ellipsis;
           white-space: nowrap;
           overflow: hidden;

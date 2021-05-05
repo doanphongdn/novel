@@ -1,20 +1,24 @@
 import json
+import os
 from urllib.parse import urlparse
 
 from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
+from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 
-from crawl_service import settings
+from novel import settings
 from novel.cache_manager import NovelCache
-from novel.models import NovelChapter, Novel
+from novel.models import Novel, NovelChapter
 from novel.utils import get_history_cookies
 from novel.views.base import NovelBaseView
+from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.user import UserAction
 
 
 class ChapterView(NovelBaseView):
     template_name = "novel/chapter.html"
+    ads_group_name = "novel_chapter"
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
@@ -25,6 +29,8 @@ class ChapterView(NovelBaseView):
 
         novel = NovelCache(Novel, **{"slug": slug}).get_from_cache()
         if novel:
+            if isinstance(novel, QuerySet):
+                novel = novel[0]
             # TODO: not yet apply cache
             chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).prefetch_related(
                 'cdnnovelfile_set').first()
@@ -42,18 +48,24 @@ class ChapterView(NovelBaseView):
 
                 referer = urlparse(chapter.src_url)
                 if novel.thumbnail_image.strip().startswith('//'):
-                    referer_url = referer.scheme
+                    referer_url = referer.scheme + ":"
+                elif novel.thumbnail_image.strip().startswith('http'):
+                    referer_url = ''
                 else:
                     referer_url = referer.scheme + "://"  # + referer.netloc
 
-                response.context_data["setting"]["title"] = novel.name + " " + chapter.name
-                response.context_data['setting']['meta_img'] = referer_url + novel.thumbnail_image
+                response.context_data["setting"]["title"] = novel.name + " - " + chapter.name
+                response.context_data['setting']['meta_img'] = referer_url + novel.thumbnail_image.strip()
                 keywords = [novel.slug.replace('-', ' '), novel.name, novel.name + ' full',
                             chapter.slug.replace('-', ' '), chapter.name]
                 response.context_data["setting"]["meta_keywords"] += ', ' + ', '.join(keywords)
 
-                # hard code to ionore index img google bot
+                # hard code to ignore index img google bot
                 response.context_data["setting"]["no_image_index"] = True
+
+                # title for social
+                # setting = response.context_data.get("setting")
+                response.context_data["setting"]["meta_og_title"] = novel.name + " - " + chapter.name
 
                 # Update view count
                 chapter_id = chapter.id
@@ -88,24 +100,31 @@ class ChapterView(NovelBaseView):
                     request.session["chapters_viewed"] = chapters_viewed
                     # request.session.set_expiry(3600)
 
-
         else:
             # TODO: define 404 page
             # direct to homepage
             return redirect('/')  # or redirect('name-of-index-url')
 
+        ads_data = response.context_data.get("ads_data", {})
         extra_data = {
             "breadcrumb": {
                 "breadcrumb_data": breadcrumb_data,
             },
             "chapter_content": {
                 "chapter": chapter,
-                "novel": novel
+                "novel": novel,
+                "bookmark": NovelInfoTemplateInclude.get_bookmark_info(novel.id, self.request.user),
+                "chapter_content_before_ads": ads_data.get("novel_chapter_before_content"),
+                "inside_content_ads": ads_data.get("novel_chapter_inside_content"),
             },
             "comment": {
                 "novel": novel,
+                "comment_ads": ads_data.get("novel_chapter_before_comment"),
                 # Dont change cke_id, it using in base.js
                 "cke_novel_id": "cke_novel_id",
+            },
+            "report_modal": {
+                "chapter": chapter
             }
         }
 
@@ -116,6 +135,7 @@ class ChapterView(NovelBaseView):
             'novel_url': novel.get_absolute_url(),
             'include_html': include_html,
             'request_url': request.build_absolute_uri(),
+            'novel_config_enable': settings.CHAPTER_CONFIG_ENABLE
         })
 
         return response

@@ -1,6 +1,8 @@
-from cms.cache_manager import CacheManager
-from cms.models import Menu
-from novel.models import Genre
+from django.contrib.auth.models import AnonymousUser
+
+from django_cms.utils.cache_manager import CacheManager
+from django_cms.models import Menu
+from novel.models import Genre, NovelNotify
 from novel.views.includes.base import BaseTemplateInclude
 
 
@@ -33,7 +35,17 @@ class BaseNavbarTemplateInclude(BaseTemplateInclude):
         if "logout_label" not in self.include_data:
             self.include_data["logout_label"] = "Logout"
 
+        notify = []
+        notify_unread = 0
+        if not isinstance(self.request.user, AnonymousUser):
+            notify_unread = len(CacheManager(NovelNotify, **{"user_id": self.request.user.id,
+                                                             "read": False}).get_from_cache(get_all=True))
+            notify = CacheManager(NovelNotify, **{"user_id": self.request.user.id}, limit=5, order_by=["read", "-id"],
+                                  select_related="novel").get_from_cache(get_all=True)
+
         self.include_data.update({
+            "notify_list": notify,
+            "notify_unread": notify_unread,
             "enable_auth_menu": enable_auth_menu,
             "navbar_menus": navbar_menus,
             "genre_menu": genre_menu,

@@ -1,131 +1,134 @@
-{% load static %}
 {% load i18n %}
-
-<div class="chapter-content">
-    <div class="row chapter-actions">
-        <div class="col-5">
-            <div class="row">
-                {% if chapter_prev_url %}
-                    <a href="{{ chapter_prev_url }}">
-                        <button type="button" class="btn btn-sm btn-default d-lg-none">
-                            <i class="fa fa-chevron-left"></i> Prev
-                        </button>
-                        <button type="button" class="btn btn-default d-none d-lg-block">
-                            <i class="fa fa-chevron-left"></i> Prev
-                        </button>
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-        <div class="col-2">
-            <div class="row justify-content-center">
-                <button type="button" class="btn btn-sm btn-default d-lg-none" data-toggle="modal"
-                        data-target="#modal-chapter">
-                    <i class="fa fa-list"></i>
-                </button>
-                <button type="button" class="btn btn-default d-none d-lg-block" data-toggle="modal"
-                        data-target="#modal-chapter">
-                    <i class="fa fa-list"></i> Chapter List
-                </button>
-            </div>
-        </div>
-        <div class="col-5">
-            <div class="row justify-content-end">
-                {% if chapter_next_url %}
-                    <a href="{{ chapter_next_url }}">
-                        <button type="button" class="btn btn-sm btn-default d-lg-none">
-                            Next <i class="fa fa-chevron-right"></i>
-                        </button>
-                        <button type="button" class="btn btn-default d-none d-lg-block">
-                            Next <i class="fa fa-chevron-right"></i>
-                        </button>
-                    </a>
-                {% endif %}
-            </div>
-        </div>
+{% load static %}
+{% load custom_tags %}
+<div class="row chapter-content">
+  <div class="col-12 chapter-actions">
+    <div class="action-wrap">
+      <a href="/" rel="nofollow" class="btn btn-sm btn-default float-left"><i class="fa fa-home"></i></a>
+      <a href="{{ novel.get_absolute_url }}" rel="nofollow" class="btn btn-sm btn-default float-left">
+        <i class="fa fa-newspaper-o"></i></a>
+      <a href="#" data-novel="{{ novel.id }}" data-status="{{ bookmark.status }}"
+         rel="nofollow" data-logged="{{ bookmark.is_logged }}"
+         class="novel-action-bookmark btn btn-sm btn-success float-left">
+        <i class="fa fa-bookmark"></i> {% translate "Bookmark" %}
+      </a>
+      {% if chapter_next_url %}
+        <a href="{{ chapter_next_url }}" class="btn btn-secondary btn-sm float-right ml-2" rel="nofollow">
+          <span class="d-none d-lg-inline">{% translate "Next" %}</span> <i
+            class="fa fa-chevron-right"></i></a>
+      {% endif %}
+      <a href="#" class="btn btn-secondary btn-sm float-right ml-2" data-toggle="modal"
+         data-target="#modal-chapter" rel="nofollow"><i class="fa fa-list"></i><span
+          class="d-none d-lg-inline">{% translate "Chapter list" %}</span></a>
+      {% if chapter_prev_url %}
+        <a href="{{ chapter_prev_url }}" class="btn btn-secondary btn-sm float-right ml-2" rel="nofollow">
+          <i class="fa fa-chevron-left"></i> <span
+            class="d-none d-lg-inline">{% translate "Prev" %}</span></a>
+      {% endif %}
     </div>
-    <div class="row chapter-header">
-        <div class="col-12 chapter-title">
-            <h3>{{ novel.name }}</h3>
-            <h5>{{ chapter.name }}</h5>
-        </div>
+  </div>
+  <div class="col-12 chapter-header">
+    <div class="header-action my-4">
+      {#            <a href="#" class="btn btn-default btn-sm dark-mode" rel="nofollow">#}
+      {#                <i class="fa fa-adjust"></i> {% translate "Dark mode" %}</a>#}
+      <a href="#" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modal-report" rel="nofollow">
+        <i class="fa fa-bug"></i> {% translate "Error report" %}</a>
     </div>
-    <hr class="hr-light">
-    <div class="row chapter-detail">
-        <div class="col-12">
-            {% autoescape off %}
-                {{ chapter.decompress_content }}
-            {% endautoescape %}
-            {% if stream_images %}
-                <p class="bg-yellow text-center text-uppercase box-warning">{% translate "Please visit this chapter after 5 minutes if your browser cannot load these images now." %}</p>
-            {% endif %}
-            {% if mix_images %}
-                {% for mix_image in mix_images %}
-                    {% if forloop.counter <= 3 %}
-                        {% if "/images/" not in mix_image %}
-                            <img src="{{ cdn_domain }}/{{ mix_image }}" alt="">
-                        {% else %}
-                            <img src="{{ mix_image }}" alt="">
-                        {% endif %}
-                    {% else %}
-                        {% if "/images/" not in mix_image %}
-                            <img data-src="{{ cdn_domain }}/{{ mix_image }}" src="{% static "images/lazyload.gif" %}" alt=""
-                                 class="lazyload">
-                        {% else %}
-                             <img data-src="{{ mix_image }}" src="{% static "images/lazyload.gif" %}" alt=""
-                             class="lazyload">
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-            {% elif cdn_images %}
-                {% for cdn_image in cdn_images %}
-                    {% if forloop.counter <= 3 %}
-                        <img src="{{ cdn_domain }}/{{ cdn_image }}" alt="">
-                    {% else %}
-                        <img data-src="{{ cdn_domain }}/{{ cdn_image }}" src="{% static "images/lazyload.gif" %}" alt=""
-                             class="lazyload">
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-            {% if not mix_images %}
-                {% for image_url in stream_images %}
-                    {% if forloop.counter > cdn_images|length and forloop.counter <= cdn_images|length|add:"2" %}
-                        <img src="{{ image_url }}" alt="">
-                    {% elif forloop.counter > cdn_images|length|add:"2" %}
-                        <img data-src="{{ image_url }}" src="{% static "images/lazyload.gif" %}" alt=""
-                             class="lazyload">
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        </div>
+    <div class="col-12 chapter-title">
+      <h4>{{ novel.name }}</h4>
+      <h5>{{ chapter.name }}</h5>
     </div>
-    <hr class="hr-text" data-content="END CHAPTER">
-    {% if chapter.next_chapter %}
-        <div class="col-12 chapter-hashtags">
-            <a href="{{ chapter_next_url }}" class="btn btn-sm btn-warning"
-               title="{{ novel.name }} {{ chapter_next_name }}">{{ novel.name }} {{ chapter_next_name }}</a>
-        </div>
+  </div>
+  <hr class="hr-light">
+  <div class="col-12 chapter-detail">
+    {% if stream_images %}
+      <p class="bg-yellow text-center text-uppercase box-warning d-none">{% translate "Please visit this chapter after 5 minutes if your browser cannot load these images now." %}</p>
     {% endif %}
-</div>
 
+    {% if chapter_content_before_ads %}
+      <div class="ads-area mb-3">
+        {% for ad in chapter_content_before_ads %}
+          {% autoescape off %}
+            {{ ad.ad_content }}
+          {% endautoescape %}
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% autoescape off %}
+      {{ chapter.decompress_content }}
+    {% endautoescape %}
+
+    <div class="chapter-images">
+      {% for image_url in stream_images %}
+        {% if "www.youtube.com" in image_url %}
+          <iframe width="100%" height="400" src="{{ image_url }}" frameborder="0" allowfullscreen></iframe>
+        {% endif %}
+        {% if forloop.counter <= 3 %}
+          {% if "<video " in image_url %}
+            {% autoescape off %}
+              {{ image_url }}
+            {% endautoescape %}
+          {% else %}
+            <img src="{{ image_url }}" alt="">
+          {% endif %}
+        {% else %}
+          <img data-src="{{ image_url }}" src="{% static "images/lazyload.gif" %}" alt=""
+               class="lazyload">
+        {% endif %}
+        {% if ads_inside_enable and forloop.counter|div_get_mod:ads_inside_limit and not forloop.last %}
+          {% for ad in inside_content_ads %}
+            <div class="col-12">
+              {% autoescape off %}
+                {{ ad.ad_content }}
+              {% endautoescape %}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+
+    </div>
+  </div>
+  <hr class="hr-text" data-content="END CHAPTER">
+  {% if chapter.next_chapter %}
+    <div class="col-12 chapter-hashtags">
+      <a href="{{ chapter_next_url }}" class="btn btn-sm btn-warning"
+         title="{{ novel.name }} {{ chapter_next_name }}">{{ novel.name }} {{ chapter_next_name }}</a>
+    </div>
+  {% endif %}
+  <div class="col-12 chapter-actions-end">
+    <div class="action-wrap">
+      {% if chapter_next_url %}
+        <a href="{{ chapter_next_url }}" class="btn btn-success btn-sm float-right ml-2" rel="nofollow">
+          <span class="d-none d-lg-inline">{% translate "Next" %}</span> <i
+            class="fa fa-chevron-right"></i></a>
+      {% endif %}
+
+      {% if chapter_prev_url %}
+        <a href="{{ chapter_prev_url }}" class="btn btn-success btn-sm float-right ml-2" rel="nofollow">
+          <i class="fa fa-chevron-left"></i> <span
+            class="d-none d-lg-inline">{% translate "Prev" %}</span></a>
+      {% endif %}
+    </div>
+  </div>
+</div>
 <div class="modal fade modal-chapter" id="modal-chapter" tabindex="-1" role="dialog" aria-labelledby="modal-chapter"
      aria-hidden="true">
-    <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body" id="chapter-list">
-                <ul>
-                    {% for chap in chapter_list %}
-                        <li>
-                            <a href="{{ chap.url }}">{{ chap.name }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+  <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body" id="chapter-list">
+        <ul>
+          {% for chap in chapter_list %}
+            <li>
+              <a href="{{ chap.url }}">{{ chap.name }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
+  </div>
 </div>

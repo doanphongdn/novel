@@ -146,22 +146,6 @@ $(document).ready(function (e) {
         Cookies.set('backgroundColor', newBgColor);
     });
 
-
     setInitAttrs();
-
-    $(document).scroll(function () {
-        var scrollTop = $(document).scrollTop();
-        var contentTop = $('.chapter-content').offset().top;
-        var menu = $('.chapter-actions');
-        var menuWidth = menu[0].offsetWidth;
-        diff = scrollTop - contentTop;
-        if (diff > 0) {
-            menu.css('width', menuWidth + "px");
-            menu.css('position', "fixed");
-        } else {
-            menu.css('position', "absolute");
-            menu.css('width', "100%");
-        }
-    });
 
 });

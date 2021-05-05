@@ -1,12 +1,26 @@
+{% load i18n %}
 {% load cache %}
 <ul class="navbar-nav ml-auto navbar-header-menu">
     {% if enable_auth_menu %}
         {% if user.is_authenticated %}
             <li class="nav-item dropdown nav-item-user d-lg-none">
+                <a class="nav-link nav-link-icon float-right" href="#" rel="nofollow">
+                    <span class="nav-link-inner--text">{{ user.first_name }} {{ user.last_name }}</span>
+                    <img src="{{ user_avatar }}" class="user-avatar" alt="avatar" rel="nofollow">
+                </a>
+                <a class="nav-link nav-link-icon float-right mr-3 notify-icon" rel="nofollow"
+                   href="{% url "user_profile" tab_name="message" %}">
+                    <i class="fa fa fa-bell"></i>
+                    {% if notify_unread %}
+                        <span class="badge bg-c-red">{{ notify_unread }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            <li class="nav-item dropdown d-lg-none">
                 <a class="nav-link nav-link-icon dropdown-toggle" href="#" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" rel="nofollow">
-                    <img src="{{ user_avatar }}" class="user-avatar" alt="avatar" rel="nofollow">
-                    <span class="nav-link-inner--text">{{ user.first_name }} {{ user.last_name }}</span>
+                    <i class="fa fa fa-address-book-o"></i>
+                    <span class="nav-link-inner--text">Thông tin tài khoản</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right user-profile-menu">
                     {% for menu in user_menus %}
@@ -24,13 +38,13 @@
             <li class="nav-item d-lg-none">
                 <a class="nav-link nav-link-icon btn-login" href="#" data-toggle="modal" data-target="#modal-login">
                     <i class="fa fa-sign-in"></i>
-                    <span class="nav-link-inner--text">Login</span>
+                    <span class="nav-link-inner--text">{% translate "Login" %}</span>
                 </a>
             </li>
             <li class="nav-item d-lg-none">
                 <a class="nav-link nav-link-icon btn-register" href="#" data-toggle="modal" data-target="#modal-login">
                     <i class="fa fa-user-plus"></i>
-                    <span class="nav-link-inner--text">Register</span>
+                    <span class="nav-link-inner--text">{% translate "Register" %}</span>
                 </a>
             </li>
         {% endif %}
@@ -45,6 +59,36 @@
     {% endfor %}
     {% if enable_auth_menu %}
         {% if user.is_authenticated %}
+            <li class="nav-item d-none d-lg-block">
+                <a class="nav-link nav-link-icon dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                   aria-expanded="true" rel="nofollow" href="#"
+                   rel="nofollow">
+                    <i class="fa fa fa-bell"></i>
+                    {% if notify_unread %}
+                        <span class="badge bg-c-red">{{ notify_unread }}</span>
+                    {% endif %}
+                </a>
+                {% if notify_list %}
+                    <div class="dropdown-menu dropdown-menu-right notify-message-menu">
+                        {% for notify in notify_list %}
+                            <a class="dropdown-item notify-message{% if not notify.read %} font-weight-bold{% endif %}"
+                               data-id="{{ notify.id }}" href="{{ notify.novel.get_absolute_url }}" rel="nofollow">
+                                {{ notify.notify }}
+                            </a>
+                        {% endfor %}
+                        <a class="dropdown-item text-center" rel="nofollow"
+                           href="{% url "user_profile" tab_name="message" %}">
+                            {% translate "View all messages" %}
+                        </a>
+                    </div>
+                {% endif %}
+            </li>
+            {#            <li class="nav-item">#}
+            {#                <a class="nav-link nav-link-icon" href="{% url "user_profile" tab_name="comment" %}" rel="nofollow">#}
+            {#                    <i class="fa fa fa-comments"></i>#}
+            {#                    <span class="badge bg-c-red">5</span>#}
+            {#                </a>#}
+            {#            </li>#}
             <li class="nav-item dropdown nav-item-user d-none d-lg-block">
                 <a class="nav-link nav-link-icon dropdown-toggle" href="#" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" rel="nofollow">
@@ -67,13 +111,13 @@
             <li class="nav-item d-none d-lg-block">
                 <a class="nav-link nav-link-icon btn-login" href="#" data-toggle="modal" data-target="#modal-login">
                     <i class="fa fa-sign-in"></i>
-                    <span class="nav-link-inner--text">Login</span>
+                    <span class="nav-link-inner--text">{% translate "Login" %}</span>
                 </a>
             </li>
             <li class="nav-item d-none d-lg-block">
                 <a class="nav-link nav-link-icon btn-register" href="#" data-toggle="modal" data-target="#modal-login">
                     <i class="fa fa-user-plus"></i>
-                    <span class="nav-link-inner--text">Register</span>
+                    <span class="nav-link-inner--text">{% translate "Register" %}</span>
                 </a>
             </li>
         {% endif %}
@@ -89,8 +133,8 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="nav-inner-primary_dropdown_1">
                 {% for genre in genre_menu.data %}
-                    <a class="dropdown-item"
-                       href="{{ genre.get_absolute_url }}">{{ genre.name }}</a>
+                    <a class="dropdown-item" href="{{ genre.get_absolute_url }}">
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i> {{ genre.name }}</a>
                 {% endfor %}
             </div>
         </li>

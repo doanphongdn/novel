@@ -4,8 +4,10 @@
 {% endblock %}
 {% block content %}
     <div class="row">
-        {% autoescape off %}
-            {{ page_html }}
-        {% endautoescape %}
+        <div class="col-12 page-content px-5">
+            {% autoescape off %}
+                {{ page_html }}
+            {% endautoescape %}
+        </div>
     </div>
 {% endblock %}

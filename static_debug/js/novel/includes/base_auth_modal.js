@@ -9,5 +9,11 @@ $(document).ready(function (e) {
         } else {
             $(this).find('a.tab-login').tab('show');
         }
+        $("#mobile-menu-action").prop("checked", false);
+        $("#mobile-menu").css({
+            "position": "",
+            "top": "",
+        });
+        $("body").css({"overflow": ""});
     });
 });

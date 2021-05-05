@@ -2,15 +2,24 @@
 {% load static %}
 {% load pipeline %}
 {% block meta %}
-    <meta name="thumbnail" content="{{ novel.stream_thumbnail_image }}" />
+    <meta name="thumbnail" content="{{ thumbnail_image }}"/>
+{% endblock %}
+{% block ads_header %}
+    {% for ad in ads_data.novel_chapter_header %}
+        {% autoescape off %}
+            {{ ad.ad_content }}
+        {% endautoescape %}
+    {% endfor %}
 {% endblock %}
 {% block content %}
     <div class="row">
         {{ include_html }}
         <div class="float-button">
             <ul>
-                <li><a href="{{ novel_url }}"><i class="fa fa-book"></i></a></li>
-                <li><i class="fa fa-cog" data-toggle="modal" data-target="#modal-config"></i></li>
+                <li><a href="#"><i class="fa fa-arrow-circle-o-up opacity-5"></i></a></li>
+                {% if novel_config_enable %}
+                    <li><i class="fa fa-cog" data-toggle="modal" data-target="#modal-config"></i></li>
+                {% endif %}
             </ul>
         </div>
         <div class="modal fade page-config" id="modal-config" tabindex="-1" role="dialog"
@@ -50,6 +59,11 @@
         </div>
     </div>
 {% endblock %}
+{% block stylesheet %}
+    <link rel=preload href="{% static "dist/sweetalert2/sweetalert2.min.css" %}">
+{% endblock %}
 {% block scripts %}
+    <script type="text/javascript" src="{% static 'dist/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script type="text/javascript" src="{% static "argon/assets/js/plugins/nouislider.min.js" %}"></script>
     {% javascript 'chapter' %}
 {% endblock %}

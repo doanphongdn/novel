@@ -9,10 +9,11 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
+from django_cms.utils.cache_manager import CacheManager
 from novel import utils
 from novel.form.auth import RegisterForm, LoginForm
 from novel.form.user import UserProfileForm
-from novel.models import Novel, Bookmark, History, NovelChapter, NovelUserProfile
+from novel.models import Novel, Bookmark, History, NovelChapter, NovelUserProfile, NovelNotify
 from novel.utils import get_history_cookies
 from novel.views.base import NovelBaseView
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
@@ -125,6 +126,29 @@ class UserAction(object):
         return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
 
     @staticmethod
+    def read_notify(request):
+        res = JsonResponse({"success": False, }, status=HTTPStatus.BAD_REQUEST)
+        if request.method == 'POST':
+            try:
+                notify_id = request.POST.get('notify_id')
+                notify = NovelNotify.objects.filter(id=notify_id).first()
+                if notify:
+                    notify.read = True
+                    notify.save()
+                    CacheManager(NovelNotify, **{"user_id": request.user.id, "read": False}).clear_cache()
+                    CacheManager(NovelNotify, **{"user_id": request.user.id}).clear_cache()
+
+                    res_data = {"success": True}
+                    if notify.novel:
+                        res_data["redirect_url"] = notify.novel.get_absolute_url()
+
+                    res = JsonResponse(res_data, status=HTTPStatus.OK)
+            except:
+                pass
+
+        return res
+
+    @staticmethod
     def sign_up(request):
         register_form = RegisterForm(request.POST)
         if not register_form.is_valid():
@@ -203,7 +227,7 @@ class UserProfileView(NovelBaseView):
                     if avatar:
                         fs = FileSystemStorage()
                         filename = fs.save(avatar.name, avatar)
-                        profile, _ = NovelUserProfile.get_profiles(request.user.id)
+                        profile, _ = NovelUserProfile.objects.get_or_create(user_id=request.user.id)
                         profile.avatar = fs.url(filename)
                         profile.save()
 

@@ -1,4 +1,5 @@
 import time
+import urllib
 from copy import deepcopy
 from http import HTTPStatus
 from urllib.parse import urlencode
@@ -7,10 +8,13 @@ import requests
 from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse, HttpResponse
 from django.template import loader
+from django.utils.translation import gettext as _
+from unidecode import unidecode
 
+from django_cms.utils.cache_manager import CacheManager
 from novel import settings
 from novel.form.comment import CommentForm
-from novel.models import Comment, NovelUserProfile
+from novel.models import Comment, NovelUserProfile, NovelParam
 from novel.paginator import CommentPaginator
 from novel.views.includes.base import BaseTemplateInclude
 
@@ -36,6 +40,18 @@ class CommentManager(object):
 
             if response['success']:
                 data = {key: value or None for key, value in request.POST.items() if hasattr(Comment, key)}
+                # filter comment
+                content = data['content']
+                filter_text = CacheManager(NovelParam, **{"key": 'comment_filters'}).get_from_cache()
+                filter_args = []
+                if filter_text:
+                    filter_args = filter_text.values.split("\n")
+
+                for f in filter_args:
+                    f = unidecode(f.strip(" \r").lower())
+                    if f in unidecode(content.replace(" ", "").lower()) or f in unidecode(content.strip().lower()):
+                        return JsonResponse({"success": False, "message": _("Content of your comment is invalid")})
+
                 data["user"] = None if isinstance(request.user, AnonymousUser) else request.user
                 cmt = Comment.objects.create(**data)
 
@@ -102,7 +118,6 @@ class CommentTemplateInclude(BaseTemplateInclude):
             "user_type": "Mem" if comment.user else "Guest",
             "user_type_color": "#3f9d87" if comment.user else "#999",
             "reply_to": reply_to,
-
         }
 
     def prepare_include_data(self):

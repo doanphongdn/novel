@@ -1,4 +1,13 @@
 {% load static %}
+{% if comment_ads %}
+    <div class="ads-area">
+        {% for ad in comment_ads %}
+            {% autoescape off %}
+                {{ ad.ad_content }}
+            {% endautoescape %}
+        {% endfor %}
+    </div>
+{% endif %}
 <div class="comment" id="comment">
     <div class="row">
         <div class="col-12">

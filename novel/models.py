@@ -1,8 +1,11 @@
 import hashlib
 import json
+import os
+import re
 import zlib
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
+from pathlib import Path
 
 from autoslug import AutoSlugField
 from autoslug.utils import slugify
@@ -10,15 +13,21 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import models
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 from unidecode import unidecode
 
-from crawl_service import settings
-from crawl_service.models import CDNServer, CrawlCampaignSource
+from django_cms import settings
+from django_cms.models import CDNServer
+from django_cms.utils.cache_manager import CacheManager
+from django_cms.utils.helpers import code_validate
+from novel import utils
+from novel.utils import get_first_number_pattern
+from django.utils.translation import ugettext as _
 
 
 def datetime2string(value):
@@ -28,11 +37,11 @@ def datetime2string(value):
     diff_timestamp = datetime.timestamp(datetime.now()) - datetime.timestamp(value)
 
     if diff_timestamp / 60 < 60:
-        updated_at = "%s minute(s) ago" % (int(diff_timestamp / 60) + 1)
+        updated_at = "%s " % (int(diff_timestamp / 60) + 1) + _("minute(s) ago")
     elif diff_timestamp / 3600 < 24:
-        updated_at = "%s hour(s) ago" % int(diff_timestamp / 3600)
+        updated_at = "%s " % int(diff_timestamp / 3600) + _("hour(s) ago")
     elif diff_timestamp / 3600 / 24 < 30:
-        updated_at = "%s day(s) ago" % int(diff_timestamp / 3600 / 24)
+        updated_at = "%s " % int(diff_timestamp / 3600 / 24) + _("day(s) ago")
     else:
         updated_at = value.strftime("%Y/%m/%d")
 
@@ -73,6 +82,7 @@ class Genre(models.Model):
     name = models.CharField(max_length=250, unique=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify,
                          max_length=250, blank=True, unique=True, null=True)
+    style_color = models.CharField(max_length=50, default='', blank=True, null=True)
     active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -105,6 +115,7 @@ class Novel(models.Model):
                          max_length=250, blank=True, unique=True, null=True)
 
     thumbnail_image = models.TextField(blank=True, null=True)
+    thumbnail_image_replace = models.ImageField(upload_to="images/novels", blank=True, null=True)
     descriptions = models.TextField(blank=True, null=True)
 
     genres = models.ManyToManyField(Genre, db_table="novel_novel_genres_rel", blank=True)
@@ -125,80 +136,71 @@ class Novel(models.Model):
     view_daily = models.IntegerField(default=0)
     view_monthly = models.IntegerField(default=0)
     view_total = models.IntegerField(default=0)
+    hot_point = models.IntegerField(default=0)
 
     latest_updated_time = models.DateTimeField(auto_now_add=True)
     src_url = models.TextField(unique=True)
     src_latest_chapter_url = models.CharField(max_length=250, blank=True, null=True)
-    src_campaign = models.ForeignKey(CrawlCampaignSource, on_delete=models.CASCADE)
+    src_campaign = models.CharField(max_length=50)
 
     attempt = models.SmallIntegerField(default=0)
+    crawl_errors = models.TextField(default='', blank=True, null=True)
 
     def __str__(self):
         return self.name
 
-    @property
+    @cached_property
     def structured_data(self):
         """
         This property cached in html template
         :return:
         """
-        first_chapter = self.first_chapter
-        latest_chapter = self.latest_chapter
-        site_url = "https://" + Site.objects.get_current().domain
-        url = site_url + self.get_absolute_url()
+        novel_setting = CacheManager(NovelSetting).get_from_cache()
+        domain = Site.objects.get_current().domain
+        site_url = "https://" + domain
         data = {
             '@id': '#novel',
-            '@type': 'Book',
-            'name': self.name,
-            'genre': [
-                site_url + genre.get_absolute_url()
-                for genre in self.genres.all()
-            ],
+            "@type": "Article",
+            'headline': self.name,
             'author': [{
                 '@type': 'Person',
                 'name': author.name,
             } for author in self.authors.all()],
+            'genre': [
+                genre.name
+                for genre in self.genres.all()
+            ],
+            "publisher": {
+                "@type": "Organization",
+                "name": domain.title(),
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": site_url + novel_setting.logo.url
+                }
+            },
+            "url": site_url,
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": site_url + self.get_absolute_url()
+            },
+            "datePublished": self.created_at.strftime('%Y-%m-%d'),
+            "dateCreated": self.created_at.strftime('%Y-%m-%d'),
             'dateModified': self.latest_updated_time.strftime('%Y-%m-%d'),
-            'url': url,
+            "description": _("The fastest and most complete updated {} comics at {}.").format(self.name, domain),
             "aggregateRating": {
+                "itemReviewed": {
+                    "@type": "Book",
+                    "name": self.name,
+                },
                 "@type": "AggregateRating",
                 "ratingValue": self.vote,
+                "bestRating": 5,
                 "reviewCount": self.vote_total or 1,
             },
-            'hasPart': [
-            ]
-
         }
 
         if self.thumbnail_image:
-            data['image'] = self.thumbnail_image
-
-        if first_chapter:
-            data['hasPart'].append({
-                '@id': '#first',
-                "@type": [
-                    "Book",
-                    "PublicationVolume"
-                ],
-                "name": first_chapter.name,
-                "url": site_url + first_chapter.get_absolute_url(),
-                "isPartOf": "#novel",
-                "inLanguage": "vi",
-                "volumeNumber": "1",
-            })
-        if latest_chapter:
-            data['hasPart'].append({
-                '@id': '#latest',
-                "@type": [
-                    "Book",
-                    "PublicationVolume"
-                ],
-                "name": latest_chapter.name,
-                "url": site_url + latest_chapter.get_absolute_url(),
-                "isPartOf": "#novel",
-                "inLanguage": "vi",
-                "volumeNumber": self.chapter_total,
-            })
+            data['image'] = site_url + self.stream_thumbnail_image
 
         return data
 
@@ -208,7 +210,7 @@ class Novel(models.Model):
 
     @cached_property
     def genres_name(self):
-        return ", ".join([str(p.name) for p in self.genres.all()])
+        return ", ".join([str(p.name) for p in self.genres.filter(active=True).all()])
 
     @cached_property
     def status_name(self):
@@ -216,7 +218,7 @@ class Novel(models.Model):
 
     @cached_property
     def genre_all(self):
-        return self.genres.all()
+        return self.genres.filter(active=True).all()
 
     @classmethod
     def get_available_novel(cls):
@@ -225,12 +227,17 @@ class Novel(models.Model):
                                               active=True, publish=True).distinct()
         return available_novels
 
+    @classmethod
+    def get_not_uploaded_cdn_thumbs(cls):
+        return cls.objects.filter(~Q(thumbnail_image__icontains='cdn.nettruyen.vn'),
+                                  active=True).order_by('-updated_at').all()[0:10000]
+
     @property
     def novel_chapter_condition(self):
         return {
             "novel_id": self.id,
             # "chapter_updated": True,
-            "active": True
+            "active": True,
         }
 
     def update_flat_info(self):
@@ -249,21 +256,25 @@ class Novel(models.Model):
         }
         self.novel_flat.save()
 
+    def update_chapter_name(self):
+        for chatper in self.chapters:
+            chatper.update_name()
+
     @cached_property
     def chapter_total(self):
         return NovelChapter.objects.filter(**self.novel_chapter_condition).count()
 
     @cached_property
     def chapters(self):
-        return NovelChapter.objects.filter(**self.novel_chapter_condition).all()
+        return NovelChapter.objects.filter(**self.novel_chapter_condition).order_by("name_index", "id").all()
 
     @cached_property
     def first_chapter(self):
-        return NovelChapter.objects.filter(**self.novel_chapter_condition).last()
+        return NovelChapter.objects.filter(**self.novel_chapter_condition).order_by("--name_index").last()
 
     @cached_property
     def latest_chapter(self):
-        return NovelChapter.objects.filter(**self.novel_chapter_condition).first()
+        return NovelChapter.objects.filter(**self.novel_chapter_condition).order_by("--name_index").first()
 
     def get_absolute_url(self):
         return reverse("novel", args=[self.slug])
@@ -286,7 +297,8 @@ class Novel(models.Model):
         if not self.thumbnail_image:
             return "#"
 
-        if self.thumbnail_image.startswith('/static'):
+        # TODO: do not hard the 'cdn' string here, let replace by cdn server configuration
+        if self.thumbnail_image.startswith(('/static', '/media')) or '//cdn.' in self.thumbnail_image:
             return self.thumbnail_image
 
         referer = urlparse(self.src_url)
@@ -322,6 +334,7 @@ class NovelChapter(models.Model):
 
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, db_index=True)
+    name_index = models.FloatField(db_index=True, null=True, default=-1)
 
     novel_slug = models.CharField(max_length=250, blank=True, null=True)
     slug = AutoSlugField(populate_from='name', slugify=unicode_slugify, max_length=250, blank=True, null=True,
@@ -341,6 +354,7 @@ class NovelChapter(models.Model):
 
     active = models.BooleanField(default=True)
     attempt = models.SmallIntegerField(default=0)
+    crawl_errors = models.TextField(default='', blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -355,9 +369,9 @@ class NovelChapter(models.Model):
         }
 
     @classmethod
-    def get_undownloaded_images_chapters(cls):
+    def get_undownloaded_images_chapters(cls, order_by_list=['-view_total', '-updated_at', '-id'], limit=20):
         return cls.objects.filter(active=True, chapter_updated=True, cdnnovelfile=None) \
-                   .order_by('-view_total', '-updated_at', '-id').all()[0:20]
+                   .order_by(*order_by_list).all()[0:limit]
 
     @classmethod
     def get_available_chapter(cls):
@@ -367,7 +381,10 @@ class NovelChapter(models.Model):
     def images(self):
         images = []
         if self.images_content:
-            images = self.images_content.split('\n')
+            if self.images_content.strip().startswith('<video '):
+                images = [self.images_content]
+            else:
+                images = self.images_content.split('\n')
         return images
 
     @cached_property
@@ -376,21 +393,29 @@ class NovelChapter(models.Model):
 
     @cached_property
     def next_chapter(self):
-        next_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__gt=self.id).first()
+        next_chap = NovelChapter.objects.filter(novel_id=self.novel_id, name_index__gt=self.name_index) \
+            .order_by("name_index").first()
+        if not next_chap:
+            next_chap = NovelChapter.objects.filter(novel_id=self.novel_id, id__gt=self.id) \
+                .order_by("id").first()
         return next_chap
 
     @cached_property
     def prev_chapter(self):
-        prev_chap = NovelChapter.objects.filter(novel_id=self.novel_id, pk__lt=self.id).last()
+        prev_chap = NovelChapter.objects.filter(novel_id=self.novel_id, name_index__lt=self.name_index) \
+            .order_by("name_index").last()
+        if not prev_chap:
+            prev_chap = NovelChapter.objects.filter(novel_id=self.novel_id, id__lt=self.id) \
+                .order_by("id").last()
         return prev_chap
 
     @cached_property
     def decompress_content(self):
         try:
             if self.binary_content and len(self.binary_content) > 0:
-                decompresed = zlib.decompress(self.binary_content).decode()
-                return decompresed
-        except:
+                return zlib.decompress(self.binary_content).decode()
+        except Exception as e:
+            print("[decompress_content] Error %s " % e)
             pass
 
         return ""
@@ -402,6 +427,35 @@ class NovelChapter(models.Model):
     def get_absolute_url(self):
         return reverse("chapter", args=[self.novel_slug, self.slug])
 
+    def remove_cdn_files(self):
+        # Get CDN item
+        cdn_file = CDNNovelFile.objects.filter(chapter_id=self.id).first()
+        if cdn_file:
+            path = "%s/%s" % (self.novel_slug, self.slug)
+            if cdn_file.url:
+                for file in cdn_file.url:
+                    file_path = Path(file)
+                    utils.remove_b2_files(path + "/" + file_path.name)
+                cdn_file.url = None
+                cdn_file.full = False
+                cdn_file.url_hash = None
+                cdn_file.save()
+            else:
+                for idx, url in enumerate(self.images):
+                    utils.remove_b2_files(path + "/" + str(idx) + ".jpg")
+
+    def update_name(self):
+        if 'en' not in settings.LANGUAGE_CODE and self.name.startswith('Chapter'):
+            self.name = self.name.replace('Chapter', os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))
+            self.save()
+
+    def save(self, *args, **kwargs):
+        if not self.name_index:
+            self.name_index = get_first_number_pattern(self.name, os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chapter'))
+        if 'en' not in settings.LANGUAGE_CODE and self.name.startswith('Chapter'):
+            self.name = self.name.replace('Chapter', os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))
+        super(NovelChapter, self).save(*args, **kwargs)
+
 
 class NovelSetting(models.Model):
     class Meta:
@@ -410,6 +464,7 @@ class NovelSetting(models.Model):
     title = models.CharField(max_length=250)
     favicon = models.ImageField(upload_to="images", null=True, blank=True)
     logo = models.ImageField(upload_to="images", null=True, blank=True)
+    meta = models.JSONField(null=True, blank=True)
     meta_keywords = models.TextField(null=True, blank=True)
     meta_description = models.TextField(null=True, blank=True)
     meta_copyright = models.TextField(null=True, blank=True)
@@ -420,8 +475,10 @@ class NovelSetting(models.Model):
     meta_og_description = models.TextField(null=True, blank=True)
     meta_fb_app_id = models.CharField(max_length=250, blank=True)
     # others
+    ads_txt = models.TextField(blank=True, null=True)
+    robots_txt = models.TextField(blank=True, null=True)
     img_ignoring = models.TextField(null=True, blank=True)
-    google_analystics_id = models.TextField(null=True, blank=True)
+    google_analytics_id = models.TextField(null=True, blank=True)
     novel_type = models.CharField(max_length=250, choices=[('COMIC', 'Comic'), ('TEXT', 'Text')])
 
     def logo_tag(self):
@@ -450,15 +507,11 @@ class NovelUserProfile(models.Model):
     avatar = models.CharField(max_length=250, null=True, blank=True)
 
     @classmethod
-    def get_profiles(cls, user_id):
-        return cls.objects.get_or_create(user_id=user_id)
-
-    @classmethod
     def get_avatar(cls, user):
         if user and user.is_authenticated:
-            profile = cls.objects.filter(user_id=user.id).first()
-            if profile:
-                return profile.avatar
+            user_profile = CacheManager(NovelUserProfile, **{"user_id": user.id}).get_from_cache()
+            if user_profile:
+                return user_profile.avatar
 
         return static("images/user-default.png")
 
@@ -486,9 +539,10 @@ class CDNNovelFile(models.Model):
     def get_missing_files(cls):
         limit_time = datetime.now() - timedelta(minutes=10)
         return cls.objects.filter(full=False,
-                                  allow_limit=settings.BACKBLAZE_NOT_ALLOW_LIMIT,
+                                  url__isnull=True,
+                                  # allow_limit=settings.BACKBLAZE_NOT_ALLOW_LIMIT,
                                   retry__lte=settings.BACKBLAZE_MAX_RETRY,
-                                  updated_at__lte=limit_time).all()[0:50]
+                                  updated_at__lte=limit_time).order_by('-updated_at').all()[0:50]
 
 
 class Comment(models.Model):
@@ -502,6 +556,7 @@ class Comment(models.Model):
     reply_id = models.IntegerField(null=True)
     name = models.CharField(max_length=250)
     content = models.TextField()
+    report_count = models.IntegerField(default=0)
 
     # Datetime
     created_at = models.DateTimeField(auto_now_add=True)
@@ -550,6 +605,8 @@ class Bookmark(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class History(models.Model):
@@ -560,6 +617,9 @@ class History(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE, db_index=True)
     chapter = models.ForeignKey(NovelChapter, on_delete=models.CASCADE, db_index=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     @classmethod
     def get_chapter_history_by_user(cls, user):
@@ -575,3 +635,147 @@ class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     comic = models.ForeignKey(Novel, on_delete=models.CASCADE, db_index=True)
     rating_point = models.SmallIntegerField(default=0)
+
+
+class AllowIP(models.Model):
+    class Meta:
+        db_table = 'novel_allow_ips'
+
+    path_regex = models.CharField(max_length=250)
+    method = models.CharField(max_length=10)
+    ip = models.JSONField(blank=True, null=True)
+
+
+class NovelReport(models.Model):
+    class Meta:
+        db_table = 'novel_reports'
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    novel = models.ForeignKey(Novel, on_delete=models.CASCADE, null=True, blank=True)
+    chapter = models.ForeignKey(NovelChapter, on_delete=models.CASCADE, null=True, blank=True)
+    content = models.TextField()
+
+    # Datetime
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+
+
+NOVEL_ADV_GROUPS = (
+    ('base', "BASE"),
+    ('index', "INDEX"),
+    ('novel_all', "NOVEL ALL"),
+    ('novel_info', "NOVEL INFO"),
+    ('novel_chapter', "NOVEL CHAPTER"),
+)
+NOVEL_ADV_PLACES = (
+    # Base, apply all page
+    ('base_header', _('BASE HEADER')),
+    ('base_top', _('BASE TOP')),
+    ('base_bottom', _('BASE BOTTOM')),
+    ('base_scroll_left', _('BASE SCROLL LEFT')),
+    ('base_scroll_right', _('BASE SCROLL RIGHT')),
+
+    # Index page
+    ('index_header', _('INDEX HEADER')),
+    ('index_top', _('INDEX TOP')),
+    ('index_bottom', _('INDEX BOTTOM')),
+    ('index_sidebar', _('INDEX SIDEBAR')),
+    ('index_inside_content', _('INDEX INSIDE CONTENT')),
+    ('index_after_content', _('INDEX AFTER CONTENT')),
+
+    # Novel all page
+    ('novel_all_header', _('NOVEL ALL HEADER')),
+    ('novel_all_top', _('NOVEL ALL TOP')),
+    ('novel_all_bottom', _('NOVEL ALL END')),
+
+    # Novel info page
+    ('novel_info_header', _('NOVEL INFO HEADER')),
+    ('novel_info_top', _('NOVEL INFO TOP')),
+    ('novel_info_bottom', _('NOVEL INFO BOTTOM')),
+    ('novel_info_right', _('NOVEL INFO RIGHT')),
+    ('novel_info_after_thumbnail', _('NOVEL INFO AFTER THUMBNAIL')),
+    ('novel_info_before_chap_list', _('NOVEL INFO BEFORE CHAP LIST')),
+    ('novel_info_after_chap_list', _('NOVEL INFO AFTER CHAP LIST')),
+    ('novel_info_before_comment', _('NOVEL INFO BEFORE COMMENT')),
+
+    # Novel chapter page
+    ('novel_chapter_header', _('NOVEL CHAPTER HEADER')),
+    ('novel_chapter_top', _('NOVEL CHAPTER TOP')),
+    ('novel_chapter_bottom', _('NOVEL CHAPTER BOTTOM')),
+    ('novel_chapter_before_content', _('NOVEL CHAPTER BEFORE CONTENT')),
+    ('novel_chapter_inside_content', _('NOVEL CHAPTER INSIDE CONTENT')),
+    ('novel_chapter_before_comment', _('NOVEL CHAPTER BEFORE COMMENT')),
+    ('novel_chapter_scroll_left', _('NOVEL CHAPTER SCROLL LEFT')),
+    ('novel_chapter_scroll_right', _('NOVEL CHAPTER SCROLL RIGHT')),
+)
+
+
+class NovelAdvertisementPlace(models.Model):
+    class Meta:
+        db_table = 'novel_advertisement_places'
+        ordering = ("group", "code")
+
+    group = models.CharField(max_length=50, choices=NOVEL_ADV_GROUPS)
+    code = models.CharField(max_length=50, choices=NOVEL_ADV_PLACES, unique=True)
+    base_override = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        for val in NOVEL_ADV_PLACES:
+            if val[0] == self.code:
+                return val[1]
+
+        return self.code
+
+
+DEVICES = (('all', 'ALL'), ('mobile', 'MOBILE'), ('pc', 'DESKTOP'))
+
+
+class NovelAdvertisement(models.Model):
+    class Meta:
+        db_table = 'novel_advertisements'
+
+    name = models.CharField(max_length=250)
+    ad_type = models.CharField(max_length=50, choices=DEVICES, default='all')
+    ad_content = models.TextField()
+    places = models.ManyToManyField(NovelAdvertisementPlace, db_table="novel_adv_adv_place_rel")
+
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+
+PARAMS = [
+    ('comment_filters', 'COMMENT FILTERS')
+]
+
+
+class NovelParam(models.Model):
+    class Meta:
+        db_table = "novel_params"
+
+    key = models.CharField(max_length=50, validators=[code_validate], unique=True, choices=PARAMS)
+    values = models.TextField()
+    active = models.BooleanField(default=True)
+
+
+class NovelNotify(models.Model):
+    class Meta:
+        db_table = "novel_notifications"
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    novel = models.ForeignKey(Novel, on_delete=models.CASCADE, blank=True, null=True)
+    notify = models.TextField()
+    read = models.BooleanField(default=False)
+
+    # Datetime
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    @classmethod
+    def unread_notify_number(cls, user):
+        number = cls.objects.filter(user=user, read=False).count()
+        return number
+
+    @classmethod
+    def get_notify(cls, user):
+        return cls.objects.filter(user=user).order_by("-id").order_by("read").all()

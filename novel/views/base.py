@@ -1,12 +1,11 @@
-from django.contrib.auth.models import AnonymousUser
 from django.contrib.sites.shortcuts import get_current_site
+from django.template.context_processors import static
 from django.views.generic import TemplateView
 
-from cms.cache_manager import CacheManager
-from cms.include_mapping import IncludeManager
-from cms.models import Menu
-from crawl_service import settings
-from novel.models import NovelSetting, NovelUserProfile
+from django_cms import settings
+from django_cms.utils.cache_manager import CacheManager
+from django_cms.utils.include_mapping import IncludeManager
+from novel.models import NovelSetting, NovelUserProfile, NovelAdvertisementPlace, NovelAdvertisement
 from novel.views.includes.base_auth_modal import BaseAuthModalTemplateInclude
 from novel.views.includes.base_footer_info import FooterInfotemplateInclude
 from novel.views.includes.base_navbar_menu import BaseNavbarTemplateInclude
@@ -20,6 +19,8 @@ from novel.views.includes.novel_cat import NovelCatTemplateInclude
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.includes.novel_list import NovelListTemplateInclude
 from novel.views.includes.pagination import PaginationTemplateInclude
+from novel.views.includes.report_modal import ReportModalTemplateInclude
+from novel.views.includes.sidebar import SidebarTemplateInclude
 from novel.views.includes.user_profile import UserProfileTemplateInclude
 
 TEMPLATE_INCLUDE_MAPPING = {
@@ -37,18 +38,28 @@ TEMPLATE_INCLUDE_MAPPING = {
     "base_auth_modal": BaseAuthModalTemplateInclude,
     "user_profile": UserProfileTemplateInclude,
     "comment": CommentTemplateInclude,
+    "report_modal": ReportModalTemplateInclude,
+    "sidebar": SidebarTemplateInclude,
 }
 
 
 class NovelBaseView(TemplateView):
+    ads_group_name = "base"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.incl_manager = IncludeManager(TEMPLATE_INCLUDE_MAPPING)
+        self.base_setting = {}
 
     def get(self, request, *args, **kwargs):
+        # Base content, using for all page
+        base_context = {
+            "user_avatar": NovelUserProfile.get_avatar(request.user)
+        }
+
         # Set hash for each request to use cache
         self.incl_manager.set_request_hash(request)
+        self.incl_manager.set_context(base_context)
 
         # Get novel setting from cache
         novel_setting = CacheManager(NovelSetting).get_from_cache()
@@ -67,6 +78,7 @@ class NovelBaseView(TemplateView):
             title = novel_setting.title
             current_site = get_current_site(request)
             domain = current_site.domain
+            self.base_setting["domain"] = domain
             if 'http' not in domain:
                 protocol = 'https' if request.is_secure() else 'http'
                 domain = protocol + "://" + domain
@@ -88,6 +100,17 @@ class NovelBaseView(TemplateView):
                 meta_og_description = novel_setting.meta_description or ""
             meta_fb_app_id = novel_setting.meta_fb_app_id or None
 
+        extra_data = {
+            "base_navbar_menu": {
+                "user": request.user,
+                "user_avatar": base_context.get("user_avatar")
+            }
+        }
+
+        base_navbar = self.incl_manager.render_include_html('base_navbar', extra_data=extra_data, request=request)
+        kwargs["base_navbar"] = base_navbar
+        kwargs["recaptcha_site_key"] = settings.GOOGLE_RECAPTCHA_SITE_KEY
+        kwargs["css_style"] = settings.CSS_STYLE
         kwargs["setting"] = {
             "title": title,
             "domain": domain,
@@ -103,24 +126,52 @@ class NovelBaseView(TemplateView):
             "meta_og_description": meta_og_description,
             "meta_fb_app_id": meta_fb_app_id,
             "meta_img": img_view,
-            "google_analystics_id": novel_setting and novel_setting.google_analystics_id or "",
+            "google_analytics_id": novel_setting and novel_setting.google_analytics_id or "",
+            "no_image_index": False,
         }
-
-        extra_data = {
-            "base_navbar_menu": {
-                "user": request.user,
-                "user_avatar": NovelUserProfile.get_avatar(request.user),
-            }
-        }
-
-        base_navbar = self.incl_manager.render_include_html('base_navbar', extra_data=extra_data, request=request)
-        kwargs["base_navbar"] = base_navbar
-        kwargs["recapcha_site_key"] = settings.GOOGLE_RECAPTCHA_SITE_KEY
-
+        kwargs["base_context"] = base_context
         tmpl_codes = ['base_footer', 'base_other_html', 'base_top_menu']
         tmpl_htmls = self.incl_manager.get_include_htmls(tmpl_codes, request=request)
         for page_tmpl_code, html in tmpl_htmls.items():
             kwargs[page_tmpl_code] = html
+
+        device = 'pc' if request.user_agent.is_pc else 'mobile'
+        ads_base_places = CacheManager(NovelAdvertisementPlace,
+                                       **{'group': 'base'}).get_from_cache(get_all=True)
+        ads_data = {}
+        for place in ads_base_places:
+            ads = CacheManager(NovelAdvertisement,
+                               **{'places__code': place.code,
+                                  'ad_type__in': ['all', device]}).get_from_cache(get_all=True)
+            for ad in ads:
+                if place.code not in ads_data:
+                    ads_data[place.code] = []
+
+                ads_data[place.code].append(ad)
+
+        ads_other_places = CacheManager(NovelAdvertisementPlace,
+                                        **{'group': self.ads_group_name}).get_from_cache(get_all=True)
+        for place in ads_other_places:
+            ads = CacheManager(NovelAdvertisement,
+                               **{'places__code': place.code,
+                                  'ad_type__in': ['all', device]}).get_from_cache(get_all=True)
+            if not ads:
+                continue
+
+            place_code = place.code
+            base_code = "base" + place_code.replace(self.ads_group_name, "")
+            if base_code in ads_data or place.base_override:
+                place_code = base_code
+                ads_data[place_code] = []
+
+            for ad in ads:
+                if place_code not in ads_data:
+                    ads_data[place_code] = []
+
+                ads_data[place_code].append(ad)
+
+        kwargs["ads_data"] = ads_data
+        kwargs["ads_group_name"] = self.ads_group_name
 
         response = super().get(request, *args, **kwargs)
         response.set_cookie('_redirect_url', request.build_absolute_uri())

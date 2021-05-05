@@ -1,4 +1,4 @@
-from cms.cache_manager import CacheManager
+from django_cms.utils.cache_manager import CacheManager
 from novel.models import Genre
 from novel.views.includes.base import BaseTemplateInclude
 

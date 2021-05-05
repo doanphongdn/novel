@@ -28,7 +28,7 @@ class RegisterForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    email = forms.CharField(widget=forms.TextInput(
+    email = forms.CharField(label="Email or username", widget=forms.TextInput(
         attrs={"class": "form-control", "placeholder": "Email", "type": "email", "id": "login_email"}
     ))
     password = forms.CharField(widget=forms.PasswordInput(

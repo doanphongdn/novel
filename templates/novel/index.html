@@ -3,8 +3,19 @@
 {% block meta %}
     <meta name="thumbnail" content="{{ setting.meta_img }}"/>
 {% endblock %}
+
+{% block ads_header %}
+    {% for ad in ads_data.index_header %}
+        {% autoescape off %}
+            {{ ad.ad_content }}
+        {% endautoescape %}
+    {% endfor %}
+{% endblock %}
+
 {% block content %}
     <div class="row">
         {{ index_include_html }}
     </div>
+{% endblock %}
+{% block scripts %}
 {% endblock %}

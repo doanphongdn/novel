@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-13 21:06+0700\n"
+"POT-Creation-Date: 2021-04-03 18:34+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,18 +18,242 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#: novel/models.py:39
+msgid "minute(s) ago"
+msgstr "phút trước"
+
+#: novel/models.py:41
+msgid "hour(s) ago"
+msgstr "giờ trước"
+
+#: novel/models.py:43
+msgid "day(s) ago"
+msgstr "ngày trước"
+
+#: novel/models.py:188
+msgid "The fastest and most complete updated {} comics at {}."
+msgstr "Truyện tranh {} được cập nhật nhanh nhất và đầy đủ nhất tại {}."
+
+#: novel/models.py:667
+msgid "BASE HEADER"
+msgstr ""
+
+#: novel/models.py:668
+msgid "BASE TOP"
+msgstr ""
+
+#: novel/models.py:669
+msgid "BASE BOTTOM"
+msgstr ""
+
+#: novel/models.py:670
+msgid "BASE SCROLL LEFT"
+msgstr ""
+
+#: novel/models.py:671
+msgid "BASE SCROLL RIGHT"
+msgstr ""
+
+#: novel/models.py:674
+msgid "INDEX HEADER"
+msgstr ""
+
+#: novel/models.py:675
+msgid "INDEX TOP"
+msgstr ""
+
+#: novel/models.py:676
+msgid "INDEX BOTTOM"
+msgstr ""
+
+#: novel/models.py:677
+msgid "INDEX SIDEBAR"
+msgstr ""
+
+#: novel/models.py:678
+msgid "INDEX INSIDE CONTENT"
+msgstr ""
+
+#: novel/models.py:679
+msgid "INDEX AFTER CONTENT"
+msgstr ""
+
+#: novel/models.py:682
+msgid "NOVEL ALL HEADER"
+msgstr ""
+
+#: novel/models.py:683
+msgid "NOVEL ALL TOP"
+msgstr ""
+
+#: novel/models.py:684
+msgid "NOVEL ALL END"
+msgstr ""
+
+#: novel/models.py:687
+msgid "NOVEL INFO HEADER"
+msgstr ""
+
+#: novel/models.py:688
+msgid "NOVEL INFO TOP"
+msgstr ""
+
+#: novel/models.py:689
+msgid "NOVEL INFO BOTTOM"
+msgstr ""
+
+#: novel/models.py:690
+msgid "NOVEL INFO RIGHT"
+msgstr ""
+
+#: novel/models.py:691
+msgid "NOVEL INFO AFTER THUMBNAIL"
+msgstr ""
+
+#: novel/models.py:692
+msgid "NOVEL INFO BEFORE CHAP LIST"
+msgstr ""
+
+#: novel/models.py:693
+msgid "NOVEL INFO AFTER CHAP LIST"
+msgstr ""
+
+#: novel/models.py:694
+msgid "NOVEL INFO BEFORE COMMENT"
+msgstr ""
+
+#: novel/models.py:697
+msgid "NOVEL CHAPTER HEADER"
+msgstr ""
+
+#: novel/models.py:698
+msgid "NOVEL CHAPTER TOP"
+msgstr ""
+
+#: novel/models.py:699
+msgid "NOVEL CHAPTER BOTTOM"
+msgstr ""
+
+#: novel/models.py:700
+msgid "NOVEL CHAPTER BEFORE CONTENT"
+msgstr ""
+
+#: novel/models.py:701
+msgid "NOVEL CHAPTER INSIDE CONTENT"
+msgstr ""
+
+#: novel/models.py:702
+msgid "NOVEL CHAPTER BEFORE COMMENT"
+msgstr ""
+
+#: novel/models.py:703
+msgid "NOVEL CHAPTER SCROLL LEFT"
+msgstr ""
+
+#: novel/models.py:704
+msgid "NOVEL CHAPTER SCROLL RIGHT"
+msgstr ""
+
+#: novel/views/includes/comment.py:53
+msgid "Content of your comment is invalid"
+msgstr "Nội dung bình luận của bạn không hợp lệ."
+
+#: novel/views/novel.py:35
+msgid ""
+"Thank you for sending us errors, we will check and process as soon as "
+"possible."
+msgstr ""
+"Cảm ơn bạn đã gửi báo cáo lỗi cho chúng tôi, chúng tôi sẽ kiểm tra và xử lý "
+"trong thời gian sớm nhất."
+
 #: templates/admin/base_site.html:2
 msgid "Django site admin"
 msgstr "Trang Quản Trị"
 
-#: templates/novel/includes/chapter_content.html:62
+#: templates/admin/index.html:24
+msgid "Recent actions"
+msgstr "Hoạt động gần đây"
+
+#: templates/admin/index.html:25
+msgid "My actions"
+msgstr "Hoạt động của tôi"
+
+#: templates/admin/index.html:29
+msgid "None available"
+msgstr "Không tồn tại"
+
+#: templates/admin/index.html:43
+msgid "Unknown content"
+msgstr "Nội dung không xác định"
+
+#: templates/novel/includes/base_navbar_menu.html:41
+#: templates/novel/includes/base_navbar_menu.html:114
+msgid "Login"
+msgstr "Đăng nhập"
+
+#: templates/novel/includes/base_navbar_menu.html:47
+#: templates/novel/includes/base_navbar_menu.html:120
+msgid "Register"
+msgstr "Đăng ký"
+
+#: templates/novel/includes/base_navbar_menu.html:81
+#, fuzzy
+#| msgid "View all"
+msgid "View all messages"
+msgstr "Xem tất cả"
+
+#: templates/novel/includes/base_top_menu.html:11
+#: templates/novel/includes/breadcrumb.html:4
+msgid "Home"
+msgstr "Trang chủ"
+
+#: templates/novel/includes/chapter_content.html:13
+#: templates/novel/includes/novel_info.html:89
+msgid "Bookmark"
+msgstr "Theo dõi"
+
+#: templates/novel/includes/chapter_content.html:17
+#: templates/novel/includes/chapter_content.html:102
+msgid "Next"
+msgstr "Sau"
+
+#: templates/novel/includes/chapter_content.html:22
+#, fuzzy
+#| msgid "Chapter List"
+msgid "Chapter list"
+msgstr "Chương"
+
+#: templates/novel/includes/chapter_content.html:26
+#: templates/novel/includes/chapter_content.html:109
+msgid "Prev"
+msgstr "Trước"
+
+#: templates/novel/includes/chapter_content.html:35
+#: templates/novel/includes/novel_info.html:67
+msgid "Error report"
+msgstr "Báo lỗi"
+
+#: templates/novel/includes/chapter_content.html:45
 msgid ""
 "Please visit this chapter after 5 minutes if your browser cannot load these "
 "images now."
 msgstr ""
 "Nếu bạn chờ hình hiển thị quá lâu, có thể chúng tôi đang sửa lỗi các hình "
-"này, <br /> bạn Vui Lòng Quay Lại sau 5 phút 55 giây! <br /> Xin Chân Thành Cảm Ơn Bạn!"
+"này, <br /> bạn Vui Lòng Quay Lại sau 5 phút 55 giây! <br /> Xin Chân Thành "
+"Cảm Ơn Bạn!"
 
-#: templates/novel/includes/novel_list.html:20
+#: templates/novel/includes/novel_info.html:82
+msgid "Comments"
+msgstr ""
+
+#: templates/novel/includes/novel_list.html:16
 msgid "View all"
 msgstr "Xem tất cả"
+
+#: templates/novel/includes/report_modal.html:10
+msgid "ERROR REPORT"
+msgstr "BÁO LỖI"
+
+#: templates/novel/includes/report_modal.html:28
+msgid "Send report"
+msgstr "Gửi báo cáo"

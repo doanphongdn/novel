@@ -1,5 +1,5 @@
-from cms.cache_manager import CacheManager
-from cms.models import Link
+from django_cms.utils.cache_manager import CacheManager
+from django_cms.models import Link
 from novel.views.includes.base import BaseTemplateInclude
 
 

@@ -1,4 +1,4 @@
-"""crawl_service URL Configuration
+"""django_cms URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -17,22 +17,24 @@ import os
 
 from django.conf.urls import url
 from django.contrib.sitemaps import views as sitemaps_views
+from django.http import HttpResponse
 from django.urls import path
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 
-from crawl_service import settings
-from crawl_service.views.base import view_dmca_validation, view_google_site_verification
-from novel.api.novel import APIViewNovelUpdateList, APIViewNovelChapterUpdateList
-from novel.sitemap import NovelSitemap, StaticViewSitemap, GenreSitemap, NovelChapterSitemap
+from django_cms import settings
+from django_cms.utils.view_base import view_dmca_validation, view_google_site_verification
+from novel.sitemap import GenreSitemap, NovelChapterSitemap, NovelSitemap, StaticViewSitemap
 from novel.views import stream
+from novel.views.api.novel import ChapterAPIView, NovelAPIView
 from novel.views.chapter import ChapterView
 from novel.views.includes.comment import CommentManager
 from novel.views.index import NovelIndexView
-from novel.views.novel import NovelDetailView
+from novel.views.novel import NovelAction, NovelDetailView
 from novel.views.novel_all import NovelAllView
 from novel.views.page import PageView
-from novel.views.user import UserProfileView, UserAction
+from novel.views.user import UserAction, UserProfileView
+
 
 sitemaps = {
     'genre': GenreSitemap,
@@ -46,17 +48,22 @@ urlpatterns = [
         name="google_verification"),
     url(os.environ.get('DMCA_VALIDATION_URL', 'dmca-validation.html'), view_dmca_validation,
         name="dmca_verification"),
-    url(r'^robots\.txt$', TemplateView.as_view(template_name="novel/robots.txt", content_type='text/plain')),
+    url(r'^robots\.txt$', PageView.plain_text, {"page_type": "robots_txt"}),
+    url(r'^ads\.txt$', PageView.plain_text, {"page_type": "ads_txt"}),
 
     path('web/sitemap.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemaps}),
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
 
-    path('api/novel/update_list', APIViewNovelUpdateList.as_view()),
-    path('api/novel/chapter/update_list', APIViewNovelChapterUpdateList.as_view()),
+    # API URL
+    path('api/novels', NovelAPIView.as_view()),
+    path('api/novels/<str:src_campaign_code>', NovelAPIView.as_view()),
+    path('api/chapters', ChapterAPIView.as_view()),
+    path('api/chapters/<str:src_campaign_code>', ChapterAPIView.as_view()),
 
     path('', NovelIndexView.as_view(), name="home"),
     path('search', NovelDetailView.as_view(), name="novel_search"),
+    path('update_point', NovelDetailView.update_hot_point, name="novel_hot_point"),
     path(settings.NOVEL_ALL_URL, NovelAllView.as_view(), name="novel_view"),
 
     path('comment', CommentManager.comment, name="comment"),
@@ -67,9 +74,12 @@ urlpatterns = [
     path("user/signin", UserAction.sign_in, name='user_sign_in'),
     path("user/logout", UserAction.user_logout, name='user_logout'),
     path('user/bookmark', UserAction.bookmark, name='user_bookmark'),
+    path('user/read_notify', UserAction.read_notify, name='user_read_notify'),
     path('user/novel-remove', UserAction.novel_remove, name='novel_remove'),
+    path('novel/report', NovelAction.report_form, name="novel_report"),
 
     # must end of list
+    path(settings.NOVEL_ALL_URL, NovelAllView.as_view(), name="novel_view"),
     path(settings.NOVEL_ALL_URL + '/<str:novel_type>', NovelAllView.as_view(), name="novel_all"),
     path(settings.NOVEL_GENRE_URL + '/<str:genre>', NovelAllView.as_view(), name="novel_genre"),
     path(settings.NOVEL_PAGE_URL + '/<str:slug>', PageView.as_view(), name="page_view"),

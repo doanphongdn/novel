@@ -37,7 +37,7 @@ $(document).ready(function (e) {
             CKEDITOR.instances[instance].updateElement();
         }
         var form_data = $(this).serializeArray();
-        grecaptcha.execute(recapcha_site_key, {action: 'submit'}).then(function (token) {
+        grecaptcha.execute(recaptcha_site_key, {action: 'submit'}).then(function (token) {
             form_data.push({name: 'g-recaptcha-response', value: $("*[name='g-recaptcha-response']").val()});
             $.ajax({
                 type: "POST",
@@ -50,14 +50,18 @@ $(document).ready(function (e) {
                             CKEDITOR.instances[instance].updateElement();
                         }
                         CKEDITOR.instances[instance].setData('');
-                        grecaptcha.reset(recapcha_site_key);
                         if (form.hasClass("comment-reply-form")) {
                             form.parents('.comment-item').after(json_data.html);
                             form.remove();
                         } else {
                             $('.comment-list').prepend(json_data.html);
                         }
+                        $("#comment-error").html("");
+                    } else {
+                        console.log(json_data.message);
+                        $("#comment-error").html(json_data.message);
                     }
+                    grecaptcha.reset(recaptcha_site_key);
                 }
             });
         });

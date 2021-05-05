@@ -44,74 +44,132 @@
 
     <link rel="shortcut icon" href="{{ setting.favicon }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel=preload href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
-    <link rel=preload href="{% static "argon/assets/fonts/fontawesome-webfont.woff2" %}?v=4.7.0">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
+    <link href="{% static "argon/assets/fonts/fontawesome-webfont.woff2" %}?v=4.7.0">
     {% stylesheet 'base' %}
+    {% if css_style %}{% stylesheet css_style %}{% endif %}
     {% block stylesheet %}{% endblock %}
+    {% for ad in ads_data.base_header %}
+        {% autoescape off %}
+            {{ ad.ad_content }}
+        {% endautoescape %}
+    {% endfor %}
+    {% block ads_header %}{% endblock %}
 </head>
-<body>
+<body class="{{ ads_group_name }}">
 <div id="fb-root"></div>
 {% csrf_token %}
-<nav class="navbar navbar-expand-lg navbar-dark navbar-base">
-    <div class="container">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-danger"
-                aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        {% if setting.logo %}
-            <a class="navbar-brand" href="/">
-                <img src="{{ setting.logo }}" alt="{{ setting.title }}">
-            </a>
-        {% endif %}
-        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle Search">
+{% if ads_data.base_scroll_left %}
+    <div id="ads-scroll-left">
+        {% for ad in ads_data.base_scroll_left %}
+            {% autoescape off %}
+                {{ ad.ad_content }}
+            {% endautoescape %}
+        {% endfor %}
+    </div>
+{% endif %}
+{% if ads_data.base_scroll_right %}
+    <div id="ads-scroll-right">
+        {% for ad in ads_data.base_scroll_right %}
+            {% autoescape off %}
+                {{ ad.ad_content }}
+            {% endautoescape %}
+        {% endfor %}
+    </div>
+{% endif %}
+{% if ads_data.base_top %}
+    <div id="base-top-ads" class="container-fluid" style="max-height: 300px !important;">
+        <div class="row">
+            <div class="col-12">
+                <div class="row ads-area">
+                    {% for ad in ads_data.base_top %}
+                        {% autoescape off %}
+                            {{ ad.ad_content }}
+                        {% endautoescape %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+<header class="header">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-base">
+        <div class="container">
+            <nav id="mobile-menu" role="navigation" class="d-md-none navbar_menu">
+                <input type="checkbox" id="mobile-menu-action"/>
+                <div id="backdrop" style="display: none"></div>
+                <span class="menu-icon"></span>
+                <span class="menu-icon"></span>
+                <span class="menu-icon"></span>
+                <ul id="mobile-menu-toggle" class="navbar-header-menu">
+                    {{ base_navbar }}
+                </ul>
+            </nav>
+            {% if setting.logo %}
+                <a class="navbar-brand" href="/">
+                    <img src="{{ setting.logo }}" alt="{{ setting.title }}">
+                </a>
+            {% endif %}
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle Search">
             <span class="mobile-search-toggle">
                 <i class="fa fa-search"></i>
             </span>
-        </button>
-        <div class="search-wrap d-lg-flex">
-            <div class="input-group input-group-alternative">
-                <form action="/search" class="form-search">
-                    <input class="form-control search" placeholder="Search..." type="text">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn-search input-group-text"><i class="fa fa-search"></i></button>
-                    </div>
-                </form>
+            </button>
+            <div class="search-wrap d-lg-flex">
+                <div class="input-group input-group-alternative">
+                    <form action="{% url "novel_search" %}" class="form-search">
+                        <label for="search-input"></label>
+                        <input id="search-input" class="form-control search" placeholder="Search..." type="text">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn-search input-group-text"><i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div id="search-area"></div>
             </div>
-            <div id="search-area"></div>
-        </div>
-
-        <div class="collapse navbar-collapse" id="navbar-danger">
-            <div class="navbar-collapse-header">
-                <div class="row">
-                    <div class="collapse-brand  d-none d-lg-block">
-                        {% if setting.logo %}
-                            <a href="/">
-                                <img src="{{ setting.logo }}" alt="{{ setting.title }}">
-                            </a>
-                        {% endif %}
+            <div class="collapse navbar-collapse" id="navbar-danger">
+                <div class="navbar-collapse-header">
+                    <div class="row">
+                        <div class="collapse-brand  d-none d-lg-block">
+                            {% if setting.logo %}
+                                <a href="/">
+                                    <img src="{{ setting.logo }}" alt="{{ setting.title }}">
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="collapse-close">
+                        <i class="fa fa-times navbar-toggler" aria-hidden="true" data-toggle="collapse"
+                           data-target="#navbar-danger"
+                           aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation"></i>
                     </div>
                 </div>
-                <div class="collapse-close">
-                    <i class="fa fa-times" aria-hidden="true" class="navbar-toggler" data-toggle="collapse"
-                       data-target="#navbar-danger"
-                       aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation"></i>
-                </div>
+                {{ base_navbar }}
             </div>
-            {{ base_navbar }}
         </div>
-
-    </div>
-</nav>
-{{ base_top_menu }}
+    </nav>
+    {{ base_top_menu }}
+</header>
 <div class="container-fluid">
     <div class="d-none d-lg-block" id="particles-js">
         <canvas class="particles-js-canvas-el" style="width: 100%; height: 100%;"></canvas>
     </div>
     <div class="row">
         <div class="container content-wrap">
-            {% block content %}
-            {% endblock %}
+            {% block content %}{% endblock %}
+            {% if ads_data.base_bottom %}
+                <div class="col-12 mt-3">
+                    <div class="row ads-area">
+                        {% for ad in ads_data.base_bottom %}
+                            {% autoescape off %}
+                                {{ ad.ad_content }}
+                            {% endautoescape %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -128,19 +186,20 @@
 <script type="text/javascript" src="{% static 'js/common/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/jquery-ui.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/bootstrap.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/common/jquery.lazy.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/common/lazyload.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/js.cookie.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/autosize.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/particles.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/run_particlejs.js' %}"></script>
-{% if recapcha_site_key %}
+{#<script type="text/javascript" src="{% static 'js/novel/base.js' %}"></script>#}
+{% if recaptcha_site_key %}
     <script type="text/javascript"
-            src="https://www.google.com/recaptcha/api.js?render={{ recapcha_site_key }}"></script>
+            src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
 {% endif %}
 
-{% if setting.google_analystics_id %}
+{% if setting.google_analytics_id %}
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ setting.google_analystics_id }}"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ setting.google_analytics_id }}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -149,17 +208,20 @@
         }
 
         gtag('js', new Date());
-        gtag('config', '{{ setting.google_analystics_id }}');
-
+        gtag('config', '{{ setting.google_analytics_id }}');
 
     </script>
 {% endif %}
-
 <script type="text/javascript">
-    let recapcha_site_key = '{{ recapcha_site_key }}';
+    let recaptcha_site_key = '{{ recaptcha_site_key }}';
 </script>
-
 {% block scripts %}{% endblock %}
 {% javascript 'base' %}
+{% javascript 'user' %}
+{% for ad in ads_data.base_bottom %}
+    {% autoescape off %}
+        {{ ad.ad_content }}
+    {% endautoescape %}
+{% endfor %}
 </body>
 </html>

@@ -1,5 +1,6 @@
 {% extends 'novel/base.html' %}
 {% load static %}
+{% load pipeline %}
 {% block meta %}
     <meta name="robots" content="noindex, nofollow"/>
     <meta name="googlebot" content="noindex, nofollow"/>
@@ -10,6 +11,7 @@
     </div>
 {% endblock %}
 {% block scripts %}
+    {% javascript 'user' %}
     <script type="text/javascript">
         function upload_img(input) {
             if (input.files && input.files[0]) {

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from novel.models import Novel, NovelChapter, NovelFlat
+from novel.models import Novel
 
 
 class Command(BaseCommand):

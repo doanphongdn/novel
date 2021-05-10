@@ -21,7 +21,7 @@
           class="fa fa-clock"></i> {{ cmt_obj.comment.created_at_str }}</span>
       </div>
       <input class="comment-view-more" type="checkbox" id="cmt{{ cmt_obj.comment.id }}">
-      <label class="comment-label" for="cmt{{ cmt_obj.comment.id }}"><{% translate "View more >" %}</label>
+      <label class="comment-label" for="cmt{{ cmt_obj.comment.id }}">{% translate "View more" %}</label>
       <div class="comment-content-text">
         {% autoescape off %}
           {{ cmt_obj.comment.content }}

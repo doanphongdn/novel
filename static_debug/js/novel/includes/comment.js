@@ -1,4 +1,11 @@
 $(document).ready(function (e) {
+    $(".comment-content-text").each(function () {
+        var el = $(this);
+        if (el[0] != undefined && el[0].scrollHeight > el.height()) {
+            el.addClass("has-more");
+            el.parents(".comment-content").find(".comment-label").show();
+        }
+    });
     $(document).on('click', '.btn-reply-comment', function (t) {
         let parent_obj = $(this).parents(".comment-content-reply");
         let reply_id = $(this).data('comment-id');

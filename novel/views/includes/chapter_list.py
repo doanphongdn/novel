@@ -7,14 +7,23 @@ from novel.views.includes.link import LinkTemplateInclude
 
 
 class ChapterListTemplateInclude(BaseTemplateInclude):
-    cache = False
     name = "chapter_list"
     template = "novel/includes/chapter_list.html"
 
     def prepare_include_data(self):
+        page_label = "chap-page"
         novel = self.include_data.get("novel")
+        limit = self.include_data.get("limit", 30)
+        page = self.include_data.get("chap_page", 1)
         hashtags_link_type = self.include_data.get('hashtags_link_type')
         hashtags_link_label = self.include_data.get('hashtags_link_label')
+
+        # chapter_conditions = {
+        #     "novel__id": novel.id,
+        #     "chapter_updated": True,
+        #     "active": True
+        # }
+        # chapter_paginated = ChapterPaginator(novel, limit, page, **chapter_conditions)
 
         link_conditions = {
             "type": hashtags_link_type,
@@ -45,12 +54,19 @@ class ChapterListTemplateInclude(BaseTemplateInclude):
             'link_label': hashtags_link_label,
         })
 
-        # chapter_list = []
-        # if novel.novel_flat:
-        #     chapter_list = novel.novel_flat.chapters.get("list")
-        chapter_list = novel.chapters
+        chapter_list = []
+        if novel.novel_flat:
+            chapter_list = novel.novel_flat.chapters.get("list")
+        #
+        # paging_data = {
+        #     "paginated_data": chapter_paginated,
+        #     "page_label": page_label,
+        #     "page_target": "chap-list"
+        # }
+        # pagination = PaginationTemplateInclude(paging_data)
 
         self.include_data.update({
             "chapter_list": chapter_list,
+            # "pagination_html": pagination.render_html(),
             "hashtags_html": hashtags.render_html(),
         })

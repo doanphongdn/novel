@@ -26,6 +26,7 @@ from django_cms.models import CDNServer
 from django_cms.utils.cache_manager import CacheManager
 from django_cms.utils.helpers import code_validate
 from novel import utils
+from novel.cache_manager import ChapterCache
 from novel.utils import get_first_number_pattern
 from django.utils.translation import ugettext as _
 
@@ -236,7 +237,7 @@ class Novel(models.Model):
     def novel_chapter_condition(self):
         return {
             "novel_id": self.id,
-            # "chapter_updated": True,
+            "chapter_updated": True,
             "active": True,
         }
 
@@ -266,7 +267,8 @@ class Novel(models.Model):
 
     @cached_property
     def chapters(self):
-        return NovelChapter.objects.filter(**self.novel_chapter_condition).order_by("name_index", "id").all()
+        return ChapterCache(NovelChapter, order_by=["name_index", "id"],
+                            **self.novel_chapter_condition).get_from_cache(get_all=True)
 
     @cached_property
     def first_chapter(self):

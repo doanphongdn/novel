@@ -1,3 +1,5 @@
+from django.shortcuts import redirect
+
 from django_cms.utils.cache_manager import CacheManager
 from django_cms.models import PageTemplate, Link
 from django_cms import settings
@@ -26,6 +28,8 @@ class NovelAllView(NovelBaseView):
         }
 
         if genre:
+            if genre == 'ngon-tinh':
+                return redirect("home")
             genre_pre_title = page_template.params.get("genre_pre_title") or ""
             genre_cache = CacheManager(Genre, **{"slug": genre}).get_from_cache(get_all=True)
             genre_obj = genre_cache[0] if genre_cache else None

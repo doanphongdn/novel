@@ -26,7 +26,7 @@ a.cke_dialog_tab {
     }
   }
 
-  .comment-form, .comment-reply-form  {
+  .comment-form, .comment-reply-form {
     .django-ckeditor-widget, #cke_id_content_reply {
       display: block !important;
       position: relative;
@@ -86,10 +86,11 @@ a.cke_dialog_tab {
     position: relative;
 
     .comment-item {
-      &.child{
+      &.child {
         margin-left: 50px;
         width: calc(100% - 50px);
       }
+
       display: inline-flex;
       width: 100%;
 
@@ -114,10 +115,13 @@ a.cke_dialog_tab {
         width: calc(100% - 40px);
 
         .comment-content-reply {
+          margin-top: 5px;
+
           > span {
             margin-right: 10px;
             font-size: .8rem;
-            &:hover{
+
+            &:hover {
               cursor: pointer;
               color: #{$text_color_hover};
             }
@@ -133,17 +137,46 @@ a.cke_dialog_tab {
           border: 1px solid #d5d5d5;
           position: relative;
 
-          div:not(:first-child) {
+          .comment-view-more {
+            &:checked ~ .comment-content-text.has-more {
+              max-height: none !important;
+              margin-bottom: 0 !important;
+            }
+
+            &:checked + .comment-label {
+              display: none !important;
+            }
+
+            display: none;
+          }
+
+          .comment-label {
+            display: none;
+            position: absolute;
+            bottom: 25px;
+            color: #3545d4;
+
+            &:hover {
+              cursor: pointer;
+
+            }
           }
 
           .comment-content-text {
-            padding: 5px 0;
-            margin-bottom: 0 !important;
+            &.has-more {
+              margin-bottom: 30px;
+            }
+
+            word-break: break-word;
             color: #333;
             font-size: .9rem;
+            max-height: 200px;
+            overflow: hidden;
           }
 
           .comment-content-title {
+            margin-bottom: 5px;
+
             .comment-user-name {
               font-weight: 600;
               color: #555;
@@ -153,7 +186,6 @@ a.cke_dialog_tab {
               font-size: .7rem;
               float: right;
             }
-
 
             .comment-chapter {
               color: #5a7391;

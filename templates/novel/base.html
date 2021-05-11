@@ -173,7 +173,8 @@
         </div>
     </div>
 </div>
-<div class="container-fluid">
+{{ base_other_html }}
+<footer class="container-fluid">
     <div class="row footer">
         <div class="container">
             <div class="row">
@@ -181,8 +182,7 @@
             </div>
         </div>
     </div>
-</div>
-{{ base_other_html }}
+</footer>
 <script type="text/javascript" src="{% static 'js/common/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/jquery-ui.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/bootstrap.min.js' %}"></script>
@@ -218,10 +218,5 @@
 {% block scripts %}{% endblock %}
 {% javascript 'base' %}
 {% javascript 'user' %}
-{% for ad in ads_data.base_bottom %}
-    {% autoescape off %}
-        {{ ad.ad_content }}
-    {% endautoescape %}
-{% endfor %}
 </body>
 </html>

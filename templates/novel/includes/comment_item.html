@@ -1,44 +1,48 @@
+{% load i18n %}
 <div class="comment-item {{ cmt_obj.child_class }}" data-comment-id="{{ cmt_obj.comment.id }}">
-    <div class="user-avatar">
-        <img src="{{ cmt_obj.avatar }}">
-        <br>
-        <span class="comment-user-type"
-              style="background-color: {{ cmt_obj.user_type_color }};">
+  <div class="user-avatar">
+    <img src="{{ cmt_obj.avatar }}">
+    <br>
+    <span class="comment-user-type"
+          style="background-color: {{ cmt_obj.user_type_color }};">
                                 {{ cmt_obj.user_type }}
                                 </span>
-    </div>
-    <div class="comment-content-wrap">
-        <div class="comment-content">
-            <div class="comment-content-title">
-                <span class="comment-user-name">{{ cmt_obj.comment.name }}</span>
+  </div>
+  <div class="comment-content-wrap">
+    <div class="comment-content">
+      <div class="comment-content-title">
+        <span class="comment-user-name">{{ cmt_obj.comment.name }}</span>
 
-                <span class="comment-chapter">
-                                <a href="{{ cmt_obj.comment.chapter.get_absolute_url }}">{{ cmt_obj.comment.chapter.name }}</a>
+        <span class="comment-chapter">
+                                <a
+                                  href="{{ cmt_obj.comment.chapter.get_absolute_url }}">{{ cmt_obj.comment.chapter.name }}</a>
                             </span>
-                <span class="comment-datetime"><i
-                        class="fa fa-clock"></i> {{ cmt_obj.comment.created_at_str }}</span>
-            </div>
-            <div class="comment-content-text">
-                {% autoescape off %}
-                    {{ cmt_obj.comment.content }}
-                {% endautoescape %}
-            </div>
-            {% if cmt_obj.child_class != 'child' %}
-                <div class="comment-content-reply">
+        <span class="comment-datetime"><i
+          class="fa fa-clock"></i> {{ cmt_obj.comment.created_at_str }}</span>
+      </div>
+      <input class="comment-view-more" type="checkbox" id="cmt{{ cmt_obj.comment.id }}">
+      <label class="comment-label" for="cmt{{ cmt_obj.comment.id }}">{% translate "View more" %}</label>
+      <div class="comment-content-text">
+        {% autoescape off %}
+          {{ cmt_obj.comment.content }}
+        {% endautoescape %}
+      </div>
+      {% if cmt_obj.child_class != 'child' %}
+        <div class="comment-content-reply">
                     <span class="btn-total-comment">
                         <i class="fa fa-comments"></i> 0
                     </span>
-                    <span href="#" class="btn-reply-comment"
-                       {% if cmt_obj.comment.parent_id %}data-parent-id="{{ cmt_obj.comment.parent_id }}"{% else %}
-                       data-parent-id="{{ cmt_obj.comment.id }}"{% endif %}
-                       data-comment-id="{{ cmt_obj.comment.id }}">
+          <span href="#" class="btn-reply-comment"
+                {% if cmt_obj.comment.parent_id %}data-parent-id="{{ cmt_obj.comment.parent_id }}"{% else %}
+                data-parent-id="{{ cmt_obj.comment.id }}"{% endif %}
+                data-comment-id="{{ cmt_obj.comment.id }}">
                         <i class="fa fa-reply"></i> Trả lời
                     </span>
-                    <span href="#" class="btn-report-comment">
+          <span href="#" class="btn-report-comment">
                         <i class="fa fa-flag"></i> Báo cáo
                     </span>
-                </div>
-            {% endif %}
         </div>
+      {% endif %}
     </div>
+  </div>
 </div>

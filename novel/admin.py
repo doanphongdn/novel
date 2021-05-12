@@ -1,5 +1,6 @@
 import logging
 import os
+import threading
 import time
 import zlib
 from concurrent.futures import ThreadPoolExecutor
@@ -99,7 +100,7 @@ class NovelChapterAdmin(ActionAdmin):
     search_fields = ("novel__id", "novel__name", "novel_slug", "name", "slug")
 
     actions = ("active", "deactive", "chapter_updated_true", "chapter_updated_false", "update_name_by_language",
-               "remove_cdn_files")
+               "remove_cdn_files", "remove_cdn_files_in_background")
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)
@@ -144,6 +145,17 @@ class NovelChapterAdmin(ActionAdmin):
         finish = time.perf_counter()  # end timer
 
         logger.info("[remove_cdn_files] Finished remove cdn files chapters in %s seconds" % round(finish - start, 2))
+
+    def remove_cdn_files_in_background(self, request, queryset):
+        start = time.perf_counter()  # start timer
+        logger.info("[remove_cdn_files_in_background] Starting...")
+        for chapter in queryset:
+            thread = threading.Thread(target=self.remove_chapter_cdn_files, args=(chapter,))
+            thread.start()
+        finish = time.perf_counter()  # end timer
+
+        logger.info("[remove_cdn_files_in_background] Finished remove cdn files chapters in %s seconds" %
+                    round(finish - start, 2))
 
     chapter_updated_true.short_description = "Chapter updated ->> TRUE"
     chapter_updated_false.short_description = "Chapter updated ->> FALSE"

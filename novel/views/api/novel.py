@@ -214,10 +214,13 @@ class NovelAPIView(BaseAPIView):
             for ex_chap in exist_chapters:
                 name = chapters.pop(ex_chap.src_url)
                 if name and ex_chap.name != name:
-                    ex_chap.name = name.title()
-                    ex_chap.chapter_updated = False
-                    ex_chap.save()
-                    update = True
+                    try:
+                        ex_chap.name = name.title()
+                        ex_chap.chapter_updated = False
+                        ex_chap.save()
+                        update = True
+                    except:
+                        pass
 
             new_chapters = []
             for url, name in chapters.items():

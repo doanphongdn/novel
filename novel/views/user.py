@@ -198,11 +198,12 @@ class UserAction(object):
                 data = password_reset_form.cleaned_data['email']
                 user = User.objects.filter(email=data).first()
                 if user:
-                    subject = _("Password Reset Requested")
+                    domain = get_current_site(request).domain
+                    subject = _("%s - Account password recovery request" % str(domain).capitalize())
                     email_template_name = "novel/password_reset/password_reset_email.html"
                     c = {
                         "email": user.email,
-                        'domain': get_current_site(request).domain,
+                        'domain': domain,
                         'site_name': 'Website',
                         "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                         "user": user,

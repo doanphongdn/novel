@@ -9,6 +9,7 @@ from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 from django.contrib.admin.helpers import ActionForm
+from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -283,10 +284,7 @@ class NovelParamAdmin(BaseActionAdmin):
     list_display = ("key", "values", "active")
 
 
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('email', 'first_name', 'last_name')
-    list_filter = ('is_staff', 'is_superuser')
-    search_fields = ("email", "first_name", "last_name")
+class MyUserAdmin(UserAdmin):
     actions = ["send_notify"]
 
     class NotifyForm(ActionForm):
@@ -304,4 +302,4 @@ class UserAdmin(admin.ModelAdmin):
 
 
 admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+admin.site.register(User, MyUserAdmin)

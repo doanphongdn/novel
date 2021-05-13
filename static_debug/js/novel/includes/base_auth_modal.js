@@ -15,5 +15,7 @@ $(document).ready(function (e) {
             "top": "",
         });
         $("body").css({"overflow": ""});
+        $("#modal-login").find("input:not([type=hidden])").val("");
+        $("#modal-login").find("[role='alert']").text("");
     });
 });

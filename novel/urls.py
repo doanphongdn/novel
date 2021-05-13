@@ -17,10 +17,8 @@ import os
 
 from django.conf.urls import url
 from django.contrib.sitemaps import views as sitemaps_views
-from django.http import HttpResponse
 from django.urls import path
 from django.views.decorators.cache import cache_page
-from django.views.generic import TemplateView
 
 from django_cms import settings
 from django_cms.utils.view_base import view_dmca_validation, view_google_site_verification
@@ -33,6 +31,7 @@ from novel.views.index import NovelIndexView
 from novel.views.novel import NovelAction, NovelDetailView
 from novel.views.novel_all import NovelAllView
 from novel.views.page import PageView
+from novel.views.reset_password import ResetPasswordCompleteView, ResetPasswordConfirmView
 from novel.views.user import UserAction, UserProfileView
 
 sitemaps = {
@@ -72,7 +71,11 @@ urlpatterns = [
     path('comment', CommentManager.comment, name="comment"),
     path('comment/form', CommentManager.comment_form, name="comment_form"),
 
+    path('reset/<uidb64>/<token>/', ResetPasswordConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', ResetPasswordCompleteView.as_view(), name='password_reset_complete'),
+
     # Ajax
+    path("user/reset-password", UserAction.password_reset_request, name='reset_password'),
     path("user/signup", UserAction.sign_up, name='user_sign_up'),
     path("user/signin", UserAction.sign_in, name='user_sign_in'),
     path("user/logout", UserAction.user_logout, name='user_logout'),

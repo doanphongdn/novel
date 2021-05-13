@@ -44,7 +44,6 @@ PIPELINE_JS = {
         'base': {
             'source_filenames': (
                 'js/novel/base.js',
-
                 'js/novel/includes/base_auth_modal.js',
             ),
             'output_filename': 'js/novel/base.min.js'

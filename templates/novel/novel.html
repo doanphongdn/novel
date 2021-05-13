@@ -2,26 +2,25 @@
 {% load static %}
 {% load pipeline %}
 {% block meta %}
-    <meta name="thumbnail" content="{{ thumbnail_image }}"/>
-    {% load jsonld %}
-    {% json_ld_for novel %}
+  <meta name="thumbnail" content="{{ thumbnail_image }}"/>
+  {% load jsonld %}
+  {% json_ld_for novel %}
 {% endblock %}
 {% block ads_header %}
-    {% for ad in ads_data.novel_header %}
-        {% autoescape off %}
-            {{ ad.ad_content }}
-        {% endautoescape %}
-    {% endfor %}
+  {% for ad in ads_data.novel_header %}
+    {% autoescape off %}
+      {{ ad.ad_content }}
+    {% endautoescape %}
+  {% endfor %}
 {% endblock %}
 {% block content %}
-    <div class="row">
-        {{ novel_html }}
-    </div>
+  <div class="row">
+    {{ novel_html }}
+  </div>
 {% endblock %}
 {% block stylesheet %}
-    <link rel=preload href="{% static "dist/sweetalert2/sweetalert2.min.css" %}">
+  <link rel=preload href="{% static "dist/sweetalert2/sweetalert2.min.css" %}">
 {% endblock %}
 {% block scripts %}
-    <script type="text/javascript" src="{% static 'dist/sweetalert2/sweetalert2.all.min.js' %}"></script>
-    {% javascript 'novel' %}
+  {% javascript 'novel' %}
 {% endblock %}

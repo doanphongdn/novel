@@ -1,23 +1,32 @@
 import json
 import logging
+import os
 from http import HTTPStatus
 
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.files.storage import FileSystemStorage
+from django.core.mail import send_mail, BadHeaderError
 from django.db import transaction
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from sendgrid import Mail, SendGridAPIClient
 
 from django_cms.utils.cache_manager import CacheManager
 from novel import utils
-from novel.form.auth import RegisterForm, LoginForm
+from novel.form.auth import RegisterForm, LoginForm, LostPassForm
 from novel.form.user import UserProfileForm
 from novel.models import Novel, Bookmark, History, NovelChapter, NovelUserProfile, NovelNotify
 from novel.utils import get_history_cookies
 from novel.views.base import NovelBaseView
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
+from django.utils.translation import gettext as _
 
 logger = logging.getLogger('django')
 
@@ -157,21 +166,75 @@ class UserAction(object):
         if not register_form.is_valid():
             return JsonResponse({"success": False, "errors": register_form.errors})
 
+        data = {key: value or None for key, value in request.POST.items() if hasattr(User, key)}
+        data["username"] = data.get("email", '')
+        data["last_name"] = request.POST.get("name", '')
+
         try:
-            data = {key: value or None for key, value in request.POST.items() if hasattr(User, key)}
-            data["username"] = data.get("email", '')
-            data["last_name"] = request.POST.get("name", '')
             User.objects.create_user(**data)
+        except Exception as ex:
+            logger.error("[UserAction] ERROR: %s" % repr(ex))
+            register_form.add_error("name",
+                                    "Email này đã được đăng ký tài khoản. Vui lòng đăng nhập bằng google hoặc bấm quên mật khẩu để khôi phục lại.")
+            return JsonResponse({"success": False, "errors": register_form.errors})
+
+        try:
             user = authenticate(username=data.get("email", ''),
                                 password=data.get("password", ''))
             request.session.set_expiry(0)
             login(request, user)
         except Exception as ex:
             logger.error("[UserAction] ERROR: %s" % repr(ex))
-            register_form.add_error("register_name", "Lỗi khi tạo tài khoản, liên hệ Administrator để được hỗ trợ")
+            register_form.add_error("name", "Tài khoản đã được tạo nhưng có lỗi khi đăng nhập, vui lòng thử lại sau.")
             return JsonResponse({"success": False, "errors": register_form.errors})
 
         return JsonResponse({"success": True})
+
+    @staticmethod
+    def password_reset_request(request):
+        if request.method == "POST":
+            password_reset_form = LostPassForm(request.POST)
+            if password_reset_form.is_valid():
+                data = password_reset_form.cleaned_data['email']
+                user = User.objects.filter(email=data).first()
+                if user:
+                    subject = _("Password Reset Requested")
+                    email_template_name = "novel/password_reset/password_reset_email.html"
+                    c = {
+                        "email": user.email,
+                        'domain': get_current_site(request).domain,
+                        'site_name': 'Website',
+                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                        "user": user,
+                        'token': default_token_generator.make_token(user),
+                        'protocol': 'https',
+                    }
+                    html_content = render_to_string(email_template_name, c)
+                    message = Mail(
+                        from_email='noreply.nettruyen@gmail.com',
+                        to_emails=user.email,
+                        subject=subject,
+                        html_content=html_content)
+                    try:
+                        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+                        sg.send(message)
+                    except Exception as ex:
+                        return JsonResponse({"status": False,
+                                             "message": _(
+                                                 'Error sending password recovery email, please contact administrator')
+                                             }, status=HTTPStatus.OK)
+
+                    return JsonResponse({
+                        "status": True, "message": _(
+                            'Thank you for your request. '
+                            'An email has been sent to you to verify your password recovery. '
+                            'Please check your email and follow the instructions.')
+                    }, status=HTTPStatus.OK)
+
+        return JsonResponse({"status": False,
+                             "message": _(
+                                 'The email you provided does not exist in the system.')
+                             }, status=HTTPStatus.OK)
 
     @staticmethod
     def redirect_url(request):

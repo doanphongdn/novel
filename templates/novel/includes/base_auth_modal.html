@@ -1,3 +1,4 @@
+{% load socialaccount %}
 {% load static %}
 <div class="modal fade modal-chapter" id="modal-login" tabindex="-1" role="dialog" aria-labelledby="modal-chapter"
      aria-hidden="true">
@@ -65,7 +66,7 @@
                         <div class="text-center text-muted mb-3">
                             Or input email to reset your password.
                         </div>
-                        <form role="form" class="lost-pass-form">
+                        <form role="form" id="lost-pass-form">
                             {% csrf_token %}
                             <div class="form-group mb-3">
                                 <div class="input-group input-group-alternative">

@@ -3,185 +3,185 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
-    <title>{{ setting.title }}</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="{{ setting.meta_description }}">
-    <meta name="keywords" content="{{ setting.meta_keywords }}">
-    <meta name="author" content="{{ setting.meta_author }}">
-    <meta name="copyright" content="{{ setting.meta_copyright }}">
-    {% block meta %}{% endblock %}
-    {% if setting.meta_og_url %}
-        <meta property="og:url" content="{{ setting.meta_og_url }}">
-    {% endif %}
-    {% if setting.meta_og_type %}
-        <meta property="og:type" content="{{ setting.meta_og_type }}">
-    {% endif %}
-    {% if setting.meta_og_title %}
-        <meta property="og:title" content="{{ setting.meta_og_title }}">
-    {% else %}
-        <meta property="og:title" content="{{ setting.title }}">
-    {% endif %}
-    {% if setting.meta_img %}
-        <meta property="og:image" content="{{ setting.meta_img }}">
-    {% endif %}
-    {% if setting.meta_og_title %}
-        <meta property="og:image:alt" content="{{ setting.meta_og_title }}">
-    {% else %}
-        <meta property="og:image:alt" content="{{ setting.title }}">
-    {% endif %}
-    {% if setting.meta_og_description %}
-        <meta property="og:description" content="{{ setting.meta_og_description }}">
-    {% else %}
-        <meta property="og:description" content="{{ setting.meta_description }}">
-    {% endif %}
-    {% if setting.meta_fb_app_id %}
-        <meta property="fb:app_id" content="{{ setting.meta_fb_app_id }}">
-    {% endif %}
-    {% if setting.no_image_index %}
-        <meta name="robots" content="noimageindex">
-    {% endif %}
+  <title>{{ setting.title }}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="{{ setting.meta_description }}">
+  <meta name="keywords" content="{{ setting.meta_keywords }}">
+  <meta name="author" content="{{ setting.meta_author }}">
+  <meta name="copyright" content="{{ setting.meta_copyright }}">
+  {% block meta %}{% endblock %}
+  {% if setting.meta_og_url %}
+    <meta property="og:url" content="{{ setting.meta_og_url }}">
+  {% endif %}
+  {% if setting.meta_og_type %}
+    <meta property="og:type" content="{{ setting.meta_og_type }}">
+  {% endif %}
+  {% if setting.meta_og_title %}
+    <meta property="og:title" content="{{ setting.meta_og_title }}">
+  {% else %}
+    <meta property="og:title" content="{{ setting.title }}">
+  {% endif %}
+  {% if setting.meta_img %}
+    <meta property="og:image" content="{{ setting.meta_img }}">
+  {% endif %}
+  {% if setting.meta_og_title %}
+    <meta property="og:image:alt" content="{{ setting.meta_og_title }}">
+  {% else %}
+    <meta property="og:image:alt" content="{{ setting.title }}">
+  {% endif %}
+  {% if setting.meta_og_description %}
+    <meta property="og:description" content="{{ setting.meta_og_description }}">
+  {% else %}
+    <meta property="og:description" content="{{ setting.meta_description }}">
+  {% endif %}
+  {% if setting.meta_fb_app_id %}
+    <meta property="fb:app_id" content="{{ setting.meta_fb_app_id }}">
+  {% endif %}
+  {% if setting.no_image_index %}
+    <meta name="robots" content="noimageindex">
+  {% endif %}
 
-    <link rel="shortcut icon" href="{{ setting.favicon }}">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
-    <link href="{% static "argon/assets/fonts/fontawesome-webfont.woff2" %}?v=4.7.0">
-    {% stylesheet 'base' %}
-    {% if css_style %}{% stylesheet css_style %}{% endif %}
-    {% block stylesheet %}{% endblock %}
-    {% for ad in ads_data.base_header %}
-        {% autoescape off %}
-            {{ ad.ad_content }}
-        {% endautoescape %}
-    {% endfor %}
-    {% block ads_header %}{% endblock %}
+  <link rel="shortcut icon" href="{{ setting.favicon }}">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
+  <link href="{% static "argon/assets/fonts/fontawesome-webfont.woff2" %}?v=4.7.0">
+  {% stylesheet 'base' %}
+  {% if css_style %}{% stylesheet css_style %}{% endif %}
+  {% block stylesheet %}{% endblock %}
+  {% for ad in ads_data.base_header %}
+    {% autoescape off %}
+      {{ ad.ad_content }}
+    {% endautoescape %}
+  {% endfor %}
+  {% block ads_header %}{% endblock %}
 </head>
 <body class="{{ ads_group_name }}">
 <div id="fb-root"></div>
 {% csrf_token %}
 {% if ads_data.base_scroll_left %}
-    <div id="ads-scroll-left">
-        {% for ad in ads_data.base_scroll_left %}
-            {% autoescape off %}
-                {{ ad.ad_content }}
-            {% endautoescape %}
-        {% endfor %}
-    </div>
+  <div id="ads-scroll-left">
+    {% for ad in ads_data.base_scroll_left %}
+      {% autoescape off %}
+        {{ ad.ad_content }}
+      {% endautoescape %}
+    {% endfor %}
+  </div>
 {% endif %}
 {% if ads_data.base_scroll_right %}
-    <div id="ads-scroll-right">
-        {% for ad in ads_data.base_scroll_right %}
-            {% autoescape off %}
-                {{ ad.ad_content }}
-            {% endautoescape %}
-        {% endfor %}
-    </div>
+  <div id="ads-scroll-right">
+    {% for ad in ads_data.base_scroll_right %}
+      {% autoescape off %}
+        {{ ad.ad_content }}
+      {% endautoescape %}
+    {% endfor %}
+  </div>
 {% endif %}
 {% if ads_data.base_top %}
-    <div id="base-top-ads" class="container-fluid" style="max-height: 300px !important;">
-        <div class="row">
-            <div class="col-12">
-                <div class="row ads-area">
-                    {% for ad in ads_data.base_top %}
-                        {% autoescape off %}
-                            {{ ad.ad_content }}
-                        {% endautoescape %}
-                    {% endfor %}
-                </div>
-            </div>
+  <div id="base-top-ads" class="container-fluid" style="max-height: 300px !important;">
+    <div class="row">
+      <div class="col-12">
+        <div class="row ads-area">
+          {% for ad in ads_data.base_top %}
+            {% autoescape off %}
+              {{ ad.ad_content }}
+            {% endautoescape %}
+          {% endfor %}
         </div>
+      </div>
     </div>
+  </div>
 {% endif %}
 <header class="header">
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-base">
-        <div class="container">
-            <nav id="mobile-menu" role="navigation" class="d-md-none navbar_menu">
-                <input type="checkbox" id="mobile-menu-action"/>
-                <div id="backdrop" style="display: none"></div>
-                <span class="menu-icon"></span>
-                <span class="menu-icon"></span>
-                <span class="menu-icon"></span>
-                <ul id="mobile-menu-toggle" class="navbar-header-menu">
-                    {{ base_navbar }}
-                </ul>
-            </nav>
-            {% if setting.logo %}
-                <a class="navbar-brand" href="/">
-                    <img src="{{ setting.logo }}" alt="{{ setting.title }}">
-                </a>
-            {% endif %}
-            <button class="navbar-toggler" type="button" data-toggle="collapse"
-                    aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle Search">
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-base">
+    <div class="container">
+      <nav id="mobile-menu" role="navigation" class="d-md-none navbar_menu">
+        <input type="checkbox" id="mobile-menu-action"/>
+        <div id="backdrop" style="display: none"></div>
+        <span class="menu-icon"></span>
+        <span class="menu-icon"></span>
+        <span class="menu-icon"></span>
+        <ul id="mobile-menu-toggle" class="navbar-header-menu">
+          {{ base_navbar }}
+        </ul>
+      </nav>
+      {% if setting.logo %}
+        <a class="navbar-brand" href="/">
+          <img src="{{ setting.logo }}" alt="{{ setting.title }}">
+        </a>
+      {% endif %}
+      <button class="navbar-toggler" type="button" data-toggle="collapse"
+              aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle Search">
             <span class="mobile-search-toggle">
                 <i class="fa fa-search"></i>
             </span>
-            </button>
-            <div class="search-wrap d-lg-flex">
-                <div class="input-group input-group-alternative">
-                    <form action="{% url "novel_search" %}" class="form-search">
-                        <label for="search-input"></label>
-                        <input id="search-input" class="form-control search" placeholder="Search..." type="text">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn-search input-group-text"><i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div id="search-area"></div>
+      </button>
+      <div class="search-wrap d-lg-flex">
+        <div class="input-group input-group-alternative">
+          <form action="{% url "novel_search" %}" class="form-search">
+            <label for="search-input"></label>
+            <input id="search-input" class="form-control search" placeholder="Search..." type="text">
+            <div class="input-group-append">
+              <button type="submit" class="btn-search input-group-text"><i class="fa fa-search"></i>
+              </button>
             </div>
-            <div class="collapse navbar-collapse" id="navbar-danger">
-                <div class="navbar-collapse-header">
-                    <div class="row">
-                        <div class="collapse-brand  d-none d-lg-block">
-                            {% if setting.logo %}
-                                <a href="/">
-                                    <img src="{{ setting.logo }}" alt="{{ setting.title }}">
-                                </a>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="collapse-close">
-                        <i class="fa fa-times navbar-toggler" aria-hidden="true" data-toggle="collapse"
-                           data-target="#navbar-danger"
-                           aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation"></i>
-                    </div>
-                </div>
-                {{ base_navbar }}
-            </div>
+          </form>
         </div>
-    </nav>
-    {{ base_top_menu }}
+        <div id="search-area"></div>
+      </div>
+      <div class="collapse navbar-collapse" id="navbar-danger">
+        <div class="navbar-collapse-header">
+          <div class="row">
+            <div class="collapse-brand  d-none d-lg-block">
+              {% if setting.logo %}
+                <a href="/">
+                  <img src="{{ setting.logo }}" alt="{{ setting.title }}">
+                </a>
+              {% endif %}
+            </div>
+          </div>
+          <div class="collapse-close">
+            <i class="fa fa-times navbar-toggler" aria-hidden="true" data-toggle="collapse"
+               data-target="#navbar-danger"
+               aria-controls="navbar-danger" aria-expanded="false" aria-label="Toggle navigation"></i>
+          </div>
+        </div>
+        {{ base_navbar }}
+      </div>
+    </div>
+  </nav>
+  {{ base_top_menu }}
 </header>
 <div class="container-fluid">
-    <div class="d-none d-lg-block" id="particles-js">
-        <canvas class="particles-js-canvas-el" style="width: 100%; height: 100%;"></canvas>
-    </div>
-    <div class="row">
-        <div class="container content-wrap">
-            {% block content %}{% endblock %}
-            {% if ads_data.base_bottom %}
-                <div class="col-12 mt-3">
-                    <div class="row ads-area">
-                        {% for ad in ads_data.base_bottom %}
-                            {% autoescape off %}
-                                {{ ad.ad_content }}
-                            {% endautoescape %}
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
+  <div class="d-none d-lg-block" id="particles-js">
+    <canvas class="particles-js-canvas-el" style="width: 100%; height: 100%;"></canvas>
+  </div>
+  <div class="row">
+    <div class="container content-wrap">
+      {% block content %}{% endblock %}
+      {% if ads_data.base_bottom %}
+        <div class="col-12 mt-3">
+          <div class="row ads-area">
+            {% for ad in ads_data.base_bottom %}
+              {% autoescape off %}
+                {{ ad.ad_content }}
+              {% endautoescape %}
+            {% endfor %}
+          </div>
         </div>
+      {% endif %}
     </div>
+  </div>
 </div>
 {{ base_other_html }}
 <footer class="container-fluid">
-    <div class="row footer">
-        <div class="container">
-            <div class="row">
-                {{ base_footer }}
-            </div>
-        </div>
+  <div class="row footer">
+    <div class="container">
+      <div class="row">
+        {{ base_footer }}
+      </div>
     </div>
+  </div>
 </footer>
 <script type="text/javascript" src="{% static 'js/common/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/jquery-ui.min.js' %}"></script>
@@ -191,26 +191,27 @@
 <script type="text/javascript" src="{% static 'js/common/autosize.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/particles.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/common/run_particlejs.js' %}"></script>
-{#<script type="text/javascript" src="{% static 'js/novel/base.js' %}"></script>#}
+<script type="text/javascript" src="{% static 'dist/sweetalert2/sweetalert2.all.min.js' %}"></script>
+{#<script type="text/javascript" src="{% static 'js/novel/user.js' %}"></script>#}
 {% if recaptcha_site_key %}
-    <script type="text/javascript"
-            src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
+  <script type="text/javascript"
+          src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
 {% endif %}
 
 {% if setting.google_analytics_id %}
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ setting.google_analytics_id }}"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ setting.google_analytics_id }}"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
 
-        function gtag() {
-            dataLayer.push(arguments);
-        }
+      function gtag() {
+          dataLayer.push(arguments);
+      }
 
-        gtag('js', new Date());
-        gtag('config', '{{ setting.google_analytics_id }}');
+      gtag('js', new Date());
+      gtag('config', '{{ setting.google_analytics_id }}');
 
-    </script>
+  </script>
 {% endif %}
 <script type="text/javascript">
     let recaptcha_site_key = '{{ recaptcha_site_key }}';

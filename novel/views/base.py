@@ -1,5 +1,5 @@
+from django.contrib.auth.views import PasswordResetConfirmView
 from django.contrib.sites.shortcuts import get_current_site
-from django.template.context_processors import static
 from django.views.generic import TemplateView
 
 from django_cms import settings

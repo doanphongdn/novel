@@ -37,6 +37,26 @@ $(document).ready(function (e) {
             }
         });
     });
+    $(document).on('submit', '#lost-pass-form', function (e) {
+        e.preventDefault();
+        var form = $(this);
+        $.ajax({
+            type: 'post',
+            url: '/user/reset-password',
+            data: form.serializeArray(),
+            success: function (json_data) {
+                if (json_data.status) {
+                    $("#modal-login").modal('toggle');
+                    Swal.fire({
+                        'text': json_data.message,
+                        'icon': 'success',
+                    });
+                } else {
+                    $(".message.lost-password").text(json_data.message);
+                }
+            }
+        });
+    });
     $(document).on('click', '.novel-wrap span.btn-remove ', function () {
         novel_id = $(this).data("id");
         action = $(this).data("action");

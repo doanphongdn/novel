@@ -35,7 +35,6 @@ from novel.views.novel_all import NovelAllView
 from novel.views.page import PageView
 from novel.views.user import UserAction, UserProfileView
 
-
 sitemaps = {
     'genre': GenreSitemap,
     'static': StaticViewSitemap,
@@ -54,6 +53,10 @@ urlpatterns = [
     path('web/sitemap.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemaps}),
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
+
+    # Fix authenticate
+    path('account_email', UserAction.redirect_url),
+    path('account_login', UserAction.redirect_url),
 
     # API URL
     path('api/novels', NovelAPIView.as_view()),

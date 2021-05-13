@@ -1,4 +1,5 @@
 import json
+import logging
 from http import HTTPStatus
 
 from django.contrib.auth import authenticate, logout, login
@@ -17,6 +18,8 @@ from novel.models import Novel, Bookmark, History, NovelChapter, NovelUserProfil
 from novel.utils import get_history_cookies
 from novel.views.base import NovelBaseView
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
+
+logger = logging.getLogger('django')
 
 
 class UserAction(object):
@@ -164,10 +167,16 @@ class UserAction(object):
             request.session.set_expiry(0)
             login(request, user)
         except Exception as ex:
-            register_form.add_error("username", "Lỗi khi tạo tài khoản, liên hệ Administrator để được hỗ trợ")
+            logger.error("[UserAction] ERROR: %s" % repr(ex))
+            register_form.add_error("register_name", "Lỗi khi tạo tài khoản, liên hệ Administrator để được hỗ trợ")
             return JsonResponse({"success": False, "errors": register_form.errors})
 
         return JsonResponse({"success": True})
+
+    @staticmethod
+    def redirect_url(request):
+        redirect_url = request.COOKIES.get('_redirect_url') or "home"
+        return HttpResponseRedirect(redirect_url)
 
     @staticmethod
     def sign_in(request):

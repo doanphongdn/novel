@@ -56,6 +56,7 @@ urlpatterns = [
     # Fix authenticate
     path('account_email', UserAction.redirect_url, name="account_email"),
     path('account_login', UserAction.redirect_url, name="account_login"),
+    path('account_signup', UserAction.redirect_url, name="account_signup"),
 
     # API URL
     path('api/novels', NovelAPIView.as_view()),

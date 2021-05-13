@@ -54,8 +54,8 @@ urlpatterns = [
          name='django.contrib.sitemaps.views.sitemap'),
 
     # Fix authenticate
-    path('account_email', UserAction.redirect_url),
-    path('account_login', UserAction.redirect_url),
+    path('account_email', UserAction.redirect_url, name="account_email"),
+    path('account_login', UserAction.redirect_url, name="account_login"),
 
     # API URL
     path('api/novels', NovelAPIView.as_view()),

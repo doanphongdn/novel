@@ -212,7 +212,7 @@ class NovelAPIView(BaseAPIView):
         if chapters:
             exist_chapters = NovelChapter.objects.filter(src_url__in=list(chapters.keys()))
             for ex_chap in exist_chapters:
-                name = chapters.pop(ex_chap.src_url)
+                name = chapters.pop(ex_chap.src_url, None)
                 if name and ex_chap.name != name:
                     try:
                         ex_chap.name = name.title()

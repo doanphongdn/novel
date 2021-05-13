@@ -10,6 +10,10 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 
     def save_user(self, request, sociallogin, form=None):
         user = super().save_user(request, sociallogin, form)
+        if user.email:
+            user.username = user.email
+            user.save()
+
         NovelUserProfile(user_id=user.id, avatar=sociallogin.account.get_avatar_url()).save()
         UserAction.sync_histories(request, user)
         return user

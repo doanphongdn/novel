@@ -476,6 +476,7 @@ class NovelSetting(models.Model):
     meta_fb_app_id = models.CharField(max_length=250, blank=True)
     # others
     ads_txt = models.TextField(blank=True, null=True)
+    clickaine = models.TextField(blank=True, null=True)
     robots_txt = models.TextField(blank=True, null=True)
     img_ignoring = models.TextField(null=True, blank=True)
     google_analytics_id = models.TextField(null=True, blank=True)

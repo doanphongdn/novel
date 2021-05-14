@@ -48,6 +48,7 @@ urlpatterns = [
         name="dmca_verification"),
     url(r'^robots\.txt$', PageView.plain_text, {"page_type": "robots_txt"}),
     url(r'^ads\.txt$', PageView.plain_text, {"page_type": "ads_txt"}),
+    url(r'^clickaine\.txt$', PageView.plain_text, {"page_type": "clickaine"}),
 
     path('web/sitemap.xml', cache_page(86400)(sitemaps_views.index), {'sitemaps': sitemaps}),
     path('web/sitemap-<section>.xml', cache_page(86400)(sitemaps_views.sitemap), {'sitemaps': sitemaps},

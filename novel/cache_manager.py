@@ -7,3 +7,8 @@ class NovelCache(CacheManager):
             return self.class_model.get_available_novel().filter(
                 **kwargs).prefetch_related("novel_flat").all()[:self.limit]
         return self.class_model.get_available_novel().filter(**kwargs).prefetch_related("novel_flat").all()
+
+
+class BookmarkCountCache(CacheManager):
+    def _get_data(self, **kwargs):
+        return self.class_model.objects.filter(**kwargs).count()

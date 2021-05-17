@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AnonymousUser
 
+from django_cms.utils.cache_manager import CacheManager
+from novel.cache_manager import BookmarkCountCache
 from novel.models import Bookmark
 from novel.views.includes.base import BaseTemplateInclude
 
@@ -12,15 +14,16 @@ class NovelInfoTemplateInclude(BaseTemplateInclude):
     @staticmethod
     def get_bookmark_info(novel_id, user):
         is_logged = not isinstance(user, AnonymousUser)
-        bmk_count = Bookmark.objects.filter(novel_id=novel_id).count()
+        bmk_count = BookmarkCountCache(Bookmark, **{"novel_id": novel_id}).get_from_cache()
         bookmark_info = {
             "status": "nofollow",
             "text": ("%s %s" % (bmk_count or "", "Bookmark")).strip(),
             "is_logged": is_logged,
         }
         if is_logged:
-            bmk_count = Bookmark.objects.filter(novel_id=novel_id, user_id=user.id).count()
-            if bmk_count > 0:
+            bmk_count = CacheManager(Bookmark, **{"novel_id": novel_id,
+                                                  "user_id": user.id}).get_from_cache()
+            if bmk_count:
                 bookmark_info.update({
                     "status": "followed",
                     "text": "Followed",

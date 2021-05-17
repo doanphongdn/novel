@@ -110,11 +110,13 @@ class UserAction(object):
                 with transaction.atomic():
                     novel = get_object_or_404(Novel, id=int(novel_id))
                     if not isinstance(request.user, AnonymousUser):
+                        user_id = request.user.id
                         if status == 'nofollow':
-                            bmk, created = Bookmark.objects.get_or_create(user_id=request.user.id, novel=novel)
+                            bmk, created = Bookmark.objects.get_or_create(user_id=user_id, novel=novel)
                             if created:
                                 novel.follow += 1
                                 novel.save()
+                                CacheManager(Bookmark, **{"novel_id": novel.id, "user_id": user_id}).clear_cache()
 
                         elif status == "followed":
                             bmk = Bookmark.objects.filter(user_id=request.user.id, novel=novel).first()
@@ -122,6 +124,7 @@ class UserAction(object):
                                 bmk.delete()
                                 novel.follow -= 1
                                 novel.save()
+                                CacheManager(Bookmark, **{"novel_id": novel.id, "user_id": user_id}).clear_cache()
 
                 return JsonResponse({
                     "success": True,

@@ -13,9 +13,9 @@ class TopViewTemplateInclude(BaseTemplateInclude):
 
     def prepare_include_data(self):
         super().prepare_include_data()
-        novel_daily = NovelCache(Novel, limit=7, order_by=["view_daily"]).get_from_cache(get_all=True)
-        novel_monthly = NovelCache(Novel, limit=7, order_by=["view_monthly"]).get_from_cache(get_all=True)
-        novel_all = NovelCache(Novel, limit=7, order_by=["view_total"]).get_from_cache(get_all=True)
+        novel_daily = NovelCache(Novel, limit=7, order_by=["-view_daily"]).get_from_cache(get_all=True)
+        novel_monthly = NovelCache(Novel, limit=7, order_by=["-view_monthly"]).get_from_cache(get_all=True)
+        novel_all = NovelCache(Novel, limit=7, order_by=["-view_total"]).get_from_cache(get_all=True)
 
         self.include_data.update({
             "novel_daily": novel_daily,

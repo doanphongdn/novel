@@ -5,7 +5,7 @@ class NovelCache(CacheManager):
     def _get_data(self, **kwargs):
         res = self.class_model.get_available_novel().filter(
             **kwargs).order_by(*self.order_by).prefetch_related("novel_flat").all()
-        
+
         if self.limit and self.limit > 0:
             return res[:self.limit]
 

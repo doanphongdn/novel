@@ -1,4 +1,3 @@
-import json
 from hashlib import md5
 
 from django.core.cache import cache
@@ -23,20 +22,16 @@ class CacheManager(object):
         self.select_related = [select_related] if isinstance(select_related, str) else select_related
         self.prefetch_related = [prefetch_related] if isinstance(prefetch_related, str) else prefetch_related
 
-        kwarg_keys = dict(kwargs)
-        kwarg_keys["order_by"] = order_by
-        kwarg_keys["limit"] = limit
-
+        cache_keys = [str(val) for val in self.kwargs.values()]
         if class_model:
-            kwarg_keys["object_name"] = self.class_model.__name__
+            cache_key = self.class_model.__name__
         elif not cache_key:
-            kwarg_keys["object_name"] = self.__class__.__name__
+            cache_key = self.__class__.__name__
 
-        self.cache_key = md5(json.dumps(kwarg_keys).encode()).hexdigest()
+        self.cache_key = "CacheManager_" + md5("_".join((str(limit), str(cache_key), *cache_keys, *order_by)).encode()).hexdigest()
 
     def clear_cache(self):
         cache.delete(self.cache_key)
-        return self
 
     def _get_data(self, **kwargs):
         if hasattr(self.class_model, 'active'):

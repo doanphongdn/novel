@@ -29,5 +29,6 @@ TEMPLATE_INCLUDE_CHOISES = {
         ("user_profile", "User profile"),
         ("comment", "Comment"),
         ("sidebar", "Sidebar"),
+        ("top_view", "TopView"),
     ],
 }

@@ -1,0 +1,127 @@
+{% load static %}
+{% load i18n %}
+{% load custom_tags %}
+<div class="col-12 col-md-4 novel-list top-view">
+  <div class="widget-title">
+    <label>
+      {% if icon_daily %}
+        <i class="{{ icon_daily }}"></i>
+      {% endif %}
+      {{ title_daily }}
+    </label>
+  </div>
+  <div class="row">
+    {% for novel in novel_daily %}
+      <div class="novel-item form-group col-12">
+        <div class="novel-wrap">
+          <i class="icon-stick fa fa-certificate" data-content="{{ forloop.counter }}"></i>
+          <div class="novel-thumbnail-image">
+            <a href="{{ novel.get_absolute_url }}">
+              {% if disable_lazyload %}
+                <img src="{{ novel.stream_thumbnail_image }}"
+                     alt="{{ novel.name }}">
+              {% else %}
+                <img class="lazyload" data-src="{{ novel.stream_thumbnail_image }}"
+                     src="{% static "images/lazyload.gif" %}"
+                     alt="{{ novel.name }}">
+              {% endif %}
+            </a>
+          </div>
+          <div class="novel-detail-wrap">
+            <div class="novel-name">
+              <h2><a href="{{ novel.get_absolute_url }}">{{ novel.name }}</a></h2>
+            </div>
+            <div class="novel-chapter">
+              <h3>
+                <a href="{{ novel.novel_flat.latest_chapter.url }}">{{ novel.novel_flat.latest_chapter.name }}</a>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="col-12 col-md-4 novel-list top-view">
+  <div class="widget-title">
+    <label>
+      {% if icon_monthly %}
+        <i class="{{ icon_monthly }}"></i>
+      {% endif %}
+      {{ title_monthly }}
+    </label>
+  </div>
+  <div class="row">
+    {% for novel in novel_monthly %}
+      <div class="novel-item form-group col-12">
+        <div class="novel-wrap">
+          <i class="icon-stick fa fa-certificate" data-content="{{ forloop.counter }}"></i>
+          <div class="novel-thumbnail-image">
+            <a href="{{ novel.get_absolute_url }}">
+              {% if disable_lazyload %}
+                <img src="{{ novel.stream_thumbnail_image }}"
+                     alt="{{ novel.name }}">
+              {% else %}
+                <img class="lazyload" data-src="{{ novel.stream_thumbnail_image }}"
+                     src="{% static "images/lazyload.gif" %}"
+                     alt="{{ novel.name }}">
+              {% endif %}
+            </a>
+          </div>
+          <div class="novel-detail-wrap">
+            <div class="novel-name">
+              <h2><a href="{{ novel.get_absolute_url }}">{{ novel.name }}</a></h2>
+            </div>
+            <div class="novel-chapter">
+              <h3>
+                <a href="{{ novel.novel_flat.latest_chapter.url }}">{{ novel.novel_flat.latest_chapter.name }}</a>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="col-12 col-md-4 novel-list top-view">
+  <div class="widget-title">
+    <label>
+      {% if icon_all %}
+        <i class="{{ icon_all }}"></i>
+      {% endif %}
+      {{ title_year }}
+    </label>
+
+  </div>
+  <div class="row">
+    {% for novel in novel_all %}
+      <div class="novel-item form-group col-12">
+        <div class="novel-wrap">
+          <i class="icon-stick fa fa-certificate" data-content="{{ forloop.counter }}"></i>
+          <div class="novel-thumbnail-image">
+            <a href="{{ novel.get_absolute_url }}">
+              {% if disable_lazyload %}
+                <img src="{{ novel.stream_thumbnail_image }}"
+                     alt="{{ novel.name }}">
+              {% else %}
+                <img class="lazyload" data-src="{{ novel.stream_thumbnail_image }}"
+                     src="{% static "images/lazyload.gif" %}"
+                     alt="{{ novel.name }}">
+              {% endif %}
+            </a>
+          </div>
+          <div class="novel-detail-wrap">
+            <div class="novel-name">
+              <h2><a href="{{ novel.get_absolute_url }}">{{ novel.name }}</a></h2>
+            </div>
+            <div class="novel-chapter">
+              <h3>
+                <a href="{{ novel.novel_flat.latest_chapter.url }}">{{ novel.novel_flat.latest_chapter.name }}</a>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>

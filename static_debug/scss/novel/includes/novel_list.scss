@@ -196,6 +196,65 @@
 }
 
 .novel-list {
+  &.top-view {
+    .novel-item.form-group {
+      margin-bottom: 0;
+    }
+
+    i.icon-stick {
+      font-size: 30px;
+      position: relative;
+      color: #acabab;
+      float: left;
+      margin-right: 5px;
+      margin-top: 10px;
+
+      &[data-content='1'] {
+        color: #edb933;
+      }
+
+      &[data-content='2'] {
+        color: #2bba2d;
+      }
+
+      &[data-content='3'] {
+        color: #e87474;
+      }
+
+      &:after {
+        font-family: 'fontawesome';
+        content: attr(data-content);
+        position: absolute;
+        top: 7px;
+        left: 9px;
+        color: #FFF;
+        font-weight: bold;
+        font-size: 15px;
+      }
+    }
+
+    .novel-wrap {
+      border-bottom: none !important;
+      padding: 0 0 5px 0 !important;
+
+      .novel-thumbnail-image {
+        height: 50px !important;
+        overflow: hidden !important;
+
+        img {
+          height: auto !important;
+        }
+      }
+
+      .novel-detail-wrap {
+        .novel-name, .novel-chapter {
+          width: calc(100% - 105px) !important;
+        }
+
+      }
+    }
+  }
+
   .novel-item {
     .novel-wrap {
       display: block;

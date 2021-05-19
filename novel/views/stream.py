@@ -17,33 +17,33 @@ def url2yield(url, chunksize=1024, referer=None):
         s.headers.update({
             "Referer": referer
         })
-    # Note: here i enabled the streaming
-    response = s.get(url, stream=True)
+    try:
+        # Note: here i enabled the streaming
+        response = s.get(url, stream=True, timeout=5)
+        chunk = True
+        if response.status_code != 200:
+            yield {"status": response.status_code}
+            chunk = False
 
-    chunk = True
-    if response.status_code != 200:
-        logger.warning("[url2yield][Status = %s] Unable to get image for %s with referer %s",
-                       response.status_code, url, referer)
-        yield {"status": response.status_code}
-        chunk = False
+        restrict_config = crawl_settings.IGNORE_CLOUDFLARE_RESTRICT
+        if restrict_config and restrict_config in response.url:
+            yield {"cloudflare_restricted": "true"}
+            chunk = False
 
-    restrict_config = crawl_settings.IGNORE_CLOUDFLARE_RESTRICT
-    if restrict_config and restrict_config in response.url:
-        yield {"cloudflare_restricted": "true"}
-        chunk = False
+        while chunk:
+            chunk = response.raw.read(chunksize)
 
-    while chunk:
-        chunk = response.raw.read(chunksize)
+            if not chunk:
+                break
 
-        if not chunk:
-            break
-
-        yield chunk
+            yield chunk
+    except Exception as ex:
+        logger.error("[url2yield] Error: %s" % repr(ex))
 
 
 def stream_image(request, *args, **kwargs):
+    img_hash = (kwargs.get('img') or "").strip('.jpg')
     try:
-        img_hash = (kwargs.get('img') or "").strip('.jpg')
         json_str = settings.redis_image.get(img_hash)
         if json_str:
             json_str = json.loads(json_str)
@@ -64,8 +64,8 @@ def stream_image(request, *args, **kwargs):
                         chapter.chapter_updated = False
                         chapter.save()
                         CrawlNovelRetry.create_crawl_retry(chapter)
-                print("[stream_image] Error when parse image %s : %s <chapter %s - updated %s>"
-                      % (img_hash, ex, chapter_id, chapter_updated))
+                logger.error("[stream_image] Exception:  Error when parse image %s : %s <chapter %s - updated %s>"
+                             % (img_hash, repr(ex), chapter_id, chapter_updated))
                 import traceback
                 traceback.print_exc()
                 return HttpResponse({})
@@ -98,12 +98,13 @@ def stream_image(request, *args, **kwargs):
                         chapter.save()
                         CrawlNovelRetry.create_crawl_retry(chapter)
 
-                print("[stream_image] Error when stream image %s : %s <chapter %s - updated %s>"
-                      % (img_hash, origin_url, chapter_id, chapter_updated))
+                logger.error("[stream_image] Failed: Error when parse image %s : %s <chapter %s - updated %s>"
+                             % (img_hash, origin_url, chapter_id, chapter_updated))
                 return HttpResponse({})
 
     except Exception as e:
-        print("[stream_image] Error when parse image %s : %s" % (img_hash, e))
+        logger.error("[stream_image] Exception: Error when parse image %s: %s"
+                     % (img_hash, e))
         import traceback
         traceback.print_exc()
     return HttpResponse({})

@@ -1,6 +1,7 @@
 from hashlib import md5
 
 from django.core.cache import cache
+from django.db.models import QuerySet
 from django.utils.html import format_html_join
 
 
@@ -54,7 +55,7 @@ class CacheManager(object):
             cached = cache.get(self.cache_key)
             if cached is None:
                 data = self._get_data(**self.kwargs)
-                if data and not get_all:
+                if data and isinstance(data, (QuerySet, list)) and not get_all:
                     data = data[0]
 
                 cache.set(self.cache_key, data)

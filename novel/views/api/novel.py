@@ -212,12 +212,17 @@ class NovelAPIView(BaseAPIView):
                 novel.genres.add(genre)
                 update = True
 
-        chapters = {full_schema_url(chapter.get("chapter_url"), referer_url): chapter.get("chapter_name")
-                    for chapter in crawled_data.get("list_chapter") or []}
+        chapters = {}
+        for chapter in crawled_data.get("list_chapter") or []:
+            chapter_name = chapter.get("chapter_name")
+            if 'en' not in settings.LANGUAGE_CODE and chapter_name.startswith('Chapter'):
+                chapter_name = chapter_name.replace('Chapter', os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))
+            chapters[full_schema_url(chapter.get("chapter_url"), referer_url)] = chapter_name
 
         if chapters:
             exist_chapters = NovelChapter.objects.filter(
-                Q(src_url__in=list(chapters.keys())) | (Q(name__in=list(chapters.values())), Q(novel_id=novel.id)))
+                Q(src_url__in=list(chapters.keys())) | (Q(name__in=list(chapters.values()), novel_id=novel.id)))
+            
             for ex_chap in exist_chapters:
                 name = chapters.pop(ex_chap.src_url, None)
                 if name and ex_chap.name != name:
@@ -234,8 +239,6 @@ class NovelAPIView(BaseAPIView):
                 chapter_name = name.title()
                 chapter_name_index = get_first_number_pattern(chapter_name,
                                                               os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chapter'))
-                if 'en' not in settings.LANGUAGE_CODE and chapter_name.startswith('Chapter'):
-                    chapter_name = chapter_name.replace('Chapter', os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))
 
                 new_chapters.append(NovelChapter(novel=novel, name=chapter_name, name_index=chapter_name_index,
                                                  src_url=url, novel_slug=novel.slug))

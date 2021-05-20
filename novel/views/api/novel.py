@@ -117,9 +117,13 @@ class NovelAPIView(BaseAPIView):
             item['src_latest_chapter_url'] = full_schema_url(src_latest_chapter_url, referer_url)
 
             conditions = []
-            for field in ["src_url", "name"]:
+            key_group = {
+                "src_url": "src_url__in",
+                "name": "name__iexact",
+            }
+            for field, condition in key_group.items():
                 item_value = item.get(field)
-                conditions.append(Q(**{field + "__in": item_value if isinstance(item_value, list) else [item_value]}))
+                conditions.append(Q(**{condition: item_value if isinstance(item_value, list) else item_value}))
 
             novel = Novel.objects.filter(reduce(or_, set(conditions))) \
                 .prefetch_related('novel_flat').first() if conditions else None
@@ -166,7 +170,9 @@ class NovelAPIView(BaseAPIView):
 
         crawled_data['name'] = crawled_data.get('name', '').lower().title()
 
-        novel = self.temp_novels.get(src_url) or Novel.objects.filter(src_url=src_url).first()
+        novel = self.temp_novels.get(src_url) or Novel.objects.filter(
+            Q(src_url=src_url) | Q(name__iexact=crawled_data['name'])).first()
+
         if not novel:
             return self.parse_response(is_success=True, continue_paging=False, log_enable=True,
                                        message="No novel found")
@@ -210,7 +216,8 @@ class NovelAPIView(BaseAPIView):
                     for chapter in crawled_data.get("list_chapter") or []}
 
         if chapters:
-            exist_chapters = NovelChapter.objects.filter(src_url__in=list(chapters.keys()))
+            exist_chapters = NovelChapter.objects.filter(
+                Q(src_url__in=list(chapters.keys())) | (Q(name__in=list(chapters.values())), Q(novel_id=novel.id)))
             for ex_chap in exist_chapters:
                 name = chapters.pop(ex_chap.src_url, None)
                 if name and ex_chap.name != name:
@@ -289,9 +296,9 @@ class ChapterAPIView(BaseAPIView):
         except:
             limit = self.api_limit
 
-        chapter_list = NovelChapter.objects.select_related("novel") \
-                           .filter(novel__src_campaign=src_campaign_code,
-                                   chapter_updated=False, active=True).all()[0:limit]
+        chapter_list = NovelChapter.objects.select_related(
+            "novel").filter(novel__src_campaign=src_campaign_code,
+                            chapter_updated=False, active=True).all()[0:limit]
         chapter_urls = []
         for chapter in chapter_list:
             chapter_urls.append(chapter.src_url)

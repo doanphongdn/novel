@@ -1,3 +1,4 @@
+import operator
 import os
 import zlib
 from datetime import datetime
@@ -224,8 +225,9 @@ class NovelAPIView(BaseAPIView):
                     chapters[full_schema_url(chapter.get("chapter_url"), referer_url)] = chapter_name
 
                 if chapters:
+                    query = reduce(operator.or_, (Q(name__iexact=x) for x in list(chapters.values())))
                     exist_chapters = NovelChapter.objects.filter(
-                        Q(src_url__in=list(chapters.keys())) | (Q(name__in=list(chapters.values()), novel_id=novel.id)))
+                        Q(src_url__in=list(chapters.keys())) | (Q(query, novel_id=novel.id)))
 
                     for ex_chap in exist_chapters:
                         name = chapters.pop(ex_chap.src_url, None)

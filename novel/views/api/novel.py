@@ -292,7 +292,7 @@ class NovelAPIView(BaseAPIView):
                 novel.save()
         except:
             transaction.rollback()
-            return self.parse_response(is_success=False, log_enable=True)
+            return self.parse_response(is_success=True, log_enable=True)
 
         return self.parse_response(is_success=True)
 

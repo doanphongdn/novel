@@ -187,104 +187,110 @@ class NovelAPIView(BaseAPIView):
                                        extra_data=errors)
 
         update = False
-        with transaction.atomic():
-            thumbnail_image = crawled_data.get('thumbnail_image')
-            if not novel.thumbnail_image and thumbnail_image:
-                thumbnail_image = full_schema_url(thumbnail_image, src_url)
-                local_image = utils.download_image(thumbnail_image, novel.slug, referer=referer_url)
+        try:
+            with transaction.atomic():
+                thumbnail_image = crawled_data.get('thumbnail_image')
+                if not novel.thumbnail_image and thumbnail_image:
+                    thumbnail_image = full_schema_url(thumbnail_image, src_url)
+                    local_image = utils.download_image(thumbnail_image, novel.slug, referer=referer_url)
 
-                novel.thumbnail_image = local_image or thumbnail_image
-                update = True
-
-            if crawled_data.get('name') and novel.name.lower() != crawled_data.get('name'):
-                novel.name = crawled_data.get('name')
-                update = True
-
-            if not novel.authors.first():
-                authors = crawled_data.get("authors") or []
-                for author in authors:
-                    author, _ = Author.objects.get_or_create(name=author.title().strip())
-                    novel.authors.add(author)
+                    novel.thumbnail_image = local_image or thumbnail_image
                     update = True
 
-            if not novel.genres.first():
-                genres = crawled_data.get("genres") or []
-                for genre in genres:
-                    genre, _ = Genre.objects.get_or_create(name=genre.title().strip())
-                    novel.genres.add(genre)
+                if crawled_data.get('name') and novel.name.lower() != crawled_data.get('name'):
+                    novel.name = crawled_data.get('name')
                     update = True
 
-            chapters = {}
-            for chapter in crawled_data.get("list_chapter") or []:
-                chapter_name = chapter.get("chapter_name")
-                if 'en' not in settings.LANGUAGE_CODE and chapter_name.startswith('Chapter'):
-                    chapter_name = chapter_name.replace('Chapter', os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))
-                chapters[full_schema_url(chapter.get("chapter_url"), referer_url)] = chapter_name
+                if not novel.authors.first():
+                    authors = crawled_data.get("authors") or []
+                    for author in authors:
+                        author, _ = Author.objects.get_or_create(name=author.title().strip())
+                        novel.authors.add(author)
+                        update = True
 
-            if chapters:
-                exist_chapters = NovelChapter.objects.filter(
-                    Q(src_url__in=list(chapters.keys())) | (Q(name__in=list(chapters.values()), novel_id=novel.id)))
+                if not novel.genres.first():
+                    genres = crawled_data.get("genres") or []
+                    for genre in genres:
+                        genre, _ = Genre.objects.get_or_create(name=genre.title().strip())
+                        novel.genres.add(genre)
+                        update = True
 
-                for ex_chap in exist_chapters:
-                    name = chapters.pop(ex_chap.src_url, None)
-                    if name and ex_chap.name != name:
-                        try:
-                            ex_chap.name = name.title()
-                            ex_chap.chapter_updated = False
-                            ex_chap.save()
-                            update = True
-                        except:
-                            pass
+                chapters = {}
+                for chapter in crawled_data.get("list_chapter") or []:
+                    chapter_name = chapter.get("chapter_name")
+                    if 'en' not in settings.LANGUAGE_CODE and chapter_name.startswith('Chapter'):
+                        chapter_name = chapter_name.replace('Chapter',
+                                                            os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chương'))
+                    chapters[full_schema_url(chapter.get("chapter_url"), referer_url)] = chapter_name
 
-                new_chapters = []
-                for url, name in chapters.items():
-                    chapter_name = name.title()
-                    chapter_name_index = get_first_number_pattern(chapter_name,
-                                                                  os.environ.get('LANGUAGE_CHAPTER_NAME', 'Chapter'))
+                if chapters:
+                    exist_chapters = NovelChapter.objects.filter(
+                        Q(src_url__in=list(chapters.keys())) | (Q(name__in=list(chapters.values()), novel_id=novel.id)))
 
-                    new_chapters.append(NovelChapter(novel=novel, name=chapter_name, name_index=chapter_name_index,
-                                                     src_url=url, novel_slug=novel.slug))
-                if new_chapters:
-                    NovelChapter.objects.bulk_create(new_chapters, ignore_conflicts=True)
-                    novel.latest_updated_time = datetime.now()
-                    novel.update_flat_info()
+                    for ex_chap in exist_chapters:
+                        name = chapters.pop(ex_chap.src_url, None)
+                        if name and ex_chap.name != name:
+                            try:
+                                ex_chap.name = name.title()
+                                ex_chap.chapter_updated = False
+                                ex_chap.save()
+                                update = True
+                            except:
+                                pass
+
+                    new_chapters = []
+                    for url, name in chapters.items():
+                        chapter_name = name.title()
+                        chapter_name_index = get_first_number_pattern(chapter_name,
+                                                                      os.environ.get('LANGUAGE_CHAPTER_NAME',
+                                                                                     'Chapter'))
+
+                        new_chapters.append(NovelChapter(novel=novel, name=chapter_name, name_index=chapter_name_index,
+                                                         src_url=url, novel_slug=novel.slug))
+                    if new_chapters:
+                        NovelChapter.objects.bulk_create(new_chapters, ignore_conflicts=True)
+                        novel.latest_updated_time = datetime.now()
+                        novel.update_flat_info()
+                        update = True
+
+                        bookmarks = Bookmark.objects.filter(novel=novel).all()
+                        notify = []
+                        for bm in bookmarks:
+                            latest_chapter_name = novel.novel_flat.latest_chapter.get("name", "")
+                            notify.append(NovelNotify(user=bm.user,
+                                                      notify=novel_setting.NEW_CHAPTER_NOTIFY_MSG % (
+                                                          novel.name, latest_chapter_name), novel=novel))
+
+                        if notify:
+                            NovelNotify.objects.bulk_create(notify, ignore_conflicts=True)
+
+                status = crawled_data.get("status")
+                if status and (not novel.status or status != novel.status.name):
+                    status, _ = Status.objects.get_or_create(name=status.title().strip())
+                    novel.status = status
                     update = True
 
-                    bookmarks = Bookmark.objects.filter(novel=novel).all()
-                    notify = []
-                    for bm in bookmarks:
-                        latest_chapter_name = novel.novel_flat.latest_chapter.get("name", "")
-                        notify.append(NovelNotify(user=bm.user,
-                                                  notify=novel_setting.NEW_CHAPTER_NOTIFY_MSG % (
-                                                      novel.name, latest_chapter_name), novel=novel))
+                descriptions = crawled_data.get("descriptions")
+                if not novel.descriptions and descriptions:
+                    novel.descriptions = descriptions
+                    update = True
 
-                    if notify:
-                        NovelNotify.objects.bulk_create(notify, ignore_conflicts=True)
+                if update:
+                    novel.publish = True
+                    novel.novel_updated = True
 
-            status = crawled_data.get("status")
-            if status and (not novel.status or status != novel.status.name):
-                status, _ = Status.objects.get_or_create(name=status.title().strip())
-                novel.status = status
-                update = True
+                elif novel.attempt >= int(os.environ.get('CRAWL_ATTEMPT', 5)):
+                    novel.active = False
+                    novel.publish = False
+                    novel.novel_updated = False
 
-            descriptions = crawled_data.get("descriptions")
-            if not novel.descriptions and descriptions:
-                novel.descriptions = descriptions
-                update = True
+                else:
+                    novel.attempt += 1
 
-            if update:
-                novel.publish = True
-                novel.novel_updated = True
-
-            elif novel.attempt >= int(os.environ.get('CRAWL_ATTEMPT', 5)):
-                novel.active = False
-                novel.publish = False
-                novel.novel_updated = False
-
-            else:
-                novel.attempt += 1
-
-            novel.save()
+                novel.save()
+        except:
+            transaction.rollback()
+            return self.parse_response(is_success=False, log_enable=True)
 
         return self.parse_response(is_success=True)
 

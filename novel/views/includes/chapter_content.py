@@ -79,7 +79,7 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                 if not settings.redis_image.get(image_hash):
                     settings.redis_image.set(image_hash, json_str)
 
-                stream_images.append("%s/%s/%s/images/%s.jpg" % (
+                stream_images.append("%s/images/%s/%s/%s.jpg" % (
                     settings.STREAM_IMAGE_DOMAIN, chapter.novel_slug, chapter.slug, image_hash))
 
         except Exception as e:

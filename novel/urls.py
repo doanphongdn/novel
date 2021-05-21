@@ -94,7 +94,7 @@ urlpatterns = [
     path(settings.NOVEL_PAGE_URL + '/<str:slug>', PageView.as_view(), name="page_view"),
     path(settings.NOVEL_ACCOUNT_URL + '/<str:tab_name>', UserProfileView.as_view(), name="user_profile"),
 
-    path('<str:novel_slug>/<str:chapter_slug>/images/<str:img>', stream.stream_image, name="stream_image"),
+    path('images/<str:novel_slug>/<str:chapter_slug>/<str:img>', stream.stream_image, name="stream_image"),
     path('images/thumbnail/<str:img>', stream.stream_image,
          name="stream_thumbnail_image"),
 

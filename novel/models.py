@@ -763,9 +763,11 @@ class NovelParam(models.Model):
 class NovelNotify(models.Model):
     class Meta:
         db_table = "novel_notifications"
+        unique_together = ("user", "novel", "chapter", "notify")
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE, blank=True, null=True)
+    chapter = models.ForeignKey(NovelChapter, on_delete=models.CASCADE, blank=True, null=True)
     notify = models.TextField()
     read = models.BooleanField(default=False)
 

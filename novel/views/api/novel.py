@@ -252,16 +252,18 @@ class NovelAPIView(BaseAPIView):
                     if new_chapters:
                         NovelChapter.objects.bulk_create(new_chapters, ignore_conflicts=True)
                         novel.latest_updated_time = datetime.now()
-                        novel.update_flat_info()
+                        # novel.update_flat_info()
                         update = True
 
                         bookmarks = Bookmark.objects.filter(novel=novel).all()
                         notify = []
                         for bm in bookmarks:
                             latest_chapter_name = novel.novel_flat.latest_chapter.get("name", "")
+                            latest_chapter_id = novel.novel_flat.latest_chapter.get("id", "")
                             notify.append(NovelNotify(user=bm.user,
                                                       notify=novel_setting.NEW_CHAPTER_NOTIFY_MSG % (
-                                                          novel.name, latest_chapter_name), novel=novel))
+                                                          novel.name, latest_chapter_name), novel=novel,
+                                                      chapter=latest_chapter_id))
 
                         if notify:
                             NovelNotify.objects.bulk_create(notify, ignore_conflicts=True)
@@ -349,8 +351,9 @@ class ChapterAPIView(BaseAPIView):
             updated = True
         elif content_images:
             chapter.images_content = '\n'.join(content_images)
-            # chapter.novel.update_flat_info()
-            # chapter.novel.save()
+            novel = chapter.novel
+            novel.update_flat_info()
+            novel.save()
             updated = True
         else:
             content_video = crawled_data.get("content_video") or None

@@ -9,7 +9,7 @@ from operator import or_
 from time import sleep
 from urllib.parse import urlparse
 
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -295,7 +295,14 @@ class NovelAPIView(BaseAPIView):
                     novel.attempt += 1
 
                 novel.save()
-        except:
+        except IntegrityError as ex:
+            # deactive novel because wrong data
+            novel.active = False
+            novel.save()
+            
+            transaction.rollback()
+            return self.parse_response(is_success=True, log_enable=True)
+        except Exception as ex:
             transaction.rollback()
             return self.parse_response(is_success=True, log_enable=True)
 

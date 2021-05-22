@@ -1,3 +1,4 @@
+import logging
 import operator
 import os
 import zlib
@@ -20,6 +21,8 @@ from novel import utils
 from novel.utils import get_first_number_pattern
 from novel.views.api.schema import NovelChapterCampaignSchema, NovelInfoCampaignSchema, NovelListCampaignSchema
 from novel.models import Novel, NovelChapter, Author, Genre, Status, NovelNotify, Bookmark
+
+logger = logging.getLogger('django')
 
 
 class BaseAPIView(APIView):
@@ -263,7 +266,7 @@ class NovelAPIView(BaseAPIView):
                             notify.append(NovelNotify(user=bm.user,
                                                       notify=novel_setting.NEW_CHAPTER_NOTIFY_MSG % (
                                                           novel.name, latest_chapter_name), novel=novel,
-                                                      chapter=latest_chapter_id))
+                                                      chapter_id=latest_chapter_id))
 
                         if notify:
                             NovelNotify.objects.bulk_create(notify, ignore_conflicts=True)

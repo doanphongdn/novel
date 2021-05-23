@@ -10,7 +10,7 @@ from time import sleep
 from urllib.parse import urlparse
 
 from django.db import transaction, IntegrityError
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -182,7 +182,7 @@ class NovelAPIView(BaseAPIView):
             return self.parse_response(is_success=True, continue_paging=False, log_enable=True,
                                        message="No novel found")
 
-        novel = novel_objs.first()
+        novel = novel_objs.first() if isinstance(novel_objs, QuerySet) else novel_objs
 
         is_valid, errors = self.validate_data(NovelInfoCampaignSchema, crawled_data)
         if not is_valid:

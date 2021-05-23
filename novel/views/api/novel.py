@@ -175,7 +175,7 @@ class NovelAPIView(BaseAPIView):
 
         crawled_data['name'] = crawled_data.get('name', '').lower().title()
 
-        novel_objs = self.temp_novels.get(src_url) or Novel.objects.filter(
+        novel_objs = Novel.objects.filter(
             Q(src_url=src_url) | Q(name__iexact=crawled_data['name']))
 
         if not novel_objs:

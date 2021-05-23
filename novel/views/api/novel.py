@@ -298,10 +298,9 @@ class NovelAPIView(BaseAPIView):
         except IntegrityError as ex:
             transaction.rollback()
             # deactive novel because wrong data
-            novel.active = False
-            novel.save()
+            novel.update({"active": False})
             return self.parse_response(is_success=True, log_enable=True)
-        
+
         except Exception as ex:
             transaction.rollback()
             return self.parse_response(is_success=True, log_enable=True)

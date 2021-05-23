@@ -175,12 +175,14 @@ class NovelAPIView(BaseAPIView):
 
         crawled_data['name'] = crawled_data.get('name', '').lower().title()
 
-        novel = self.temp_novels.get(src_url) or Novel.objects.filter(
-            Q(src_url=src_url) | Q(name__iexact=crawled_data['name'])).first()
+        novel_objs = self.temp_novels.get(src_url) or Novel.objects.filter(
+            Q(src_url=src_url) | Q(name__iexact=crawled_data['name']))
 
-        if not novel:
+        if not novel_objs:
             return self.parse_response(is_success=True, continue_paging=False, log_enable=True,
                                        message="No novel found")
+
+        novel = novel_objs.first()
 
         is_valid, errors = self.validate_data(NovelInfoCampaignSchema, crawled_data)
         if not is_valid:
@@ -298,7 +300,7 @@ class NovelAPIView(BaseAPIView):
         except IntegrityError as ex:
             transaction.rollback()
             # deactive novel because wrong data
-            novel.update({"active": False})
+            novel_objs.update({"active": False})
             return self.parse_response(is_success=True, log_enable=True)
 
         except Exception as ex:

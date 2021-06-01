@@ -70,6 +70,9 @@ def stream_image(request, *args, **kwargs):
                 traceback.print_exc()
                 return HttpResponse({})
 
+            if not stream_content:
+                is_stream_failed = True
+
             for item in stream_content:
                 json_obj = utils.is_json(item)
                 if json_obj and json_obj.get('cloudflare_restricted'):

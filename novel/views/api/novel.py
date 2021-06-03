@@ -375,7 +375,7 @@ class ChapterAPIView(BaseAPIView):
                 chapter.crawl_errors = "No content to update, deactived chapter"
                 chapter.active = False
                 chapter.save()
-                return self.parse_response(is_success=False, continue_paging=False, log_enable=True,
+                return self.parse_response(is_success=True, continue_paging=True, log_enable=True,
                                            message="No content to update, deactived chapter",
                                            extra_data=errors)
 

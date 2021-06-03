@@ -101,6 +101,7 @@ class NovelChapterAdmin(ActionAdmin):
     search_fields = ("novel__id", "novel__name", "novel_slug", "name", "slug")
 
     actions = ("active", "deactive", "chapter_updated_true", "chapter_updated_false", "update_name_by_language",
+               "updated_false_and_reset_cdn_files",
                "remove_cdn_files", "remove_cdn_files_in_background")
 
     def get_form(self, request, obj=None, change=False, **kwargs):
@@ -137,6 +138,21 @@ class NovelChapterAdmin(ActionAdmin):
 
     def remove_chapter_cdn_files(self, chapter):
         chapter.remove_cdn_files()
+
+    def updated_false_and_reset_cdn_files(self, request, queryset):
+        for obj in queryset:
+            obj.chapter_updated = False
+            obj.save()
+            # Get CDN item
+            cdn_file = CDNNovelFile.objects.filter(chapter_id=obj.id).first()
+            if cdn_file:
+                cdn_file.url = None
+                cdn_file.full = False
+                cdn_file.url_hash = None
+                cdn_file.save()
+            logger.info("[reset_cdn_files_in_background] Starting...")
+            thread = threading.Thread(target=self.remove_chapter_cdn_files, args=(obj,))
+            thread.start()
 
     def remove_cdn_files(self, request, queryset):
         start = time.perf_counter()  # start timer

@@ -1,0 +1,3 @@
+[submodule "django-admin-style"]
+	path = django-admin-style
+	url = git@github.com:thoidh/django-admin-style.git

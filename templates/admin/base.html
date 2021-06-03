@@ -1,0 +1,303 @@
+{% load i18n static %}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}">
+  <!-- Icons Css -->
+  <link href="{% static "admin-assets/css/bootstrap-dark.css" %}" rel="stylesheet" type="text/css"/>
+  <!-- Icons Css -->
+  <link href="{% static "admin-assets/css/icons.min.css" %}" rel="stylesheet" type="text/css"/>
+  <!-- App Css-->
+  <link href="{% static "admin-assets/css/app.min.css" %}" id="app-style" rel="stylesheet" type="text/css"/>
+
+  {% if not is_popup and is_nav_sidebar_enabled %}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/nav_sidebar.css" %}">
+    <script src="{% static 'admin/js/nav_sidebar.js' %}" defer></script>
+  {% endif %}
+  {% block extrastyle %}{% endblock %}
+  {% if LANGUAGE_BIDI %}
+    <link rel="stylesheet" type="text/css"
+          href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}">{% endif %}
+  {% block extrahead %}{% endblock %}
+  {% block responsive %}
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/responsive.css" %}">
+    {% if LANGUAGE_BIDI %}
+      <link rel="stylesheet" type="text/css" href="{% static "admin/css/responsive_rtl.css" %}">{% endif %}
+  {% endblock %}
+  {% block blockbots %}
+    <meta name="robots" content="NONE,NOARCHIVE">{% endblock %}
+  <link href="{% static "admin-assets/css/custom.css" %}" id="app-style" rel="stylesheet" type="text/css"/>
+  <!-- Bootstrap Css -->
+  <link href="{% static "admin-assets/css/bootstrap.min.css" %}" id="bootstrap-style" rel="stylesheet"
+        type="text/css"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap" rel="stylesheet">
+  <script src="{% static "admin-assets/libs/jquery/jquery.min.js" %}"></script>
+</head>
+{% load i18n %}
+<body data-sidebar="dark" class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}"
+      data-admin-utc-offset="{% now "Z" %}">
+{% block body %}
+  <!-- Loader -->
+  <div id="preloader">
+    <div id="status">
+      <div class="spinner">
+        <i class="ri-loader-line spin-icon"></i>
+      </div>
+    </div>
+  </div>
+  <!-- Container -->
+  <div id="layout-wrapper">
+    <!-- Begin header -->
+    {% if not is_popup %}
+      {% block nav-header %}
+        <header id="page-topbar">
+          <div class="navbar-header">
+            <div class="d-flex">
+              <!-- LOGO -->
+              <div class="navbar-brand-box d-none d-md-block" id="branding">
+                <a href="{% url "admin:index" %}" class="logo logo-light">
+                <span class="logo-sm">
+                    <img style="height: 22px;"
+                         src="{% static "admin-assets/images/logo-hub.png" %}"
+                         alt="Logo">
+                </span>
+                  <span class="logo-lg" style="color: #F9F9F9; font-weight: bold;">
+                  <img style="height: 40px;"
+                       src="{% static "admin-assets/images/logo-hub.png" %}"
+                       alt="Logo">
+                  HUB CONNECTOR
+                </span>
+                </a>
+
+              </div>
+              <button type="button" class="btn btn-sm px-3 font-size-24 header-item "
+                      id="vertical-menu-btn">
+                <i class="ri-menu-2-line align-middle"></i>
+              </button>
+              <button type="button" class="btn btn-sm px-0 font-size-24 header-item">
+                <a href="{% url "admin:index" %}"><i class="ri-dashboard-line align-middle"></i></a>
+              </button>
+            </div>
+            <div class="d-flex">
+              {% block usertools %}
+                {% if has_permission %}
+                  <div class="dropdown d-inline-block user-dropdown">
+
+                    <button class="btn header-item " id="page-header-user-dropdown"
+                            type="button" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                      <i class="fa fa-user-circle user"></i>
+                      {#                        <img class="rounded-circle header-profile-user" src="assets/images/users/avatar-2.jpg"#}
+                      {#                             alt="Header Avatar">#}
+                      <span class="mx-2">{% firstof user.get_short_name user.get_username %}</span>
+                      <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                      <!-- item-->
+                      <a class="dropdown-item" href="{{ site_url }}"><i
+                        class="ri-user-line align-middle mr-1"></i> {% translate 'View site' %}
+                      </a>
+                      {% if user.is_active and user.is_staff %}
+                        {% url 'django-admindocs-docroot' as docsroot %}
+                        {% if docsroot %}
+                          <a class="dropdown-item" href="{{ docsroot }}"><i
+                            class="ri-user-line align-middle mr-1"></i> {% translate 'Documentation' %}
+                          </a>
+                        {% endif %}
+                      {% endif %}
+                      {% if user.has_usable_password %}
+                        <a class="dropdown-item" href="{% url 'admin:password_change' %}"><i
+                          class="ri-lock-unlock-line align-middle mr-1"></i> {% translate 'Change password' %}
+                        </a>
+                      {% endif %}
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item text-danger" href="{% url 'admin:logout' %}"><i
+                        class="ri-shut-down-line align-middle mr-1 text-danger"></i> {% translate 'Log out' %}
+                      </a>
+                    </div>
+                  </div>
+                {% endif %}
+              {% endblock %}
+            </div>
+            {% block nav-global %}{% endblock %}
+          </div>
+        </header>
+      {% endblock %}
+      <!-- ========== Left Sidebar Start ========== -->
+      {% if app_list %}
+        <div class="vertical-menu">
+          <div data-simplebar class="h-100">
+            <div id="sidebar-menu">
+              {% for app in app_list %}
+                <ul class="metismenu list-unstyled" id="side-menu">
+                  <li class="menu-title">{{ app.name }}</li>
+                  {% for model in app.models %}
+                    <li>
+                      <a href="{{ model.admin_url }}"
+                         class="{% if model.admin_url in request.path %} active{% endif %}">
+                        <i class="{{ model.icon }}"></i>
+                        <span>{{ model.name }}</span>
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+    {% block messages %}
+      {% if messages %}
+        <ul class="messagelist">{% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst }}</li>
+        {% endfor %}</ul>
+      {% endif %}
+    {% endblock messages %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content{% if is_popup %} is-popup{% endif %}">
+      <div class="page-content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 d-none d-md-block">{{ module_name }}</h4>
+                {% if not is_popup %}
+                  <div class="page-title-right">
+                    {% block breadcrumbs %}
+                      <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a
+                          href="{% url 'admin:index' %}">{% translate 'Home' %}</a></li>
+                        {% if title %}
+                          <li class="breadcrumb-item active">{{ title }}</li>{% endif %}
+                      </ol>
+                    {% endblock %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% block main_content %}
+            <!-- end page title -->
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-body">
+                    <!-- Content -->
+                    <div id="content" class="{% block coltype %}colM{% endblock %}">
+                      {% block pretitle %}{% endblock %}
+                      {% block content_title %}
+                        {% if title %}
+                          <h1>{{ title }}</h1>
+                        {% endif %}
+                      {% endblock %}
+                      {% block content %}
+                        {% block object-tools %}{% endblock %}
+                        {{ content }}
+                      {% endblock %}
+                      {% block sidebar %}{% endblock %}
+                      <br class="clear">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end row -->
+          {% endblock %}
+        </div> <!-- container-fluid -->
+      </div>
+      <footer class="footer">
+        <div class="container-fluid">
+          <div class="row">
+            {% block footer %}
+              <div id="footer"></div>{% endblock %}
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+{% endblock %}
+<!-- END Container -->
+<!-- JAVASCRIPT -->
+<script src="{% static "admin-assets/libs/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+<script src="{% static "admin-assets/libs/metismenu/metisMenu.min.js" %}"></script>
+<script src="{% static "admin-assets/libs/simplebar/simplebar.min.js" %}"></script>
+<script src="{% static "admin-assets/libs/node-waves/waves.min.js" %}"></script>
+<script src="{% static "admin-assets/libs/bs-custom-file-input/bs-custom-file-input.min.js" %}"></script>
+<script src="{% static "admin-assets/js/pages/form-element.init.js" %}"></script>
+<script>
+    $(document).ready(function () {
+        let td_checkbox = $("td.action-checkbox input[type='checkbox'], td.delete input[type='checkbox'], " +
+            "th.action-checkbox-column input[type='checkbox'], .checkbox-row input[type='checkbox'], .checkbox-row input[type='password']");
+        $.each(td_checkbox, function (i) {
+            $(this).addClass("custom-control-input");
+            let next = $(this).next();
+            if (next[0] !== undefined && next[0].nodeName === "LABEL") {
+                next.attr({"class": ""}).addClass("custom-control-label");
+                $(this).parent().wrap('<div class="custom-control custom-switch"></div>');
+            } else {
+                let id = $(this).attr("id");
+                if (id === undefined || id === null) {
+                    id = "chk" + $(this).val();
+                    $(this).attr("id", id);
+                }
+                $(this).wrap('<div class="custom-control custom-switch"></div>');
+                $(this).after('<label class="custom-control-label" for="' + id + '"></label>');
+            }
+        });
+
+        let submit = $(".submit-row:not(.inline_actions) input[type='submit'], #content input[type='submit'], #changelist-search input[type='submit']");
+        $.each(submit, function (i) {
+            let val = $(this).val();
+            let status = "success";
+            let icon = "fa fa-save";
+
+            if (!$(this).hasClass("default")) {
+                if (val === '{% translate 'Yes, I’m sure' %}') {
+                    status = 'danger';
+                    icon = 'fa-trash-alt'
+                } else if (val === '{% translate 'Search' %}') {
+                    status = 'light';
+                    icon = 'fa-search'
+                } else {
+                    status = 'light';
+                    icon = 'fa-arrow-alt-circle-right'
+                }
+            }
+            $(this).replaceWith("<button type='submit' class='btn btn-" + status + "'><i class='fas " + icon + "'></i> " + val + "</button>");
+        });
+        $.each($('a.cancel-link, a.deletelink'), function (i) {
+            let text = $(this).text();
+            let status = "light";
+            let icon = "fa fa-times";
+            if ($(this).hasClass("deletelink")) {
+                status = 'danger';
+                icon = 'fa-trash-alt'
+            }
+            $(this).removeAttr("class");
+            $(this).html("<button type='button' class='btn btn-" + status + "'><i class='fas " + icon + "'></i> " + text + "</button>")
+        });
+        $.each($(".actions button[type='submit']"), function (i) {
+            $(this).removeClass("button").addClass("btn btn-light");
+        });
+        $.each($(".auth-form-group-custom input"), function (i) {
+            $(this).addClass("form-control");
+        });
+        $.each($(".errornote"), function (i) {
+            let text = $(this).text();
+            $(this).replaceWith('<div class="alert alert-danger alert-dismissible fade show" role="alert">' + text +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                '<span aria-hidden="true">×</span></button></div>');
+        });
+    });
+</script>
+{% block customjs %}{% endblock %}
+<script src="{% static "admin-assets/js/app.js" %}"></script>
+</body>
+
+</html>

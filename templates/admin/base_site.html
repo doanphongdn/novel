@@ -1,6 +1,12 @@
 {% extends "admin/base_site.html" %}
 {% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
 {% block extrahead %}
-<script>window.CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/';</script>
-{{ block.super }}
+  <style>
+      .inline-group .tabular td.original p {
+          font-size: 12px !important;
+          margin-bottom: 5px;
+      }
+  </style>
+  <script>window.CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/';</script>
+  {{ block.super }}
 {% endblock %}

@@ -87,6 +87,7 @@ class PageTemplate(models.Model):
     class Meta:
         db_table = "cms_template_manager"
         ordering = ["page_file"]
+        verbose_name = "Template place"
 
     page_file = models.CharField(max_length=250, choices=TEMPLATE_PAGE_CHOISES.get(settings.APP_NAME),
                                  unique=True)
@@ -107,6 +108,7 @@ class InludeTemplate(models.Model):
     """
 
     class Meta:
+        verbose_name = "Template widget"
         db_table = "cms_template_include"
         unique_together = [('template', 'code')]
         ordering = ["template", "priority"]

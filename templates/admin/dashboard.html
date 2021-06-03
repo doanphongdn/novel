@@ -1,0 +1,177 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+{% block extrastyle %}{{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
+{% block breadcrumbs %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
+{% block content_title %}{% endblock %}
+{% block main_content %}
+  <!-- Start right Content here -->
+  <!-- ============================================================== -->
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="media">
+                <div class="media-body overflow-hidden">
+                  <p class="text-truncate font-size-14 mb-2">Calling number</p>
+                  <h4 class="mb-0">{{ summary_data.calling }}</h4>
+                </div>
+                <div class="text-warning">
+                  <i class="ri-loader-2-fill font-size-24"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="media">
+                <div class="media-body overflow-hidden">
+                  <p class="text-truncate font-size-14 mb-2">Failed number</p>
+                  <h4 class="mb-0">{{ summary_data.failed }}</h4>
+                </div>
+                <div class="text-danger">
+                  <i class="ri-close-circle-fill font-size-24"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="media">
+                <div class="media-body overflow-hidden">
+                  <p class="text-truncate font-size-14 mb-2">Success number</p>
+                  <h4 class="mb-0">{{ summary_data.success }}</h4>
+                </div>
+                <div class="text-success">
+                  <i class="ri-checkbox-circle-fill font-size-24"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title mb-4">Status of routing logs every 7 days</h4>
+          <div id="line_chart_datalabel" class="apex-charts" dir="ltr"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title mb-4">Status of routing logs today</h4>
+          <div id="donut_chart" class="apex-charts" dir="ltr"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div class="dropdown">
+            <h4 class="card-title mb-4">{% translate 'Recent actions' %}</h4>
+            {% load log %}
+            {% get_admin_log 10 as admin_log for_user user %}
+            {% if not admin_log %}
+              <p>{% translate 'None available' %}</p>
+            {% else %}
+            {% endif %}
+            <div data-simplebar style="height: 340px;">
+              <ul class="list-unstyled activity-wid">
+                {% for entry in admin_log %}
+                  <li class="activity-list">
+                    <div class="activity-icon avatar-xs">
+                  <span
+                    class="avatar-title bg-soft-primary text-primary rounded-circle">
+                      {% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}
+                    {% if entry.is_deletion %}deletelink{% endif %}
+                  </span>
+                    </div>
+                    <div>
+                      <div>
+                        <h5 class="font-size-13">
+                          {% if entry.is_deletion or not entry.get_admin_url %}
+                            {{ entry.object_repr }}
+                          {% else %}
+                            <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                          {% endif %}
+                        </h5>
+                      </div>
+                      <div>
+                        <p class="text-muted mb-0">
+                          {% if entry.content_type %}
+                            <span class="mini quiet">{% filter capfirst %}
+                              {{ entry.content_type.name }}{% endfilter %}</span>
+                          {% else %}
+                            <span class="mini quiet">{% translate 'Unknown content' %}</span>
+                          {% endif %}
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end row -->
+
+  <!-- end main content-->
+{% endblock %}
+
+{% block sidebar %}
+
+{% endblock %}
+{% block customjs %}
+  <!-- apexcharts -->
+  <script src="{% static "admin-assets/libs/apexcharts/apexcharts.min.js" %}"></script>
+  <script>
+      (new ApexCharts(document.querySelector("#line_chart_datalabel"),
+          {
+              chart: {type: "area", zoom: {enabled: !1}, toolbar: {show: !1}},
+              colors: ["#edb933", "#FF1741", "#179A73"],
+              plotOptions: {bar: {horizontal: !1, columnWidth: "45%", endingShape: "rounded"}},
+              dataLabels: {enabled: !1},
+              stroke: {width: [3, 3, 3], curve: "smooth"},
+              series: {{ routing_log_chart_data.line_chart_series }},
+              title: {text: "Daily routing logging by status", align: "left"},
+              grid: {row: {colors: ["transparent", "transparent"], opacity: .2}, borderColor: "#f1f1f1"},
+              markers: {style: "smooth", size: 6},
+              xaxis: {categories: {{ routing_log_chart_data.line_chart_categories }}, title: {text: "Daily"}},
+              yaxis: {
+                  title: {text: "Routing log request number"},
+                  min: {{ routing_log_chart_data.line_chart_min_value }},
+                  max: {{ routing_log_chart_data.line_chart_max_value }}
+              },
+              legend: {position: "top", horizontalAlign: "right", floating: !0, offsetY: -25, offsetX: -5},
+              responsive: [{breakpoint: 600, options: {chart: {height: 400, toolbar: {show: !1}}, legend: {show: !1}}}]
+          })).render();
+
+      (new ApexCharts(document.querySelector("#donut_chart"), {
+          chart: {height: 320, type: "donut"},
+          series: {{ routing_log_chart_data.donut_chart_series }},
+          labels: {{ routing_log_chart_data.donut_chart_categories }},
+          colors: ["#edb933", "#FF1741", "#179A73"],
+          legend: {
+              show: !0,
+              position: "bottom",
+              horizontalAlign: "center",
+              verticalAlign: "middle",
+              floating: !1,
+              fontSize: "14px",
+              offsetX: 0,
+              offsetY: 5
+          },
+          responsive: [{breakpoint: 600, options: {chart: {height: 240}, legend: {show: !1}}}]
+      })).render();
+  </script>
+{% endblock %}

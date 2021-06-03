@@ -4,6 +4,7 @@ from django.contrib.admin.apps import AdminConfig
 
 class CmsConfig(AppConfig):
     name = 'django_cms'
+    verbose_name = "Django CMS"
 
 
 class AdminConfigExt(AdminConfig):
@@ -11,3 +12,8 @@ class AdminConfigExt(AdminConfig):
 
     def ready(self):
         super().ready()
+
+
+class AuthConfig(AppConfig):
+    name = 'django.contrib.auth'
+    verbose_name = "System Administrator"

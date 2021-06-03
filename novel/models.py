@@ -54,6 +54,7 @@ def unicode_slugify(name):
 
 class Status(models.Model):
     class Meta:
+        verbose_name = "statu"
         db_table = 'novel_status'
 
     name = models.CharField(max_length=250, unique=True)
@@ -460,6 +461,7 @@ class NovelChapter(models.Model):
 class NovelSetting(models.Model):
     class Meta:
         db_table = "novel_settings"
+        verbose_name = "Setting"
 
     title = models.CharField(max_length=250)
     favicon = models.ImageField(upload_to="images", null=True, blank=True)
@@ -548,6 +550,7 @@ class CDNNovelFile(models.Model):
 
 class Comment(models.Model):
     class Meta:
+        verbose_name = "Comment"
         db_table = 'novel_comments'
 
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE)
@@ -649,6 +652,7 @@ class AllowIP(models.Model):
 
 class NovelReport(models.Model):
     class Meta:
+        verbose_name = "Report"
         db_table = 'novel_reports'
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -712,6 +716,7 @@ NOVEL_ADV_PLACES = (
 
 class NovelAdvertisementPlace(models.Model):
     class Meta:
+        verbose_name = "Advertisement place"
         db_table = 'novel_advertisement_places'
         ordering = ("group", "code")
 
@@ -733,6 +738,7 @@ DEVICES = (('all', 'ALL'), ('mobile', 'MOBILE'), ('pc', 'DESKTOP'))
 
 class NovelAdvertisement(models.Model):
     class Meta:
+        verbose_name = "dvertisement"
         db_table = 'novel_advertisements'
 
     name = models.CharField(max_length=250)

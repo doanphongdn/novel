@@ -47,6 +47,7 @@ class ActionAdmin(BaseActionAdmin):
 
 @admin.register(HtmlPage)
 class HtmlPageAdmin(ActionAdmin):
+    menu_icon = "ri-pages-fill"
     form = HtmlPageForm
     list_display = ("id", "name", "active", "created_at", "updated_at")
     search_fields = ("name", "slug")
@@ -55,6 +56,7 @@ class HtmlPageAdmin(ActionAdmin):
 
 @admin.register(FooterInfo)
 class FooterAdmin(BaseActionAdmin):
+    menu_icon = "ri-layout-bottom-fill"
     list_display = ("id", "active", "content")
     search_fields = ("content",)
     list_filter = ("active",)
@@ -62,6 +64,7 @@ class FooterAdmin(BaseActionAdmin):
 
 @admin.register(Menu)
 class MenuAdmin(BaseActionAdmin, ImportExportModelAdmin):
+    menu_icon = "ri-menu-2-fill"
     list_display = ("id", "priority", "name", "url", "type")
     search_fields = ("name", "url", "type")
     list_filter = ("active", "type")
@@ -69,6 +72,7 @@ class MenuAdmin(BaseActionAdmin, ImportExportModelAdmin):
 
 @admin.register(Link)
 class LinkAdmin(ActionAdmin, ImportExportModelAdmin):
+    menu_icon = "ri-link"
     list_display = ("id", "active", "name", "url", "type")
     search_fields = ("name", "url", "type")
     list_filter = ("active", "type")
@@ -90,6 +94,7 @@ class IncludeTemplateForm(forms.ModelForm):
 
 @admin.register(InludeTemplate)
 class InludeTemplateAdmin(ActionAdmin, ImportExportModelAdmin):
+    menu_icon = "ri-dashboard-fill"
     list_display = ("template", "code", "include_file", "priority", "class_name", "active")
     form = IncludeTemplateForm
 
@@ -103,5 +108,6 @@ class TemplateManagerForm(forms.ModelForm):
 
 @admin.register(PageTemplate)
 class TemplateManagerAdmin(BaseActionAdmin, ImportExportModelAdmin):
+    menu_icon = "ri-layout-masonry-fill"
     list_display = ("id", "page_file")
     form = TemplateManagerForm

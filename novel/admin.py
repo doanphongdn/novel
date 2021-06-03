@@ -5,24 +5,29 @@ import time
 import zlib
 from concurrent.futures import ThreadPoolExecutor
 
+from allauth.account.admin import EmailAddressAdmin
+from allauth.account.models import EmailAddress
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 from django.contrib.admin.helpers import ActionForm
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin, GroupAdmin
+from django.contrib.auth.forms import AuthenticationForm, UsernameField
+from django.contrib.auth.models import User, Group
+from django.contrib.sites.admin import SiteAdmin
+from django.contrib.sites.models import Site
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.html import format_html
 from django.views.decorators.cache import never_cache
 from django_json_widget.widgets import JSONEditorWidget
+from django.utils.translation import gettext_lazy as _
 
 from django_cms.admin import ActionAdmin, BaseActionAdmin
 from django_cms.models import CDNServer
 from novel import utils
 from novel.models import CDNNovelFile, Comment, Genre, Novel, NovelAdvertisement, NovelAdvertisementPlace, NovelChapter, \
     NovelNotify, NovelParam, NovelReport, NovelSetting, Status
-
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +50,7 @@ class NovelForm(forms.ModelForm):
 
 @admin.register(Novel)
 class NovelAdmin(BaseActionAdmin):
+    menu_icon = "ri-book-mark-fill"
     form = NovelForm
     list_display = ("id", "name", "novel_updated", "status", "active", "created_at", "updated_at")
     search_fields = ("name", "slug", "src_url")
@@ -96,6 +102,7 @@ class NovelChapterForm(forms.ModelForm):
 
 @admin.register(NovelChapter)
 class NovelChapterAdmin(ActionAdmin):
+    menu_icon = "ri-book-open-fill"
     form = NovelChapterForm
     list_display = ("id", "name", "novel", "chapter_updated", "created_at", "updated_at", "active")
     search_fields = ("novel__id", "novel__name", "novel_slug", "name", "slug")
@@ -196,6 +203,7 @@ class NovelSettingForm(forms.ModelForm):
 
 @admin.register(NovelSetting)
 class NovelSettingAdmin(BaseActionAdmin):
+    menu_icon = "ri-settings-5-line"
     form = NovelSettingForm
     list_display = (
         "id", "title", "favicon_tag", "logo_tag")
@@ -210,6 +218,7 @@ class NovelSettingAdmin(BaseActionAdmin):
 
 @admin.register(CDNNovelFile)
 class CDNNovelFileAdmin(BaseActionAdmin):
+    menu_icon = "ri-file-cloud-fill"
     list_display = ("id", "cdn", "chapter", "type", "hash_origin_url", "retry", "full")
     search_fields = ("cdn__name", "chapter__name", "hash_origin_url", "url")
     readonly_fields = ("chapter",)
@@ -217,6 +226,7 @@ class CDNNovelFileAdmin(BaseActionAdmin):
 
 @admin.register(CDNServer)
 class CDNServerAdmin(BaseActionAdmin):
+    menu_icon = "ri-server-fill"
     list_display = ("id", "name", "server_id", "endpoint", "last_run", "status")
 
 
@@ -243,16 +253,19 @@ class AdminSiteExt(admin.AdminSite):
 
 @admin.register(Status)
 class StatusAdmin(BaseActionAdmin):
+    menu_icon = "ri-flag-fill"
     list_display = ("id", "name", "active")
 
 
 @admin.register(Genre)
 class GenreAdmin(BaseActionAdmin):
+    menu_icon = "ri-price-tag-3-fill"
     list_display = ("id", "name", "style_color", "slug", "active")
 
 
 @admin.register(NovelReport)
 class ReportAdmin(BaseActionAdmin):
+    menu_icon = "ri-bug-fill"
     readonly_fields = ("user", "novel", "chapter", "content", "created_at")
     list_display = ("id", "user", "novel_link", "chapter_link", "content", "created_at")
 
@@ -274,6 +287,7 @@ class ReportAdmin(BaseActionAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(BaseActionAdmin):
+    menu_icon = "ri-chat-3-fill"
     ordering = ("-id",)
     readonly_fields = ("novel", "chapter", "name", "content_html", "created_at")
     exclude = ("user", "parent_id", "reply_id", "content")
@@ -285,22 +299,20 @@ class CommentAdmin(BaseActionAdmin):
 
 @admin.register(NovelAdvertisementPlace)
 class NovelAdvertisementPlaceAdmin(BaseActionAdmin):
+    menu_icon = "ri-layout-4-fill"
     list_display = ("group", "code", "active")
 
 
 @admin.register(NovelAdvertisement)
 class NovelAdvertisementAdmin(BaseActionAdmin):
+    menu_icon = "ri-advertisement-fill"
     list_display = ("name", "ad_type", "active")
     filter_horizontal = ("places",)
     list_filter = ("places__code",)
 
 
-@admin.register(NovelParam)
-class NovelParamAdmin(BaseActionAdmin):
-    list_display = ("key", "values", "active")
-
-
 class MyUserAdmin(UserAdmin):
+    menu_icon = "ri-user-3-fill"
     actions = ["send_notify"]
 
     class NotifyForm(ActionForm):
@@ -317,5 +329,36 @@ class MyUserAdmin(UserAdmin):
     send_notify.short_description = "Send Notify to user >>"
 
 
+class MyUserGroupAdmin(GroupAdmin):
+    menu_icon = "ri-team-fill"
+
+
+class CustomAuthForm(AuthenticationForm):
+    username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True, 'placeholder': _("Username")}))
+    password = forms.CharField(
+        label=_("Password"),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password', "placeholder": _("Password")}),
+    )
+
+
+class MyEmailAddress(EmailAddressAdmin):
+    menu_icon = "ri-mail-send-line"
+
+
+class MySiteAdmin(SiteAdmin):
+    menu_icon = "ri-terminal-window-fill"
+
+
+admin.site.unregister(Group)
 admin.site.unregister(User)
+admin.site.unregister(EmailAddress)
+admin.site.unregister(Site)
+
+admin.site.register(Group, MyUserGroupAdmin)
 admin.site.register(User, MyUserAdmin)
+admin.site.register(EmailAddress, MyEmailAddress)
+admin.site.register(Site, MySiteAdmin)
+
+admin.site.login_form = CustomAuthForm
+admin.site.login_form = CustomAuthForm

@@ -46,8 +46,11 @@ SELENIUM_CHROME_DRIVE = os.environ.get('SELENIUM_CHROME_DRIVE', '/usr/local/bin/
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
+    # 'django.contrib.admin',
+    'django_cms.admin_site.AdminConfigExt',
+    # 'django.contrib.auth',
+    'django_cms.apps.AuthConfig',
+
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -69,7 +72,8 @@ INSTALLED_APPS = [
     'django_redis',
     'import_export',
     'pipeline',
-    'django_cms',
+    # 'django_cms',
+    'django_cms.apps.CmsConfig',
     'rest_framework',
     'ckeditor',
     'django_json_widget',
@@ -213,7 +217,7 @@ SITE_ID = 1
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_files"), os.path.join(BASE_DIR, "static_debug")]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_debug")]
 
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT')
 MEDIA_URL = '/media/'

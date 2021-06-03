@@ -48,9 +48,9 @@ SELENIUM_CHROME_DRIVE = os.environ.get('SELENIUM_CHROME_DRIVE', '/usr/local/bin/
 INSTALLED_APPS = [
     # 'django.contrib.admin',
     # 'django.contrib.auth',
-    'django-admin-style',
-    'django-admin-style.admin_site.AdminConfigExt',
-    'django-admin-style.apps.AuthConfig',
+    'django_admin_style',
+    'django_admin_style.admin_site.AdminConfigExt',
+    'django_admin_style.apps.AuthConfig',
 
     'django.contrib.contenttypes',
     'django.contrib.sessions',

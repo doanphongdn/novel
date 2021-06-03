@@ -104,7 +104,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, "django-admin-style/templates"),
+            os.path.join(BASE_DIR, "django_admin_style/templates"),
             os.path.join(BASE_DIR, 'templates'),
         ],
         'APP_DIRS': True,
@@ -222,7 +222,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static_debug"),
-    os.path.join(BASE_DIR, "django-admin-style/assets"),
+    os.path.join(BASE_DIR, "django_admin_style/assets"),
 ]
 
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT')

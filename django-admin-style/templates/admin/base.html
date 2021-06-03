@@ -5,11 +5,11 @@
   <title>{% block title %}{% endblock %}</title>
   <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}">
   <!-- Icons Css -->
-  <link href="{% static "admin-assets/css/bootstrap-dark.css" %}" rel="stylesheet" type="text/css"/>
+  <link href="{% static "admin-dist/nazox-admin/css/bootstrap-dark.css" %}" rel="stylesheet" type="text/css"/>
   <!-- Icons Css -->
-  <link href="{% static "admin-assets/css/icons.min.css" %}" rel="stylesheet" type="text/css"/>
+  <link href="{% static "admin-dist/nazox-admin/css/icons.min.css" %}" rel="stylesheet" type="text/css"/>
   <!-- App Css-->
-  <link href="{% static "admin-assets/css/app.min.css" %}" id="app-style" rel="stylesheet" type="text/css"/>
+  <link href="{% static "admin-dist/nazox-admin/css/app.min.css" %}" id="app-style" rel="stylesheet" type="text/css"/>
 
   {% if not is_popup and is_nav_sidebar_enabled %}
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/nav_sidebar.css" %}">
@@ -28,13 +28,13 @@
   {% endblock %}
   {% block blockbots %}
     <meta name="robots" content="NONE,NOARCHIVE">{% endblock %}
-  <link href="{% static "admin-assets/css/custom.css" %}" id="app-style" rel="stylesheet" type="text/css"/>
+  <link href="{% static "admin-dist/css/custom.css" %}" id="app-style" rel="stylesheet" type="text/css"/>
   <!-- Bootstrap Css -->
-  <link href="{% static "admin-assets/css/bootstrap.min.css" %}" id="bootstrap-style" rel="stylesheet"
+  <link href="{% static "admin-dist/nazox-admin/css/bootstrap.min.css" %}" id="bootstrap-style" rel="stylesheet"
         type="text/css"/>
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap" rel="stylesheet">
-  <script src="{% static "admin-assets/libs/jquery/jquery.min.js" %}"></script>
+  <script src="{% static "admin-dist/nazox-admin/libs/jquery/jquery.min.js" %}"></script>
 </head>
 {% load i18n %}
 <body data-sidebar="dark" class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}"
@@ -61,14 +61,14 @@
                 <a href="{% url "admin:index" %}" class="logo logo-light">
                 <span class="logo-sm">
                     <img style="height: 22px;"
-                         src="{% static "admin-assets/images/logo-hub.png" %}"
+                         src="{% static "admin-dist/images/python.png" %}"
                          alt="Logo">
                 </span>
                   <span class="logo-lg" style="color: #F9F9F9; font-weight: bold;">
                   <img style="height: 40px;"
-                       src="{% static "admin-assets/images/logo-hub.png" %}"
+                       src="{% static "admin-dist/images/python.png" %}"
                        alt="Logo">
-                  HUB CONNECTOR
+                    <span class="ml-3">DJANGO ADMIN</span>
                 </span>
                 </a>
 
@@ -224,80 +224,19 @@
 {% endblock %}
 <!-- END Container -->
 <!-- JAVASCRIPT -->
-<script src="{% static "admin-assets/libs/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
-<script src="{% static "admin-assets/libs/metismenu/metisMenu.min.js" %}"></script>
-<script src="{% static "admin-assets/libs/simplebar/simplebar.min.js" %}"></script>
-<script src="{% static "admin-assets/libs/node-waves/waves.min.js" %}"></script>
-<script src="{% static "admin-assets/libs/bs-custom-file-input/bs-custom-file-input.min.js" %}"></script>
-<script src="{% static "admin-assets/js/pages/form-element.init.js" %}"></script>
+<script src="{% static "admin-dist/nazox-admin/libs/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+<script src="{% static "admin-dist/nazox-admin/libs/metismenu/metisMenu.min.js" %}"></script>
+<script src="{% static "admin-dist/nazox-admin/libs/simplebar/simplebar.min.js" %}"></script>
+<script src="{% static "admin-dist/nazox-admin/libs/node-waves/waves.min.js" %}"></script>
+<script src="{% static "admin-dist/nazox-admin/libs/bs-custom-file-input/bs-custom-file-input.min.js" %}"></script>
+<script src="{% static "admin-dist/nazox-admin/js/pages/form-element.init.js" %}"></script>
 <script>
-    $(document).ready(function () {
-        let td_checkbox = $("td.action-checkbox input[type='checkbox'], td.delete input[type='checkbox'], " +
-            "th.action-checkbox-column input[type='checkbox'], .checkbox-row input[type='checkbox'], .checkbox-row input[type='password']");
-        $.each(td_checkbox, function (i) {
-            $(this).addClass("custom-control-input");
-            let next = $(this).next();
-            if (next[0] !== undefined && next[0].nodeName === "LABEL") {
-                next.attr({"class": ""}).addClass("custom-control-label");
-                $(this).parent().wrap('<div class="custom-control custom-switch"></div>');
-            } else {
-                let id = $(this).attr("id");
-                if (id === undefined || id === null) {
-                    id = "chk" + $(this).val();
-                    $(this).attr("id", id);
-                }
-                $(this).wrap('<div class="custom-control custom-switch"></div>');
-                $(this).after('<label class="custom-control-label" for="' + id + '"></label>');
-            }
-        });
-
-        let submit = $(".submit-row:not(.inline_actions) input[type='submit'], #content input[type='submit'], #changelist-search input[type='submit']");
-        $.each(submit, function (i) {
-            let val = $(this).val();
-            let status = "success";
-            let icon = "fa fa-save";
-
-            if (!$(this).hasClass("default")) {
-                if (val === '{% translate 'Yes, I’m sure' %}') {
-                    status = 'danger';
-                    icon = 'fa-trash-alt'
-                } else if (val === '{% translate 'Search' %}') {
-                    status = 'light';
-                    icon = 'fa-search'
-                } else {
-                    status = 'light';
-                    icon = 'fa-arrow-alt-circle-right'
-                }
-            }
-            $(this).replaceWith("<button type='submit' class='btn btn-" + status + "'><i class='fas " + icon + "'></i> " + val + "</button>");
-        });
-        $.each($('a.cancel-link, a.deletelink'), function (i) {
-            let text = $(this).text();
-            let status = "light";
-            let icon = "fa fa-times";
-            if ($(this).hasClass("deletelink")) {
-                status = 'danger';
-                icon = 'fa-trash-alt'
-            }
-            $(this).removeAttr("class");
-            $(this).html("<button type='button' class='btn btn-" + status + "'><i class='fas " + icon + "'></i> " + text + "</button>")
-        });
-        $.each($(".actions button[type='submit']"), function (i) {
-            $(this).removeClass("button").addClass("btn btn-light");
-        });
-        $.each($(".auth-form-group-custom input"), function (i) {
-            $(this).addClass("form-control");
-        });
-        $.each($(".errornote"), function (i) {
-            let text = $(this).text();
-            $(this).replaceWith('<div class="alert alert-danger alert-dismissible fade show" role="alert">' + text +
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                '<span aria-hidden="true">×</span></button></div>');
-        });
-    });
+    let yes_im_sure_text = '{% translate "Yes, I’m sure" %}';
+    let search_text = '{% translate 'Search' %}';
 </script>
+<script src="{% static "admin-dist/js/custom.js" %}"></script>
 {% block customjs %}{% endblock %}
-<script src="{% static "admin-assets/js/app.js" %}"></script>
+<script src="{% static "admin-dist/nazox-admin/js/app.js" %}"></script>
 </body>
 
 </html>

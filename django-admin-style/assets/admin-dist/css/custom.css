@@ -134,6 +134,7 @@ label {
     margin-bottom: unset !important;
     line-height: 36px;
     display: inline-flex;
+    margin-left: 5px;
 }
 
 #changelist .actions select {
@@ -193,8 +194,10 @@ form .aligned p.help, form .aligned div.help {
 div.help {
     width: 100%;
 }
-
-.vTextField, #toolbar #searchbar, select:not([multiple]) {
+.actions input{
+    margin-left: 5px;
+}
+.vTextField, #toolbar #searchbar, select:not([multiple]), .actions input{
     display: block;
     padding: .47rem .75rem;
     font-size: .9rem;

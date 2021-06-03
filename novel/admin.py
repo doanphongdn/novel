@@ -11,23 +11,19 @@ from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 from django.contrib.admin.helpers import ActionForm
-from django.contrib.auth.admin import UserAdmin, GroupAdmin
-from django.contrib.auth.forms import AuthenticationForm, UsernameField
-from django.contrib.auth.models import User, Group
-from django.contrib.sites.admin import SiteAdmin
-from django.contrib.sites.models import Site
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.html import format_html
 from django.views.decorators.cache import never_cache
 from django_json_widget.widgets import JSONEditorWidget
-from django.utils.translation import gettext_lazy as _
 
 from django_cms.admin import ActionAdmin, BaseActionAdmin
 from django_cms.models import CDNServer
 from novel import utils
 from novel.models import CDNNovelFile, Comment, Genre, Novel, NovelAdvertisement, NovelAdvertisementPlace, NovelChapter, \
-    NovelNotify, NovelParam, NovelReport, NovelSetting, Status
+    NovelNotify, NovelReport, NovelSetting, Status
 
 logger = logging.getLogger(__name__)
 
@@ -329,36 +325,12 @@ class MyUserAdmin(UserAdmin):
     send_notify.short_description = "Send Notify to user >>"
 
 
-class MyUserGroupAdmin(GroupAdmin):
-    menu_icon = "ri-team-fill"
-
-
-class CustomAuthForm(AuthenticationForm):
-    username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True, 'placeholder': _("Username")}))
-    password = forms.CharField(
-        label=_("Password"),
-        strip=False,
-        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password', "placeholder": _("Password")}),
-    )
-
-
 class MyEmailAddress(EmailAddressAdmin):
     menu_icon = "ri-mail-send-line"
 
 
-class MySiteAdmin(SiteAdmin):
-    menu_icon = "ri-terminal-window-fill"
-
-
-admin.site.unregister(Group)
 admin.site.unregister(User)
 admin.site.unregister(EmailAddress)
-admin.site.unregister(Site)
 
-admin.site.register(Group, MyUserGroupAdmin)
 admin.site.register(User, MyUserAdmin)
 admin.site.register(EmailAddress, MyEmailAddress)
-admin.site.register(Site, MySiteAdmin)
-
-admin.site.login_form = CustomAuthForm
-admin.site.login_form = CustomAuthForm

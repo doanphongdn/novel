@@ -29,7 +29,7 @@ class AdminSiteExt(admin.AdminSite):
 
     @never_cache
     def index(self, request, extra_context=None):
-        self.index_template = "admin/dashboard.html"
+        self.index_template = "admin/index.html"
         if not extra_context:
             extra_context = {}
 
@@ -37,7 +37,7 @@ class AdminSiteExt(admin.AdminSite):
 
 
 class AdminConfigExt(AdminConfig):
-    default_site = 'django_cms.admin_site.AdminSiteExt'
+    default_site = 'django-admin-style.admin_site.AdminSiteExt'
 
     def ready(self):
         super().ready()

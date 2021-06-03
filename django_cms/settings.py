@@ -47,9 +47,10 @@ SELENIUM_CHROME_DRIVE = os.environ.get('SELENIUM_CHROME_DRIVE', '/usr/local/bin/
 
 INSTALLED_APPS = [
     # 'django.contrib.admin',
-    'django_cms.admin_site.AdminConfigExt',
     # 'django.contrib.auth',
-    'django_cms.apps.AuthConfig',
+    'django-admin-style',
+    'django-admin-style.admin_site.AdminConfigExt',
+    'django-admin-style.apps.AuthConfig',
 
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -84,7 +85,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -103,7 +103,10 @@ ROOT_URLCONF = 'django_cms.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [
+            os.path.join(BASE_DIR, "django-admin-style/templates"),
+            os.path.join(BASE_DIR, 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -217,7 +220,10 @@ SITE_ID = 1
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_debug")]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static_debug"),
+    os.path.join(BASE_DIR, "django-admin-style/assets"),
+]
 
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT')
 MEDIA_URL = '/media/'

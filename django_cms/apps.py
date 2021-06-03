@@ -12,8 +12,3 @@ class AdminConfigExt(AdminConfig):
 
     def ready(self):
         super().ready()
-
-
-class AuthConfig(AppConfig):
-    name = 'django.contrib.auth'
-    verbose_name = "System Administrator"

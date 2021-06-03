@@ -149,7 +149,7 @@ def image_processing(image):
     rgb_im.save(image, optimize=True, quality=95)
 
 
-def optimize_image(img_path, quality=80):
+def optimize_image(img_path, quality=65):
     image = Image.open(img_path)
     image.save(img_path, quality=quality, optimize=True)
 

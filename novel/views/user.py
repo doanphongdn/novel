@@ -58,7 +58,7 @@ class UserAction(object):
             History.objects.bulk_create(history_create_objs, ignore_conflicts=True)
 
         if history_update_objs:
-            History.objects.bulk_update(history_update_objs, ['chapter_id'])
+            History.objects.bulk_update(history_update_objs, ['chapter_id', 'updated_at'])
 
     @classmethod
     def sync_histories(cls, request, user=None):

@@ -29,7 +29,8 @@ class CacheManager(object):
         elif not cache_key:
             cache_key = self.__class__.__name__
 
-        self.cache_key = "CacheManager_" + md5("_".join((str(limit), str(cache_key), *cache_keys, *order_by)).encode()).hexdigest()
+        self.cache_key = "CacheManager_" + md5(
+            "_".join((str(limit), str(cache_key), *cache_keys, *order_by)).encode()).hexdigest()
 
     def clear_cache(self):
         cache.delete(self.cache_key)
@@ -107,3 +108,59 @@ class IncludeHtmlCache(CacheManager):
                 return format_html_join("", "{}", [(inc_obj.render_html(),)])
 
         return format_html_join("", "<div class='include-error'>Nothing to include</div>", [])
+
+
+class CacheBalanceRequest(object):
+    def __init__(self, cache_key=None, domains=None, **kwargs):
+        self.cache_key = '_CacheLoadBalanceRequest_'
+        if cache_key:
+            self.cache_key = self.cache_key + md5(str(cache_key).encode()).hexdigest()
+
+        self.domains = domains
+
+    def clear_cache(self):
+        cache.delete(self.cache_key)
+
+    def get_domain(self, data):
+        if not self.domains:
+            return None
+        if not data:
+            return None
+
+        for domain in data:
+            if data[domain].get('round', 0) < data[domain].get('routing_rate', 1):
+                data[domain]['round'] = int(data[domain].get('round', 0)) + 1
+                return domain
+        # all match the round
+        return None
+
+    def get_from_cache(self, **kwargs):
+        try:
+            cached = cache.get(self.cache_key)
+            domain_route = self.get_domain(cached)
+            if not domain_route:
+                # cached[domain_route]['round'] = cached[domain_route]['round'] + 1
+                if not self.domains:
+                    return None
+
+                # Init cache data
+                items = {}
+                for domain in self.domains:
+                    items[domain.get('name')] = {
+                        "routing_rate": int(domain.get('routing_rate', 1)),
+                        "round": domain.get('round', 0)
+                    }
+                    if not domain_route:
+                        domain_route = domain.get('name')
+                        items[domain.get('name')]['round'] = 1
+
+                cached = items
+
+            cache.set(self.cache_key, cached, 60 * 60)  # 60 minutes
+        except Exception as e:
+            print("[get_from_cache] Error when get Domain from cache %s" % e)
+            import traceback
+            traceback.print_exc()
+            return None
+
+        return domain_route

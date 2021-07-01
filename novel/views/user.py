@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from datetime import datetime
 from http import HTTPStatus
 
 from django.contrib.auth import authenticate, logout, login
@@ -48,6 +49,7 @@ class UserAction(object):
             history = History.objects.filter(user=user, novel_id=val[1]).first()
             if history:
                 history.chapter_id = val[0]
+                history.updated_at = datetime.now()
                 history_update_objs.append(history)
             else:
                 history_create_objs.append(History(user=user, chapter_id=val[0], novel_id=val[1]))

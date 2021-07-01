@@ -2,7 +2,7 @@ import hashlib
 import json
 from urllib.parse import urlparse
 
-from django_cms.utils.cache_manager import CacheManager
+from django_cms.utils.cache_manager import CacheBalanceRequest, CacheManager
 from django_cms import settings as crawl_settings
 from novel import settings
 from novel.models import NovelSetting
@@ -25,6 +25,8 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
             img_ignoring = []
             if novel_setting and novel_setting.img_ignoring:
                 img_ignoring = novel_setting.img_ignoring.split(",")
+
+            stream_domain = ChapterContentTemplateInclude.get_stream_domain()
 
             # Some time an outdated chapter will cannot streaming the old images,
             # we have to mark the chapter to 'updated' as false to prepare crawling again
@@ -79,8 +81,8 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
                 if not settings.redis_image.get(image_hash):
                     settings.redis_image.set(image_hash, json_str)
 
-                stream_images.append("%s/images/%s/%s/%s.jpg" % (
-                    settings.STREAM_IMAGE_DOMAIN, chapter.novel_slug, chapter.slug, image_hash))
+                stream_images.append("%s/images/%s/%s/%s.jpg" %
+                                     (stream_domain, chapter.novel_slug, chapter.slug, image_hash))
 
         except Exception as e:
             print("[stream_images] Error when parse image chapter content %s" % e)
@@ -88,6 +90,24 @@ class ChapterContentTemplateInclude(BaseTemplateInclude):
             traceback.print_exc()
 
         return stream_images
+
+    @staticmethod
+    def get_stream_domain():
+        stream_domains = settings.STREAM_IMAGE_DOMAIN
+        if not stream_domains:
+            return stream_domains
+        domains = []
+        stream_domains = stream_domains.split(',')
+        for stream_domain in stream_domains:
+            domain_lst = stream_domain.split('::')
+            domain = {
+                'name': domain_lst[0],
+            }
+            if len(domain_lst) > 1:
+                domain['routing_rate'] = domain_lst[1]
+            domains.append(domain)
+        domain_route = CacheBalanceRequest(domains=domains).get_from_cache()
+        return domain_route or ''
 
     def prepare_include_data(self):
         chapter = self.include_data.get("chapter")

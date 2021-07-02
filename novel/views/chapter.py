@@ -93,6 +93,8 @@ class ChapterView(NovelBaseView):
                         novel.view_total += 1
                         novel.view_daily += 1
                         novel.view_monthly += 1
+                        # Do not change this field to ignore show in latest updated novel
+                        novel.latest_updated_time = novel.latest_updated_time
                         novel.save()
 
                         chapters_viewed.append(chapter_id)

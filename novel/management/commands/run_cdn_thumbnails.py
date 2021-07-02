@@ -128,6 +128,7 @@ class CDNThumbnailProcess:
 
             if novel.thumbnail_image != cdn_url_novel:
                 novel.thumbnail_image = cdn_url_novel
+                novel.latest_updated_time = novel.latest_updated_time
                 # processed_files.append(novel)
                 novel.save()
 

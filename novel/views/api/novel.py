@@ -305,7 +305,9 @@ class NovelAPIView(BaseAPIView):
                 # if have same novels, we should inactive them
                 # related_novels = list(filter(lambda n: n.id != novel.id), list(novel_objs))
                 related_novels = Novel.objects.filter(
-                    Q(name__contains=novel.slug) | Q(name__iexact=novel.name))
+                    (Q(slug__icontains=novel.slug) | Q(name__iexact=novel.name))
+                    & Q(active=True) & ~Q(id=novel.id)
+                )
                 related_novels_lst = []
                 for related_novel in related_novels:
                     related_novel.active = False
@@ -314,7 +316,7 @@ class NovelAPIView(BaseAPIView):
                     related_novel.related_novel = novel
                     related_novels_lst.append(related_novel)
                 if related_novels_lst:
-                    Novel.objects.bulk_update(related_novels_lst, ['active', 'publish', 'novel_updated'])
+                    Novel.objects.bulk_update(related_novels_lst, ['active', 'publish', 'novel_updated', 'related_novel'])
 
         except IntegrityError as ex:
             transaction.rollback()

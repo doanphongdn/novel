@@ -21,6 +21,7 @@ class Command(BaseCommand):
         limit_time = datetime.now() - timedelta(days=30)
         available_notify = NovelNotify.objects.filter(
             created_at__lte=limit_time
-        ).all()[0:2000]
-        if not available_notify:
+        ).all()
+        if available_notify:
             available_notify.delete()
+            print('[notify] deleted %s records' % len(available_notify))

@@ -23,5 +23,6 @@ class Command(BaseCommand):
             created_at__lte=limit_time
         ).all()
         if available_notify:
+            count = len(available_notify)
             available_notify.delete()
-            print('[notify] deleted %s records' % len(available_notify))
+            print('[notify] deleted %s records' % count)

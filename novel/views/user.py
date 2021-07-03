@@ -29,7 +29,6 @@ from novel.views.base import NovelBaseView
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from django.utils.translation import gettext as _
 
-
 logger = logging.getLogger('django')
 
 
@@ -118,7 +117,6 @@ class UserAction(object):
                             bmk, created = Bookmark.objects.get_or_create(user_id=user_id, novel=novel)
                             if created:
                                 novel.follow += 1
-                                novel.latest_updated_time = novel.latest_updated_time
                                 novel.save()
                                 CacheManager(Bookmark, **{"novel_id": novel.id, "user_id": user_id}).clear_cache()
 
@@ -127,7 +125,6 @@ class UserAction(object):
                             if bmk:
                                 bmk.delete()
                                 novel.follow -= 1
-                                novel.latest_updated_time = novel.latest_updated_time
                                 novel.save()
                                 CacheManager(Bookmark, **{"novel_id": novel.id, "user_id": user_id}).clear_cache()
 
@@ -228,11 +225,10 @@ class UserAction(object):
                         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
                         sg.send(message)
                     except Exception as ex:
-                        return JsonResponse({
-                                                "status": False,
-                                                "message": _(
-                                                    'Error sending password recovery email, please contact administrator')
-                                            }, status=HTTPStatus.OK)
+                        return JsonResponse({"status": False,
+                                             "message": _(
+                                                 'Error sending password recovery email, please contact administrator')
+                                             }, status=HTTPStatus.OK)
 
                     return JsonResponse({
                         "status": True, "message": _(
@@ -241,11 +237,10 @@ class UserAction(object):
                             'Please check your email and follow the instructions.')
                     }, status=HTTPStatus.OK)
 
-        return JsonResponse({
-                                "status": False,
-                                "message": _(
-                                    'The email you provided does not exist in the system.')
-                            }, status=HTTPStatus.OK)
+        return JsonResponse({"status": False,
+                             "message": _(
+                                 'The email you provided does not exist in the system.')
+                             }, status=HTTPStatus.OK)
 
     @staticmethod
     def redirect_url(request):

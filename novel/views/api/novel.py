@@ -22,6 +22,7 @@ from novel.utils import get_first_number_pattern
 from novel.views.api.schema import NovelChapterCampaignSchema, NovelInfoCampaignSchema, NovelListCampaignSchema
 from novel.models import Novel, NovelChapter, Author, Genre, Status, NovelNotify, Bookmark
 
+
 logger = logging.getLogger('django')
 
 
@@ -265,6 +266,9 @@ class NovelAPIView(BaseAPIView):
                         for bm in bookmarks:
                             latest_chapter_name = novel.novel_flat.latest_chapter.get("name", "")
                             latest_chapter_id = novel.novel_flat.latest_chapter.get("id", "")
+                            # remove old notify with same novel for each user
+                            NovelNotify.objects.filter(user=bm.user, novel_id=novel).delete()
+                            # add new notify
                             notify.append(NovelNotify(user=bm.user,
                                                       notify=novel_setting.NEW_CHAPTER_NOTIFY_MSG % (
                                                           novel.name, latest_chapter_name), novel=novel,
@@ -297,6 +301,18 @@ class NovelAPIView(BaseAPIView):
                     novel.attempt += 1
 
                 novel.save()
+
+                # if have same novels, we should inactive them
+                related_novels = list(filter(lambda n: n.id != novel.id), list(novel_objs))
+                related_novels_lst = []
+                for related_novel in related_novels:
+                    related_novel.active = False
+                    related_novel.publish = False
+                    related_novel.novel_updated = False
+                    related_novels_lst.append(related_novel)
+                if related_novels_lst:
+                    Novel.objects.bulk_update(related_novels_lst, ['active', 'publish', 'novel_updated'])
+
         except IntegrityError as ex:
             transaction.rollback()
             # deactive novel because wrong data

@@ -51,7 +51,6 @@ class NovelDetailView(NovelBaseView):
                 novel = Novel.objects.filter(pk=novel_id, active=True).first()
                 if novel:
                     novel.hot_point += 1
-                    novel.latest_updated_time = novel.latest_updated_time
                     novel.save()
                 return JsonResponse({"success": True, })
         except Exception as e:

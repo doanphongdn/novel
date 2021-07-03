@@ -146,6 +146,7 @@ class Novel(models.Model):
 
     attempt = models.SmallIntegerField(default=0)
     crawl_errors = models.TextField(default='', blank=True, null=True)
+    related_novel = models.ForeignKey("self", on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.name

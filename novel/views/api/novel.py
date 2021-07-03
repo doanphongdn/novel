@@ -303,12 +303,15 @@ class NovelAPIView(BaseAPIView):
                 novel.save()
 
                 # if have same novels, we should inactive them
-                related_novels = list(filter(lambda n: n.id != novel.id), list(novel_objs))
+                # related_novels = list(filter(lambda n: n.id != novel.id), list(novel_objs))
+                related_novels = Novel.objects.filter(
+                    Q(name__contains=novel.slug) | Q(name__iexact=novel.name))
                 related_novels_lst = []
                 for related_novel in related_novels:
                     related_novel.active = False
                     related_novel.publish = False
                     related_novel.novel_updated = False
+                    related_novel.related_novel = novel
                     related_novels_lst.append(related_novel)
                 if related_novels_lst:
                     Novel.objects.bulk_update(related_novels_lst, ['active', 'publish', 'novel_updated'])

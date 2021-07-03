@@ -1,5 +1,5 @@
 import json
-import os
+from datetime import datetime
 from urllib.parse import urlparse
 
 from django.contrib.auth.models import AnonymousUser
@@ -10,7 +10,7 @@ from django.shortcuts import redirect
 from novel import settings
 from novel.cache_manager import NovelCache
 from novel.models import Novel, NovelChapter
-from novel.utils import get_history_cookies
+from novel.utils import DateTimeEncoder, get_history_cookies
 from novel.views.base import NovelBaseView
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from novel.views.user import UserAction
@@ -76,7 +76,7 @@ class ChapterView(NovelBaseView):
 
                     # Set cookies
                     if isinstance(histories, dict):
-                        histories[str(novel.id)] = chapter_id
+                        histories[str(novel.id)] = DateTimeEncoder().encode({chapter_id: datetime.now()})
                         response.set_cookie('_histories', json.dumps(histories))
                     else:
                         response.set_cookie('_histories', "{}")

@@ -39,7 +39,7 @@ class NovelListTemplateInclude(BaseTemplateInclude):
 
         custom_data = []
         if custom_data_field:
-            custom_data = self.include_data.get(custom_data_field)
+            custom_data = custom_data_field
 
         css_class = {
             "novel_list_col": novel_list_col,

@@ -1,7 +1,9 @@
+import datetime
 import json
 import logging
 import os
 import re
+from json import JSONEncoder
 from os.path import basename, splitext
 from urllib.parse import urlparse
 
@@ -166,3 +168,11 @@ def get_first_number_pattern(string, pattern='Chapter '):
         return result[0][2].rstrip(".")
     else:
         return None
+
+
+# subclass JSONEncoder
+class DateTimeEncoder(JSONEncoder):
+    # Override the default method
+    def default(self, obj):
+        if isinstance(obj, (datetime.date, datetime.datetime)):
+            return obj.isoformat()

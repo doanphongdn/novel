@@ -1,11 +1,11 @@
 import json
+from datetime import datetime, timedelta
 
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
-from django_cms.utils.paginator import ModelPaginator
 from novel.form.user import UserProfileForm
-from novel.models import Novel, Bookmark, History, NovelChapter, NovelUserProfile, NovelNotify
+from novel.models import Bookmark, History, NovelChapter
 from novel.paginator import NotifyPaginator
 from novel.utils import get_history_cookies
 from novel.views.includes.base import BaseTemplateInclude
@@ -59,12 +59,36 @@ class UserProfileTemplateInclude(BaseTemplateInclude):
                     novel_grid_col_lg = 2
                     # Get chapter ids from cookie
                     histories = get_history_cookies(self.request)
-                    chapter_ids = list(histories.values())
-                    novel_ids = list(histories.keys())
+                    default_time = datetime.now() - timedelta(days=30)
+                    chapter_ids = []
+                    novel_dict = {}
+                    for history in histories:
+                        history_value = histories[history]
+                        if isinstance(history_value, int):
+                            chapter_ids.append(history_value)
+                            novel_dict[int(history)] = default_time
+                        elif isinstance(history_value, dict):
+                            key = list(history_value.keys())
+                            if key:
+                                chapter_ids.append(key[0])
+                                novel_dict[int(history)] = history_value[key[0]]
+                        elif isinstance(history_value, str):
+                            json_history_value = json.loads(history_value)
+                            key = list(json_history_value.keys())
+                            if key:
+                                chapter_ids.append(key[0])
+                                novel_dict[int(history)] = datetime.strptime(json_history_value[key[0]],
+                                                                             "%Y-%m-%dT%H:%M:%S.%f")
+                    novel_ids = [k for k, v in sorted(novel_dict.items(), key=lambda p: p[1], reverse=True)]
 
                 chapters = NovelChapter.objects.select_related("novel").filter(id__in=chapter_ids).all()
+                # chapters = dict([(obj.id, obj) for obj in chapters])
+                # sorted_history_chapters = {chapters[chap].novel.id: chapters[chap] for chap in chapter_ids}
                 history_chapters = {chap.novel.id: chap for chap in chapters}
+                sorted_history_novels = [history_chapters[novel_id].novel for novel_id in novel_ids]
+
                 self.include_data.update({"custom_chapters": history_chapters})
+                self.include_data.update({"custom_data_field": sorted_history_novels})
 
             self.include_data.update({
                 "novel_grid_col_lg": novel_grid_col_lg,

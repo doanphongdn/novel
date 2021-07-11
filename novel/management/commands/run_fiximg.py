@@ -2,11 +2,12 @@
 import time
 from datetime import datetime, timedelta
 
+# from django.db.models import Q
+import undetected_chromedriver.v2 as uc
 # from webdriver_manager.chrome import ChromeDriverManager
 from django.core.management.base import BaseCommand
-# from django.db.models import Q
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+# from selenium import webdriver
+# from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -21,13 +22,14 @@ from novel.models import NovelChapter, NovelSetting
 
 class SeleniumScraper:
     def __init__(self):
-        chrome_options = Options()
+        chrome_options = uc.ChromeOptions()
         chrome_options.add_argument('--headless')
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
         # self.driver = webdriver.Chrome(ChromeDriverManager(chrome_type=ChromeType.GOOGLE).install())
         # self.driver = webdriver.Chrome(ChromeDriverManager().install())
-        self.driver = webdriver.Chrome(settings.SELENIUM_CHROME_DRIVE, chrome_options=chrome_options)
+        # self.driver = webdriver.Chrome(settings.SELENIUM_CHROME_DRIVE, chrome_options=chrome_options)
+        self.driver = uc.Chrome(options=chrome_options)
         self.wait = WebDriverWait(self.driver, 10)
 
     def get_pages(self, by_selector="div.page-chapter"):
@@ -37,46 +39,50 @@ class SeleniumScraper:
 
     def get_links(self, url, timeout=3, page_by_selector="div.page-chapter", show_log=False):
         """Extracts and returns company links (maximum number of company links for return is provided)."""
-        if show_log:
-            print('[get_links] starting...')
-        init_time = time.time()
-        self.driver.get(url)
-        self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, page_by_selector)))
+        try:
+            if show_log:
+                print('[get_links] starting...')
+            init_time = time.time()
+            self.driver.get(url)
+            self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, page_by_selector)))
 
-        if show_log:
-            print('[get_links] get pages')
-        pages = self.get_pages(page_by_selector)
+            if show_log:
+                print('[get_links] get pages')
+            pages = self.get_pages(page_by_selector)
 
-        # store all initial src before scroll it
-        initial_sources = []
-        for page in pages:
-            initial_images = page.find_elements_by_tag_name("img")
-            for img in initial_images:
-                initial_sources.append(img.get_attribute("src"))
-        if not initial_sources:
-            return []
+            # store all initial src before scroll it
+            initial_sources = []
+            for page in pages:
+                initial_images = page.find_elements_by_tag_name("img")
+                for img in initial_images:
+                    initial_sources.append(img.get_attribute("src"))
+            if not initial_sources:
+                return []
 
-        if show_log:
-            print('[get_links] %s pages fetched' % len(pages))
+            if show_log:
+                print('[get_links] %s pages fetched' % len(pages))
 
-        new_img = []
-        for idx, page in enumerate(pages):
-            start_time = time.time()
-            if idx % 2 == 0 or idx == len(pages) - 1:
-                self.driver.execute_script("return arguments[0].scrollIntoView(true);", page)
+            new_img = []
+            for idx, page in enumerate(pages):
+                start_time = time.time()
+                if idx % 2 == 0 or idx == len(pages) - 1:
+                    self.driver.execute_script("return arguments[0].scrollIntoView(true);", page)
 
-            img = page.find_element_by_tag_name("img")
-            self.wait.until(lambda driver: img.get_attribute("src") != initial_sources[idx]
-                                           or time.time() > start_time + timeout)
-            new_img.append(img.get_attribute("src"))
+                img = page.find_element_by_tag_name("img")
+                self.wait.until(lambda driver: img.get_attribute("src") != initial_sources[idx]
+                                               or time.time() > start_time + timeout)
+                new_img.append(img.get_attribute("src"))
 
-        end_time = time.time() - init_time
-        if show_log:
-            print('[get_links] new images %s' % new_img)
-            print('[get_links] total time %s' % end_time)
-        # return [img_link.get_attribute("src")
-        #         for img_link in self.driver.find_elements_by_css_selector(page_by_selector + " > img")]
-        return new_img
+            end_time = time.time() - init_time
+            if show_log:
+                print('[get_links] new images %s' % new_img)
+                print('[get_links] total time %s' % end_time)
+            # return [img_link.get_attribute("src")
+            #         for img_link in self.driver.find_elements_by_css_selector(page_by_selector + " > img")]
+            return new_img
+        except Exception as e:
+            print('[get_links] %s failed. %s' % (url, e))
+            return None
 
 
 class Command(BaseCommand):
@@ -108,6 +114,8 @@ class Command(BaseCommand):
                 # url = 'http://www.nettruyen.com/truyen-tranh/trai-tim-sat/chap-12/678622'
                 links = scraper.get_links(url=chapter.src_url, timeout=settings.SELENIUM_LAZY_LOADING_TIMEOUT,
                                           page_by_selector="div.page-chapter")
+                if not links:
+                    continue
                 chapter.images_content = '\n'.join(links)
                 chapter.save()
         print('[Selenium Scraper] Finish')

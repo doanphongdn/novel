@@ -44,7 +44,15 @@ google-chrome-stable -version
 
 sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
 
-wget https://chromedriver.storage.googleapis.com/88.0.4324.96/chromedriver_linux64.zip
+#wget https://chromedriver.storage.googleapis.com/88.0.4324.96/chromedriver_linux64.zip
+
+#New version 91
+wget https://chromedriver.storage.googleapis.com/91.0.4472.101/chromedriver_linux64.zip
+
+#See more:
+https://chromedriver.storage.googleapis.com/index.html?path=91.0.4472.101/
+
+https://chromedriver.chromium.org/downloads
 
 unzip chromedriver_linux64.zip
 

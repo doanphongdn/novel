@@ -1,7 +1,10 @@
 # crawl_service
 sudo apt-get install libpq-dev python3-dev build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev
+
 sudo apt-get install npm
+
 sudo npm install -g sass
+
 sudo npm -g install yuglify
 
 #Install uwsgi
@@ -99,4 +102,7 @@ CAMPAIGNS_THREAD_NUM = 2
  
  # RECAPTCHA key in .env
 GOOGLE_RECAPTCHA_SITE_KEY = ''
+
 GOOGLE_RECAPTCHA_SECRET_KEY = ''
+
+### Use lib to support selenium https://github.com/ultrafunkamsterdam/undetected-chromedriver

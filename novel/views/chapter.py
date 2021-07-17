@@ -32,7 +32,7 @@ class ChapterView(NovelBaseView):
             if isinstance(novel, QuerySet):
                 novel = novel[0]
             # TODO: not yet apply cache
-            chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel).prefetch_related(
+            chapter = NovelChapter.objects.filter(slug=chapter_slug, novel=novel, active=True).prefetch_related(
                 'cdnnovelfile_set').first()
             if chapter:
                 breadcrumb_data = [

@@ -29,6 +29,7 @@ from novel.views.base import NovelBaseView
 from novel.views.includes.novel_info import NovelInfoTemplateInclude
 from django.utils.translation import gettext as _
 
+
 logger = logging.getLogger('django')
 
 
@@ -39,7 +40,9 @@ class UserAction(object):
         if isinstance(user, AnonymousUser):
             return
 
-        if not isinstance(chapter_ids, list):
+        if isinstance(chapter_ids, dict):
+            chapter_ids = list(chapter_ids.keys())
+        elif not isinstance(chapter_ids, list):
             chapter_ids = [chapter_ids]
 
         values = NovelChapter.objects.filter(id__in=chapter_ids).values_list("id", "novel_id")
@@ -225,10 +228,11 @@ class UserAction(object):
                         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
                         sg.send(message)
                     except Exception as ex:
-                        return JsonResponse({"status": False,
-                                             "message": _(
-                                                 'Error sending password recovery email, please contact administrator')
-                                             }, status=HTTPStatus.OK)
+                        return JsonResponse({
+                                                "status": False,
+                                                "message": _(
+                                                    'Error sending password recovery email, please contact administrator')
+                                            }, status=HTTPStatus.OK)
 
                     return JsonResponse({
                         "status": True, "message": _(
@@ -237,10 +241,11 @@ class UserAction(object):
                             'Please check your email and follow the instructions.')
                     }, status=HTTPStatus.OK)
 
-        return JsonResponse({"status": False,
-                             "message": _(
-                                 'The email you provided does not exist in the system.')
-                             }, status=HTTPStatus.OK)
+        return JsonResponse({
+                                "status": False,
+                                "message": _(
+                                    'The email you provided does not exist in the system.')
+                            }, status=HTTPStatus.OK)
 
     @staticmethod
     def redirect_url(request):

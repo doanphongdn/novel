@@ -37,6 +37,7 @@ sudo cp -a deploy/etc/. /etc
 # Install Nginx
 sudo apt-get -y install nginx
 sudo mkdir -p /var/www/$APP/static /var/www/$APP/media
+sudo chown $USER. -R /var/www/$APP/static /var/www/$APP/media
 sudo mv /etc/nginx/sites-available/nginx.example.conf /etc/nginx/sites-available/$APP.conf
 sudo ln -s /etc/nginx/sites-available/$APP.conf /etc/nginx/sites-enabled/
 
